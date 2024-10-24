@@ -14,9 +14,37 @@ export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): Swa
     // Avoiding scientific notation
     const feeFloat = parseFloat(swap.tokenAmountIn) * parseFloat(swap.poolId.swapFee ?? 0);
     const fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
-    const feeFloatUSD = parseFloat(swap.valueUSD) * parseFloat(swap.poolId.swapFee ?? 0);
-    const feeUSD =
+    let feeFloatUSD = parseFloat(swap.valueUSD) * parseFloat(swap.poolId.swapFee ?? 0);
+    let feeUSD =
         feeFloatUSD < 1e6 ? feeFloatUSD.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloatUSD);
+
+    if (swap.poolId.poolType === 'FX') {
+        const tokenOutAddress = swap.tokenOut;
+        const tokenInAddress = swap.tokenIn;
+        // FX pools have a different fee calculation
+        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+        let isTokenInBase = tokenOutAddress == USDC_ADDRESS;
+        let baseTokenAddress = isTokenInBase ? tokenInAddress : tokenOutAddress;
+        let quoteTokenAddress = isTokenInBase ? tokenOutAddress : tokenInAddress;
+        let baseToken = swap.poolId.tokens?.find(({ token }) => token.address == baseTokenAddress);
+        let quoteToken = swap.poolId.tokens?.find(({ token }) => token.address == quoteTokenAddress);
+        let baseRate = baseToken != null ? baseToken.token.latestFXPrice : null;
+        let quoteRate = quoteToken != null ? quoteToken.token.latestFXPrice : null;
+
+        if (baseRate && quoteRate) {
+            if (isTokenInBase) {
+                feeFloatUSD +=
+                    parseFloat(swap.tokenAmountIn) * parseFloat(baseRate) -
+                    parseFloat(swap.tokenAmountOut) * parseFloat(quoteRate);
+            } else {
+                feeFloatUSD +=
+                    parseFloat(swap.tokenAmountIn) * parseFloat(quoteRate) -
+                    parseFloat(swap.tokenAmountOut) * parseFloat(baseRate);
+            }
+        }
+
+        feeUSD = String(feeFloatUSD);
+    }
 
     return {
         id: swap.id, // tx + logIndex

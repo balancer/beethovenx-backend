@@ -6744,7 +6744,19 @@ export type BalancerSwapsQuery = {
         tx: string;
         valueUSD: string;
         block?: string | null | undefined;
-        poolId: { __typename?: 'Pool'; id: string; swapFee: string };
+        poolId: {
+            __typename?: 'Pool';
+            id: string;
+            swapFee: string;
+            poolType?: string | null | undefined;
+            tokens?:
+                | Array<{
+                      __typename?: 'PoolToken';
+                      token: { __typename?: 'Token'; address: string; latestFXPrice?: string | null | undefined };
+                  }>
+                | null
+                | undefined;
+        };
         userAddress: { __typename?: 'User'; id: string };
     }>;
 };
@@ -6763,7 +6775,19 @@ export type BalancerSwapFragment = {
     tx: string;
     valueUSD: string;
     block?: string | null | undefined;
-    poolId: { __typename?: 'Pool'; id: string; swapFee: string };
+    poolId: {
+        __typename?: 'Pool';
+        id: string;
+        swapFee: string;
+        poolType?: string | null | undefined;
+        tokens?:
+            | Array<{
+                  __typename?: 'PoolToken';
+                  token: { __typename?: 'Token'; address: string; latestFXPrice?: string | null | undefined };
+              }>
+            | null
+            | undefined;
+    };
     userAddress: { __typename?: 'User'; id: string };
 };
 
@@ -7092,6 +7116,13 @@ export const BalancerSwapFragmentDoc = gql`
         poolId {
             id
             swapFee
+            poolType
+            tokens {
+                token {
+                    address
+                    latestFXPrice
+                }
+            }
         }
         userAddress {
             id

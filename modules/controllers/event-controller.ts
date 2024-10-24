@@ -38,7 +38,7 @@ export function EventController() {
 
             const subgraphClient = getV2SubgraphClient(balancer, chain);
             const poolsWithNewSwaps = await syncSwapsV2(subgraphClient, chain);
-            await syncSwapsForLast48Hours(subgraphClient, chain);
+            // await syncSwapsForLast48Hours(subgraphClient, chain);
             await updateVolumeAndFees(chain, poolsWithNewSwaps);
 
             return poolsWithNewSwaps;
