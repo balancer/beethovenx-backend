@@ -10,6 +10,7 @@ import { UserService } from '../../user/user.service';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { networkContext } from '../../network/network-context.service';
 import { subgraphToPrismaCreate, subgraphToPrismaUpdate } from '../subgraph-mapper';
+import { CowAmmController } from '../../controllers';
 
 export class PoolCreatorService {
     constructor(private readonly userService: UserService) {}
@@ -50,6 +51,13 @@ export class PoolCreatorService {
             } else {
                 await this.updatePoolRecord(subgraphPool, blockNumber, allNestedTypePools);
             }
+        }
+
+        if (poolIds.length > 0) {
+            // Attach CowAMM syncing
+            console.log('initBalancesForPools: syncing CowAMM balances...');
+            await CowAmmController().syncBalances(this.chain);
+            console.log('initBalancesForPools: finished syncing CowAMM balances');
         }
 
         return poolIds;
