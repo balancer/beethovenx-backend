@@ -1,5 +1,11 @@
 # backend
 
+## 1.21.13
+
+### Patch Changes
+
+-   0b56465: fix cow amm SG pool fetching
+
 ## 1.21.12
 
 ### Patch Changes
