@@ -22,7 +22,7 @@ export const upsertPools = async (
     chain: Chain,
     blockNumber: bigint,
 ) => {
-    const sgPools = await cowAmmSubgraphClient.getAllPools({ id_in: ids, blockNumber: String(blockNumber) });
+    const sgPools = await cowAmmSubgraphClient.getAllPools({ id_in: ids });
 
     // Get onchain data for the pools
     const onchainData = await fetchCowAmmData(
