@@ -1,5 +1,12 @@
 # backend
 
+## 1.21.14
+
+### Patch Changes
+
+-   0098dbf: fix: pool total aprs should exclude 7d,30d
+-   d3cf1e0: fix long term apr for legacy items
+
 ## 1.21.13
 
 ### Patch Changes
