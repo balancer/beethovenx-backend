@@ -30,7 +30,12 @@ export class PoolAprUpdaterService {
         }
 
         const aprItems = await prisma.prismaPoolAprItem.findMany({
-            where: { chain: chain },
+            where: {
+                chain: chain,
+                type: {
+                    notIn: ['SURPLUS_30D', 'SURPLUS_7D', 'SWAP_FEE_30D', 'SWAP_FEE_7D'],
+                },
+            },
             select: { poolId: true, apr: true },
         });
 
