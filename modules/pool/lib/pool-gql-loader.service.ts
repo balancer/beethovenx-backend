@@ -1158,6 +1158,16 @@ export class PoolGqlLoaderService {
                         : { __typename: 'GqlPoolAprTotal', total: thirdPartyAprTotal },
                 items: [
                     ...aprItemsWithNoGroup.flatMap((item): GqlBalancePoolAprItem[] => {
+                        if (
+                            item.type === 'SWAP_FEE_24H' ||
+                            item.type === 'SWAP_FEE_7D' ||
+                            item.type === 'SWAP_FEE_30D' ||
+                            item.type === 'SURPLUS_24H' ||
+                            item.type === 'SURPLUS_7D' ||
+                            item.type === 'SURPLUS_30D'
+                        ) {
+                            return [];
+                        }
                         if (item.range) {
                             return [
                                 {
