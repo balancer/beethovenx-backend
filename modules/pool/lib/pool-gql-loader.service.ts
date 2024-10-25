@@ -1199,7 +1199,20 @@ export class PoolGqlLoaderService {
                                 apr: { __typename: 'GqlPoolAprTotal', total: `${item.apr}` },
                             }),
                         );
-                        const apr = _.sumBy(items, 'apr');
+                        let apr = 0;
+                        for (const item of items) {
+                            if (
+                                item.type === 'SWAP_FEE_24H' ||
+                                item.type === 'SWAP_FEE_7D' ||
+                                item.type === 'SWAP_FEE_30D' ||
+                                item.type === 'SURPLUS_24H' ||
+                                item.type === 'SURPLUS_7D' ||
+                                item.type === 'SURPLUS_30D'
+                            ) {
+                            } else {
+                                apr += item.apr;
+                            }
+                        }
                         const title = `${group.charAt(0) + group.slice(1).toLowerCase()} boosted APR`;
 
                         return {
