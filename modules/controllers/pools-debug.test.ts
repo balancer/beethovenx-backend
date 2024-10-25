@@ -8,6 +8,7 @@ import { CowAmmController } from './cow-amm-controller';
 import { PoolController } from './pool-controller';
 import { upsertPools as upsertPoolsV3 } from '../actions/pool/v3/upsert-pools';
 import { syncPools as syncPoolsV3 } from '../actions/pool/v3/sync-pools';
+import exp from 'constants';
 
 describe('pool controller debugging', () => {
     it('delete reload v3 pools', async () => {
@@ -86,5 +87,14 @@ describe('pool controller debugging', () => {
         await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
 
         // await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
+    }, 5000000);
+
+    it('erc4626 data', async () => {
+        const boostedPool = await poolService.getGqlPool('0x6dbdd7a36d900083a5b86a55583d90021e9f33e8', 'SEPOLIA');
+
+        expect(boostedPool).toBeDefined();
+        for (const token of boostedPool.poolTokens) {
+            expect(token.isErc4626).toBe(true);
+        }
     }, 5000000);
 });

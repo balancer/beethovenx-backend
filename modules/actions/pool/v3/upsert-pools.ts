@@ -45,6 +45,32 @@ export const upsertPools = async (
         console.error('Error creating tokens', e);
     }
 
+    // update ERC4626 type data
+    for (const token of enrichedTokensWithErc4626Data) {
+        if (token.underlyingTokenAddress) {
+            await prisma.prismaTokenType.upsert({
+                where: {
+                    id_chain: {
+                        id: `${token.address}-erc4626`,
+                        chain,
+                    },
+                },
+                create: {
+                    id: `${token.address}-erc4626`,
+                    chain,
+                    tokenAddress: token.address,
+                    type: 'ERC4626',
+                },
+                update: {
+                    id: `${token.address}-erc4626`,
+                    chain,
+                    tokenAddress: token.address,
+                    type: 'ERC4626',
+                },
+            });
+        }
+    }
+
     // Get the prices
     const prices = await prisma.prismaTokenCurrentPrice
         .findMany({
