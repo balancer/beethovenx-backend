@@ -1,5 +1,25 @@
 # backend
 
+## 1.21.12
+
+### Patch Changes
+
+-   27bb15a: fix: add an update to "totalSharesNum" column
+-   d021220: change reth apr source
+-   ade5959: adding surplus and swap APR based on 7d and 30d values
+-   9794d8d: refactor pool transformers, add scaling factors
+-   d71162a: fix: sync cow amm balances on adding new pools
+-   6bc68c9: adding balance fetching margin
+-   92cb5a4: update cow amm subgraphs
+-   af45007: add new fantom subgraph version
+-   6bf00c8: fix erc4626 data fetching
+-   4190058: fix: adding missing bpt token records
+-   6f18aab: update sepolia blocks subgraph and vault v3 abis
+-   a4f6220: use 10th deployment of v3
+-   303f3e0: fix: overwriting of subgraph data
+-   2afa4ba: changing sepolia blocks SG
+-   51aeb1c: expose bias and slope in vebal user snapshots
+
 ## 1.21.11
 
 ### Patch Changes
