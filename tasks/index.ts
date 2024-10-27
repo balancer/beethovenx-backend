@@ -82,7 +82,7 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-cow-amm-pools') {
         return CowAmmController().syncPools(chain);
     } else if (job === 'reload-cow-amm-pools') {
-        return CowAmmController().reloadPools(chainIdToChain[chain]);
+        return CowAmmController().reloadPools(chain);
     } else if (job === 'sync-cow-amm-snapshots') {
         return CowAmmController().syncSnapshots(chain);
     } else if (job === 'sync-all-cow-amm-snapshots') {

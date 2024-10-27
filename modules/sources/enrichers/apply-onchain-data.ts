@@ -82,6 +82,7 @@ export const applyOnchainDataUpdateCowAmm = (
                 },
             },
             totalShares: formatEther(onchainPoolData.totalSupply),
+            totalSharesNum: parseFloat(formatEther(onchainPoolData.totalSupply)),
             blockNumber: Number(blockNumber),
             swapFee: formatEther(onchainPoolData.swapFee),
             swapEnabled: true,
