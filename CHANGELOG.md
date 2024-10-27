@@ -1,5 +1,11 @@
 # backend
 
+## 1.21.15
+
+### Patch Changes
+
+-   401987d: fix: add missing totalSharesNum column for COW_AMM pools
+
 ## 1.21.14
 
 ### Patch Changes
