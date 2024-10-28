@@ -1,5 +1,12 @@
 # backend
 
+## 1.21.16
+
+### Patch Changes
+
+-   1f4fbc1: fix: missing hooks data
+-   35886a7: fix relic sync
+
 ## 1.21.15
 
 ### Patch Changes
