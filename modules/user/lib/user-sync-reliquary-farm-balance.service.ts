@@ -84,14 +84,11 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
             (farm) => !networkContext.data.reliquary!.excludedFarmIds.includes(farm.pid.toString()),
         );
 
-        // const startBlock = status.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
-        // const endBlock =
-        //     latestBlock - startBlock > networkContext.data.rpcMaxBlockRange
-        //         ? startBlock + networkContext.data.rpcMaxBlockRange
-        //         : latestBlock;
-
-        const startBlock = 95236540;
-        const endBlock = 95236550;
+        const startBlock = status.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
+        const endBlock =
+            latestBlock - startBlock > networkContext.data.rpcMaxBlockRange
+                ? startBlock + networkContext.data.rpcMaxBlockRange
+                : latestBlock;
 
         const amountUpdates = await this.getAmountsForUsersWithBalanceChangesSinceStartBlock(
             this.reliquaryAddress,
