@@ -84,11 +84,14 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
             (farm) => !networkContext.data.reliquary!.excludedFarmIds.includes(farm.pid.toString()),
         );
 
-        const startBlock = status.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
-        const endBlock =
-            latestBlock - startBlock > networkContext.data.rpcMaxBlockRange
-                ? startBlock + networkContext.data.rpcMaxBlockRange
-                : latestBlock;
+        // const startBlock = status.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
+        // const endBlock =
+        //     latestBlock - startBlock > networkContext.data.rpcMaxBlockRange
+        //         ? startBlock + networkContext.data.rpcMaxBlockRange
+        //         : latestBlock;
+
+        const startBlock = 95236540;
+        const endBlock = 95236550;
 
         const amountUpdates = await this.getAmountsForUsersWithBalanceChangesSinceStartBlock(
             this.reliquaryAddress,
@@ -107,20 +110,6 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                 !networkContext.data.reliquary!.excludedFarmIds.includes(update.farmId.toString()) &&
                 update.amount !== '0.0',
         );
-
-        if (filteredAmountUpdates.length === 0) {
-            await prisma.prismaUserBalanceSyncStatus.update({
-                where: {
-                    type_chain: {
-                        type: 'RELIQUARY',
-                        chain: networkContext.chain,
-                    },
-                },
-                data: { blockNumber: endBlock },
-            });
-
-            return;
-        }
 
         await prismaBulkExecuteOperations(
             [
