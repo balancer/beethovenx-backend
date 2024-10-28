@@ -45,6 +45,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return PoolController().reloadPoolsV3(chain);
     } else if (job === 'sync-pools-v3') {
         return PoolController().syncChangedPoolsV3(chain);
+    } else if (job === 'update-liquidity-for-active-pools') {
+        return PoolController().updateLiquidityValuesForActivePools(chain);
     } else if (job === 'sync-staking') {
         return StakingController().syncStaking(chain);
     } else if (job === 'sync-join-exits-v3') {

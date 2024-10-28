@@ -10,6 +10,7 @@ import { getViemClient } from '../sources/viem-client';
 import { getBlockNumbersSubgraphClient, getV3JoinedSubgraphClient, getVaultSubgraphClient } from '../sources/subgraphs';
 import { prisma } from '../../prisma/prisma-client';
 import { updateLiquidity24hAgo, updateLiquidityValuesForPools } from '../actions/pool/update-liquidity';
+import { updateHoldersCount } from '../actions/pool/update-holders-count';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { getVaultClient } from '../sources/contracts/v3/vault-client';
 import { upsertPools as upsertPoolsV3 } from '../actions/pool/v3/upsert-pools';
@@ -133,6 +134,7 @@ export function PoolController(tracer?: any) {
                 chain,
                 pools.map(({ id }) => id),
             );
+            await updateHoldersCount(pools.map(({ id }) => id));
         },
         async updateLiquidityValuesForInactivePools(chain: Chain) {
             const pools = await prisma.prismaPool.findMany({
