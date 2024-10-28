@@ -5,6 +5,7 @@ import { fx, gyro, element, stable } from '../../pool/pool-data';
 import { V3JoinedSubgraphPool } from '../subgraphs';
 import { parseEther, zeroAddress } from 'viem';
 import { PoolUpsertData } from '../../../prisma/prisma-types';
+import { hookTransformer } from './hook-transformer';
 
 // Subgraph to DB format transformation
 export const poolUpsertTransformerV3 = (
@@ -61,7 +62,7 @@ export const poolUpsertTransformerV3 = (
                 chain,
             },
         ],
-        hook: undefined,
+        hook: hookTransformer(poolData, chain),
         poolDynamicData: {
             id: poolData.id,
             pool: {
