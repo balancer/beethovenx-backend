@@ -55,7 +55,7 @@ export const poolUpsertTransformerV3 = (
                 chain,
             })),
             {
-                address: poolData.id,
+                address: poolData.id.toLowerCase(),
                 decimals: 18,
                 symbol: poolData.symbol,
                 name: poolData.name,

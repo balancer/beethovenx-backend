@@ -1,6 +1,8 @@
 import { AbiParameterToPrimitiveType, ExtractAbiFunction } from 'abitype';
 import { ViemClient } from '../../types';
 import VaultV3Abi from '../abis/VaultV3';
+import { formatEther } from 'viem';
+import type { PoolDynamicUpsertData } from '../../../../prisma/prisma-types';
 
 // TODO: Find out if we need to do that,
 // or can somehow get the correct type infered automatically from the viem's result set?
@@ -15,30 +17,13 @@ type PoolTokenRates = [
     AbiParameterToPrimitiveType<ExtractAbiFunction<typeof VaultV3Abi, 'getPoolTokenRates'>['outputs'][0]>, // decimalScalingFactors
     AbiParameterToPrimitiveType<ExtractAbiFunction<typeof VaultV3Abi, 'getPoolTokenRates'>['outputs'][1]>, // tokenRates
 ];
-export interface OnchainDataV3 {
-    totalSupply: bigint;
-    swapFee: bigint;
-    aggregateSwapFee?: bigint;
-    aggregateYieldFee?: bigint;
-    // amp?: [bigint, boolean, bigint];
-    isPoolPaused: boolean;
-    isPoolInRecoveryMode: boolean;
-    tokens: {
-        address: string;
-        balance: bigint;
-        rateProvider: string;
-        rate: bigint;
-        isErc4626: boolean;
-        scalingFactor: bigint;
-    }[];
-}
 
 export async function fetchPoolData(
     vault: string,
     pools: string[],
     client: ViemClient,
     blockNumber?: bigint,
-): Promise<{ [address: string]: OnchainDataV3 }> {
+): Promise<{ [address: string]: PoolDynamicUpsertData }> {
     const contracts = pools
         .map((pool) => [
             {
@@ -86,25 +71,39 @@ export async function fetchPoolData(
             results[pointer + 3].status === 'success'
                 ? (results[pointer + 3].result as unknown as PoolTokenRates)
                 : undefined;
+        const totalShares = formatEther(
+            results[pointer].status === 'success' ? (results[pointer].result as bigint) : 0n,
+        );
 
         return [
             pool.toLowerCase(),
             {
-                totalSupply: results[pointer].status === 'success' ? (results[pointer].result as bigint) : undefined,
-                swapFee: config?.staticSwapFeePercentage,
-                aggregateSwapFee: config?.aggregateSwapFeePercentage,
-                aggregateYieldFee: config?.aggregateYieldFeePercentage,
-                isPoolPaused: config?.isPoolPaused,
-                isPoolInRecoveryMode: config?.isPoolInRecoveryMode,
-                tokens: poolTokenInfo?.[0].map((token: string, i: number) => ({
+                poolDynamicData: {
+                    id: pool.toLowerCase(),
+                    totalShares,
+                    totalSharesNum: parseFloat(totalShares),
+                    swapFee: formatEther(config?.staticSwapFeePercentage ?? 0n),
+                    aggregateSwapFee: formatEther(config?.aggregateSwapFeePercentage ?? 0n),
+                    aggregateYieldFee: formatEther(config?.aggregateYieldFeePercentage ?? 0n),
+                    isPaused: config?.isPoolPaused,
+                    isInRecoveryMode: config?.isPoolInRecoveryMode,
+                    ...(blockNumber ? { blockNumber: Number(blockNumber) } : {}),
+                },
+                poolToken: poolTokenInfo?.[0].map((token: string, i: number) => ({
+                    id: `${pool}-${token}`.toLowerCase(),
                     address: token.toLowerCase(),
-                    balance: poolTokenInfo[2][i],
-                    paysYieldFees: poolTokenInfo[1][i].paysYieldFees,
-                    rateProvider: poolTokenInfo[1][i].rateProvider,
-                    rate: poolTokenRates ? poolTokenRates[1][i] : 1000000000000000000n,
-                    isErc4626: false, // will be added later in the process
-                    scalingFactor: poolTokenRates ? poolTokenRates[0][i] : 1000000000000000000n,
+                    exemptFromProtocolYieldFee: !!poolTokenInfo[1][i].paysYieldFees,
+                    priceRateProvider: poolTokenInfo[1][i].rateProvider,
+                    scalingFactor: String(poolTokenRates ? poolTokenRates[0][i] : 1000000000000000000n),
                 })),
+                poolTokenDynamicData:
+                    poolTokenInfo?.[0].map((token: string, i: number) => ({
+                        id: `${pool}-${token}`.toLowerCase(),
+                        // Would be great to fetch the decimals onchain as well, so we don't have to rely on the token data
+                        balance: String(poolTokenInfo[2][i]),
+                        priceRate: formatEther(poolTokenRates ? poolTokenRates[1][i] : 1000000000000000000n),
+                        ...(blockNumber ? { blockNumber: Number(blockNumber) } : {}),
+                    })) ?? [],
             },
         ];
     });

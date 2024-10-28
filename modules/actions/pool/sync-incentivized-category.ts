@@ -16,6 +16,8 @@ export const syncIncentivizedCategory = async () => {
 
     const ids = poolsWithReward.map(({ poolId }) => poolId);
 
+    if (ids.length === 0) return;
+
     await prisma.$transaction([
         // Remove incentivized category from pools
         prisma.$executeRaw`UPDATE "PrismaPool"

@@ -8,6 +8,7 @@ import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/f
 import { getViemClient } from '../../../sources/viem-client';
 import { poolUpsertTransformerV3 } from '../../../sources/transformers/pool-upsert-transformer-v3';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
+import { PoolUpsertData } from '../../../../prisma/prisma-types';
 
 /**
  * Gets and syncs all the pools state with the database
@@ -83,32 +84,10 @@ export const upsertPools = async (
 
     const pools = subgraphPools
         .map((fragment) => poolUpsertTransformerV3(fragment, chain, blockNumber))
-        .map((upsert) => {
-            const update = applyOnchainDataUpdateV3(
-                upsert,
-                onchainData[upsert.pool.id],
-                upsert.tokens,
-                chain,
-                upsert.pool.id,
-                blockNumber,
-            );
-            return {
-                ...upsert,
-                poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
-            };
-        })
-        .map((upsert) => {
-            const update = enrichPoolUpsertsUsd(
-                { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
-                prices,
-            );
-            return {
-                ...upsert,
-                poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
-            };
-        });
+        .map((upsert) =>
+            applyOnchainDataUpdateV3<PoolUpsertData>(upsert, onchainData[upsert.pool.id], upsert.tokens, chain),
+        )
+        .map((upsert) => enrichPoolUpsertsUsd<PoolUpsertData>(upsert, prices));
 
     // Upsert pools to the database
     for (const { pool, hook, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {

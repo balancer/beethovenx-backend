@@ -35,20 +35,13 @@ export const syncPools = async (ids: string[], viemClient: ViemClient, chain: Ch
         .then((prices) => Object.fromEntries(prices.map((price) => [price.tokenAddress, price.price])));
 
     // Get the data for the tables about pools
-    const dbPools = ids.map((id) =>
-        applyOnchainDataUpdateCowAmm({}, onchainData[id], allTokens, chain, id, blockNumber),
-    );
-
-    const poolsWithUSD = dbPools.map((upsert) =>
-        enrichPoolUpsertsUsd(
-            { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
-            prices,
-        ),
-    );
+    const dbPools = ids
+        .map((id) => applyOnchainDataUpdateCowAmm({}, onchainData[id], allTokens, chain, id))
+        .map((upsert) => enrichPoolUpsertsUsd(upsert, prices));
 
     // Upsert RPC data to the database
     // Update pools data to the database
-    for (const { poolDynamicData, poolTokenDynamicData } of poolsWithUSD) {
+    for (const { poolDynamicData, poolTokenDynamicData } of dbPools) {
         try {
             await prisma.prismaPoolDynamicData.update({
                 where: {

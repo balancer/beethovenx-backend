@@ -1,6 +1,7 @@
 import { parseAbi } from 'abitype';
 import { ViemClient } from '../types';
 import { multicallViem } from '../../web3/multicaller-viem';
+import { formatEther } from 'viem';
 
 const cowAmmAbi = parseAbi([
     'function getSwapFee() view returns (uint256)',
@@ -10,13 +11,17 @@ const cowAmmAbi = parseAbi([
 ]);
 
 export interface OnchainDataCowAmm {
-    totalSupply: bigint;
-    swapFee: bigint;
-    tokens: {
-        address: string;
+    poolDynamicData: {
+        id: string;
+        totalShares: string;
+        totalSharesNum: number;
+        swapFee: string;
+        blockNumber?: number;
+    };
+    poolTokenDynamicData: {
+        id: string;
         balance: bigint;
     }[];
-    blockNumber: bigint;
 }
 
 export async function fetchCowAmmData(
@@ -77,20 +82,28 @@ export async function fetchCowAmmData(
     >;
 
     // Merge the results
-    const merged = Object.keys(results).map((pool) => {
-        const poolResults = results[pool];
-        const tokenBalances = balanceResults[pool]?.tokenBalances;
-        const tokens =
-            poolResults['tokenAddresses']?.map((token) => ({
-                address: token.toLowerCase(),
-                balance: BigInt(tokenBalances[token]),
-            })) ?? [];
+    const merged = Object.keys(results).map((poolId) => {
+        const poolResults = results[poolId];
+        const tokenBalances = balanceResults[poolId]?.tokenBalances;
+        const swapFee = formatEther(BigInt(poolResults['swapFee']));
+        const totalShares = formatEther(BigInt(poolResults['totalSupply']));
+        const totalSharesNum = parseFloat(totalShares);
+
         return {
-            [pool]: {
-                swapFee: BigInt(poolResults['swapFee']),
-                totalSupply: BigInt(poolResults['totalSupply']),
-                tokens,
-                blockNumber,
+            [poolId]: {
+                poolDynamicData: {
+                    id: poolId,
+                    swapFee,
+                    totalShares,
+                    totalSharesNum,
+                    ...(blockNumber ? { blockNumber: Number(blockNumber) } : {}),
+                },
+                poolTokenDynamicData:
+                    poolResults['tokenAddresses']?.map((token) => ({
+                        id: `${poolId}-${token}`.toLowerCase(),
+                        balance: BigInt(tokenBalances[token]),
+                        ...(blockNumber ? { blockNumber: Number(blockNumber) } : {}),
+                    })) ?? [],
             },
         };
     });

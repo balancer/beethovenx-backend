@@ -12,6 +12,7 @@ export type PoolUpsertData = {
 
 export type PoolDynamicUpsertData = {
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
+    poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
     poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
 };
 

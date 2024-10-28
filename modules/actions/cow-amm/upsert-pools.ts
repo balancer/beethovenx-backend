@@ -6,6 +6,7 @@ import { poolUpsertTransformerCowAmm } from '../../sources/transformers';
 import type { CowAmmSubgraphClient } from '../../sources/subgraphs';
 import type { ViemClient } from '../../sources/types';
 import { applyOnchainDataUpdateCowAmm } from '../../sources/enrichers/apply-onchain-data';
+import { PoolUpsertData } from '../../../prisma/prisma-types';
 
 /**
  * Gets a list of pool ids and fetches the data from the subgraph and rpc, and then upserts into the database.
@@ -42,32 +43,16 @@ export const upsertPools = async (
 
     const pools = sgPools
         .map((fragment) => poolUpsertTransformerCowAmm(fragment, chain, blockNumber))
-        .map((upsert) => {
-            const update = applyOnchainDataUpdateCowAmm(
+        .map((upsert) =>
+            applyOnchainDataUpdateCowAmm<PoolUpsertData>(
                 upsert,
                 onchainData[upsert.pool.id],
                 upsert.tokens,
                 chain,
                 upsert.pool.id,
-                blockNumber,
-            );
-            return {
-                ...upsert,
-                poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
-            };
-        })
-        .map((upsert) => {
-            const update = enrichPoolUpsertsUsd(
-                { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
-                prices,
-            );
-            return {
-                ...upsert,
-                poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
-            };
-        });
+            ),
+        )
+        .map((upsert) => enrichPoolUpsertsUsd<PoolUpsertData>(upsert, prices));
 
     // Upserts pools to the database
     // TODO: extract to a DB helper

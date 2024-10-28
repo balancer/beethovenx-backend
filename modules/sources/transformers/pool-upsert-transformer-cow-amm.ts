@@ -34,7 +34,7 @@ export const poolUpsertTransformerCowAmm = (
             chain,
         })),
         {
-            address: poolFragment.id,
+            address: poolFragment.id.toLowerCase(),
             decimals: 18,
             symbol: poolFragment.symbol,
             name: poolFragment.name,

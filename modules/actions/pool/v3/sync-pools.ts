@@ -1,17 +1,12 @@
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
-import { type VaultClient, getVaultClient, getPoolsClient } from '../../../sources/contracts';
+import { VaultClient, getVaultClient, getPoolsClient } from '../../../sources/contracts';
 import { syncDynamicTypeDataForPools } from './type-data/sync-dynamic-type-data-for-pools';
 import { ViemClient } from '../../../sources/viem-client';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
 
-const syncVaultData = async (
-    vaultClient: VaultClient,
-    chain: Chain,
-    ids: string[],
-    blockNumber: bigint,
-) => {
+const syncVaultData = async (vaultClient: VaultClient, chain: Chain, ids: string[], blockNumber: bigint) => {
     // Enrich with onchain data for all the pools
     const onchainData = await vaultClient.fetchPoolData(ids, blockNumber);
 
@@ -23,11 +18,6 @@ const syncVaultData = async (
         },
     });
 
-    // Get the data for the tables about pools
-    const dbUpdates = Object.keys(onchainData).map((id) =>
-        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, chain, id, blockNumber),
-    );
-
     // Get the prices
     const prices = await prisma.prismaTokenCurrentPrice
         .findMany({
@@ -37,35 +27,36 @@ const syncVaultData = async (
         })
         .then((prices) => Object.fromEntries(prices.map((price) => [price.tokenAddress, price.price])));
 
-    const poolsWithUSD = dbUpdates.map((upsert) => enrichPoolUpsertsUsd(
-        { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
-        prices,
-    ));
+    // Get the data for the tables about pools
+    const dbUpdates = Object.keys(onchainData)
+        .map((id) => applyOnchainDataUpdateV3({}, onchainData[id], allTokens, chain))
+        .map((upsert) => enrichPoolUpsertsUsd(upsert, prices));
 
     // Update pools data to the database
-    for (const { poolDynamicData, poolTokenDynamicData } of poolsWithUSD) {
+    for (const { poolDynamicData, poolTokenDynamicData } of dbUpdates) {
         try {
-            await prisma.prismaPoolDynamicData.update({
-                where: {
-                    poolId_chain: {
-                        poolId: poolDynamicData.id,
-                        chain: chain,
-                    },
-                },
-                data: poolDynamicData,
-            });
-
-            for (const tokenUpdate of poolTokenDynamicData) {
-                await prisma.prismaPoolTokenDynamicData.update({
+            await prisma.$transaction([
+                prisma.prismaPoolDynamicData.update({
                     where: {
-                        id_chain: {
-                            id: tokenUpdate.id,
-                            chain: tokenUpdate.chain,
+                        poolId_chain: {
+                            poolId: poolDynamicData.id,
+                            chain: chain,
                         },
                     },
-                    data: tokenUpdate,
-                });
-            }
+                    data: poolDynamicData,
+                }),
+                ...poolTokenDynamicData.map((tokenUpdate) =>
+                    prisma.prismaPoolTokenDynamicData.update({
+                        where: {
+                            id_chain: {
+                                id: tokenUpdate.id,
+                                chain: tokenUpdate.chain,
+                            },
+                        },
+                        data: tokenUpdate,
+                    }),
+                ),
+            ]);
         } catch (e) {
             console.error('Error upserting pool', e);
         }
@@ -86,7 +77,7 @@ const syncVaultData = async (
  * @param blockNumber
  */
 export const syncPools = async (
-    pools: {id: string, type: PrismaPoolType}[],
+    pools: { id: string; type: PrismaPoolType }[],
     client: ViemClient,
     vaultAddress: string,
     chain: Chain,
@@ -95,8 +86,13 @@ export const syncPools = async (
     const vaultClient = getVaultClient(client, vaultAddress);
     const poolsClient = getPoolsClient(client);
 
-    await syncVaultData(vaultClient, chain, pools.map(({id}) => id), blockNumber);
+    await syncVaultData(
+        vaultClient,
+        chain,
+        pools.map(({ id }) => id),
+        blockNumber,
+    );
     await syncDynamicTypeDataForPools(poolsClient, pools, blockNumber);
 
-    return pools.map(({id}) => id);
+    return pools.map(({ id }) => id);
 };
