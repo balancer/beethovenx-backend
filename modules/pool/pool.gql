@@ -143,6 +143,10 @@ type GqlPoolMinimal {
     """
     hasErc4626: Boolean!
     """
+    Whether at least one token in a nested pool is considered an ERC4626 token.
+    """
+    hasNestedErc4626: Boolean!
+    """
     The name of the pool as per contract
     """
     name: String!
@@ -659,7 +663,7 @@ type GqlPoolWithdrawOption @deprecated(reason: "Removed without replacement") {
     tokenOptions: [GqlPoolToken!]!
 }
 
-enum GqlPoolNestingType {
+enum GqlPoolNestingType @deprecated(reason: "Removed without replacement") {
     NO_NESTING
     HAS_SOME_PHANTOM_BPT
     HAS_ONLY_PHANTOM_BPT
@@ -691,7 +695,7 @@ type GqlPoolWeighted implements GqlPoolBase {
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
     """
     tokens: [GqlPoolTokenUnion!]! @deprecated(reason: "Use poolTokens instead")
-    nestingType: GqlPoolNestingType!
+    nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
     staking: GqlPoolStaking
     type: GqlPoolType!
     version: Int!
@@ -744,7 +748,7 @@ type GqlPoolGyro implements GqlPoolBase {
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
     """
     tokens: [GqlPoolTokenUnion!]! @deprecated(reason: "Use poolTokens instead")
-    nestingType: GqlPoolNestingType!
+    nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
     staking: GqlPoolStaking
     version: Int!
 
@@ -816,7 +820,7 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
     """
     tokens: [GqlPoolTokenUnion!]! @deprecated(reason: "Use poolTokens instead")
-    nestingType: GqlPoolNestingType!
+    nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
     staking: GqlPoolStaking
     type: GqlPoolType!
     version: Int!
@@ -912,7 +916,7 @@ type GqlPoolComposableStable implements GqlPoolBase {
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
     """
     tokens: [GqlPoolTokenUnion!]! @deprecated(reason: "Use poolTokens instead")
-    nestingType: GqlPoolNestingType!
+    nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
     amp: BigInt!
     staking: GqlPoolStaking
     bptPriceRate: BigDecimal!
@@ -965,7 +969,7 @@ type GqlPoolComposableStableNested @deprecated(reason: "use GqlPoolTokenDetail i
     factory: Bytes
     createTime: Int!
     tokens: [GqlPoolTokenComposableStableNestedUnion!]! @deprecated(reason: "Use poolTokens instead")
-    nestingType: GqlPoolNestingType!
+    nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
 
     totalShares: BigDecimal!
     totalLiquidity: BigDecimal!

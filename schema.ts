@@ -481,6 +481,7 @@ export interface GqlPoolComposableStable extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
+    /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
     owner: Scalars['Bytes'];
     poolTokens: Array<GqlPoolTokenDetail>;
@@ -512,6 +513,7 @@ export interface GqlPoolComposableStableNested {
     factory?: Maybe<Scalars['Bytes']>;
     id: Scalars['ID'];
     name: Scalars['String'];
+    /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
     owner: Scalars['Bytes'];
     swapFee: Scalars['BigDecimal'];
@@ -787,6 +789,7 @@ export interface GqlPoolGyro extends GqlPoolBase {
     lambda: Scalars['String'];
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
+    /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
     owner: Scalars['Bytes'];
     poolTokens: Array<GqlPoolTokenDetail>;
@@ -876,6 +879,7 @@ export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
+    /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
     owner: Scalars['Bytes'];
     poolTokens: Array<GqlPoolTokenDetail>;
@@ -954,6 +958,8 @@ export interface GqlPoolMinimal {
     factory?: Maybe<Scalars['Bytes']>;
     /** Whether at least one token in this pool is considered an ERC4626 token. */
     hasErc4626: Scalars['Boolean'];
+    /** Whether at least one token in a nested pool is considered an ERC4626 token. */
+    hasNestedErc4626: Scalars['Boolean'];
     /** Hook assigned to a pool */
     hook?: Maybe<Hook>;
     /** The pool id. This is equal to the address for protocolVersion 3 pools */
@@ -1442,6 +1448,7 @@ export interface GqlPoolWeighted extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
+    /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
     owner: Scalars['Bytes'];
     poolTokens: Array<GqlPoolTokenDetail>;
@@ -3774,6 +3781,7 @@ export type GqlPoolMinimalResolvers<
     dynamicData?: Resolver<ResolversTypes['GqlPoolDynamicData'], ParentType, ContextType>;
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     incentivized?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;

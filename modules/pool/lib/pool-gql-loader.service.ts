@@ -290,6 +290,9 @@ export class PoolGqlLoaderService {
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
             hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
+            hasNestedErc4626: pool.allTokens.some((token) =>
+                token.nestedPool?.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
+            ),
         };
     }
 

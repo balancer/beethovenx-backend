@@ -792,7 +792,7 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        nestingType: GqlPoolNestingType!
+        nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
         owner: Bytes!
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
@@ -820,7 +820,7 @@ export const schema = gql`
         factory: Bytes
         id: ID!
         name: String!
-        nestingType: GqlPoolNestingType!
+        nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
         owner: Bytes!
         swapFee: BigDecimal!
         symbol: String!
@@ -1149,7 +1149,7 @@ export const schema = gql`
         lambda: String!
         liquidityManagement: LiquidityManagement
         name: String!
-        nestingType: GqlPoolNestingType!
+        nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
         owner: Bytes!
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
@@ -1233,7 +1233,7 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        nestingType: GqlPoolNestingType!
+        nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
         owner: Bytes!
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
@@ -1334,6 +1334,11 @@ export const schema = gql`
         Whether at least one token in this pool is considered an ERC4626 token.
         """
         hasErc4626: Boolean!
+
+        """
+        Whether at least one token in a nested pool is considered an ERC4626 token.
+        """
+        hasNestedErc4626: Boolean!
 
         """
         Hook assigned to a pool
@@ -2038,7 +2043,7 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        nestingType: GqlPoolNestingType!
+        nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
         owner: Bytes!
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
