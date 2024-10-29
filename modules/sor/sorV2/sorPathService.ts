@@ -226,6 +226,7 @@ class SorPathService implements SwapService {
             })),
             swapKind,
         });
+
         if (queryFirst) {
             try {
                 queryOutput = await sdkSwap.query(AllNetworkConfigsKeyedOnChain[chain].data.rpcUrl);
@@ -506,7 +507,7 @@ class SorPathService implements SwapService {
             if (!pool) throw new Error('Pool not found while mapping route');
             return [this.mapSingleSwap(paths[0], pool)];
         }
-        return paths.map((path) => this.mapBatchSwap(path, pools));
+        return paths.filter((path) => !path.isBuffer).map((path) => this.mapBatchSwap(path, pools));
     }
 
     private mapBatchSwap(path: PathWithAmount, pools: GqlPoolMinimal[]): GqlSorSwapRoute {
