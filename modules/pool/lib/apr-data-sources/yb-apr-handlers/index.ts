@@ -27,6 +27,7 @@ const sourceToHandler = {
     sveth: sources.svEthAprHandler,
     dforce: sources.DForce,
     defillama: sources.Defillama,
+    teth: sources.TreehouseAprHandler,
 };
 
 export class YbAprHandlers {

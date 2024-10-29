@@ -278,6 +278,7 @@ export default <NetworkData>{
             token: '0x09db87a538bd693e9d08544577d5ccfaa6373a48',
         },
         sveth: true,
+        teth: true,
         defaultHandlers: {
             uniETH: {
                 tokenAddress: '0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4',
