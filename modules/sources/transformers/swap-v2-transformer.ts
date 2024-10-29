@@ -18,11 +18,13 @@ export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): Swa
     let feeUSD =
         feeFloatUSD < 1e6 ? feeFloatUSD.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloatUSD);
 
+    // FX pools have a different fee calculation
+    // Replica of the subgraph logic:
+    // https://github.com/balancer/balancer-subgraph-v2/blob/60453224453bd07a0a3a22a8ad6cc26e65fd809f/src/mappings/vault.ts#L551-L564
     if (swap.poolId.poolType === 'FX') {
+        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
         const tokenOutAddress = swap.tokenOut;
         const tokenInAddress = swap.tokenIn;
-        // FX pools have a different fee calculation
-        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
         let isTokenInBase = tokenOutAddress == USDC_ADDRESS;
         let baseTokenAddress = isTokenInBase ? tokenInAddress : tokenOutAddress;
         let quoteTokenAddress = isTokenInBase ? tokenOutAddress : tokenInAddress;

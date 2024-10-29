@@ -47,11 +47,8 @@ export async function syncSwaps(subgraphClient: V2SubgraphClient, chain: Chain):
     console.time('BalancerSwaps');
     const { swaps } = await subgraphClient.BalancerSwaps({
         first: 1000,
-        where: {
-            ...where,
-            poolId_in: ['0x32cc63ffeccb7c0508d64e4d37145313cc053b27000200000000000000000cb4'],
-        },
-        orderBy: Swap_OrderBy.Block,
+        where: where,
+        orderBy: chain === Chain.FANTOM ? Swap_OrderBy.Timestamp : Swap_OrderBy.Block,
         orderDirection: OrderDirection.Asc,
     });
     console.timeEnd('BalancerSwaps');
