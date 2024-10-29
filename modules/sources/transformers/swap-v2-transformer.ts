@@ -3,6 +3,14 @@ import { BalancerSwapFragment } from '../../subgraphs/balancer-subgraph/generate
 import { Chain } from '@prisma/client';
 import { SwapEvent } from '../../../prisma/prisma-types';
 
+const USDC_ADDRESSES = [
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // MAINNET
+    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', // POLYGON - USDC.e
+    '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', // AVALANCHE
+    '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // ARBITRUM
+    '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', // POLYGON - USDC
+];
+
 /**
  * Takes V2 subgraph swaps and transforms them into DB entries
  *
@@ -22,10 +30,9 @@ export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): Swa
     // Replica of the subgraph logic:
     // https://github.com/balancer/balancer-subgraph-v2/blob/60453224453bd07a0a3a22a8ad6cc26e65fd809f/src/mappings/vault.ts#L551-L564
     if (swap.poolId.poolType === 'FX') {
-        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
         const tokenOutAddress = swap.tokenOut;
         const tokenInAddress = swap.tokenIn;
-        let isTokenInBase = tokenOutAddress == USDC_ADDRESS;
+        let isTokenInBase = USDC_ADDRESSES.includes(tokenOutAddress);
         let baseTokenAddress = isTokenInBase ? tokenInAddress : tokenOutAddress;
         let quoteTokenAddress = isTokenInBase ? tokenOutAddress : tokenInAddress;
         let baseToken = swap.poolId.tokens?.find(({ token }) => token.address == baseTokenAddress);
