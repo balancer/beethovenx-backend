@@ -389,6 +389,8 @@ export interface GqlPoolBase {
     hasErc4626: Scalars['Boolean'];
     /** Whether at least one token in a nested pool is considered an ERC4626 token. */
     hasNestedErc4626: Scalars['Boolean'];
+    /** Hook assigned to a pool */
+    hook?: Maybe<Hook>;
     /** The pool id. This is equal to the address for protocolVersion 3 pools */
     id: Scalars['ID'];
     /**
@@ -482,6 +484,7 @@ export interface GqlPoolComposableStable extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -600,6 +603,7 @@ export interface GqlPoolElement extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -752,6 +756,7 @@ export interface GqlPoolFx extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -795,6 +800,7 @@ export interface GqlPoolGyro extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -888,6 +894,7 @@ export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -929,6 +936,7 @@ export interface GqlPoolMetaStable extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -1071,6 +1079,7 @@ export interface GqlPoolStable extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -1463,6 +1472,7 @@ export interface GqlPoolWeighted extends GqlPoolBase {
     factory?: Maybe<Scalars['Bytes']>;
     hasErc4626: Scalars['Boolean'];
     hasNestedErc4626: Scalars['Boolean'];
+    hook?: Maybe<Hook>;
     id: Scalars['ID'];
     /** @deprecated Removed without replacement */
     investConfig: GqlPoolInvestConfig;
@@ -3325,6 +3335,7 @@ export type GqlPoolBaseResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -3405,6 +3416,7 @@ export type GqlPoolComposableStableResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -3515,6 +3527,7 @@ export type GqlPoolElementResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -3617,6 +3630,7 @@ export type GqlPoolFxResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     lambda?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3656,6 +3670,7 @@ export type GqlPoolGyroResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     lambda?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3749,6 +3764,7 @@ export type GqlPoolLiquidityBootstrappingResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -3785,6 +3801,7 @@ export type GqlPoolMetaStableResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -3893,6 +3910,7 @@ export type GqlPoolStableResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
@@ -4272,6 +4290,7 @@ export type GqlPoolWeightedResolvers<
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     hasErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     hasNestedErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
