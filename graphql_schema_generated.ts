@@ -2730,7 +2730,7 @@ export const schema = gql`
     }
 
     """
-    Represents a token
+    Represents a token in the system
     """
     type GqlToken {
         """
@@ -2796,7 +2796,7 @@ export const schema = gql`
         """
         The rate provider data for the token
         """
-        rateProviderData: GqlPriceRateProviderData
+        rateProviderData: GqlPriceRateProviderData @deprecated(reason: "Use priceRateProviderData instead")
 
         """
         The symbol of the token

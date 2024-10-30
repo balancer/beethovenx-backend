@@ -180,6 +180,10 @@ type GqlToken {
     """
     priceRateProviderData: GqlPriceRateProviderData
     """
+    The rate provider data for the token
+    """
+    rateProviderData: GqlPriceRateProviderData @deprecated(reason: "Use priceRateProviderData instead")
+    """
     Whether the token is considered an ERC4626 token.
     """
     isErc4626: Boolean!
@@ -301,77 +305,6 @@ type GqlPriceRateProviderUpgradeableComponent {
     """
     implementationReviewed: String!
 }
-
-"""
-Represents a token
-"""
-type GqlToken {
-    """
-    The address of the token
-    """
-    address: String!
-    """
-    The name of the token
-    """
-    name: String!
-    """
-    The description of the token
-    """
-    description: String
-    """
-    The symbol of the token
-    """
-    symbol: String!
-    """
-    The number of decimal places for the token
-    """
-    decimals: Int!
-    """
-    The chain ID of the token
-    """
-    chainId: Int!
-    """
-    The website URL of the token
-    """
-    websiteUrl: String
-    """
-    The Discord URL of the token
-    """
-    discordUrl: String
-    """
-    The Telegram URL of the token
-    """
-    telegramUrl: String
-    """
-    The Twitter username of the token
-    """
-    twitterUsername: String
-    """
-    The logo URI of the token
-    """
-    logoURI: String
-    """
-    The priority of the token, can be used for sorting.
-    """
-    priority: Int!
-    """
-    Indicates if the token is tradable
-    """
-    tradable: Boolean!
-    """
-    The chain of the token
-    """
-    chain: GqlChain!
-    """
-    The rate provider data for the token
-    """
-    rateProviderData: GqlPriceRateProviderData
-    """
-    Whether the token is considered an ERC4626 token.
-    """
-    isErc4626: Boolean!
-}
-
 type GqlTokenDynamicData {
     id: String!
     tokenAddress: String!

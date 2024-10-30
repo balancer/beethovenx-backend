@@ -1869,7 +1869,7 @@ export interface GqlSwapCallDataInput {
     slippagePercentage: Scalars['String'];
 }
 
-/** Represents a token */
+/** Represents a token in the system */
 export interface GqlToken {
     __typename?: 'GqlToken';
     /** The address of the token */
@@ -1896,7 +1896,10 @@ export interface GqlToken {
     priceRateProviderData?: Maybe<GqlPriceRateProviderData>;
     /** The priority of the token, can be used for sorting. */
     priority: Scalars['Int'];
-    /** The rate provider data for the token */
+    /**
+     * The rate provider data for the token
+     * @deprecated Use priceRateProviderData instead
+     */
     rateProviderData?: Maybe<GqlPriceRateProviderData>;
     /** The symbol of the token */
     symbol: Scalars['String'];
