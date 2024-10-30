@@ -553,11 +553,18 @@ interface GqlPoolBase {
     List of tags assigned by the team based on external factors
     """
     tags: [String]
-
     """
     Liquidity management settings for v3 pools.
     """
     liquidityManagement: LiquidityManagement
+    """
+    Whether at least one token in this pool is considered an ERC4626 token.
+    """
+    hasErc4626: Boolean!
+    """
+    Whether at least one token in a nested pool is considered an ERC4626 token.
+    """
+    hasNestedErc4626: Boolean!
 }
 
 type GqlPoolDynamicData {
@@ -690,6 +697,8 @@ type GqlPoolWeighted implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -725,6 +734,8 @@ type GqlPoolGyro implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     alpha: String!
     beta: String!
@@ -784,6 +795,8 @@ type GqlPoolFx implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     dynamicData: GqlPoolDynamicData!
     staking: GqlPoolStaking
@@ -815,6 +828,8 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -849,6 +864,8 @@ type GqlPoolStable implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     amp: BigInt!
@@ -880,6 +897,8 @@ type GqlPoolMetaStable implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     amp: BigInt!
@@ -911,6 +930,8 @@ type GqlPoolComposableStable implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -948,6 +969,8 @@ type GqlPoolElement implements GqlPoolBase {
     categories: [GqlPoolFilterCategory]
     tags: [String]
     liquidityManagement: LiquidityManagement
+    hasErc4626: Boolean!
+    hasNestedErc4626: Boolean!
 
     #element specific fields
     unitSeconds: BigInt!

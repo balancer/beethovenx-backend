@@ -667,6 +667,16 @@ export const schema = gql`
         factory: Bytes
 
         """
+        Whether at least one token in this pool is considered an ERC4626 token.
+        """
+        hasErc4626: Boolean!
+
+        """
+        Whether at least one token in a nested pool is considered an ERC4626 token.
+        """
+        hasNestedErc4626: Boolean!
+
+        """
         The pool id. This is equal to the address for protocolVersion 3 pools
         """
         id: ID!
@@ -788,6 +798,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -911,6 +923,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1107,6 +1121,8 @@ export const schema = gql`
         dynamicData: GqlPoolDynamicData!
         epsilon: String!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1144,6 +1160,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1229,6 +1247,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1263,6 +1283,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1496,6 +1518,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -2039,6 +2063,8 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]!
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasErc4626: Boolean!
+        hasNestedErc4626: Boolean!
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement

@@ -174,6 +174,10 @@ export enum AddRemove_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -574,6 +578,10 @@ export enum HookConfig_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -716,6 +724,10 @@ export enum LiquidityManagement_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -757,6 +769,14 @@ export type Pool = {
     pauseManager: Scalars['Bytes'];
     /** Timestamp when the pause window ends */
     pauseWindowEndTime: Scalars['BigInt'];
+    /** Pool creator swap fee percentage */
+    poolCreatorSwapFee: Scalars['BigDecimal'];
+    /** Pool creator yield fee percentage */
+    poolCreatorYieldFee: Scalars['BigDecimal'];
+    /** Protocol swap fee percentage */
+    protocolSwapFee: Scalars['BigDecimal'];
+    /** Protocol yield fee percentage */
+    protocolYieldFee: Scalars['BigDecimal'];
     /** Rate providers associated with this Pool */
     rateProviders: Array<RateProvider>;
     /** Snapshots of this Pool's state over time */
@@ -892,6 +912,10 @@ export enum PoolShare_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -1040,6 +1064,10 @@ export enum PoolSnapshot_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -1311,6 +1339,10 @@ export enum PoolToken_OrderBy {
     NestedPoolName = 'nestedPool__name',
     NestedPoolPauseManager = 'nestedPool__pauseManager',
     NestedPoolPauseWindowEndTime = 'nestedPool__pauseWindowEndTime',
+    NestedPoolPoolCreatorSwapFee = 'nestedPool__poolCreatorSwapFee',
+    NestedPoolPoolCreatorYieldFee = 'nestedPool__poolCreatorYieldFee',
+    NestedPoolProtocolSwapFee = 'nestedPool__protocolSwapFee',
+    NestedPoolProtocolYieldFee = 'nestedPool__protocolYieldFee',
     NestedPoolSwapFee = 'nestedPool__swapFee',
     NestedPoolSwapsCount = 'nestedPool__swapsCount',
     NestedPoolSymbol = 'nestedPool__symbol',
@@ -1328,6 +1360,10 @@ export enum PoolToken_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
@@ -1505,6 +1541,38 @@ export type Pool_Filter = {
     pauseWindowEndTime_lte?: InputMaybe<Scalars['BigInt']>;
     pauseWindowEndTime_not?: InputMaybe<Scalars['BigInt']>;
     pauseWindowEndTime_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+    poolCreatorSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    poolCreatorSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    poolCreatorYieldFee?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    poolCreatorYieldFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    poolCreatorYieldFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    protocolSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    protocolSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    protocolSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    protocolYieldFee?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    protocolYieldFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    protocolYieldFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     rateProviders_?: InputMaybe<RateProvider_Filter>;
     snapshots_?: InputMaybe<PoolSnapshot_Filter>;
     swapFee?: InputMaybe<Scalars['BigDecimal']>;
@@ -1617,6 +1685,10 @@ export enum Pool_OrderBy {
     Name = 'name',
     PauseManager = 'pauseManager',
     PauseWindowEndTime = 'pauseWindowEndTime',
+    PoolCreatorSwapFee = 'poolCreatorSwapFee',
+    PoolCreatorYieldFee = 'poolCreatorYieldFee',
+    ProtocolSwapFee = 'protocolSwapFee',
+    ProtocolYieldFee = 'protocolYieldFee',
     RateProviders = 'rateProviders',
     Snapshots = 'snapshots',
     SwapFee = 'swapFee',
@@ -2009,6 +2081,10 @@ export enum RateProvider_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
+    PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
+    PoolProtocolSwapFee = 'pool__protocolSwapFee',
+    PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
