@@ -1,5 +1,19 @@
 # backend
 
+## 1.22.0
+
+### Minor Changes
+
+-   0b445a9: Treehouse tETH APR handler
+
+### Patch Changes
+
+-   5b4b001: add erc4626 flags to base pool
+-   02e7ca8: adding hasNestedErc4626 flag
+-   64daeb6: filter buffers from hops in sor response
+-   a197c10: remove old sor lambda and add workaround for multiple paths
+-   cbbb4df: add hook data to basepool
+
 ## 1.21.16
 
 ### Patch Changes
