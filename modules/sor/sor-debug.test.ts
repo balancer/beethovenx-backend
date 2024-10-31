@@ -68,4 +68,49 @@ describe('sor debugging', () => {
         }
         expect(parseFloat(swaps.returnAmount)).toBeGreaterThan(0);
     }, 5000000);
+
+    it('sor v2 fantom gyro', async () => {
+        const chain = Chain.FANTOM;
+
+        const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', chainId);
+        //only do once before starting to debug
+        // await PoolController().syncOnchainDataForPoolsV2(chain, [
+        //     '0xff236989201b0f2691c3208af68d15c6d79ce8a7000200000000000000000903',
+        // ]);
+        // await PoolController().updateLiquidityValuesForActivePools(chain);
+
+        const SFTMX = '0xd7028092c830b5c8fce061af2e593413ebbc1fc1';
+        const WFTM = '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83';
+        const LUDWIG = '0xe6cc4d855b4fd4a9d02f46b9adae4c5efb1764b5';
+
+        const swaps = await sorService.getSorSwaps({
+            chain,
+            tokenIn: WFTM,
+            tokenOut: SFTMX,
+            swapType: 'EXACT_IN',
+            swapAmount: '800',
+            // queryBatchSwap: false,
+            // useProtocolVersion: 3,
+            // callDataInput: {
+            //     receiver: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
+            //     sender: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
+            //     slippagePercentage: '0.1',
+            // },
+            swapOptions: {
+                maxPools: 8,
+            },
+        });
+
+        for (const route of swaps.routes) {
+            for (const hop of route.hops) {
+                if (hop.pool.id === '0xff236989201b0f2691c3208af68d15c6d79ce8a7000200000000000000000903') {
+                    console.log(`ECLP`);
+                }
+            }
+        }
+        expect(parseFloat(swaps.returnAmount)).toBeGreaterThan(0);
+        console.log(swaps.returnAmount);
+    }, 5000000);
 });

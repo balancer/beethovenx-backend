@@ -43,15 +43,15 @@ export class Router {
             try {
                 quotePaths.push(new PathWithAmount(path.tokens, path.pools, path.isBuffer, swapAmount));
             } catch {
-                // logger.trace('Invalid path:');
-                // logger.trace(path.tokens.map((token) => token.symbol).join(' -> '));
-                // logger.trace(path.pools.map((pool) => pool.id).join(' -> '));
+                // console.log('Invalid path:');
+                // console.log(path.tokens.map((token) => token.symbol).join(' -> '));
+                // console.log(path.pools.map((pool) => pool.id).join(' -> '));
                 return;
             }
         });
 
         if (quotePaths.length === 0) {
-            // logger.info('No valid paths found');
+            // console.log('No valid paths found');
             return null;
         }
 

@@ -113,9 +113,10 @@ export class PathGraph {
             }
 
             // we've found enough paths, there's no need to go deeper into the token pair options.
-            if (paths.length >= config.approxPathsToReturn) {
-                break;
-            }
+            // TODO this breaks the SOR when there is a tilted GYRO pool. Titled gyro pools have a wrong normalized liquidity. This is just a workaround and the normalized liquidity should be fixed.
+            // if (paths.length >= config.approxPathsToReturn) {
+            //     break;
+            // }
         }
 
         return this.sortAndFilterPaths(paths).map((path) => {

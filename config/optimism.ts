@@ -76,24 +76,6 @@ export default <NetworkData>{
         excludedFarmIds: [],
     },
     avgBlockSpeed: 1,
-    sor: {
-        env: {
-            main: {
-                url: 'https://nplks2oknz5lhxn6kpgxbfrxgm0hzicm.lambda-url.ca-central-1.on.aws/',
-                maxPools: 8,
-                forceRefresh: false,
-                gasPrice: BigNumber.from(10),
-                swapGas: BigNumber.from('1000000'),
-            },
-            canary: {
-                url: 'https://svlitjilcr5qtp7iolimlrlg7e0ipupj.lambda-url.eu-central-1.on.aws/',
-                maxPools: 8,
-                forceRefresh: false,
-                gasPrice: BigNumber.from(10),
-                swapGas: BigNumber.from('1000000'),
-            },
-        },
-    },
     ybAprConfig: {
         aave: {
             v3: {
