@@ -111,7 +111,7 @@ export class SorService {
             tokenOut: tokenOut,
         });
 
-        if (!swapResult) return emptyResponse;
+        if (!swapResult || !swapResult.isValid) return emptyResponse;
 
         try {
             // Updates with latest onchain data before returning
