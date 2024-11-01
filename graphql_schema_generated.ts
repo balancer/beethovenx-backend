@@ -130,7 +130,7 @@ export const schema = gql`
         address: Bytes!
 
         """
-        Price rate of the Balancer Pool Token (BPT).
+        Price rate of this pool or the Balancer Pool Token (BPT).
         """
         bptPriceRate: BigDecimal!
 
@@ -1522,6 +1522,7 @@ export const schema = gql`
         address: Bytes!
         allTokens: [GqlPoolTokenExpanded!]!
         amp: BigInt!
+        bptPriceRate: BigDecimal!
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!

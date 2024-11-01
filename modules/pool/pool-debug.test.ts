@@ -9,6 +9,7 @@ import { CowAmmController } from '../controllers/cow-amm-controller';
 import { ContentController } from '../controllers/content-controller';
 import { chainToIdMap } from '../network/network-config';
 import { PoolController } from '../controllers';
+import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
 describe('pool debugging', () => {
     it('query pools', async () => {
         initRequestScopedContext();
@@ -19,17 +20,22 @@ describe('pool debugging', () => {
         // await tokenService.updateTokenPrices(['MAINNET']);
         // await PoolController().reloadPoolsV3('SEPOLIA');
 
-        const allAggPools = await poolService.getAggregatorPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
-        });
+        // const allAggPools = await poolService.getAggregatorPools({
+        //     where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
+        // });
 
-        console.log(allAggPools.length);
+        // console.log(allAggPools.length);
 
         const allPools = await poolService.getGqlPools({
             where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
         });
 
         console.log(allPools.length);
+        for (const pool of allPools) {
+            console.log(pool.id);
+            console.log(pool.hasErc4626);
+            console.log(pool.hasNestedErc4626);
+        }
 
         // const poolAfterNewSync = await poolService.getGqlPool('0x8fc07bcf9b88ace84c7523248dc4a85f638c9536', 'SEPOLIA');
 
@@ -45,15 +51,21 @@ describe('pool debugging', () => {
         // await tokenService.updateTokenPrices(['MAINNET']);
         // await PoolController().reloadPoolsV3('SEPOLIA');
 
-        const allPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
+        // const allPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
+        await PoolController().syncOnchainDataForPoolsV2('FANTOM', [
+            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+        ]);
+        const stablev3 = (await poolService.getGqlPool(
+            '0x711fd80b36723bce3b42ad6622903e1e39d911dd',
+            'SEPOLIA',
+        )) as GqlPoolStable;
+        const stablev2 = (await poolService.getGqlPool(
+            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+            'FANTOM',
+        )) as GqlPoolComposableStable;
 
-        const allPoolsHooks = await poolService.getGqlPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3], hasHook: true },
-        });
-        const allPoolsNoHooks = await poolService.getGqlPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3], hasHook: false },
-        });
-        console.log(allPools.length);
+        console.log(stablev3.bptPriceRate);
+        console.log(stablev2.bptPriceRate);
 
         // const poolAfterNewSync = await poolService.getGqlPool('0x8fc07bcf9b88ace84c7523248dc4a85f638c9536', 'SEPOLIA');
 
@@ -62,7 +74,7 @@ describe('pool debugging', () => {
 
     it('sync aprs', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '1');
+        setRequestScopedContextValue('chainId', '250');
         // //only do once before starting to debug
         // // await poolService.syncAllPoolsFromSubgraph();
         // await userService.initWalletBalancesForAllPools();
@@ -72,12 +84,15 @@ describe('pool debugging', () => {
         // // await CowAmmController().syncSwaps('1');
         // // await tokenService.updateTokenPrices(['MAINNET']);
         // await poolService.syncStakingForPools(['MAINNET']);
-        // await poolService.updatePoolAprs('MAINNET');
+        await poolService.updatePoolAprs('FANTOM');
         const aprs = await prisma.prismaPoolAprItem.findMany({
-            where: { chain: 'MAINNET', poolId: '0xf08d4dea369c456d26a3168ff0024b904f2d8b91' },
+            where: { chain: 'FANTOM', poolId: '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760' },
         });
         console.log(aprs);
-        const pool = await poolService.getGqlPool('0xf08d4dea369c456d26a3168ff0024b904f2d8b91', 'MAINNET');
+        const pool = await poolService.getGqlPool(
+            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+            'FANTOM',
+        );
         expect(pool.dynamicData.aprItems).toBeDefined();
         expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
 

@@ -134,7 +134,7 @@ export interface GqlNestedPool {
     __typename?: 'GqlNestedPool';
     /** Address of the pool. */
     address: Scalars['Bytes'];
-    /** Price rate of the Balancer Pool Token (BPT). */
+    /** Price rate of this pool or the Balancer Pool Token (BPT). */
     bptPriceRate: Scalars['BigDecimal'];
     /** Timestamp of when the pool was created. */
     createTime: Scalars['Int'];
@@ -1070,6 +1070,7 @@ export interface GqlPoolStable extends GqlPoolBase {
     address: Scalars['Bytes'];
     allTokens: Array<GqlPoolTokenExpanded>;
     amp: Scalars['BigInt'];
+    bptPriceRate: Scalars['BigDecimal'];
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
@@ -3901,6 +3902,7 @@ export type GqlPoolStableResolvers<
     address?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
     allTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenExpanded']>, ParentType, ContextType>;
     amp?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+    bptPriceRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['GqlPoolFilterCategory']>>>, ParentType, ContextType>;
     chain?: Resolver<ResolversTypes['GqlChain'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

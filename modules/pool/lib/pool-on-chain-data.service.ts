@@ -257,7 +257,10 @@ export class PoolOnChainDataService {
                     }
 
                     //only update if amp has changed
-                    if ((pool.typeData as StableData).amp !== amp) {
+                    if (
+                        (pool.typeData as StableData).amp !== amp ||
+                        (pool.typeData as StableData).bptPriceRate !== bptPriceRate
+                    ) {
                         operations.push(
                             prisma.prismaPool.update({
                                 where: { id_chain: { id: pool.id, chain: pool.chain } },

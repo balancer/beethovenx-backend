@@ -7,7 +7,7 @@ import { StableTypeData } from './types';
 type AmplificationParameters = AbiParametersToPrimitiveTypes<
     ExtractAbiFunction<typeof stableV3, 'getAmplificationParameter'>['outputs']
 >;
-type GetRate = AbiParametersToPrimitiveTypes<ExtractAbiFunction<typeof stableV3, 'getRate'>['outputs']>;
+type GetRate = AbiParametersToPrimitiveTypes<ExtractAbiFunction<typeof stableV3, 'getRate'>['outputs']>[0];
 
 export const stableContractCalls = (ids: string[]): ViemMulticallCall[] => {
     const calls: ViemMulticallCall[] = [];
@@ -34,10 +34,10 @@ export const stableContractCalls = (ids: string[]): ViemMulticallCall[] => {
 
 export const parseStableContractCalls = (result: {
     amplificationParameter: AmplificationParameters;
-    rate: GetRate;
+    getRate: GetRate;
 }): StableTypeData => {
     return {
         amp: String(result.amplificationParameter[0] / result.amplificationParameter[2]),
-        bptPriceRate: formatEther(result.rate[0]),
+        bptPriceRate: formatEther(result.getRate),
     };
 };

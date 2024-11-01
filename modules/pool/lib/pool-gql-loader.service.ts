@@ -660,8 +660,6 @@ export class PoolGqlLoaderService {
     ): GqlPoolUnion {
         const { typeData, ...poolWithoutTypeData } = pool;
 
-        const bpt = pool.tokens.find((token) => token.address === pool.address);
-
         const mappedData = {
             decimals: 18,
             staking: this.getStakingData(pool),
