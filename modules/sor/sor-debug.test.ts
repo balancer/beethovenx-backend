@@ -83,14 +83,29 @@ describe('sor debugging', () => {
 
         const SFTMX = '0xd7028092c830b5c8fce061af2e593413ebbc1fc1';
         const WFTM = '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83';
-        const LUDWIG = '0xe6cc4d855b4fd4a9d02f46b9adae4c5efb1764b5';
+        const USDCE = '0x2f733095b80a04b38b0d10cc884524a3d09b836a';
+
+        // const swapPaths = await sorService.getSorSwapPaths({
+        //     chain,
+        //     tokenIn: WFTM,
+        //     tokenOut: USDCE,
+        //     swapType: 'EXACT_IN',
+        //     swapAmount: '10000',
+        //     queryBatchSwap: false,
+        //     useProtocolVersion: 2,
+        //     // callDataInput: {
+        //     //     receiver: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
+        //     //     sender: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
+        //     //     slippagePercentage: '0.1',
+        //     // },
+        // });
 
         const swaps = await sorService.getSorSwaps({
             chain,
             tokenIn: WFTM,
-            tokenOut: SFTMX,
+            tokenOut: USDCE,
             swapType: 'EXACT_IN',
-            swapAmount: '800',
+            swapAmount: '10000',
             // queryBatchSwap: false,
             // useProtocolVersion: 3,
             // callDataInput: {
