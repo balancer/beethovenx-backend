@@ -14,7 +14,6 @@ export default <NetworkData>{
         startDate: '2023-07-10',
         balancer: [
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmRKBwBwPKtFz4mQp5jvH44USVprM4C77Nr4m77UGCbGv9`,
-            `https://api.studio.thegraph.com/query/24660/balancer-base-v2/version/latest`,
         ],
         beetsBar: '',
         blocks: 'https://api.studio.thegraph.com/query/48427/bleu-base-blocks/version/latest',
