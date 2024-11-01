@@ -715,7 +715,6 @@ export class PoolGqlLoaderService {
                     ...poolWithoutTypeData,
                     ...(typeData as StableData),
                     ...mappedData,
-                    bptPriceRate: bpt?.dynamicData?.priceRate || '1.0',
                 };
             case 'ELEMENT':
                 return {
@@ -837,7 +836,6 @@ export class PoolGqlLoaderService {
         const totalShares = parseFloat(nestedPool.dynamicData?.totalShares || '0');
         const percentOfSupplyNested = totalShares > 0 ? parseFloat(tokenBalance) / totalShares : 0;
         const totalLiquidity = nestedPool.dynamicData?.totalLiquidity || 0;
-        const bpt = nestedPool.tokens.find((token) => token.address === nestedPool.address);
 
         return {
             ...nestedPool,
@@ -857,7 +855,7 @@ export class PoolGqlLoaderService {
                 ),
             ),
             swapFee: nestedPool.dynamicData?.swapFee || '0',
-            bptPriceRate: bpt?.dynamicData?.priceRate || '1.0',
+            bptPriceRate: (nestedPool.typeData as StableData).bptPriceRate || '1.0',
         };
     }
 

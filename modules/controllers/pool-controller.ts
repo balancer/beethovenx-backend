@@ -189,7 +189,7 @@ export function PoolController(tracer?: any) {
                 latestBlock,
             );
 
-            return added.map(({ id }) => id);
+            return added;
         },
         /**
          * Takes all the pools from subgraph, enriches with onchain data and upserts them to the database
@@ -216,12 +216,13 @@ export function PoolController(tracer?: any) {
             const vaultClient = getVaultClient(viemClient, vaultAddress);
             const latestBlock = await viemClient.getBlockNumber();
 
-            const pools = await upsertPoolsV3(allPools, vaultClient, chain, latestBlock);
+            const poolsIds = await upsertPoolsV3(allPools, vaultClient, chain, latestBlock);
+            const pools = await prisma.prismaPool.findMany({ where: { chain, id: { in: poolsIds } } });
             await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
 
             await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
 
-            return pools.map(({ id }) => id);
+            return poolsIds;
         },
         /**
          * Syncs database pools state with the onchain state

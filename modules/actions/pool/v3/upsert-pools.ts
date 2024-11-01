@@ -171,5 +171,5 @@ export const upsertPools = async (
         }
     }
 
-    return pools.map(({ pool }) => ({ id: pool.id, type: pool.type }));
+    return pools.map(({ pool }) => pool.id);
 };

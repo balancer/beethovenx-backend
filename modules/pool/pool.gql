@@ -878,6 +878,7 @@ type GqlPoolStable implements GqlPoolBase {
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     amp: BigInt!
+    bptPriceRate: BigDecimal!
     staking: GqlPoolStaking
     type: GqlPoolType!
     version: Int!
@@ -950,8 +951,8 @@ type GqlPoolComposableStable implements GqlPoolBase {
     tokens: [GqlPoolTokenUnion!]! @deprecated(reason: "Use poolTokens instead")
     nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
     amp: BigInt!
-    staking: GqlPoolStaking
     bptPriceRate: BigDecimal!
+    staking: GqlPoolStaking
     type: GqlPoolType!
     version: Int!
 
@@ -1180,7 +1181,7 @@ type GqlNestedPool {
     """
     swapFee: BigDecimal!
     """
-    Price rate of the Balancer Pool Token (BPT).
+    Price rate of this pool or the Balancer Pool Token (BPT).
     """
     bptPriceRate: BigDecimal!
     """

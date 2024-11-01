@@ -124,28 +124,6 @@ export class PoolOnChainDataService {
             const { amp, poolTokens } = onchainData;
 
             try {
-                if (isStablePool(pool.type)) {
-                    if (!amp) {
-                        console.error(`Stable Pool Missing Amp: ${pool.id}`);
-                        continue;
-                    }
-
-                    //only update if amp has changed
-                    if ((pool.typeData as StableData).amp !== amp) {
-                        operations.push(
-                            prisma.prismaPool.update({
-                                where: { id_chain: { id: pool.id, chain: pool.chain } },
-                                data: {
-                                    typeData: {
-                                        ...(pool.typeData as StableData),
-                                        amp,
-                                    },
-                                },
-                            }),
-                        );
-                    }
-                }
-
                 const { swapFee, totalShares } = onchainData;
                 const swapEnabled =
                     typeof onchainData.swapEnabled !== 'undefined'
@@ -198,6 +176,7 @@ export class PoolOnChainDataService {
                     );
                 }
 
+                let bptPriceRate = '1.0';
                 for (let i = 0; i < poolTokens.tokens.length; i++) {
                     const tokenAddress = poolTokens.tokens[i];
                     const poolToken = pool.tokens.find((token) => isSameAddress(token.address, tokenAddress));
@@ -221,6 +200,7 @@ export class PoolOnChainDataService {
                     // bpt price rate
                     if (onchainData.rate && isSameAddress(poolToken.address, pool.address)) {
                         priceRate = onchainData.rate;
+                        bptPriceRate = priceRate;
                     }
 
                     if (
@@ -264,6 +244,29 @@ export class PoolOnChainDataService {
                                                           poolToken.address.toLowerCase() &&
                                                       tokenPrice.chain === poolToken.chain,
                                               )?.price || 0) * parseFloat(balance),
+                                },
+                            }),
+                        );
+                    }
+                }
+
+                if (isStablePool(pool.type)) {
+                    if (!amp) {
+                        console.error(`Stable Pool Missing Amp: ${pool.id}`);
+                        continue;
+                    }
+
+                    //only update if amp has changed
+                    if ((pool.typeData as StableData).amp !== amp) {
+                        operations.push(
+                            prisma.prismaPool.update({
+                                where: { id_chain: { id: pool.id, chain: pool.chain } },
+                                data: {
+                                    typeData: {
+                                        ...(pool.typeData as StableData),
+                                        amp,
+                                        bptPriceRate,
+                                    },
                                 },
                             }),
                         );

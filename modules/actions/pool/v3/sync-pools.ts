@@ -1,4 +1,4 @@
-import { Chain, PrismaPoolType } from '@prisma/client';
+import { Chain, PrismaPool, PrismaPoolType } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
 import { type VaultClient, getVaultClient, getPoolsClient } from '../../../sources/contracts';
@@ -86,7 +86,7 @@ const syncVaultData = async (
  * @param blockNumber
  */
 export const syncPools = async (
-    pools: {id: string, type: PrismaPoolType}[],
+    pools: PrismaPool[],
     client: ViemClient,
     vaultAddress: string,
     chain: Chain,
