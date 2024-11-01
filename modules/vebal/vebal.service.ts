@@ -157,8 +157,8 @@ export class VeBalService {
                     holder.user,
                 ]);
 
-                // so if we scheduled more than 100 calls, we execute the batch
-                if (multicall.numCalls >= 100) {
+                // so if we scheduled more than 50 calls, we execute the batch
+                if (multicall.numCalls >= 50) {
                     response = _.merge(response, await multicall.execute());
                 }
             }
