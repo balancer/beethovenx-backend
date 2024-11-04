@@ -56,7 +56,6 @@ export class TokenPriceService {
         const tokenPrices = await prisma.prismaTokenCurrentPrice.findMany({
             where: { chain: { in: chains } },
             orderBy: { timestamp: 'desc' },
-            distinct: ['tokenAddress'],
         });
 
         // also add ETH price (0xeee..)

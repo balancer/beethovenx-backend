@@ -26,7 +26,7 @@ const resolvers: Resolvers = {
             } else if (!chains) {
                 throw new Error('tokenGetCurrentPrices error: Provide "chains" param');
             }
-            const prices = await tokenService.getWhiteListedTokenPrices(chains);
+            const prices = await tokenService.getCurrentTokenPrices(chains);
 
             return prices.map((price) => ({
                 address: price.tokenAddress,

@@ -204,8 +204,8 @@ export class TokenService {
         return response;
     }
 
-    public async getWhiteListedTokenPrices(chains: Chain[]): Promise<PrismaTokenCurrentPrice[]> {
-        return this.tokenPriceService.getWhiteListedCurrentTokenPrices(chains);
+    public async getCurrentTokenPrices(chains: Chain[]): Promise<PrismaTokenCurrentPrice[]> {
+        return this.tokenPriceService.getCurrentTokenPrices(chains);
     }
 
     public async getProtocolTokenPrice(chain: Chain): Promise<string> {
