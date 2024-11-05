@@ -1,5 +1,5 @@
 import { syncRateProviderReviews } from '../actions/content/sync-rate-providers';
-import { syncCategories } from '../actions/content/sync-categories';
+import { syncTags } from '../actions/content/sync-tags';
 
 export function ContentController(tracer?: any) {
     // Setup tracing
@@ -9,7 +9,7 @@ export function ContentController(tracer?: any) {
             return await syncRateProviderReviews();
         },
         async syncCategories() {
-            await syncCategories();
+            await syncTags();
             return 'OK';
         },
     };
