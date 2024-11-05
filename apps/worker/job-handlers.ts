@@ -377,6 +377,12 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
         case 'sync-rate-provider-reviews':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncRateProviderReviews(), res, next);
             break;
+        case 'sync-hook-reviews':
+            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncHookReviews(), res, next);
+            break;
+        case 'sync-erc4626-reviews':
+            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Reviews(), res, next);
+            break;
         default:
             res.sendStatus(400);
             // throw new Error(`Unhandled job type ${name}`);

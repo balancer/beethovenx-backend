@@ -41,4 +41,27 @@ type Hook {
     List of pools using the hook
     """
     poolsIds: [String]
+    reviewData: HookReviewData
+}
+
+"""
+Represents the review data for the hook
+"""
+type HookReviewData {
+    """
+    The name of the hook
+    """
+    name: String
+    """
+    A summary of the hook review, usually just says safe or unsafe
+    """
+    summary: String
+    """
+    The filename of the review of the hook
+    """
+    reviewFile: String
+    """
+    Warnings associated with the hook
+    """
+    warnings: [String!]
 }

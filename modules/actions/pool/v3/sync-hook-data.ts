@@ -25,10 +25,9 @@ export const syncHookData = async (
     // Update hooks data to the database
     return Promise.allSettled(
         Object.keys(data).map((address) =>
-            prisma.hook.update({
+            prisma.prismaHook.update({
                 where: { address_chain: { address, chain } },
                 data: {
-                    name: addresses[address],
                     dynamicData: data[address],
                 },
             }),

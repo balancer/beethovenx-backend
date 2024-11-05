@@ -111,6 +111,7 @@ type GqlHistoricalTokenPriceEntry {
     updatedAt: Int!
     updatedBy: String
 }
+
 """
 Represents a token in the system
 """
@@ -187,7 +188,16 @@ type GqlToken {
     Whether the token is considered an ERC4626 token.
     """
     isErc4626: Boolean!
+    """
+    The ERC4626 underlying token address, if applicable.
+    """
+    underlyingTokenAddress: String
+    """
+    The ERC4626 review data for the token
+    """
+    erc4626ReviewData: Erc4626ReviewData
 }
+
 """
 Represents additional data for a token
 """
@@ -305,6 +315,7 @@ type GqlPriceRateProviderUpgradeableComponent {
     """
     implementationReviewed: String!
 }
+
 type GqlTokenDynamicData {
     id: String!
     tokenAddress: String!
@@ -361,4 +372,22 @@ enum GqlTokenType {
     WHITE_LISTED
     BPT
     PHANTOM_BPT
+}
+
+"""
+The review data for the ERC4626 token
+"""
+type Erc4626ReviewData {
+    """
+    A summary of the ERC4626 review, usually just says safe or unsafe
+    """
+    summary: String
+    """
+    The filename of the review of the ERC4626
+    """
+    reviewFile: String
+    """
+    Warnings associated with the ERC4626
+    """
+    warnings: [String!]
 }

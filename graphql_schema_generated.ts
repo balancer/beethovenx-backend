@@ -14,6 +14,26 @@ export const schema = gql`
 
     scalar Date
 
+    """
+    The review data for the ERC4626 token
+    """
+    type Erc4626ReviewData {
+        """
+        The filename of the review of the ERC4626
+        """
+        reviewFile: String
+
+        """
+        A summary of the ERC4626 review, usually just says safe or unsafe
+        """
+        summary: String
+
+        """
+        Warnings associated with the ERC4626
+        """
+        warnings: [String!]
+    }
+
     type GqlBalancePoolAprItem {
         apr: GqlPoolAprValue!
         id: ID!
@@ -1907,6 +1927,11 @@ export const schema = gql`
         decimals: Int!
 
         """
+        The ERC4626 review data for the token
+        """
+        erc4626ReviewData: Erc4626ReviewData
+
+        """
         Indicates whether this token is a BPT and therefor has a nested pool.
         """
         hasNestedPool: Boolean!
@@ -1967,7 +1992,7 @@ export const schema = gql`
         symbol: String!
 
         """
-        If it is an Erc4262, this will be the underlying token if present in the API.
+        If it is an ERC4626, this will be the underlying token if present in the API.
         """
         underlyingToken: GqlToken
 
@@ -2783,6 +2808,11 @@ export const schema = gql`
         discordUrl: String
 
         """
+        The ERC4626 review data for the token
+        """
+        erc4626ReviewData: Erc4626ReviewData
+
+        """
         Whether the token is considered an ERC4626 token.
         """
         isErc4626: Boolean!
@@ -2831,6 +2861,11 @@ export const schema = gql`
         The Twitter username of the token
         """
         twitterUsername: String
+
+        """
+        The ERC4626 underlying token address, if applicable.
+        """
+        underlyingTokenAddress: String
 
         """
         The website URL of the token
@@ -3188,6 +3223,7 @@ export const schema = gql`
         List of pools using the hook
         """
         poolsIds: [String]
+        reviewData: HookReviewData
         shouldCallAfterAddLiquidity: Boolean!
         shouldCallAfterInitialize: Boolean!
         shouldCallAfterRemoveLiquidity: Boolean!
@@ -3206,6 +3242,31 @@ export const schema = gql`
         addLiquidityFeePercentage: String
         removeLiquidityFeePercentage: String
         swapFeePercentage: String
+    }
+
+    """
+    Represents the review data for the hook
+    """
+    type HookReviewData {
+        """
+        The name of the hook
+        """
+        name: String
+
+        """
+        The filename of the review of the hook
+        """
+        reviewFile: String
+
+        """
+        A summary of the hook review, usually just says safe or unsafe
+        """
+        summary: String
+
+        """
+        Warnings associated with the hook
+        """
+        warnings: [String!]
     }
 
     scalar JSON

@@ -1107,9 +1107,13 @@ type GqlPoolTokenDetail {
     """
     isErc4626: Boolean!
     """
-    If it is an Erc4262, this will be the underlying token if present in the API.
+    If it is an ERC4626, this will be the underlying token if present in the API.
     """
     underlyingToken: GqlToken
+    """
+    The ERC4626 review data for the token
+    """
+    erc4626ReviewData: Erc4626ReviewData
 }
 
 """

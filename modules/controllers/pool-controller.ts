@@ -316,7 +316,7 @@ export function PoolController(tracer?: any) {
             }
 
             // Get hook addresses from the database
-            const addresses = await prisma.hook
+            const addresses = await prisma.prismaHook
                 .findMany({
                     where: { chain },
                     select: { address: true },

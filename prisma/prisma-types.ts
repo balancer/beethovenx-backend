@@ -3,7 +3,7 @@ import { Prisma, PrismaToken, PrismaTokenTypeOption, PrismaPoolEvent } from '@pr
 export type PoolUpsertData = {
     pool: Prisma.PrismaPoolCreateInput;
     tokens: Prisma.PrismaTokenCreateInput[];
-    hook?: Prisma.HookCreateInput;
+    hook?: Prisma.PrismaHookCreateInput;
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
     poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
@@ -65,7 +65,9 @@ export type PrismaPoolTokenWithDynamicData = Prisma.PrismaPoolTokenGetPayload<ty
 export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: true,
+        hook: {
+            include: { reviewData: true },
+        },
         staking: {
             include: {
                 farm: {
@@ -275,7 +277,9 @@ export type PrismaTokenWithTypes = PrismaToken & {
 export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: true,
+        hook: {
+            include: { reviewData: true },
+        },
         allTokens: {
             include: {
                 token: {

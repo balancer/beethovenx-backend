@@ -1,21 +1,19 @@
-import { Chain, Prisma } from '@prisma/client';
+import { Chain } from '@prisma/client';
 import { prisma } from '../../../prisma/prisma-client';
 import { getPoolMetadataTags as getPoolMetadataTags } from '../../sources/github/pool-metadata-tags';
 import { syncIncentivizedCategory } from '../pool/sync-incentivized-category';
-import { get } from 'lodash';
-import { getPoolBoostedTags } from '../../sources/github/pool-boosted-tags';
+import { getErc4626Tags } from '../../sources/github/pool-erc4626-tags';
 import { getPoolHookTags } from '../../sources/github/pool-hook-tags';
+import _ from 'lodash';
 
 export const syncTags = async (): Promise<void> => {
-    // Get metadata
-    const metadataTags = await getPoolMetadataTags();
-
-    const boostedTags = await getPoolBoostedTags();
-
-    const hookTags = await getPoolHookTags();
+    // Get metadata as tags
+    let allTags = await getPoolMetadataTags({});
+    allTags = await getErc4626Tags(allTags);
+    allTags = await getPoolHookTags(allTags);
 
     // Convert the transformed object to an array of PoolTags
-    const tagsData = Object.entries(metadataTags).map(([id, tags]) => ({
+    const tagsData = Object.entries(allTags).map(([id, tags]) => ({
         id,
         tags,
     }));
@@ -46,7 +44,7 @@ export const syncTags = async (): Promise<void> => {
             },
         },
         data: {
-            categories: tags
+            categories: [...tags]
                 .map((tag) => tag.toUpperCase())
                 .map((tag) => (tag === 'BLACKLISTED' ? 'BLACK_LISTED' : tag)),
         },

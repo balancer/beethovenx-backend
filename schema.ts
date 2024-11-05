@@ -28,6 +28,17 @@ export interface Scalars {
     JSON: any;
 }
 
+/** The review data for the ERC4626 token */
+export interface Erc4626ReviewData {
+    __typename?: 'Erc4626ReviewData';
+    /** The filename of the review of the ERC4626 */
+    reviewFile?: Maybe<Scalars['String']>;
+    /** A summary of the ERC4626 review, usually just says safe or unsafe */
+    summary?: Maybe<Scalars['String']>;
+    /** Warnings associated with the ERC4626 */
+    warnings?: Maybe<Array<Scalars['String']>>;
+}
+
 export interface GqlBalancePoolAprItem {
     __typename?: 'GqlBalancePoolAprItem';
     apr: GqlPoolAprValue;
@@ -1353,6 +1364,8 @@ export interface GqlPoolTokenDetail {
     balanceUSD: Scalars['BigDecimal'];
     /** Decimals of the pool token. */
     decimals: Scalars['Int'];
+    /** The ERC4626 review data for the token */
+    erc4626ReviewData?: Maybe<Erc4626ReviewData>;
     /** Indicates whether this token is a BPT and therefor has a nested pool. */
     hasNestedPool: Scalars['Boolean'];
     /** Id of the token. A combination of pool id and token address. */
@@ -1377,7 +1390,7 @@ export interface GqlPoolTokenDetail {
     scalingFactor?: Maybe<Scalars['BigDecimal']>;
     /** Symbol of the pool token. */
     symbol: Scalars['String'];
-    /** If it is an Erc4262, this will be the underlying token if present in the API. */
+    /** If it is an ERC4626, this will be the underlying token if present in the API. */
     underlyingToken?: Maybe<GqlToken>;
     /** The weight of the token in the pool if it is a weighted pool, null otherwise */
     weight?: Maybe<Scalars['BigDecimal']>;
@@ -1894,6 +1907,8 @@ export interface GqlToken {
     description?: Maybe<Scalars['String']>;
     /** The Discord URL of the token */
     discordUrl?: Maybe<Scalars['String']>;
+    /** The ERC4626 review data for the token */
+    erc4626ReviewData?: Maybe<Erc4626ReviewData>;
     /** Whether the token is considered an ERC4626 token. */
     isErc4626: Scalars['Boolean'];
     /** The logo URI of the token */
@@ -1917,6 +1932,8 @@ export interface GqlToken {
     tradable: Scalars['Boolean'];
     /** The Twitter username of the token */
     twitterUsername?: Maybe<Scalars['String']>;
+    /** The ERC4626 underlying token address, if applicable. */
+    underlyingTokenAddress?: Maybe<Scalars['String']>;
     /** The website URL of the token */
     websiteUrl?: Maybe<Scalars['String']>;
 }
@@ -2138,6 +2155,7 @@ export interface Hook {
     enableHookAdjustedAmounts: Scalars['Boolean'];
     /** List of pools using the hook */
     poolsIds?: Maybe<Array<Maybe<Scalars['String']>>>;
+    reviewData?: Maybe<HookReviewData>;
     shouldCallAfterAddLiquidity: Scalars['Boolean'];
     shouldCallAfterInitialize: Scalars['Boolean'];
     shouldCallAfterRemoveLiquidity: Scalars['Boolean'];
@@ -2155,6 +2173,19 @@ export interface HookData {
     addLiquidityFeePercentage?: Maybe<Scalars['String']>;
     removeLiquidityFeePercentage?: Maybe<Scalars['String']>;
     swapFeePercentage?: Maybe<Scalars['String']>;
+}
+
+/** Represents the review data for the hook */
+export interface HookReviewData {
+    __typename?: 'HookReviewData';
+    /** The name of the hook */
+    name?: Maybe<Scalars['String']>;
+    /** The filename of the review of the hook */
+    reviewFile?: Maybe<Scalars['String']>;
+    /** A summary of the hook review, usually just says safe or unsafe */
+    summary?: Maybe<Scalars['String']>;
+    /** Warnings associated with the hook */
+    warnings?: Maybe<Array<Scalars['String']>>;
 }
 
 /** Liquidity management settings for v3 pools. */
@@ -2702,6 +2733,7 @@ export type ResolversTypes = ResolversObject<{
     Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
     Bytes: ResolverTypeWrapper<Scalars['Bytes']>;
     Date: ResolverTypeWrapper<Scalars['Date']>;
+    Erc4626ReviewData: ResolverTypeWrapper<Erc4626ReviewData>;
     Float: ResolverTypeWrapper<Scalars['Float']>;
     GqlBalancePoolAprItem: ResolverTypeWrapper<
         Omit<GqlBalancePoolAprItem, 'apr'> & { apr: ResolversTypes['GqlPoolAprValue'] }
@@ -2883,6 +2915,7 @@ export type ResolversTypes = ResolversObject<{
     GqlVotingPool: ResolverTypeWrapper<GqlVotingPool>;
     Hook: ResolverTypeWrapper<Hook>;
     HookData: ResolverTypeWrapper<HookData>;
+    HookReviewData: ResolverTypeWrapper<HookReviewData>;
     ID: ResolverTypeWrapper<Scalars['ID']>;
     Int: ResolverTypeWrapper<Scalars['Int']>;
     JSON: ResolverTypeWrapper<Scalars['JSON']>;
@@ -2903,6 +2936,7 @@ export type ResolversParentTypes = ResolversObject<{
     Boolean: Scalars['Boolean'];
     Bytes: Scalars['Bytes'];
     Date: Scalars['Date'];
+    Erc4626ReviewData: Erc4626ReviewData;
     Float: Scalars['Float'];
     GqlBalancePoolAprItem: Omit<GqlBalancePoolAprItem, 'apr'> & { apr: ResolversParentTypes['GqlPoolAprValue'] };
     GqlBalancePoolAprSubItem: Omit<GqlBalancePoolAprSubItem, 'apr'> & { apr: ResolversParentTypes['GqlPoolAprValue'] };
@@ -3054,6 +3088,7 @@ export type ResolversParentTypes = ResolversObject<{
     GqlVotingPool: GqlVotingPool;
     Hook: Hook;
     HookData: HookData;
+    HookReviewData: HookReviewData;
     ID: Scalars['ID'];
     Int: Scalars['Int'];
     JSON: Scalars['JSON'];
@@ -3086,6 +3121,16 @@ export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversType
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
     name: 'Date';
 }
+
+export type Erc4626ReviewDataResolvers<
+    ContextType = ResolverContext,
+    ParentType extends ResolversParentTypes['Erc4626ReviewData'] = ResolversParentTypes['Erc4626ReviewData'],
+> = ResolversObject<{
+    reviewFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    warnings?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
 
 export type GqlBalancePoolAprItemResolvers<
     ContextType = ResolverContext,
@@ -4181,6 +4226,7 @@ export type GqlPoolTokenDetailResolvers<
     balance?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     balanceUSD?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+    erc4626ReviewData?: Resolver<Maybe<ResolversTypes['Erc4626ReviewData']>, ParentType, ContextType>;
     hasNestedPool?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -4638,6 +4684,7 @@ export type GqlTokenResolvers<
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     discordUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    erc4626ReviewData?: Resolver<Maybe<ResolversTypes['Erc4626ReviewData']>, ParentType, ContextType>;
     isErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     logoURI?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -4648,6 +4695,7 @@ export type GqlTokenResolvers<
     telegramUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     tradable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     twitterUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    underlyingTokenAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     websiteUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -4850,6 +4898,7 @@ export type HookResolvers<
     dynamicData?: Resolver<Maybe<ResolversTypes['HookData']>, ParentType, ContextType>;
     enableHookAdjustedAmounts?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     poolsIds?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+    reviewData?: Resolver<Maybe<ResolversTypes['HookReviewData']>, ParentType, ContextType>;
     shouldCallAfterAddLiquidity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     shouldCallAfterInitialize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     shouldCallAfterRemoveLiquidity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -4869,6 +4918,17 @@ export type HookDataResolvers<
     addLiquidityFeePercentage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     removeLiquidityFeePercentage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     swapFeePercentage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type HookReviewDataResolvers<
+    ContextType = ResolverContext,
+    ParentType extends ResolversParentTypes['HookReviewData'] = ResolversParentTypes['HookReviewData'],
+> = ResolversObject<{
+    name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    reviewFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    warnings?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -5281,6 +5341,7 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     BigInt?: GraphQLScalarType;
     Bytes?: GraphQLScalarType;
     Date?: GraphQLScalarType;
+    Erc4626ReviewData?: Erc4626ReviewDataResolvers<ContextType>;
     GqlBalancePoolAprItem?: GqlBalancePoolAprItemResolvers<ContextType>;
     GqlBalancePoolAprSubItem?: GqlBalancePoolAprSubItemResolvers<ContextType>;
     GqlBigNumber?: GraphQLScalarType;
@@ -5388,6 +5449,7 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     GqlVotingPool?: GqlVotingPoolResolvers<ContextType>;
     Hook?: HookResolvers<ContextType>;
     HookData?: HookDataResolvers<ContextType>;
+    HookReviewData?: HookReviewDataResolvers<ContextType>;
     JSON?: GraphQLScalarType;
     LiquidityManagement?: LiquidityManagementResolvers<ContextType>;
     Mutation?: MutationResolvers<ContextType>;

@@ -136,3 +136,20 @@ model PrismaPriceRateProviderData {
     @@index([chain, rateProviderAddress])
     @@index([tokenAddress])
 }
+
+model PrismaErc4626ReviewData {
+    @@id([chain, erc4626Address])
+
+    chain               Chain
+    erc4626Address      String
+
+    assetAddress        String
+
+    name                String
+    summary             String
+    reviewFile          String
+    warnings            String
+    
+    @@index([chain, erc4626Address])
+    @@index([assetAddress])
+}
