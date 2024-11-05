@@ -758,9 +758,7 @@ export class PoolGqlLoaderService {
             const poolToken = pool.tokens.find((poolToken) => poolToken.address === token.token.address);
             const isNested = !poolToken;
             const isPhantomBpt = token.tokenAddress === pool.address;
-            const isMainToken = !token.token.types.some(
-                (type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT' || type.type === 'ERC4626',
-            );
+            const isMainToken = !token.token.types.some((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT');
             const isErc4626 = token.token.types.some((type) => type.type === 'ERC4626');
 
             return {

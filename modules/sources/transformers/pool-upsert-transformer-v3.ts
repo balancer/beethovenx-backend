@@ -6,6 +6,7 @@ import { V3JoinedSubgraphPool } from '../subgraphs';
 import { parseEther, zeroAddress } from 'viem';
 import { PoolUpsertData } from '../../../prisma/prisma-types';
 import { hookTransformer } from './hook-transformer';
+import _ from 'lodash';
 
 // Subgraph to DB format transformation
 export const poolUpsertTransformerV3 = (
@@ -15,6 +16,17 @@ export const poolUpsertTransformerV3 = (
 ): PoolUpsertData => {
     let type: PrismaPoolType;
     let typeData: ReturnType<typeof typeDataMapper[keyof typeof typeDataMapper]> | {} = {};
+
+    // expand the nested tokens
+    const allTokens = _.flattenDeep(
+        poolData.tokens.map((token) => [
+            token,
+            ...(token.nestedPool?.tokens || []).map((nestedToken) => ({
+                ...nestedToken,
+                nestedPoolId: token.nestedPool?.id || null,
+            })),
+        ]),
+    );
 
     switch (poolData.factory.type) {
         case PoolType.Weighted:
@@ -104,11 +116,11 @@ export const poolUpsertTransformerV3 = (
             balanceUSD: 0, // enriched later
             priceRate: '1.0', // enriched later
         })),
-        poolExpandedTokens: poolData.tokens.map((token) => ({
+        poolExpandedTokens: allTokens.map((token) => ({
+            poolId: poolData.id.toLowerCase(),
+            chain,
             tokenAddress: token.address,
-            poolId: poolData.id,
-            chain: chain,
-            nestedPoolId: token.nestedPool?.id.toLowerCase() ?? null,
+            nestedPoolId: token.nestedPool?.id || null,
         })),
     };
 };

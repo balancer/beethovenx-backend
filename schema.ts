@@ -363,10 +363,7 @@ export type GqlPoolAprValue = GqlPoolAprRange | GqlPoolAprTotal;
 export interface GqlPoolBase {
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /**
-     * Returns all pool tokens, including any nested tokens and phantom BPTs on one level.
-     * @deprecated Use poolTokens instead
-     */
+    /** Returns all pool tokens, including any nested tokens and phantom BPTs on one level. */
     allTokens: Array<GqlPoolTokenExpanded>;
     /** List of categories assigned by the team based on external factors */
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
@@ -404,7 +401,7 @@ export interface GqlPoolBase {
     name: Scalars['String'];
     /** The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP. */
     owner?: Maybe<Scalars['Bytes']>;
-    /** Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep. */
+    /** Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep. */
     poolTokens: Array<GqlPoolTokenDetail>;
     /** The protocol version on which the pool is deployed, 1, 2 or 3 */
     protocolVersion: Scalars['Int'];

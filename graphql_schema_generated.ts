@@ -629,7 +629,7 @@ export const schema = gql`
         """
         Returns all pool tokens, including any nested tokens and phantom BPTs on one level.
         """
-        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
+        allTokens: [GqlPoolTokenExpanded!]!
 
         """
         List of categories assigned by the team based on external factors
@@ -707,7 +707,7 @@ export const schema = gql`
         owner: Bytes
 
         """
-        Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
+        Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep.
         """
         poolTokens: [GqlPoolTokenDetail!]!
 
