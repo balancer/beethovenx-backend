@@ -479,17 +479,15 @@ describe('Balancer SOR Integration Tests', () => {
             hook: {
                 id: 1,
             },
-        }
+        };
 
         // SOR Token Inputs
         const tIn = new Token(parseFloat(chainToIdMap['SEPOLIA']), BAL.address as Address, 18);
         const tOut = new Token(parseFloat(chainToIdMap['SEPOLIA']), WETH.address as Address, 18);
         const amountIn = BigInt(0.1e18);
 
-        beforeAll(async () => {
-            
-        })
-        test('SOR considers pools with hooks - when hooks available', async() => {
+        beforeAll(async () => {});
+        test('SOR considers pools with hooks - when hooks available', async () => {
             paths = (await sorGetPathsWithPools(
                 tIn,
                 tOut,
@@ -497,13 +495,10 @@ describe('Balancer SOR Integration Tests', () => {
                 amountIn,
                 [prismaWeightedPoolWithHook],
                 protocolVersion,
-                {
-                    considerPoolsWithHooks: true,
-                }
             )) as PathWithAmount[];
             expect(paths.length).toBeGreaterThan(0);
-        })
-        test('SOR considers pools with hooks - when no hooks available', async() => {
+        });
+        test('SOR considers pools with hooks - when no hooks available', async () => {
             paths = (await sorGetPathsWithPools(
                 tIn,
                 tOut,
@@ -511,13 +506,10 @@ describe('Balancer SOR Integration Tests', () => {
                 amountIn,
                 [prismaWeightedPool],
                 protocolVersion,
-                {
-                    considerPoolsWithHooks: true,
-                }
             )) as PathWithAmount[];
             expect(paths.length).toBeGreaterThan(0);
-        })
-        test('SOR does not consider pools with hooks - when hook available', async() => {
+        });
+        test('SOR does not consider pools with hooks - when hook available', async () => {
             paths = (await sorGetPathsWithPools(
                 tIn,
                 tOut,
@@ -525,13 +517,10 @@ describe('Balancer SOR Integration Tests', () => {
                 amountIn,
                 [prismaWeightedPoolWithHook],
                 protocolVersion,
-                {
-                    considerPoolsWithHooks: false,
-                }
             )) as PathWithAmount[];
             expect(paths).toBe(null);
         });
-        test('SOR does not consider pools with hooks - when no hook available', async() => {
+        test('SOR does not consider pools with hooks - when no hook available', async () => {
             paths = (await sorGetPathsWithPools(
                 tIn,
                 tOut,
@@ -539,14 +528,10 @@ describe('Balancer SOR Integration Tests', () => {
                 amountIn,
                 [prismaWeightedPool],
                 protocolVersion,
-                {
-                    considerPoolsWithHooks: false,
-                }
             )) as PathWithAmount[];
             expect(paths.length).toBeGreaterThan(0);
-        })
-
-    })
+        });
+    });
 
     afterAll(async () => {
         await stopAnvilForks();

@@ -1,6 +1,6 @@
 import { Address, Hex, parseEther, parseUnits } from 'viem';
 import { FxPoolToken } from './fxPoolToken';
-import { PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
 import { MathFx, parseFixedCurveParam } from './helpers';
 import { FxData } from '../../../../../pool/subgraph-mapper';
 import { Chain } from '@prisma/client';
@@ -36,7 +36,7 @@ export class FxPool implements BasePool {
 
     private readonly tokenMap: Map<string, FxPoolToken>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamic): FxPool {
+    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): FxPool {
         const poolTokens: FxPoolToken[] = [];
 
         if (!pool.dynamicData) {

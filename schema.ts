@@ -2492,6 +2492,7 @@ export interface QuerySftmxGetWithdrawalRequestsArgs {
 export interface QuerySorGetSwapPathsArgs {
     callDataInput?: InputMaybe<GqlSwapCallDataInput>;
     chain: GqlChain;
+    considerPoolsWithHooks?: InputMaybe<Scalars['Boolean']>;
     queryBatchSwap?: InputMaybe<Scalars['Boolean']>;
     swapAmount: Scalars['AmountHumanReadable'];
     swapType: GqlSorSwapType;

@@ -1,5 +1,5 @@
 import { Router } from './router';
-import { PrismaPoolWithDynamic } from '../../../../prisma/prisma-types';
+import { PrismaPoolWithDynamicAndHook } from '../../../../prisma/prisma-types';
 import { checkInputs } from './utils/helpers';
 import { ComposableStablePool, FxPool, Gyro2Pool, Gyro3Pool, GyroEPool, MetaStablePool, WeightedPool } from './poolsV2';
 import { SwapKind, Token } from '@balancer/sdk';
@@ -13,7 +13,7 @@ export async function sorGetPathsWithPools(
     tokenOut: Token,
     swapKind: SwapKind,
     swapAmountEvm: bigint,
-    prismaPools: PrismaPoolWithDynamic[],
+    prismaPools: PrismaPoolWithDynamicAndHook[],
     protocolVersion: number,
     swapOptions?: Omit<SorSwapOptions, 'graphTraversalConfig.poolIdsToInclude'>,
 ): Promise<PathWithAmount[] | null> {
@@ -22,11 +22,6 @@ export async function sorGetPathsWithPools(
     const basePools: BasePool[] = [];
 
     for (const prismaPool of prismaPools) {
-
-        if (!swapOptions?.considerPoolsWithHooks && prismaPool.hook != null) {
-            continue;
-        }
-
         switch (prismaPool.type) {
             case 'WEIGHTED':
                 {

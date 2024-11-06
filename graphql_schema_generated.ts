@@ -3413,6 +3413,11 @@ export const schema = gql`
             chain: GqlChain!
 
             """
+            Whether it should consider pools that have hooks. Default is false if not provided.
+            """
+            considerPoolsWithHooks: Boolean
+
+            """
             Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
             """
             queryBatchSwap: Boolean

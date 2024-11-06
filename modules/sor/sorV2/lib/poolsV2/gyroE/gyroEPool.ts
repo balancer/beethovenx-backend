@@ -1,5 +1,5 @@
 import { Address, Hex, parseEther, parseUnits } from 'viem';
-import { PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
 import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
 import { MathGyro, SWAP_LIMIT_FACTOR } from '../../utils/gyroHelpers/math';
@@ -49,7 +49,7 @@ export class GyroEPool implements BasePool {
 
     private readonly tokenMap: Map<string, GyroEPoolToken>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamic): GyroEPool {
+    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): GyroEPool {
         const poolTokens: GyroEPoolToken[] = [];
 
         if (!pool.dynamicData || !pool.typeData) {

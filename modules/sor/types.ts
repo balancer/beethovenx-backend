@@ -19,6 +19,7 @@ export interface GetSwapsV2Input {
     swapAmount: TokenAmount;
     queryBatchSwap: boolean;
     protocolVersion: number;
+    considerPoolsWithHooks: boolean;
     graphTraversalConfig?: GraphTraversalConfig;
     callDataInput?: (GqlSwapCallDataInput & { wethIsEth: boolean }) | undefined;
 }
@@ -28,7 +29,6 @@ export interface GraphTraversalConfig {
     maxDepth?: number;
     maxNonBoostedHopTokensInBoostedPath?: number;
     maxNonBoostedPathDepth?: number;
-    considerPoolsWithHooks?: boolean;
 }
 
 export interface SwapResult {

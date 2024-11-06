@@ -1,5 +1,5 @@
 import { Address, Hex, parseEther } from 'viem';
-import { PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
 import { Chain } from '@prisma/client';
 import { _calcInGivenOut, _calcOutGivenIn, _calculateInvariant, _findVirtualParams } from './gyro2Math';
 import { MathSol, WAD } from '../../utils/math';
@@ -14,7 +14,7 @@ import { BasePoolToken } from '../basePoolToken';
 export class Gyro2PoolToken extends BasePoolToken {
     public readonly rate: bigint;
 
-    public constructor(token: Token, amount: BigintIsh, index:number, rate: BigintIsh) {
+    public constructor(token: Token, amount: BigintIsh, index: number, rate: BigintIsh) {
         super(token, amount, index);
         this.rate = BigInt(rate);
     }
@@ -34,7 +34,7 @@ export class Gyro2Pool implements BasePool {
     private readonly sqrtBeta: bigint;
     private readonly tokenMap: Map<string, Gyro2PoolToken>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamic): Gyro2Pool {
+    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): Gyro2Pool {
         const poolTokens: Gyro2PoolToken[] = [];
 
         if (!pool.dynamicData || !pool.typeData) {
@@ -55,7 +55,14 @@ export class Gyro2Pool implements BasePool {
             const scale18 = parseEther(poolToken.dynamicData.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
-            poolTokens.push(new Gyro2PoolToken(token, tokenAmount.amount, poolToken.index, parseEther(poolToken.dynamicData.priceRate)));
+            poolTokens.push(
+                new Gyro2PoolToken(
+                    token,
+                    tokenAmount.amount,
+                    poolToken.index,
+                    parseEther(poolToken.dynamicData.priceRate),
+                ),
+            );
         }
 
         const gyroData = pool.typeData as GyroData;
@@ -128,12 +135,16 @@ export class Gyro2Pool implements BasePool {
 
         // These tIn, tOut are vault reported balances (scaled to 18 decimals)
         const { tIn, tOut, sqrtAlpha, sqrtBeta } = this.getPoolPairData(tokenIn, tokenOut);
-        const invariant = _calculateInvariant([MathSol.mulUpFixed(tIn.scale18,tIn.rate), MathSol.mulUpFixed(tOut.scale18, tOut.rate)], sqrtAlpha, sqrtBeta);
+        const invariant = _calculateInvariant(
+            [MathSol.mulUpFixed(tIn.scale18, tIn.rate), MathSol.mulUpFixed(tOut.scale18, tOut.rate)],
+            sqrtAlpha,
+            sqrtBeta,
+        );
         const [virtualParamIn, virtualParamOut] = _findVirtualParams(invariant, sqrtAlpha, sqrtBeta);
         const inAmountLessFee = this.subtractSwapFeeAmount(swapAmount);
 
         const outAmountScale18 = _calcOutGivenIn(
-            MathSol.mulUpFixed(tIn.scale18,tIn.rate),
+            MathSol.mulUpFixed(tIn.scale18, tIn.rate),
             MathSol.mulUpFixed(tOut.scale18, tOut.rate),
             inAmountLessFee.scale18,
             virtualParamIn,
@@ -175,12 +186,16 @@ export class Gyro2Pool implements BasePool {
 
         if (swapAmount.scale18 > tOut.scale18) throw new Error('ASSET_BOUNDS_EXCEEDED');
 
-        const invariant = _calculateInvariant([MathSol.mulUpFixed(tIn.scale18,tIn.rate), MathSol.mulUpFixed(tOut.scale18, tOut.rate)], sqrtAlpha, sqrtBeta);
+        const invariant = _calculateInvariant(
+            [MathSol.mulUpFixed(tIn.scale18, tIn.rate), MathSol.mulUpFixed(tOut.scale18, tOut.rate)],
+            sqrtAlpha,
+            sqrtBeta,
+        );
         const [virtualParamIn, virtualParamOut] = _findVirtualParams(invariant, sqrtAlpha, sqrtBeta);
         const inAmountLessFee = _calcInGivenOut(
-            MathSol.mulUpFixed(tIn.scale18,tIn.rate),
+            MathSol.mulUpFixed(tIn.scale18, tIn.rate),
             MathSol.mulUpFixed(tOut.scale18, tOut.rate),
-            MathSol.mulUpFixed(swapAmount.scale18,tOut.rate), //amountOut
+            MathSol.mulUpFixed(swapAmount.scale18, tOut.rate), //amountOut
             virtualParamIn,
             virtualParamOut,
         );

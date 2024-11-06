@@ -38,7 +38,6 @@ export interface PathGraphTraversalConfig {
     maxNonBoostedHopTokensInBoostedPath: number;
     approxPathsToReturn: number;
     poolIdsToInclude?: string[];
-    considerPoolsWithHooks?: boolean;
 }
 
 export interface PathGraphEdgeData {

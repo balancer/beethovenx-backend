@@ -61,6 +61,10 @@ extend type Query {
         """
         useProtocolVersion: Int
         """
+        Whether it should consider pools that have hooks. Default is false if not provided.
+        """
+        considerPoolsWithHooks: Boolean
+        """
         Input data to create and return transaction data. If this config is given, call data is added to the response.
         """
         callDataInput: GqlSwapCallDataInput

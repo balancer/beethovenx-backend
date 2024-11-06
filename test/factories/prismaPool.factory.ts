@@ -1,11 +1,11 @@
 import { Factory } from 'fishery';
-import { PrismaPoolWithDynamic } from '../../prisma/prisma-types';
+import { PrismaPoolWithDynamicAndHook } from '../../prisma/prisma-types';
 import { prismaPoolTokenFactory } from './prismaToken.factory';
 import { createRandomAddress } from '../utils';
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { prismaPoolDynamicDataFactory } from './prismaPoolDynamicData.factory';
 
-class PrismaPoolFactory extends Factory<PrismaPoolWithDynamic> {
+class PrismaPoolFactory extends Factory<PrismaPoolWithDynamicAndHook> {
     stable(amp?: string) {
         return this.params({ type: PrismaPoolType.STABLE, typeData: { amp: amp ?? '10' } });
     }

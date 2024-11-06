@@ -13,5 +13,4 @@ export interface SorSwapOptions {
     funds?: FundManagement;
     deadline?: bigint;
     graphTraversalConfig?: Partial<PathGraphTraversalConfig>;
-    considerPoolsWithHooks?: boolean;
 }

@@ -9,8 +9,8 @@ import {
     GqlSorSwapType,
     GqlSwapCallDataInput,
 } from '../../../schema';
-import { Chain } from '@prisma/client';
-import { PrismaPoolWithDynamic, prismaPoolWithDynamic } from '../../../prisma/prisma-types';
+import { Chain, PrismaHook } from '@prisma/client';
+import { PrismaPoolWithDynamicAndHook, prismaPoolWithDynamicAndHook } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
 import { poolsToIgnore } from '../constants';
@@ -41,7 +41,7 @@ import { SwapLocal } from './lib/swapLocal';
 import { Cache } from 'memory-cache';
 
 class SorPathService implements SwapService {
-    private cache = new Cache<string, PrismaPoolWithDynamic[]>();
+    private cache = new Cache<string, PrismaPoolWithDynamicAndHook[]>();
     private readonly SOR_POOLS_CACHE_KEY = `sor:pools`;
 
     // This is only used for the old SOR service
@@ -52,7 +52,7 @@ class SorPathService implements SwapService {
         const protocolVersion = 2;
 
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion);
+            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, false);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -144,11 +144,20 @@ class SorPathService implements SwapService {
     }
 
     private async getSwapPathsFromSor(
-        { chain, tokenIn, tokenOut, swapType, swapAmount, protocolVersion, graphTraversalConfig }: GetSwapPathsInput,
+        {
+            chain,
+            tokenIn,
+            tokenOut,
+            swapType,
+            swapAmount,
+            protocolVersion,
+            graphTraversalConfig,
+            considerPoolsWithHooks,
+        }: GetSwapPathsInput,
         maxNonBoostedPathDepth = 4,
     ): Promise<PathWithAmount[] | null> {
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion);
+            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -454,8 +463,14 @@ class SorPathService implements SwapService {
      * Fetch pools from Prisma and map to b-sdk BasePool.
      * @returns
      */
-    private async getBasePoolsFromDb(chain: Chain, protocolVersion: number): Promise<PrismaPoolWithDynamic[]> {
-        const cached = this.cache.get(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`);
+    private async getBasePoolsFromDb(
+        chain: Chain,
+        protocolVersion: number,
+        considerPoolsWithHooks: boolean,
+    ): Promise<PrismaPoolWithDynamicAndHook[]> {
+        const cached = this.cache.get(
+            `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
+        );
         if (cached) {
             return cached;
         }
@@ -490,12 +505,17 @@ class SorPathService implements SwapService {
                         'GYROE',
                     ],
                 },
+                ...(considerPoolsWithHooks ? {} : { hookId: null }),
             },
-            include: prismaPoolWithDynamic.include,
+            include: prismaPoolWithDynamicAndHook.include,
         });
 
         // cache for 10s
-        this.cache.put(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`, pools, 10 * 1000);
+        this.cache.put(
+            `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
+            pools,
+            10 * 1000,
+        );
         return pools;
     }
 
