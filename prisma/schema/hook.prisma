@@ -1,8 +1,7 @@
-model Hook {
+model PrismaHook {
   id                              Int          @id @default(autoincrement())
   address                         String
   chain                           Chain
-  name                            String       @default("")
   enableHookAdjustedAmounts       Boolean      @default(false)
   shouldCallAfterSwap             Boolean      @default(false)
   shouldCallBeforeSwap            Boolean      @default(false)
@@ -16,6 +15,26 @@ model Hook {
   dynamicData                     Json         @default("{}")
   pools                           PrismaPool[]
 
+  reviewData                  PrismaHookReviewData?
+
   @@unique([address, chain])
   @@index(id)
+}
+
+
+model PrismaHookReviewData {
+    @@id([chain, hookAddress])
+
+    chain               Chain
+    hookAddress         String
+
+    hook               PrismaHook          @relation(fields:[chain, hookAddress], references: [chain, address], onDelete: Cascade)
+
+    name                String
+    description         String
+    summary             String
+    reviewFile           String
+    warnings            String
+    
+    @@index([chain, hookAddress])
 }

@@ -4,7 +4,7 @@ import { HookData, Resolvers } from '../../schema';
 export default {
     Query: {
         hooks: async (_parent, { chain }) => {
-            const hooks = await prisma.hook.findMany({
+            const hooks = await prisma.prismaHook.findMany({
                 where: {
                     chain: chain || undefined,
                 },

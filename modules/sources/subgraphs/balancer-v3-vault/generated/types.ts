@@ -3090,7 +3090,18 @@ export type VaultPoolFragment = {
         totalProtocolYieldFee: string;
         paysYieldFees: boolean;
         scalingFactor: string;
-        nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
+        nestedPool?:
+            | {
+                  __typename?: 'Pool';
+                  id: string;
+                  tokens: Array<{
+                      __typename?: 'PoolToken';
+                      address: string;
+                      nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
+                  }>;
+              }
+            | null
+            | undefined;
     }>;
     rateProviders: Array<{
         __typename?: 'RateProvider';
@@ -3157,7 +3168,18 @@ export type PoolsQuery = {
             totalProtocolYieldFee: string;
             paysYieldFees: boolean;
             scalingFactor: string;
-            nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
+            nestedPool?:
+                | {
+                      __typename?: 'Pool';
+                      id: string;
+                      tokens: Array<{
+                          __typename?: 'PoolToken';
+                          address: string;
+                          nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
+                      }>;
+                  }
+                | null
+                | undefined;
         }>;
         rateProviders: Array<{
             __typename?: 'RateProvider';
@@ -3391,6 +3413,12 @@ export const VaultPoolFragmentDoc = gql`
             paysYieldFees
             nestedPool {
                 id
+                tokens {
+                    address
+                    nestedPool {
+                        id
+                    }
+                }
             }
             scalingFactor
         }

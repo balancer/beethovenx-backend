@@ -12,10 +12,13 @@ import {
 import { CoingeckoDataService } from './lib/coingecko-data.service';
 import { Cache, CacheClass } from 'memory-cache';
 import {
+    Erc4626ReviewData,
     GqlPriceRateProviderData,
     GqlToken,
     GqlTokenChartDataRange,
     MutationTokenDeleteTokenTypeArgs,
+    QueryTokenGetTokensArgs,
+    QueryTokenGetTokensDataArgs,
 } from '../../schema';
 import { networkContext } from '../network/network-context.service';
 import { Dictionary } from 'lodash';
@@ -87,9 +90,14 @@ export class TokenService {
         return undefined;
     }
 
-    public async getTokenDefinitions(chains: Chain[]): Promise<GqlToken[]> {
+    public async getTokenDefinitions(args: QueryTokenGetTokensArgs): Promise<GqlToken[]> {
+        const chains = args.chains!;
         const tokens = await prisma.prismaToken.findMany({
-            where: { types: { some: { type: 'WHITE_LISTED' } }, chain: { in: chains } },
+            where: {
+                types: { some: { type: 'WHITE_LISTED' } },
+                chain: { in: chains },
+                address: { in: args.where?.tokensIn || undefined },
+            },
             include: { types: true, dynamicData: true },
             orderBy: { priority: 'desc' },
         });
@@ -129,6 +137,8 @@ export class TokenService {
 
         const rateProviderData = await this.getPriceRateProviderData(tokens);
 
+        const erc4626Data = await this.getErc4626Data(tokens);
+
         return tokens.map((token) => ({
             ...token,
             chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
@@ -136,6 +146,8 @@ export class TokenService {
             rateProviderData: rateProviderData[token.address],
             coingeckoId: token.coingeckoTokenId,
             isErc4626: token.types.some((type) => type.type === 'ERC4626'),
+            underlyingTokenAddress: token.underlyingTokenAddress,
+            erc4626Data: erc4626Data[token.address],
         }));
     }
 
@@ -179,6 +191,32 @@ export class TokenService {
             }
         }
         return priceRateProviderDataResult;
+    }
+
+    private async getErc4626Data(tokens: PrismaToken[]): Promise<Record<string, Erc4626ReviewData | undefined>> {
+        const erc4626Data = await prisma.prismaErc4626ReviewData.findMany({
+            where: {
+                erc4626Address: {
+                    in: tokens.map((t) => t.address),
+                },
+            },
+        });
+
+        const erc4626DataResult: Record<string, Erc4626ReviewData | undefined> = {};
+
+        for (const token of tokens) {
+            const erc4626DataForToken = erc4626Data.filter((provider) => provider.erc4626Address === token.address);
+
+            if (erc4626DataForToken.length === 1) {
+                erc4626DataResult[token.address] = {
+                    ...erc4626DataForToken[0],
+                    warnings: erc4626DataForToken[0].warnings?.split(',') || [],
+                };
+            } else {
+                erc4626DataResult[token.address] = undefined;
+            }
+        }
+        return erc4626DataResult;
     }
 
     public async updateTokenPrices(chains: Chain[]): Promise<void> {

@@ -10,14 +10,14 @@ import { TokenController } from '../controllers/token-controller';
 
 const resolvers: Resolvers = {
     Query: {
-        tokenGetTokens: async (parent, { chains }, context) => {
+        tokenGetTokens: async (parent, args, context) => {
             const currentChain = headerChain();
-            if (!chains && currentChain) {
-                chains = [currentChain];
-            } else if (!chains) {
+            if (!args.chains && currentChain) {
+                args.chains = [currentChain];
+            } else if (!args.chains) {
                 throw new Error('tokenGetTokens error: Provide "chains" param');
             }
-            return tokenService.getTokenDefinitions(chains);
+            return tokenService.getTokenDefinitions(args);
         },
         tokenGetCurrentPrices: async (parent, { chains }, context) => {
             const currentChain = headerChain();

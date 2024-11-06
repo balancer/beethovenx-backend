@@ -1,5 +1,5 @@
 import { prisma } from '../../../prisma/prisma-client';
-import { getRateProviderReviews } from '../../sources/github/rate-providers';
+import { getRateProviderReviews } from '../../sources/github/rate-provider-reviews';
 
 export const syncRateProviderReviews = async (): Promise<void> => {
     const rateProviders = await getRateProviderReviews();

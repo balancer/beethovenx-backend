@@ -54,11 +54,10 @@ model PrismaFbeets {
     ratio               String
 }
 
-model Hook {
+model PrismaHook {
   id                              Int          @id @default(autoincrement())
   address                         String
   chain                           Chain
-  name                            String       @default("")
   enableHookAdjustedAmounts       Boolean      @default(false)
   shouldCallAfterSwap             Boolean      @default(false)
   shouldCallBeforeSwap            Boolean      @default(false)
@@ -72,8 +71,28 @@ model Hook {
   dynamicData                     Json         @default("{}")
   pools                           PrismaPool[]
 
+  reviewData                  PrismaHookReviewData?
+
   @@unique([address, chain])
   @@index(id)
+}
+
+
+model PrismaHookReviewData {
+    @@id([chain, hookAddress])
+
+    chain               Chain
+    hookAddress         String
+
+    hook               PrismaHook          @relation(fields:[chain, hookAddress], references: [chain, address], onDelete: Cascade)
+
+    name                String
+    description         String
+    summary             String
+    reviewFile           String
+    warnings            String
+    
+    @@index([chain, hookAddress])
 }
 
 
@@ -120,8 +139,8 @@ model PrismaPool {
 
     userPoolBalanceSnapshots    PrismaUserPoolBalanceSnapshot[]
 
-    hook               Hook? @relation(fields: [hookId], references: [id])
-    hookId             Int?
+    hook                PrismaHook? @relation(fields: [hookId], references: [id])
+    hookId              Int?
 
     @@index([categories(ops: ArrayOps)], type: Gin)
 }
@@ -856,6 +875,22 @@ model PrismaPriceRateProviderData {
     @@index([tokenAddress])
 }
 
+model PrismaErc4626ReviewData {
+    @@id([chain, erc4626Address])
+
+    chain               Chain
+    erc4626Address      String
+
+    assetAddress        String
+
+    name                String
+    summary             String
+    reviewFile          String
+    warnings            String
+    
+    @@index([chain, erc4626Address])
+    @@index([assetAddress])
+}
 
 model PrismaUser {
     address                 String              @id

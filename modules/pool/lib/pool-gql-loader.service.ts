@@ -277,6 +277,10 @@ export class PoolGqlLoaderService {
                     pool.hook.dynamicData && {
                         ...pool.hook,
                         dynamicData: pool.hook.dynamicData as HookData,
+                        reviewData: {
+                            ...pool.hook.reviewData,
+                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
+                        },
                     }) ||
                 undefined,
             incentivized: pool.categories.some((category) => category === 'INCENTIVIZED'),
@@ -533,9 +537,9 @@ export class PoolGqlLoaderService {
                     : {}),
             },
             ...(where?.hasHook !== undefined && where.hasHook
-                ? { hook: { isNot: null } }
+                ? { hookId: { not: null } }
                 : where?.hasHook !== undefined && !where.hasHook
-                ? { hook: { is: null } }
+                ? { hookId: null }
                 : {}),
         };
 
@@ -596,6 +600,10 @@ export class PoolGqlLoaderService {
                     pool.hook.dynamicData && {
                         ...pool.hook,
                         dynamicData: pool.hook.dynamicData as HookData,
+                        reviewData: {
+                            ...pool.hook.reviewData,
+                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
+                        },
                     }) ||
                 undefined,
         };
@@ -680,6 +688,10 @@ export class PoolGqlLoaderService {
                     pool.hook.dynamicData && {
                         ...pool.hook,
                         dynamicData: pool.hook.dynamicData as HookData,
+                        reviewData: {
+                            ...pool.hook.reviewData,
+                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
+                        },
                     }) ||
                 undefined,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
@@ -758,9 +770,7 @@ export class PoolGqlLoaderService {
             const poolToken = pool.tokens.find((poolToken) => poolToken.address === token.token.address);
             const isNested = !poolToken;
             const isPhantomBpt = token.tokenAddress === pool.address;
-            const isMainToken = !token.token.types.some(
-                (type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT' || type.type === 'ERC4626',
-            );
+            const isMainToken = !token.token.types.some((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT');
             const isErc4626 = token.token.types.some((type) => type.type === 'ERC4626');
 
             return {
@@ -1456,7 +1466,6 @@ export class PoolGqlLoaderService {
                     },
                 },
                 userWalletBalances: false,
-                hook: true,
             };
         }
 
@@ -1483,7 +1492,6 @@ export class PoolGqlLoaderService {
                     balanceNum: { gt: 0 },
                 },
             },
-            hook: true,
         };
     }
 }
