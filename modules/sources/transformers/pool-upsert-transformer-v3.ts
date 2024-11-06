@@ -119,8 +119,8 @@ export const poolUpsertTransformerV3 = (
         poolExpandedTokens: allTokens.map((token) => ({
             poolId: poolData.id.toLowerCase(),
             chain,
-            tokenAddress: token.address,
-            nestedPoolId: token.nestedPool?.id || null,
+            tokenAddress: token.address.toLowerCase(),
+            nestedPoolId: token.nestedPool?.id.toLowerCase() || null,
         })),
     };
 };
