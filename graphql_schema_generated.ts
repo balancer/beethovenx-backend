@@ -2950,6 +2950,10 @@ export const schema = gql`
         updatedAt: String!
     }
 
+    input GqlTokenFilter {
+        tokensIn: [String!]
+    }
+
     """
     Result of the poolReloadPools mutation
     """
@@ -3540,7 +3544,7 @@ export const schema = gql`
         """
         Returns all allowed tokens for a given chain or chains
         """
-        tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
+        tokenGetTokens(chains: [GqlChain!], where: GqlTokenFilter): [GqlToken!]!
 
         """
         Returns meta data for a given set of tokens such as description, website, etc.
