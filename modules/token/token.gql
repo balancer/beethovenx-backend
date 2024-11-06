@@ -2,7 +2,7 @@ extend type Query {
     """
     Returns all allowed tokens for a given chain or chains
     """
-    tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
+    tokenGetTokens(chains: [GqlChain!], where: GqlTokenFilter): [GqlToken!]!
     """
     Returns all current prices for allowed tokens for a given chain or chains
     """
@@ -372,6 +372,15 @@ enum GqlTokenType {
     WHITE_LISTED
     BPT
     PHANTOM_BPT
+}
+"""
+Provide filters for tokens
+"""
+input GqlTokenFilter {
+    """
+    Only return tokens with these addresses
+    """
+    tokensIn: [String!]
 }
 
 """

@@ -17,6 +17,8 @@ import {
     GqlToken,
     GqlTokenChartDataRange,
     MutationTokenDeleteTokenTypeArgs,
+    QueryTokenGetTokensArgs,
+    QueryTokenGetTokensDataArgs,
 } from '../../schema';
 import { networkContext } from '../network/network-context.service';
 import { Dictionary } from 'lodash';
@@ -88,9 +90,14 @@ export class TokenService {
         return undefined;
     }
 
-    public async getTokenDefinitions(chains: Chain[]): Promise<GqlToken[]> {
+    public async getTokenDefinitions(args: QueryTokenGetTokensArgs): Promise<GqlToken[]> {
+        const chains = args.chains!;
         const tokens = await prisma.prismaToken.findMany({
-            where: { types: { some: { type: 'WHITE_LISTED' } }, chain: { in: chains } },
+            where: {
+                types: { some: { type: 'WHITE_LISTED' } },
+                chain: { in: chains },
+                address: { in: args.where?.tokensIn || undefined },
+            },
             include: { types: true, dynamicData: true },
             orderBy: { priority: 'desc' },
         });

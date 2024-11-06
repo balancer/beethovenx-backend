@@ -2001,6 +2001,10 @@ export interface GqlTokenDynamicData {
     updatedAt: Scalars['String'];
 }
 
+export interface GqlTokenFilter {
+    tokensIn?: InputMaybe<Array<Scalars['String']>>;
+}
+
 /** Result of the poolReloadPools mutation */
 export interface GqlTokenMutationResult {
     __typename?: 'GqlTokenMutationResult';
@@ -2582,6 +2586,7 @@ export interface QueryTokenGetTokenDynamicDataArgs {
 
 export interface QueryTokenGetTokensArgs {
     chains?: InputMaybe<Array<GqlChain>>;
+    where?: InputMaybe<GqlTokenFilter>;
 }
 
 export interface QueryTokenGetTokensDataArgs {
@@ -2899,6 +2904,7 @@ export type ResolversTypes = ResolversObject<{
     GqlTokenChartDataRange: GqlTokenChartDataRange;
     GqlTokenData: ResolverTypeWrapper<GqlTokenData>;
     GqlTokenDynamicData: ResolverTypeWrapper<GqlTokenDynamicData>;
+    GqlTokenFilter: GqlTokenFilter;
     GqlTokenMutationResult: ResolverTypeWrapper<GqlTokenMutationResult>;
     GqlTokenPrice: ResolverTypeWrapper<GqlTokenPrice>;
     GqlTokenPriceChartDataItem: ResolverTypeWrapper<GqlTokenPriceChartDataItem>;
@@ -3073,6 +3079,7 @@ export type ResolversParentTypes = ResolversObject<{
     GqlTokenCandlestickChartDataItem: GqlTokenCandlestickChartDataItem;
     GqlTokenData: GqlTokenData;
     GqlTokenDynamicData: GqlTokenDynamicData;
+    GqlTokenFilter: GqlTokenFilter;
     GqlTokenMutationResult: GqlTokenMutationResult;
     GqlTokenPrice: GqlTokenPrice;
     GqlTokenPriceChartDataItem: GqlTokenPriceChartDataItem;
