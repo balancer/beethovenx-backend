@@ -543,7 +543,7 @@ describe('Balancer SOR Integration Tests', () => {
                     considerPoolsWithHooks: false,
                 }
             )) as PathWithAmount[];
-            expect(paths).toBeGreaterThan(0);
+            expect(paths.length).toBeGreaterThan(0);
         })
 
     })
