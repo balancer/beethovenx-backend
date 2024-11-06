@@ -448,6 +448,106 @@ describe('Balancer SOR Integration Tests', () => {
         });
     });
 
+    describe.only('Hook Pool Path', () => {
+        // setup mock pool data
+        const WETH = prismaPoolTokenFactory.build({
+            address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
+            dynamicData: prismaPoolTokenDynamicDataFactory.build({
+                balance: '0.005',
+                weight: '0.5',
+            }),
+        });
+        const BAL = prismaPoolTokenFactory.build({
+            address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75',
+            dynamicData: prismaPoolTokenDynamicDataFactory.build({
+                balance: '5',
+                weight: '0.5',
+            }),
+        });
+        const prismaWeightedPool = prismaPoolFactory.build({
+            address: '0x03bf996c7bd45b3386cb41875761d45e27eab284',
+            type: 'WEIGHTED',
+            protocolVersion,
+            tokens: [WETH, BAL],
+            dynamicData: prismaPoolDynamicDataFactory.build({
+                totalShares: '0.158113883008415798',
+                swapFee: '0.1',
+            }),
+        });
+        const prismaWeightedPoolWithHook = {
+            ...prismaWeightedPool,
+            hook: {
+                id: 1,
+            },
+        }
+
+        // SOR Token Inputs
+        const tIn = new Token(parseFloat(chainToIdMap['SEPOLIA']), BAL.address as Address, 18);
+        const tOut = new Token(parseFloat(chainToIdMap['SEPOLIA']), WETH.address as Address, 18);
+        const amountIn = BigInt(0.1e18);
+
+        beforeAll(async () => {
+            
+        })
+        test('SOR considers pools with hooks - when hooks available', async() => {
+            paths = (await sorGetPathsWithPools(
+                tIn,
+                tOut,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaWeightedPoolWithHook],
+                protocolVersion,
+                {
+                    considerPoolsWithHooks: true,
+                }
+            )) as PathWithAmount[];
+            expect(paths.length).toBeGreaterThan(0);
+        })
+        test('SOR considers pools with hooks - when no hooks available', async() => {
+            paths = (await sorGetPathsWithPools(
+                tIn,
+                tOut,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaWeightedPool],
+                protocolVersion,
+                {
+                    considerPoolsWithHooks: true,
+                }
+            )) as PathWithAmount[];
+            expect(paths.length).toBeGreaterThan(0);
+        })
+        test('SOR does not consider pools with hooks - when hook available', async() => {
+            paths = (await sorGetPathsWithPools(
+                tIn,
+                tOut,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaWeightedPoolWithHook],
+                protocolVersion,
+                {
+                    considerPoolsWithHooks: false,
+                }
+            )) as PathWithAmount[];
+            expect(paths).toBe(null);
+        });
+        test('SOR does not consider pools with hooks - when no hook available', async() => {
+            paths = (await sorGetPathsWithPools(
+                tIn,
+                tOut,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaWeightedPool],
+                protocolVersion,
+                {
+                    considerPoolsWithHooks: false,
+                }
+            )) as PathWithAmount[];
+            expect(paths).toBeGreaterThan(0);
+        })
+
+    })
+
     afterAll(async () => {
         await stopAnvilForks();
     });

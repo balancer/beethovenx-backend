@@ -22,6 +22,11 @@ export async function sorGetPathsWithPools(
     const basePools: BasePool[] = [];
 
     for (const prismaPool of prismaPools) {
+
+        if (!swapOptions?.considerPoolsWithHooks && prismaPool.hook != null) {
+            continue;
+        }
+
         switch (prismaPool.type) {
             case 'WEIGHTED':
                 {

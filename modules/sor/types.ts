@@ -28,6 +28,7 @@ export interface GraphTraversalConfig {
     maxDepth?: number;
     maxNonBoostedHopTokensInBoostedPath?: number;
     maxNonBoostedPathDepth?: number;
+    considerPoolsWithHooks?: boolean;
 }
 
 export interface SwapResult {
