@@ -1,8 +1,7 @@
 import { Chain } from '@prisma/client';
 import config from '../../../config';
 
-const HOOK_REVIEW_URL =
-    'https://raw.githubusercontent.com/balancer/code-review/refs/heads/add_hook_boosted_review/hooks/registry.json';
+const HOOK_REVIEW_URL = 'https://raw.githubusercontent.com/balancer/code-review/refs/heads/main/hooks/registry.json';
 
 interface HookReview {
     [chain: string]: {

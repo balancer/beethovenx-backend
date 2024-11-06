@@ -2,7 +2,7 @@ import { Chain } from '@prisma/client';
 import config from '../../../config';
 
 const ERC4626_REVIEW_URL =
-    'https://raw.githubusercontent.com/balancer/code-review/refs/heads/add_hook_boosted_review/erc4626/registry.json';
+    'https://raw.githubusercontent.com/balancer/code-review/refs/heads/main/erc4626/registry.json';
 
 interface Erc4626Review {
     [chain: string]: {
