@@ -21,17 +21,17 @@ export const schema = gql`
         """
         The filename of the review of the ERC4626
         """
-        reviewFile: String
+        reviewFile: String!
 
         """
         A summary of the ERC4626 review, usually just says safe or unsafe
         """
-        summary: String
+        summary: String!
 
         """
         Warnings associated with the ERC4626
         """
-        warnings: [String!]
+        warnings: [String!]!
     }
 
     type GqlBalancePoolAprItem {
@@ -2985,7 +2985,13 @@ export const schema = gql`
         updatedAt: String!
     }
 
+    """
+    Provide filters for tokens
+    """
     input GqlTokenFilter {
+        """
+        Only return tokens with these addresses
+        """
         tokensIn: [String!]
     }
 
@@ -3227,6 +3233,10 @@ export const schema = gql`
         List of pools using the hook
         """
         poolsIds: [String]
+
+        """
+        The review for this hook if applicable.
+        """
         reviewData: HookReviewData
         shouldCallAfterAddLiquidity: Boolean!
         shouldCallAfterInitialize: Boolean!
@@ -3255,22 +3265,22 @@ export const schema = gql`
         """
         The name of the hook
         """
-        name: String
+        name: String!
 
         """
         The filename of the review of the hook
         """
-        reviewFile: String
+        reviewFile: String!
 
         """
         A summary of the hook review, usually just says safe or unsafe
         """
-        summary: String
+        summary: String!
 
         """
         Warnings associated with the hook
         """
-        warnings: [String!]
+        warnings: [String!]!
     }
 
     scalar JSON

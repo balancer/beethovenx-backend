@@ -390,13 +390,13 @@ type Erc4626ReviewData {
     """
     A summary of the ERC4626 review, usually just says safe or unsafe
     """
-    summary: String
+    summary: String!
     """
     The filename of the review of the ERC4626
     """
-    reviewFile: String
+    reviewFile: String!
     """
     Warnings associated with the ERC4626
     """
-    warnings: [String!]
+    warnings: [String!]!
 }

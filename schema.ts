@@ -32,11 +32,11 @@ export interface Scalars {
 export interface Erc4626ReviewData {
     __typename?: 'Erc4626ReviewData';
     /** The filename of the review of the ERC4626 */
-    reviewFile?: Maybe<Scalars['String']>;
+    reviewFile: Scalars['String'];
     /** A summary of the ERC4626 review, usually just says safe or unsafe */
-    summary?: Maybe<Scalars['String']>;
+    summary: Scalars['String'];
     /** Warnings associated with the ERC4626 */
-    warnings?: Maybe<Array<Scalars['String']>>;
+    warnings: Array<Scalars['String']>;
 }
 
 export interface GqlBalancePoolAprItem {
@@ -2001,7 +2001,9 @@ export interface GqlTokenDynamicData {
     updatedAt: Scalars['String'];
 }
 
+/** Provide filters for tokens */
 export interface GqlTokenFilter {
+    /** Only return tokens with these addresses */
     tokensIn?: InputMaybe<Array<Scalars['String']>>;
 }
 
@@ -2159,6 +2161,7 @@ export interface Hook {
     enableHookAdjustedAmounts: Scalars['Boolean'];
     /** List of pools using the hook */
     poolsIds?: Maybe<Array<Maybe<Scalars['String']>>>;
+    /** The review for this hook if applicable. */
     reviewData?: Maybe<HookReviewData>;
     shouldCallAfterAddLiquidity: Scalars['Boolean'];
     shouldCallAfterInitialize: Scalars['Boolean'];
@@ -2183,13 +2186,13 @@ export interface HookData {
 export interface HookReviewData {
     __typename?: 'HookReviewData';
     /** The name of the hook */
-    name?: Maybe<Scalars['String']>;
+    name: Scalars['String'];
     /** The filename of the review of the hook */
-    reviewFile?: Maybe<Scalars['String']>;
+    reviewFile: Scalars['String'];
     /** A summary of the hook review, usually just says safe or unsafe */
-    summary?: Maybe<Scalars['String']>;
+    summary: Scalars['String'];
     /** Warnings associated with the hook */
-    warnings?: Maybe<Array<Scalars['String']>>;
+    warnings: Array<Scalars['String']>;
 }
 
 /** Liquidity management settings for v3 pools. */
@@ -3133,9 +3136,9 @@ export type Erc4626ReviewDataResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['Erc4626ReviewData'] = ResolversParentTypes['Erc4626ReviewData'],
 > = ResolversObject<{
-    reviewFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-    summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-    warnings?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+    reviewFile?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    summary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    warnings?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -4932,10 +4935,10 @@ export type HookReviewDataResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['HookReviewData'] = ResolversParentTypes['HookReviewData'],
 > = ResolversObject<{
-    name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-    reviewFile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-    summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-    warnings?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+    name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    reviewFile?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    summary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    warnings?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

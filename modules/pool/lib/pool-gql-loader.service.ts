@@ -37,6 +37,7 @@ import {
     HookData,
     GqlPoolAggregator,
     LiquidityManagement,
+    Hook,
 } from '../../../schema';
 import { isSameAddress } from '@balancer-labs/sdk';
 import _ from 'lodash';
@@ -51,6 +52,7 @@ import { SanityContentService } from '../../content/sanity-content.service';
 import { ElementData, FxData, GyroData, StableData } from '../subgraph-mapper';
 import { ZERO_ADDRESS } from '@balancer/sdk';
 import { tokenService } from '../../token/token.service';
+import { p } from 'msw/lib/glossary-dc3fd077';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
 const isPoolId = (text: string) => isToken(text) || text.match(/^0x[0-9a-fA-F]{64}$/);
@@ -83,12 +85,12 @@ export class PoolGqlLoaderService {
         await this.enrichWithRateproviderData(mappedPool);
 
         // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
-        await this.enrichWithUnderlyingTokenData(mappedPool);
+        await this.enrichWithErc4626Data(mappedPool);
 
         return mappedPool;
     }
 
-    private async enrichWithUnderlyingTokenData(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
+    private async enrichWithErc4626Data(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
         for (const token of mappedPool.poolTokens) {
             if (token.isErc4626) {
                 const prismaToken = await prisma.prismaToken.findUnique({
@@ -104,6 +106,21 @@ export class PoolGqlLoaderService {
                         (mappedPool as GqlPoolUnion).displayTokens.push();
                     }
                 }
+
+                const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
+                    where: {
+                        chain_erc4626Address: {
+                            chain: mappedPool.chain,
+                            erc4626Address: token.address,
+                        },
+                    },
+                });
+                if (erc4626ReviewData) {
+                    token.erc4626ReviewData = {
+                        ...erc4626ReviewData,
+                        warnings: erc4626ReviewData.warnings?.split(',') || [],
+                    };
+                }
             }
 
             if (token.hasNestedPool) {
@@ -118,6 +135,21 @@ export class PoolGqlLoaderService {
                                 mappedPool.chain,
                             );
                             nestedToken.underlyingToken = tokenDefinition;
+                        }
+
+                        const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
+                            where: {
+                                chain_erc4626Address: {
+                                    chain: mappedPool.chain,
+                                    erc4626Address: nestedToken.address,
+                                },
+                            },
+                        });
+                        if (erc4626ReviewData) {
+                            nestedToken.erc4626ReviewData = {
+                                ...erc4626ReviewData,
+                                warnings: erc4626ReviewData.warnings?.split(',') || [],
+                            };
                         }
                     }
                 }
@@ -205,7 +237,7 @@ export class PoolGqlLoaderService {
             await this.enrichWithRateproviderData(mappedPool);
 
             // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
-            await this.enrichWithUnderlyingTokenData(mappedPool);
+            await this.enrichWithErc4626Data(mappedPool);
         }
 
         return gqlPools;
@@ -272,17 +304,7 @@ export class PoolGqlLoaderService {
         return {
             ...pool,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                        reviewData: {
-                            ...pool.hook.reviewData,
-                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
-                        },
-                    }) ||
-                undefined,
+            hook: this.mapHookData(pool),
             incentivized: pool.categories.some((category) => category === 'INCENTIVIZED'),
             vaultVersion: pool.protocolVersion,
             decimals: 18,
@@ -595,17 +617,7 @@ export class PoolGqlLoaderService {
             poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
             vaultVersion: poolWithoutTypeData.protocolVersion,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                        reviewData: {
-                            ...pool.hook.reviewData,
-                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
-                        },
-                    }) ||
-                undefined,
+            hook: this.mapHookData(pool),
         };
 
         switch (pool.type) {
@@ -683,17 +695,7 @@ export class PoolGqlLoaderService {
             vaultVersion: poolWithoutTypeData.protocolVersion,
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                        reviewData: {
-                            ...pool.hook.reviewData,
-                            warnings: pool.hook.reviewData?.warnings?.split(',') || [],
-                        },
-                    }) ||
-                undefined,
+            hook: this.mapHookData(pool),
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
             hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
             hasNestedErc4626: pool.allTokens.some((token) =>
@@ -1418,6 +1420,25 @@ export class PoolGqlLoaderService {
             index: poolToken.index,
             weight: poolToken.dynamicData?.weight,
             totalBalance: poolToken.dynamicData?.balance || '0',
+        };
+    }
+
+    private mapHookData(pool: PrismaPoolMinimal): Hook | undefined {
+        if (!pool.hook) {
+            return undefined;
+        }
+
+        return {
+            ...pool.hook,
+            dynamicData: pool.hook.dynamicData as HookData,
+            ...(pool.hook.reviewData
+                ? {
+                      reviewData: {
+                          ...pool.hook.reviewData,
+                          warnings: pool.hook.reviewData?.warnings?.split(',') || [],
+                      },
+                  }
+                : { reviewData: undefined }),
         };
     }
 
