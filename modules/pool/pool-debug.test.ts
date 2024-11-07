@@ -376,4 +376,21 @@ describe('pool debugging', () => {
         // await poolService.syncAllPoolsFromSubgraph();
         // await poolService.syncChangedPools();
     }, 5000000);
+
+    it('pool hook data', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const pool = await prisma.prismaPool.findFirst({
+            where: { id: '0x75f49d54978d08e4e76a873da6c78e8f6b2901c2', chain: 'SEPOLIA' },
+        });
+
+        const gqlPool = await poolService.getGqlPool('0x75f49d54978d08e4e76a873da6c78e8f6b2901c2', 'SEPOLIA');
+
+        console.log(gqlPool.id);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
 });

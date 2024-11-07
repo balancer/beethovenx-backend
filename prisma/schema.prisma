@@ -87,7 +87,6 @@ model PrismaHookReviewData {
     hook               PrismaHook          @relation(fields:[chain, hookAddress], references: [chain, address], onDelete: Cascade)
 
     name                String
-    description         String
     summary             String
     reviewFile           String
     warnings            String
