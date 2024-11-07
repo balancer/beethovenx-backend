@@ -820,15 +820,19 @@ export class PoolGqlLoaderService {
             });
     }
 
-    private mapPoolToken(poolToken: PrismaPoolTokenWithExpandedNesting, hasNestedPool: boolean): GqlPoolTokenDetail {
+    private mapPoolToken(
+        poolToken: PrismaPoolTokenWithExpandedNesting,
+        hasNestedPool: boolean,
+        nestedPercentage = 1,
+    ): GqlPoolTokenDetail {
         const { nestedPool } = poolToken;
 
         return {
             id: `${poolToken.poolId}-${poolToken.token.address}`,
             ...poolToken.token,
             index: poolToken.index,
-            balance: poolToken.dynamicData?.balance || '0',
-            balanceUSD: String(poolToken.dynamicData?.balanceUSD) || '0',
+            balance: String(parseFloat(poolToken.dynamicData?.balance || '0') * nestedPercentage),
+            balanceUSD: String((poolToken.dynamicData?.balanceUSD || 0) * nestedPercentage),
             priceRate: poolToken.dynamicData?.priceRate || '1.0',
             priceRateProvider: poolToken.priceRateProvider,
             weight: poolToken?.dynamicData?.weight,
@@ -862,6 +866,7 @@ export class PoolGqlLoaderService {
                         nestedPool: null,
                     },
                     token.nestedPool !== null,
+                    percentOfSupplyNested,
                 ),
             ),
             swapFee: nestedPool.dynamicData?.swapFee || '0',
