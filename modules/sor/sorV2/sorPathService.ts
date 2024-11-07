@@ -507,7 +507,7 @@ class SorPathService implements SwapService {
             if (!pool) throw new Error('Pool not found while mapping route');
             return [this.mapSingleSwap(paths[0], pool)];
         }
-        return paths.filter((path) => !path.isBuffer).map((path) => this.mapBatchSwap(path, pools));
+        return paths.map((path) => this.mapBatchSwap(path, pools));
     }
 
     private mapBatchSwap(path: PathWithAmount, pools: GqlPoolMinimal[]): GqlSorSwapRoute {
@@ -516,22 +516,29 @@ class SorPathService implements SwapService {
         const tokenInAmount = formatUnits(path.inputAmount.amount, path.tokens[0].decimals);
         const tokenOutAmount = formatUnits(path.outputAmount.amount, path.tokens[path.tokens.length - 1].decimals);
 
-        return {
-            tokenIn,
-            tokenOut,
-            tokenInAmount,
-            tokenOutAmount,
-            share: 0.5, // TODO needed?
-            hops: path.pools.map((pool, i) => {
-                return {
+        const hops = [];
+        let i = 0;
+        for (const pool of path.pools) {
+            if (pool.poolType !== 'Buffer') {
+                hops.push({
                     tokenIn: `${path.tokens[i].address}`,
                     tokenOut: `${path.tokens[i + 1].address}`,
                     tokenInAmount: i === 0 ? tokenInAmount : '0',
                     tokenOutAmount: i === pools.length - 1 ? tokenOutAmount : '0',
                     poolId: pool.id,
                     pool: pools.find((p) => p.id === pool.id) as GqlPoolMinimal,
-                };
-            }),
+                });
+            }
+            i++;
+        }
+
+        return {
+            tokenIn,
+            tokenOut,
+            tokenInAmount,
+            tokenOutAmount,
+            share: 0.5, // TODO needed?
+            hops: hops,
         };
     }
 
