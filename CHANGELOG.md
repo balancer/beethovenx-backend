@@ -1,5 +1,21 @@
 # backend
 
+## 1.23.0
+
+### Minor Changes
+
+-   23f6773: Add hook and erc4626 reviews and tags. Adapt to new metadata repo layout.
+
+### Patch Changes
+
+-   3c0909d: use new priceimpact calc for Beets SOR path
+-   5cabb48: sync bptPriceRate for v3 pools
+-   33ffa59: reduce vebal balance multicall batchsize
+-   daa73e2: fix review data exposure
+-   4337d11: return all token prices
+-   1b3ef2d: fix sor hops with buffers
+-   232ee9e: add tokenIn filter for tokens query
+
 ## 1.22.0
 
 ### Minor Changes
