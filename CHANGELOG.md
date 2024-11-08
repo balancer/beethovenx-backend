@@ -1,5 +1,12 @@
 # backend
 
+## 1.23.1
+
+### Patch Changes
+
+-   7f0ee69: adapt nested balance and usd of a token to its share
+-   6d14f60: enable LBP in sor and sync
+
 ## 1.23.0
 
 ### Minor Changes
