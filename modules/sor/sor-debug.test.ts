@@ -37,7 +37,7 @@ describe('sor debugging', () => {
     }, 5000000);
 
     it('sor v3 sepolia eth->usdc', async () => {
-        const chain = Chain.SEPOLIA;
+        const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
         initRequestScopedContext();
@@ -47,12 +47,12 @@ describe('sor debugging', () => {
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8', // USDC (aave)
-            tokenOut: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0', // USDT (aave)
+            tokenIn: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            tokenOut: '0x220e4201aa472262df2c24dd8069243cf4b76c12',
             swapType: 'EXACT_IN',
-            swapAmount: '1',
+            swapAmount: '100',
             queryBatchSwap: false,
-            useProtocolVersion: 3,
+            useProtocolVersion: 2,
             // callDataInput: {
             //     receiver: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
             //     sender: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',

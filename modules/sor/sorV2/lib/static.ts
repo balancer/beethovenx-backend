@@ -24,6 +24,8 @@ export async function sorGetPathsWithPools(
     for (const prismaPool of prismaPools) {
         switch (prismaPool.type) {
             case 'WEIGHTED':
+            /// LBPs can be handled like weighted pools
+            case 'LIQUIDITY_BOOTSTRAPPING':
                 {
                     if (prismaPool.protocolVersion === 2) {
                         basePools.push(WeightedPool.fromPrismaPool(prismaPool));

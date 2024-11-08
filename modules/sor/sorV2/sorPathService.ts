@@ -494,9 +494,31 @@ class SorPathService implements SwapService {
             include: prismaPoolWithDynamic.include,
         });
 
+        const lbps = await prisma.prismaPool.findMany({
+            where: {
+                chain,
+                protocolVersion,
+                dynamicData: {
+                    totalSharesNum: {
+                        gt: 0.000000000001,
+                    },
+                    swapEnabled: true,
+                },
+                id: {
+                    notIn: [...poolIdsToExclude, ...poolsToIgnore],
+                },
+                type: {
+                    in: ['LIQUIDITY_BOOTSTRAPPING'],
+                },
+            },
+            include: prismaPoolWithDynamic.include,
+        });
+
+        const allPools = [...pools, ...lbps];
+
         // cache for 10s
-        this.cache.put(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`, pools, 10 * 1000);
-        return pools;
+        this.cache.put(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`, allPools, 10 * 1000);
+        return allPools;
     }
 
     private mapRoutes(paths: PathWithAmount[], pools: GqlPoolMinimal[]): GqlSorSwapRoute[] {
