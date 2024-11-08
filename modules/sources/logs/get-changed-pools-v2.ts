@@ -14,7 +14,12 @@ const events = VaultV2.filter(
  * @param toBlock - the block to end at. When passing toBlock clients usually complain about too wide block range, without a limit it throws only when max logs are reached
  * @returns - the list of pool addresses that have changed
  */
-export const getChangedPools = async (vaultAddress: string, client: ViemClient, fromBlock: bigint, toBlock: bigint) => {
+export const getChangedPoolsV2 = async (
+    vaultAddress: string,
+    client: ViemClient,
+    fromBlock: bigint,
+    toBlock: bigint,
+) => {
     // Get Transfer logs from the vault
     const logs = await client.getLogs({
         address: vaultAddress as `0x${string}`,
