@@ -1,7 +1,7 @@
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { PoolOnChainDataService } from '../../../pool/lib/pool-on-chain-data.service';
-import { getChangedPoolsV2 } from '../../../sources/logs';
+import { getChangedPools as getChangedPoolsV2FromVaultEvents } from '../../../sources/logs';
 import { getViemClient } from '../../../sources/viem-client';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../last-synced-block';
 
@@ -49,7 +49,18 @@ export const syncChangedPools = async (
             chain,
         },
     });
-    const changedPools = await getChangedPoolsV2(vaultAddress, viemClient, BigInt(startBlock), endBlock);
+    const changedPools = await getChangedPoolsV2FromVaultEvents(vaultAddress, viemClient, BigInt(startBlock), endBlock);
+
+    // always sync LBP pools
+    const lbps = await prisma.prismaPool.findMany({
+        where: {
+            chain,
+            type: 'LIQUIDITY_BOOTSTRAPPING',
+        },
+        select: { id: true },
+    });
+    changedPools.push(...lbps.map((lbp) => lbp.id));
+
     await poolOnChainDataService.updateOnChainData(changedPools, chain, Number(endBlock), tokenPrices);
 
     await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS, endBlock);
