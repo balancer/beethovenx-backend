@@ -177,11 +177,15 @@ type GqlPoolMinimal {
     """
     Only returns main or underlying tokens, also known as leave tokens. Wont return any nested BPTs. Used for displaying the tokens that the pool consists of.
     """
-    displayTokens: [GqlPoolTokenDisplay!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
     """
     Returns all pool tokens, including any nested tokens and phantom BPTs
     """
-    allTokens: [GqlPoolTokenExpanded!]!
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
+    """
+    Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
+    """
+    poolTokens: [GqlPoolTokenDetail!]!
     """
     Dynamic data such as token balances, swap fees or volume
     """
@@ -526,9 +530,9 @@ interface GqlPoolBase {
     """
     displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
     """
-    Returns all pool tokens, including any nested tokens and phantom BPTs on one level.
+    Returns all pool tokens, including any nested tokens and phantom BPTs as a flattened array.
     """
-    allTokens: [GqlPoolTokenExpanded!]!
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     """
     Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep.
     """
@@ -695,8 +699,8 @@ type GqlPoolWeighted implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -733,8 +737,8 @@ type GqlPoolGyro implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -795,8 +799,8 @@ type GqlPoolFx implements GqlPoolBase {
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -829,8 +833,8 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -866,8 +870,8 @@ type GqlPoolStable implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -901,8 +905,8 @@ type GqlPoolMetaStable implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -935,8 +939,8 @@ type GqlPoolComposableStable implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     categories: [GqlPoolFilterCategory]
     tags: [String]
@@ -974,8 +978,8 @@ type GqlPoolElement implements GqlPoolBase {
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
     withdrawConfig: GqlPoolWithdrawConfig! @deprecated(reason: "Removed without replacement")
     dynamicData: GqlPoolDynamicData!
-    displayTokens: [GqlPoolTokenDisplay!]!
-    allTokens: [GqlPoolTokenExpanded!]!
+    displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
+    allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
     poolTokens: [GqlPoolTokenDetail!]!
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     categories: [GqlPoolFilterCategory]

@@ -84,7 +84,7 @@ export class PoolGqlLoaderService {
         // load rate provider data into PoolTokenDetail model
         await this.enrichWithRateproviderData(mappedPool);
 
-        // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
+        // load underlying token info into PoolTokenDetail
         await this.enrichWithErc4626Data(mappedPool);
 
         return mappedPool;
@@ -102,9 +102,6 @@ export class PoolGqlLoaderService {
                         mappedPool.chain,
                     );
                     token.underlyingToken = underlyingTokenDefinition;
-                    if ((mappedPool as GqlPoolUnion).displayTokens) {
-                        (mappedPool as GqlPoolUnion).displayTokens.push();
-                    }
                 }
 
                 const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
@@ -259,7 +256,7 @@ export class PoolGqlLoaderService {
             const pools = await prisma.prismaPool.findMany({
                 ...this.mapQueryArgsToPoolQuery(args),
                 include: {
-                    ...this.getPoolInclude(args.where.userAddress),
+                    ...this.getPoolMinimalInclude(args.where.userAddress),
                 },
             });
 
@@ -290,7 +287,7 @@ export class PoolGqlLoaderService {
 
         const pools = await prisma.prismaPool.findMany({
             ...this.mapQueryArgsToPoolQuery(args),
-            include: prismaPoolMinimal.include,
+            include: this.getPoolInclude(),
         });
 
         return pools.map((pool) => this.mapToMinimalGqlPool(pool));
@@ -311,6 +308,7 @@ export class PoolGqlLoaderService {
             dynamicData: this.getPoolDynamicData(pool),
             allTokens: this.mapAllTokens(pool),
             displayTokens: this.mapDisplayTokens(pool),
+            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
             staking: this.getStakingData(pool),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
             categories: pool.categories as GqlPoolFilterCategory[],
@@ -1479,6 +1477,46 @@ export class PoolGqlLoaderService {
         }
 
         return 'NO_NESTING';
+    }
+
+    private getPoolMinimalInclude(userAddress?: string) {
+        if (!userAddress) {
+            return {
+                ...prismaPoolMinimal.include,
+                staking: {
+                    include: {
+                        ...prismaPoolMinimal.include.staking.include,
+                        userStakedBalances: false,
+                    },
+                },
+                userWalletBalances: false,
+            };
+        }
+
+        return {
+            ...prismaPoolMinimal.include,
+            staking: {
+                include: {
+                    ...prismaPoolMinimal.include.staking.include,
+                    userStakedBalances: {
+                        where: {
+                            userAddress: {
+                                equals: userAddress.toLowerCase(),
+                            },
+                            balanceNum: { gt: 0 },
+                        },
+                    },
+                },
+            },
+            userWalletBalances: {
+                where: {
+                    userAddress: {
+                        equals: userAddress.toLowerCase(),
+                    },
+                    balanceNum: { gt: 0 },
+                },
+            },
+        };
     }
 
     private getPoolInclude(userAddress?: string) {

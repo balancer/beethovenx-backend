@@ -374,7 +374,10 @@ export type GqlPoolAprValue = GqlPoolAprRange | GqlPoolAprTotal;
 export interface GqlPoolBase {
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** Returns all pool tokens, including any nested tokens and phantom BPTs on one level. */
+    /**
+     * Returns all pool tokens, including any nested tokens and phantom BPTs as a flattened array.
+     * @deprecated Use poolTokens instead
+     */
     allTokens: Array<GqlPoolTokenExpanded>;
     /** List of categories assigned by the team based on external factors */
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
@@ -480,6 +483,7 @@ export interface GqlPoolBatchSwapSwap {
 export interface GqlPoolComposableStable extends GqlPoolBase {
     __typename?: 'GqlPoolComposableStable';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
@@ -487,6 +491,7 @@ export interface GqlPoolComposableStable extends GqlPoolBase {
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -600,12 +605,14 @@ export interface GqlPoolDynamicData {
 export interface GqlPoolElement extends GqlPoolBase {
     __typename?: 'GqlPoolElement';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     baseToken: Scalars['Bytes'];
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -750,6 +757,7 @@ export type GqlPoolFilterCategory =
 export interface GqlPoolFx extends GqlPoolBase {
     __typename?: 'GqlPoolFx';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     alpha: Scalars['String'];
     beta: Scalars['String'];
@@ -758,6 +766,7 @@ export interface GqlPoolFx extends GqlPoolBase {
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
     delta: Scalars['String'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     epsilon: Scalars['String'];
@@ -794,6 +803,7 @@ export interface GqlPoolFx extends GqlPoolBase {
 export interface GqlPoolGyro extends GqlPoolBase {
     __typename?: 'GqlPoolGyro';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     alpha: Scalars['String'];
     beta: Scalars['String'];
@@ -803,6 +813,7 @@ export interface GqlPoolGyro extends GqlPoolBase {
     createTime: Scalars['Int'];
     dSq: Scalars['String'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -892,11 +903,13 @@ export type GqlPoolJoinExitType = 'Exit' | 'Join';
 export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
     __typename?: 'GqlPoolLiquidityBootstrapping';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -933,12 +946,14 @@ export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
 export interface GqlPoolMetaStable extends GqlPoolBase {
     __typename?: 'GqlPoolMetaStable';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     amp: Scalars['BigInt'];
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -972,7 +987,10 @@ export interface GqlPoolMinimal {
     __typename?: 'GqlPoolMinimal';
     /** The contract address of the pool. */
     address: Scalars['Bytes'];
-    /** Returns all pool tokens, including any nested tokens and phantom BPTs */
+    /**
+     * Returns all pool tokens, including any nested tokens and phantom BPTs
+     * @deprecated Use poolTokens instead
+     */
     allTokens: Array<GqlPoolTokenExpanded>;
     /** List of categories assigned by the team based on external factors */
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
@@ -982,7 +1000,10 @@ export interface GqlPoolMinimal {
     createTime: Scalars['Int'];
     /** The decimals of the BPT, usually 18 */
     decimals: Scalars['Int'];
-    /** Only returns main or underlying tokens, also known as leave tokens. Wont return any nested BPTs. Used for displaying the tokens that the pool consists of. */
+    /**
+     * Only returns main or underlying tokens, also known as leave tokens. Wont return any nested BPTs. Used for displaying the tokens that the pool consists of.
+     * @deprecated Use poolTokens instead
+     */
     displayTokens: Array<GqlPoolTokenDisplay>;
     /** Dynamic data such as token balances, swap fees or volume */
     dynamicData: GqlPoolDynamicData;
@@ -1004,6 +1025,8 @@ export interface GqlPoolMinimal {
     name: Scalars['String'];
     /** The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP. */
     owner?: Maybe<Scalars['Bytes']>;
+    /** Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep. */
+    poolTokens: Array<GqlPoolTokenDetail>;
     /** The protocol version on which the pool is deployed, 1, 2 or 3 */
     protocolVersion: Scalars['Int'];
     /** Staking options of this pool which emit additional rewards */
@@ -1076,6 +1099,7 @@ export type GqlPoolSnapshotDataRange =
 export interface GqlPoolStable extends GqlPoolBase {
     __typename?: 'GqlPoolStable';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     amp: Scalars['BigInt'];
     bptPriceRate: Scalars['BigDecimal'];
@@ -1083,6 +1107,7 @@ export interface GqlPoolStable extends GqlPoolBase {
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -1473,11 +1498,13 @@ export interface GqlPoolUserSwapVolume {
 export interface GqlPoolWeighted extends GqlPoolBase {
     __typename?: 'GqlPoolWeighted';
     address: Scalars['Bytes'];
+    /** @deprecated Use poolTokens instead */
     allTokens: Array<GqlPoolTokenExpanded>;
     categories?: Maybe<Array<Maybe<GqlPoolFilterCategory>>>;
     chain: GqlChain;
     createTime: Scalars['Int'];
     decimals: Scalars['Int'];
+    /** @deprecated Use poolTokens instead */
     displayTokens: Array<GqlPoolTokenDisplay>;
     dynamicData: GqlPoolDynamicData;
     factory?: Maybe<Scalars['Bytes']>;
@@ -3895,6 +3922,7 @@ export type GqlPoolMinimalResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
