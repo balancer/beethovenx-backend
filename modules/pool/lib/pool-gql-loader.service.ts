@@ -90,7 +90,7 @@ export class PoolGqlLoaderService {
         return mappedPool;
     }
 
-    private async enrichWithErc4626Data(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
+    private async enrichWithErc4626Data(mappedPool: GqlPoolUnion | GqlPoolAggregator | GqlPoolMinimal) {
         for (const token of mappedPool.poolTokens) {
             if (token.isErc4626) {
                 const prismaToken = await prisma.prismaToken.findUnique({
@@ -154,7 +154,7 @@ export class PoolGqlLoaderService {
         }
     }
 
-    private async enrichWithRateproviderData(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
+    private async enrichWithRateproviderData(mappedPool: GqlPoolMinimal | GqlPoolAggregator | GqlPoolUnion) {
         for (const token of mappedPool.poolTokens) {
             if (token.priceRateProvider && token.priceRateProvider !== ZERO_ADDRESS) {
                 const rateproviderData = await prisma.prismaPriceRateProviderData.findUnique({
@@ -233,7 +233,7 @@ export class PoolGqlLoaderService {
             // load rate provider data into PoolTokenDetail model
             await this.enrichWithRateproviderData(mappedPool);
 
-            // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
+            // load underlying token info into PoolTokenDetail
             await this.enrichWithErc4626Data(mappedPool);
         }
 
@@ -268,6 +268,14 @@ export class PoolGqlLoaderService {
                 ),
             );
 
+            for (const mappedPool of gqlPools) {
+                // load rate provider data into PoolTokenDetail model
+                await this.enrichWithRateproviderData(mappedPool);
+
+                // load underlying token info into PoolTokenDetail
+                await this.enrichWithErc4626Data(mappedPool);
+            }
+
             if (args.orderBy === 'userbalanceUsd') {
                 let sortedPools = [];
                 if (args.orderDirection === 'asc') {
@@ -290,7 +298,17 @@ export class PoolGqlLoaderService {
             include: this.getPoolInclude(),
         });
 
-        return pools.map((pool) => this.mapToMinimalGqlPool(pool));
+        const gqlPools = pools.map((pool) => this.mapToMinimalGqlPool(pool));
+
+        for (const mappedPool of gqlPools) {
+            // load rate provider data into PoolTokenDetail model
+            await this.enrichWithRateproviderData(mappedPool);
+
+            // load underlying token info into PoolTokenDetail
+            await this.enrichWithErc4626Data(mappedPool);
+        }
+
+        return gqlPools;
     }
 
     public mapToMinimalGqlPool(

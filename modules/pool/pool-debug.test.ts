@@ -393,4 +393,55 @@ describe('pool debugging', () => {
         // await poolService.syncAllPoolsFromSubgraph();
         // await poolService.syncChangedPools();
     }, 5000000);
+
+    it('pool tokens minimalpool', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const gqlPools = await poolService.getGqlPools({where: {
+            "poolTypeIn": [
+                "WEIGHTED",
+                "STABLE",
+                "COMPOSABLE_STABLE",
+                "META_STABLE",
+                "LIQUIDITY_BOOTSTRAPPING",
+                "GYRO",
+                "GYRO3",
+                "GYROE",
+                "COW_AMM",
+                "FX"
+            ],
+            "chainIn": [
+                "MAINNET",
+                "ARBITRUM",
+                "AVALANCHE",
+                "BASE",
+                "GNOSIS",
+                "POLYGON",
+                "ZKEVM",
+                "OPTIMISM",
+                "MODE",
+                "FRAXTAL",
+                "SEPOLIA"
+            ],
+            "userAddress": null,
+            "minTvl": 0,
+            "tagIn": null,
+            "tagNotIn": [
+                "BLACK_LISTED"
+            ],
+            "protocolVersionIn": [
+                3
+            ]
+        },
+        "textSearch": null
+    })
+    
+
+        console.log(gqlPools.length);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
 });
