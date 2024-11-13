@@ -463,7 +463,7 @@ class SorPathService implements SwapService {
      * Fetch pools from Prisma and map to b-sdk BasePool.
      * @returns
      */
-    private async getBasePoolsFromDb(
+    public async getBasePoolsFromDb(
         chain: Chain,
         protocolVersion: number,
         considerPoolsWithHooks: boolean,

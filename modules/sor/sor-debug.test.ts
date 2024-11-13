@@ -53,6 +53,7 @@ describe('sor debugging', () => {
             swapAmount: '1',
             queryBatchSwap: false,
             useProtocolVersion: 3,
+            considerPoolsWithHooks: true,
             // callDataInput: {
             //     receiver: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
             //     sender: '0xb5e6b895734409Df411a052195eb4EE7e40d8696',
