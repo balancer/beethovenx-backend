@@ -310,10 +310,36 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
         tokens: {
             orderBy: { index: 'asc' },
             include: {
+                dynamicData: true,
                 token: {
                     include: { types: true },
                 },
-                dynamicData: true,
+                nestedPool: {
+                    include: {
+                        dynamicData: true,
+                        tokens: {
+                            orderBy: { index: 'asc' },
+                            include: {
+                                token: {
+                                    include: { types: true },
+                                },
+                                dynamicData: true,
+                                nestedPool: {
+                                    include: {
+                                        dynamicData: true,
+                                        tokens: {
+                                            orderBy: { index: 'asc' },
+                                            include: {
+                                                token: true,
+                                                dynamicData: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         staking: {

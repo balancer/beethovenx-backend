@@ -37,20 +37,20 @@ describe('sor debugging', () => {
     }, 5000000);
 
     it('sor v3 sepolia eth->usdc', async () => {
-        const chain = Chain.SEPOLIA;
+        const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', chainId);
         //only do once before starting to debug
-        await PoolController().reloadPoolsV3(chain);
+        // await PoolController().reloadPoolsV3(chain);
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8', // USDC (aave)
-            tokenOut: '0xff34b3d4aee8ddcd6f9afffb6fe49bd371b8a357', // DAI (aave)
+            tokenIn: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            tokenOut: '0x220e4201aa472262df2c24dd8069243cf4b76c12',
             swapType: 'EXACT_IN',
-            swapAmount: '1',
+            swapAmount: '100',
             queryBatchSwap: false,
             useProtocolVersion: 3,
             considerPoolsWithHooks: true,

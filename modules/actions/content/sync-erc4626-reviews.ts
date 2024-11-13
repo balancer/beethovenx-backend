@@ -6,7 +6,7 @@ export const syncErc4626Reviews = async (): Promise<void> => {
 
     const data = erc4626Reviews.map((item) => ({
         chain: item.chain,
-        erc4626Address: item.erc4626Address,
+        erc4626Address: item.erc4626Address.toLowerCase(),
         name: item.name,
         assetAddress: item.asset.toLowerCase(),
         summary: item.summary,
