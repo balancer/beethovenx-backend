@@ -149,6 +149,9 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
                                 },
                             },
                         },
+                        hook: {
+                            include: { reviewData: true },
+                        },
                     },
                 },
             },
@@ -237,6 +240,9 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                             },
                         },
                     },
+                },
+                hook: {
+                    include: { reviewData: true },
                 },
             },
         },
@@ -337,6 +343,9 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
                                     },
                                 },
                             },
+                        },
+                        hook: {
+                            include: { reviewData: true },
                         },
                     },
                 },
