@@ -1,5 +1,14 @@
 # backend
 
+## 1.23.2
+
+### Patch Changes
+
+-   3d6a3de: add poolTokens to minimal pool
+-   67a718c: SOR - Add support to Dola/USDC stable swap
+-   f5911fd: adding hook info to nested pools
+-   6b140a4: add ERC4626 and rateprovider data into poolTokens of MinimalPool
+
 ## 1.23.1
 
 ### Patch Changes
