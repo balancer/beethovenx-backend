@@ -899,6 +899,7 @@ export class PoolGqlLoaderService {
             ),
             swapFee: nestedPool.dynamicData?.swapFee || '0',
             bptPriceRate: (nestedPool.typeData as StableData).bptPriceRate || '1.0',
+            hook: this.mapHookData(nestedPool.hook || undefined, nestedPool.hook?.reviewData || undefined),
         };
     }
 

@@ -145,6 +145,9 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
                                                 dynamicData: true,
                                             },
                                         },
+                                        hook: {
+                                            include: { reviewData: true },
+                                        },
                                     },
                                 },
                             },
@@ -181,9 +184,15 @@ export const nestedPoolWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPo
                                 dynamicData: true,
                             },
                         },
+                        hook: {
+                            include: { reviewData: true },
+                        },
                     },
                 },
             },
+        },
+        hook: {
+            include: { reviewData: true },
         },
     },
 });
@@ -236,6 +245,9 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                                         token: true,
                                         dynamicData: true,
                                     },
+                                },
+                                hook: {
+                                    include: { reviewData: true },
                                 },
                             },
                         },
@@ -339,6 +351,9 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
                                                 token: true,
                                                 dynamicData: true,
                                             },
+                                        },
+                                        hook: {
+                                            include: { reviewData: true },
                                         },
                                     },
                                 },

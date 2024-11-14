@@ -165,6 +165,11 @@ export const schema = gql`
         factory: Bytes
 
         """
+        Hook assigned to a pool
+        """
+        hook: Hook
+
+        """
         Unique identifier of the pool.
         """
         id: ID!

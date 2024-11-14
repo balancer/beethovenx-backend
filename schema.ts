@@ -151,6 +151,8 @@ export interface GqlNestedPool {
     createTime: Scalars['Int'];
     /** Address of the factory contract that created the pool, if applicable. */
     factory?: Maybe<Scalars['Bytes']>;
+    /** Hook assigned to a pool */
+    hook?: Maybe<Hook>;
     /** Unique identifier of the pool. */
     id: Scalars['ID'];
     /** Liquidity management settings for v3 pools. */
@@ -3258,6 +3260,7 @@ export type GqlNestedPoolResolvers<
     bptPriceRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     createTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     factory?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    hook?: Resolver<Maybe<ResolversTypes['Hook']>, ParentType, ContextType>;
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

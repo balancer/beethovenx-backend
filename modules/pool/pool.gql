@@ -1196,6 +1196,10 @@ type GqlNestedPool {
     Liquidity management settings for v3 pools.
     """
     liquidityManagement: LiquidityManagement
+    """
+    Hook assigned to a pool
+    """
+    hook: Hook
 }
 
 interface GqlPoolTokenBase @deprecated(reason: "Use GqlPoolTokenDetail instead") {
