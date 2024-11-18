@@ -527,7 +527,7 @@ class SorPathService implements SwapService {
                     in: ['LIQUIDITY_BOOTSTRAPPING'],
                 },
             },
-            include: prismaPoolWithDynamic.include,
+            include: prismaPoolWithDynamicAndHook.include,
         });
 
         const allPools = [...pools, ...lbps];
