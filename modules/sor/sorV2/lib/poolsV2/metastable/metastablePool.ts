@@ -1,7 +1,7 @@
 import { Chain } from '@prisma/client';
 import { Address, Hex, parseEther, parseUnits } from 'viem';
 import { ComposableStablePoolToken } from '../composableStable/composableStablePool';
-import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { _calcInGivenOut, _calcOutGivenIn, _calculateInvariant } from '../composableStable/stableMath';
 import { MathSol, WAD } from '../../utils/math';
 import { PoolType, SwapKind, Token, TokenAmount } from '@balancer/sdk';
@@ -23,7 +23,7 @@ export class MetaStablePool implements BasePool {
     private readonly tokenMap: Map<string, ComposableStablePoolToken>;
     private readonly tokenIndexMap: Map<string, number>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): MetaStablePool {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): MetaStablePool {
         const poolTokens: ComposableStablePoolToken[] = [];
 
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');

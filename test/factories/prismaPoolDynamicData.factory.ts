@@ -1,9 +1,9 @@
 import { Factory } from 'fishery';
-import { PrismaPoolWithDynamicAndHook } from '../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../prisma/prisma-types';
 import { createRandomAddress } from '../utils';
 import { Chain } from '@prisma/client';
 
-export class PrismaPoolDynamicDataFactory extends Factory<PrismaPoolWithDynamicAndHook['dynamicData']> {}
+export class PrismaPoolDynamicDataFactory extends Factory<PrismaPoolAndHookWithDynamic['dynamicData']> {}
 
 export const prismaPoolDynamicDataFactory = PrismaPoolDynamicDataFactory.define(({ params }) => {
     const poolId = params?.id || createRandomAddress();

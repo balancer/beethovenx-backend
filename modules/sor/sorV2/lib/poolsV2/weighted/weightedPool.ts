@@ -1,4 +1,4 @@
-import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { GqlPoolType } from '../../../../../../schema';
 import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
@@ -23,7 +23,7 @@ export class WeightedPool implements BasePool {
 
     private readonly tokenMap: Map<string, WeightedPoolToken>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): WeightedPool {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): WeightedPool {
         const poolTokens: WeightedPoolToken[] = [];
 
         if (!pool.dynamicData) {

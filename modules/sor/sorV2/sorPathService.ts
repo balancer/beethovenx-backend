@@ -10,7 +10,7 @@ import {
     GqlSwapCallDataInput,
 } from '../../../schema';
 import { Chain, PrismaHook } from '@prisma/client';
-import { PrismaPoolWithDynamicAndHook, prismaPoolWithDynamicAndHook } from '../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
 import { poolsToIgnore } from '../constants';
@@ -41,7 +41,7 @@ import { SwapLocal } from './lib/swapLocal';
 import { Cache } from 'memory-cache';
 
 class SorPathService implements SwapService {
-    private cache = new Cache<string, PrismaPoolWithDynamicAndHook[]>();
+    private cache = new Cache<string, PrismaPoolAndHookWithDynamic[]>();
     private readonly SOR_POOLS_CACHE_KEY = `sor:pools`;
 
     // This is only used for the old SOR service
@@ -467,7 +467,7 @@ class SorPathService implements SwapService {
         chain: Chain,
         protocolVersion: number,
         considerPoolsWithHooks: boolean,
-    ): Promise<PrismaPoolWithDynamicAndHook[]> {
+    ): Promise<PrismaPoolAndHookWithDynamic[]> {
         const cached = this.cache.get(
             `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
         );
@@ -507,7 +507,7 @@ class SorPathService implements SwapService {
                 },
                 ...(considerPoolsWithHooks ? {} : { hookId: null }),
             },
-            include: prismaPoolWithDynamicAndHook.include,
+            include: prismaPoolAndHookWithDynamic.include,
         });
 
         const lbps = await prisma.prismaPool.findMany({
@@ -527,7 +527,7 @@ class SorPathService implements SwapService {
                     in: ['LIQUIDITY_BOOTSTRAPPING'],
                 },
             },
-            include: prismaPoolWithDynamicAndHook.include,
+            include: prismaPoolAndHookWithDynamic.include,
         });
 
         const allPools = [...pools, ...lbps];

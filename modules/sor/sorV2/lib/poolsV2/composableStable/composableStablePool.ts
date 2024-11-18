@@ -1,4 +1,4 @@
-import { PrismaPoolWithDynamicAndHook } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
 import { Address, Hex, parseEther, parseUnits } from 'viem';
@@ -56,7 +56,7 @@ export class ComposableStablePool implements BasePool {
     private readonly tokenMap: Map<string, ComposableStablePoolToken>;
     private readonly tokenIndexMap: Map<string, number>;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamicAndHook): ComposableStablePool {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): ComposableStablePool {
         const poolTokens: ComposableStablePoolToken[] = [];
 
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');
