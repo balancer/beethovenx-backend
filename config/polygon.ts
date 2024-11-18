@@ -177,18 +177,6 @@ export default <NetworkData>{
                 path: 'value',
                 isIbYield: true,
             },
-            overnightUSDPlus: {
-                tokenAddress: '0x5d9d8509c522a47d9285b9e4e9ec686e6a580850',
-                sourceUrl: 'https://api.overnight.fi/optimism/usd+/fin-data/avg-apr/week',
-                path: 'value',
-                group: 'OVERNIGHT',
-            },
-            overnightstUSDPlus: {
-                tokenAddress: '0x5a5c6aa6164750b530b8f7658b827163b3549a4d',
-                sourceUrl: 'https://api.overnight.fi/optimism/usd+/fin-data/avg-apr/week',
-                path: 'value',
-                group: 'OVERNIGHT',
-            },
             wbETH: {
                 tokenAddress: '0xa2e3356610840701bdf5611a53974510ae27e2e1',
                 sourceUrl:
