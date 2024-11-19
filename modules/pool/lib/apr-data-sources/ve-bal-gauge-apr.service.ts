@@ -87,7 +87,8 @@ export class GaugeAprService implements PoolAprService {
             // Calculate APRs
             const totalShares = parseFloat(pool.dynamicData.totalShares);
             const bptPrice = pool.dynamicData.totalLiquidity / totalShares;
-            const gaugeTvl = totalShares > 0 ? parseFloat(gauge.totalSupply) * bptPrice : 0;
+            const gaugeTotalShares = parseFloat(gauge.totalSupply);
+            const gaugeTvl = gaugeTotalShares * bptPrice;
             const workingSupply = parseFloat(gauge.workingSupply);
 
             const aprItems = rewards
@@ -118,8 +119,8 @@ export class GaugeAprService implements PoolAprService {
                     if (isVeBalemissions && (networkContext.chain === 'MAINNET' || gauge.version === 2)) {
                         let minApr = 0;
                         if (gaugeTvl > 0) {
-                            if (workingSupply > 0 && totalShares > 0) {
-                                minApr = (((totalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
+                            if (workingSupply > 0 && gaugeTotalShares > 0) {
+                                minApr = (((gaugeTotalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
                             } else {
                                 minApr = rewardPerYear / gaugeTvl;
                             }
@@ -136,13 +137,6 @@ export class GaugeAprService implements PoolAprService {
                         };
 
                         itemData.apr = minApr * this.MAX_VEBAL_BOOST;
-                        if (Number.isNaN(itemData.apr)) {
-                            console.log(`${gauge.id} ${symbol} apr is NaN`);
-                            console.log('rewardPerYear', rewardPerYear);
-                            console.log('gaugeTvl', gaugeTvl);
-                            console.log('totalShares', totalShares);
-                            console.log('workingSupply', workingSupply);
-                        }
 
                         return [itemData, rangeData];
                     } else {
