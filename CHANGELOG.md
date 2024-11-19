@@ -1,5 +1,14 @@
 # backend
 
+## 1.23.3
+
+### Patch Changes
+
+-   f7ee6e5: Feat add pool with hook consider flag
+-   6551463: remove overnight apr
+-   c9e8d42: using total supply instead of working supply for gauge tvl, as per zen dragon
+-   6e4feff: adapt gauge apr again as per zen dragon
+
 ## 1.23.2
 
 ### Patch Changes
