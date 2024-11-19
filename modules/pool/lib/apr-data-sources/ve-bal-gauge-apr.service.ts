@@ -117,10 +117,12 @@ export class GaugeAprService implements PoolAprService {
                     // this is deprecated
                     if (isVeBalemissions && (networkContext.chain === 'MAINNET' || gauge.version === 2)) {
                         let minApr = 0;
-                        if (workingSupply > 0 && totalShares > 0) {
-                            minApr = (((totalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
-                        } else if (gaugeTvl > 0) {
-                            minApr = rewardPerYear / gaugeTvl;
+                        if (gaugeTvl > 0) {
+                            if (workingSupply > 0 && totalShares > 0) {
+                                minApr = (((totalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
+                            } else {
+                                minApr = rewardPerYear / gaugeTvl;
+                            }
                         }
 
                         const aprRangeId = `${itemData.id}-range`;
@@ -134,6 +136,13 @@ export class GaugeAprService implements PoolAprService {
                         };
 
                         itemData.apr = minApr * this.MAX_VEBAL_BOOST;
+                        if (Number.isNaN(itemData.apr)) {
+                            console.log(`${gauge.id} ${symbol} apr is NaN`);
+                            console.log('rewardPerYear', rewardPerYear);
+                            console.log('gaugeTvl', gaugeTvl);
+                            console.log('totalShares', totalShares);
+                            console.log('workingSupply', workingSupply);
+                        }
 
                         return [itemData, rangeData];
                     } else {
