@@ -88,6 +88,7 @@ export class GaugeAprService implements PoolAprService {
             const totalShares = parseFloat(pool.dynamicData.totalShares);
             const bptPrice = pool.dynamicData.totalLiquidity / totalShares;
             const gaugeTvl = totalShares > 0 ? parseFloat(gauge.totalSupply) * bptPrice : 0;
+            const workingSupply = parseFloat(gauge.workingSupply);
 
             const aprItems = rewards
                 .map((reward) => {
@@ -116,7 +117,9 @@ export class GaugeAprService implements PoolAprService {
                     // this is deprecated
                     if (isVeBalemissions && (networkContext.chain === 'MAINNET' || gauge.version === 2)) {
                         let minApr = 0;
-                        if (gaugeTvl > 0) {
+                        if (workingSupply > 0) {
+                            minApr = (((totalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
+                        } else if (gaugeTvl > 0) {
                             minApr = rewardPerYear / gaugeTvl;
                         }
 
