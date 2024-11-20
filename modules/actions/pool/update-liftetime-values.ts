@@ -14,8 +14,8 @@ export const updateLifetimeValues = async (poolIds: string[]) => {
     const data = allKeys.map((key) => {
         const [poolId, chain] = key.split('-');
         const holdersCount = holders[key] || 0;
-        const totalSwapFee = lifetime[key]?.totalSwapFee || 0;
-        const totalSwapVolume = lifetime[key]?.totalSwapVolume || 0;
+        const lifetimeSwapFees = lifetime[key]?.lifetimeSwapFees || 0;
+        const lifetimeVolume = lifetime[key]?.lifetimeVolume || 0;
 
         return {
             where: {
@@ -26,8 +26,8 @@ export const updateLifetimeValues = async (poolIds: string[]) => {
             },
             data: {
                 holdersCount,
-                lifetimeSwapFees: totalSwapFee,
-                lifetimeVolume: totalSwapVolume,
+                lifetimeSwapFees,
+                lifetimeVolume,
             },
         };
     });
@@ -78,29 +78,28 @@ const getHoldersCount = async (poolIds: string[]) => {
 
 const getSwapLifetimeValues = async (poolIds: string[]) => {
     // Get latest snapshots for each pool
-    const snapshots = await prisma.prismaPoolSnapshot.findMany({
+    const swapLifetimeValues = await prisma.prismaPoolSnapshot.groupBy({
+        by: ['poolId', 'chain'],
+        _sum: {
+            fees24h: true,
+            volume24h: true,
+        },
         where: {
             poolId: {
                 in: poolIds,
             },
         },
-        orderBy: {
-            timestamp: 'desc',
-        },
-        distinct: ['poolId', 'chain'],
-        select: {
-            poolId: true,
-            chain: true,
-            totalSwapFee: true,
-            totalSwapVolume: true,
-        },
     });
 
-    const lifetimeValues = snapshots.reduce((acc, { poolId, chain, totalSwapFee, totalSwapVolume }) => {
-        if (!poolId) return acc;
-        acc[`${poolId}-${chain}`] = { totalSwapFee, totalSwapVolume };
+    const lifetimeValues = swapLifetimeValues.reduce((acc, { poolId, chain, _sum }) => {
+        const key = `${poolId}-${chain}`;
+        if (!acc[key]) {
+            acc[key] = { lifetimeSwapFees: 0, lifetimeVolume: 0 };
+        }
+        acc[key].lifetimeSwapFees += _sum.fees24h || 0;
+        acc[key].lifetimeVolume += _sum.volume24h || 0;
         return acc;
-    }, {} as Record<string, { totalSwapFee: number; totalSwapVolume: number }>);
+    }, {} as Record<string, { lifetimeSwapFees: number; lifetimeVolume: number }>);
 
     return lifetimeValues;
 };
