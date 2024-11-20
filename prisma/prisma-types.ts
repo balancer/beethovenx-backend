@@ -3,7 +3,6 @@ import { Prisma, PrismaToken, PrismaTokenTypeOption, PrismaPoolEvent } from '@pr
 export type PoolUpsertData = {
     pool: Prisma.PrismaPoolCreateInput;
     tokens: Prisma.PrismaTokenCreateInput[];
-    hook?: Prisma.PrismaHookCreateInput;
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
     poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
@@ -65,9 +64,6 @@ export type PrismaPoolTokenWithDynamicData = Prisma.PrismaPoolTokenGetPayload<ty
 export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: {
-            include: { reviewData: true },
-        },
         staking: {
             include: {
                 farm: {
@@ -145,15 +141,9 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
                                                 dynamicData: true,
                                             },
                                         },
-                                        hook: {
-                                            include: { reviewData: true },
-                                        },
                                     },
                                 },
                             },
-                        },
-                        hook: {
-                            include: { reviewData: true },
                         },
                     },
                 },
@@ -184,15 +174,9 @@ export const nestedPoolWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPo
                                 dynamicData: true,
                             },
                         },
-                        hook: {
-                            include: { reviewData: true },
-                        },
                     },
                 },
             },
-        },
-        hook: {
-            include: { reviewData: true },
         },
     },
 });
@@ -246,15 +230,9 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                                         dynamicData: true,
                                     },
                                 },
-                                hook: {
-                                    include: { reviewData: true },
-                                },
                             },
                         },
                     },
-                },
-                hook: {
-                    include: { reviewData: true },
                 },
             },
         },
@@ -295,9 +273,6 @@ export type PrismaTokenWithTypes = PrismaToken & {
 export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: {
-            include: { reviewData: true },
-        },
         allTokens: {
             include: {
                 token: {
@@ -352,15 +327,9 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
                                                 dynamicData: true,
                                             },
                                         },
-                                        hook: {
-                                            include: { reviewData: true },
-                                        },
                                     },
                                 },
                             },
-                        },
-                        hook: {
-                            include: { reviewData: true },
                         },
                     },
                 },
@@ -425,7 +394,6 @@ export const prismaPoolAndHookWithDynamic = Prisma.validator<Prisma.PrismaPoolAr
                 dynamicData: true,
             },
         },
-        hook: true,
     },
 });
 

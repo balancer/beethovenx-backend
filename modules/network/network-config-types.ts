@@ -119,6 +119,7 @@ export interface NetworkData {
     hooks?: {
         feeTakingHook?: string[];
         exitFeeHook?: string[];
+        stableSurgeHook?: string[];
     };
     multicall: string;
     multicall3: string;

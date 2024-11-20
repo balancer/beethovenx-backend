@@ -111,33 +111,13 @@ export const upsertPools = async (
         });
 
     // Upsert pools to the database
-    for (const { pool, hook, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {
-        const hookCreateOrConnect =
-            (hook && {
-                connectOrCreate: {
-                    where: {
-                        address_chain: {
-                            address: hook.address,
-                            chain: hook.chain,
-                        },
-                    },
-                    create: hook,
-                },
-            }) ||
-            undefined;
-
+    for (const { pool, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {
         try {
             await prisma.$transaction([
                 prisma.prismaPool.upsert({
                     where: { id_chain: { id: pool.id, chain: pool.chain } },
-                    create: {
-                        ...pool,
-                        hook: hookCreateOrConnect,
-                    },
-                    update: {
-                        ...pool,
-                        hook: hookCreateOrConnect,
-                    },
+                    create: pool,
+                    update: pool,
                 }),
 
                 prisma.prismaPoolDynamicData.upsert({

@@ -74,27 +74,30 @@ describe('pool debugging', () => {
 
     it('sync aprs', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '250');
+        setRequestScopedContextValue('chainId', '42161');
         // //only do once before starting to debug
-        // // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncAllPoolsFromSubgraph();
+        await PoolController().syncOnchainDataForAllPoolsV2('ARBITRUM');
         // await userService.initWalletBalancesForAllPools();
         // await poolService.reloadStakingForAllPools(['GAUGE'], 'MAINNET');
         // await userService.initStakedBalances(['GAUGE']);
         // // await CowAmmController().reloadPools('MAINNET');
         // // await CowAmmController().syncSwaps('1');
-        // // await tokenService.updateTokenPrices(['MAINNET']);
-        // await poolService.syncStakingForPools(['MAINNET']);
-        await poolService.updatePoolAprs('FANTOM');
-        const aprs = await prisma.prismaPoolAprItem.findMany({
-            where: { chain: 'FANTOM', poolId: '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760' },
-        });
-        console.log(aprs);
-        const pool = await poolService.getGqlPool(
-            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
-            'FANTOM',
-        );
-        expect(pool.dynamicData.aprItems).toBeDefined();
-        expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
+        // await tokenService.updateTokenPrices(['ARBITRUM']);
+        // await PoolController().updateLiquidityValuesForActivePools('ARBITRUM');
+
+        // await poolService.syncStakingForPools(['ARBITRUM']);
+        await poolService.updatePoolAprs('ARBITRUM');
+        // const aprs = await prisma.prismaPoolAprItem.findMany({
+        //     where: { chain: 'FANTOM', poolId: '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760' },
+        // });
+        // console.log(aprs);
+        // const pool = await poolService.getGqlPool(
+        //     '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+        //     'FANTOM',
+        // );
+        // expect(pool.dynamicData.aprItems).toBeDefined();
+        // expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
 
         // await poolService.updatePoolAprs('MAINNET');
         // expect(aprs[0].apr).toBeGreaterThan(0);
@@ -398,45 +401,41 @@ describe('pool debugging', () => {
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', '11155111');
 
-        const gqlPools = await poolService.getGqlPools({where: {
-            "poolTypeIn": [
-                "WEIGHTED",
-                "STABLE",
-                "COMPOSABLE_STABLE",
-                "META_STABLE",
-                "LIQUIDITY_BOOTSTRAPPING",
-                "GYRO",
-                "GYRO3",
-                "GYROE",
-                "COW_AMM",
-                "FX"
-            ],
-            "chainIn": [
-                "MAINNET",
-                "ARBITRUM",
-                "AVALANCHE",
-                "BASE",
-                "GNOSIS",
-                "POLYGON",
-                "ZKEVM",
-                "OPTIMISM",
-                "MODE",
-                "FRAXTAL",
-                "SEPOLIA"
-            ],
-            "userAddress": null,
-            "minTvl": 0,
-            "tagIn": null,
-            "tagNotIn": [
-                "BLACK_LISTED"
-            ],
-            "protocolVersionIn": [
-                3
-            ]
-        },
-        "textSearch": null
-    })
-    
+        const gqlPools = await poolService.getGqlPools({
+            where: {
+                poolTypeIn: [
+                    'WEIGHTED',
+                    'STABLE',
+                    'COMPOSABLE_STABLE',
+                    'META_STABLE',
+                    'LIQUIDITY_BOOTSTRAPPING',
+                    'GYRO',
+                    'GYRO3',
+                    'GYROE',
+                    'COW_AMM',
+                    'FX',
+                ],
+                chainIn: [
+                    'MAINNET',
+                    'ARBITRUM',
+                    'AVALANCHE',
+                    'BASE',
+                    'GNOSIS',
+                    'POLYGON',
+                    'ZKEVM',
+                    'OPTIMISM',
+                    'MODE',
+                    'FRAXTAL',
+                    'SEPOLIA',
+                ],
+                userAddress: null,
+                minTvl: 0,
+                tagIn: null,
+                tagNotIn: ['BLACK_LISTED'],
+                protocolVersionIn: [3],
+            },
+            textSearch: null,
+        });
 
         console.log(gqlPools.length);
 

@@ -64,6 +64,7 @@ export default <NetworkData>{
     hooks: {
         feeTakingHook: ['0x5c7fb0734d327ecee2ca5cf2f5fe0f5ff32dbf0b'],
         exitFeeHook: ['0x307d96183f133c738af11d1971bf0a5ee15312be'],
+        stableSurgeHook: ['0x1adc55adb4caae71abb4c33f606493f4114d2091'],
     },
     multicall: '0x25eef291876194aefad0d60dff89e268b90754bb',
     multicall3: '0xca11bde05977b3631167028862be2a173976ca11',

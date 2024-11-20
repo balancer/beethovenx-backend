@@ -1,5 +1,7 @@
 import { prisma } from '../../../prisma/prisma-client';
 import { getHookReviews } from '../../sources/github/hook-reviews';
+import { HookData } from '../../sources/transformers';
+import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 
 export const syncHookReviews = async (): Promise<void> => {
     const hookReviews = await getHookReviews();
@@ -14,12 +16,29 @@ export const syncHookReviews = async (): Promise<void> => {
         warnings: item.warnings.join(','),
     }));
 
-    const storedHookes = (await prisma.prismaHook.findMany({})).map((hook) => hook.address);
+    // Get hook addresses from the database
+    const poolsWithHooks = await prisma.prismaPool.findMany({
+        where: { hook: { not: {} } },
+    });
 
-    const filteredData = data.filter((item) => storedHookes.includes(item.hookAddress));
+    const operations = [];
 
-    await prisma.$transaction([
-        prisma.prismaHookReviewData.deleteMany(),
-        prisma.prismaHookReviewData.createMany({ data: filteredData, skipDuplicates: true }),
-    ]);
+    for (const pool of poolsWithHooks) {
+        const filteredData = data.find(
+            (item) => pool.chain === item.chain && (pool.hook as HookData).address === item.hookAddress,
+        );
+        operations.push(
+            prisma.prismaPool.update({
+                where: { id_chain: { id: pool.id, chain: pool.chain } },
+                data: {
+                    hook: {
+                        ...(pool.hook as HookData),
+                        reviewData: filteredData,
+                    },
+                },
+            }),
+        );
+    }
+
+    await prismaBulkExecuteOperations(operations, false);
 };

@@ -316,27 +316,13 @@ export function PoolController(tracer?: any) {
             }
 
             // Get hook addresses from the database
-            const addresses = await prisma.prismaHook
-                .findMany({
-                    where: { chain },
-                    select: { address: true },
-                })
-                .then((hooks) => hooks.map(({ address }) => address));
-
-            // Map hooks to their config names
-            const mappedHooks = addresses.reduce((acc, address) => {
-                // find key in config object that has the same value as address
-                const keys = Object.keys(hooks) as HookType[];
-                const key = keys.find((key) => hooks[key]?.includes(address));
-                if (key) {
-                    acc[address] = key;
-                }
-                return acc;
-            }, {} as Record<string, HookType>);
+            const poolsWithHooks = await prisma.prismaPool.findMany({
+                where: { chain, hook: { not: {} } },
+            });
 
             const viemClient = getViemClient(chain);
 
-            await syncHookData(mappedHooks, viemClient, chain);
+            await syncHookData(poolsWithHooks, hooks, viemClient, chain);
         },
     };
 }

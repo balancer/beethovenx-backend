@@ -54,47 +54,6 @@ model PrismaFbeets {
     ratio               String
 }
 
-model PrismaHook {
-  id                              Int          @id @default(autoincrement())
-  address                         String
-  chain                           Chain
-  enableHookAdjustedAmounts       Boolean      @default(false)
-  shouldCallAfterSwap             Boolean      @default(false)
-  shouldCallBeforeSwap            Boolean      @default(false)
-  shouldCallAfterInitialize       Boolean      @default(false)
-  shouldCallBeforeInitialize      Boolean      @default(false)
-  shouldCallAfterAddLiquidity     Boolean      @default(false)
-  shouldCallBeforeAddLiquidity    Boolean      @default(false)
-  shouldCallAfterRemoveLiquidity  Boolean      @default(false)
-  shouldCallBeforeRemoveLiquidity Boolean      @default(false)
-  shouldCallComputeDynamicSwapFee Boolean      @default(false)
-  dynamicData                     Json         @default("{}")
-  pools                           PrismaPool[]
-
-  reviewData                  PrismaHookReviewData?
-
-  @@unique([address, chain])
-  @@index(id)
-}
-
-
-model PrismaHookReviewData {
-    @@id([chain, hookAddress])
-
-    chain               Chain
-    hookAddress         String
-
-    hook               PrismaHook          @relation(fields:[chain, hookAddress], references: [chain, address], onDelete: Cascade)
-
-    name                String
-    summary             String
-    reviewFile           String
-    warnings            String
-    
-    @@index([chain, hookAddress])
-}
-
-
 model PrismaPool {
     @@id([id, chain])
     @@unique([address, chain])
@@ -138,8 +97,7 @@ model PrismaPool {
 
     userPoolBalanceSnapshots    PrismaUserPoolBalanceSnapshot[]
 
-    hook                PrismaHook? @relation(fields: [hookId], references: [id])
-    hookId              Int?
+    hook                Json @default("{}")
 
     @@index([categories(ops: ArrayOps)], type: Gin)
 }

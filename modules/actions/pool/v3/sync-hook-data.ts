@@ -2,7 +2,9 @@ import { fetchHookData } from '../../../sources/contracts/hooks/fetch-hook-data'
 import { prisma } from '../../../../prisma/prisma-client';
 import type { HookType } from '../../../network/network-config-types';
 import type { ViemClient } from '../../../sources/viem-client';
-import type { Chain } from '@prisma/client';
+import type { Chain, PrismaPool } from '@prisma/client';
+import { HookData } from '../../../sources/transformers';
+import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 
 /**
  * Gets and stores known hooks data
@@ -11,32 +13,42 @@ import type { Chain } from '@prisma/client';
  * @param viemClient
  */
 export const syncHookData = async (
-    addresses: Record<string, HookType>,
+    pools: PrismaPool[],
+    hooksTypes: { feeTakingHook?: string[]; exitFeeHook?: string[]; stableSurgeHook?: string[] },
     viemClient: ViemClient,
     chain: Chain,
 ): Promise<void> => {
-    if (!addresses || Object.keys(addresses).length === 0) {
+    if (pools.length === 0) {
         return;
     }
+    const operations = [];
 
-    // Get hooks data
-    const data = await fetchHookData(viemClient, addresses);
+    for (const pool of pools) {
+        const hookData = pool.hook as HookData | null;
+        if (!hookData) {
+            continue;
+        }
+        const keys = Object.keys(hooksTypes) as HookType[];
+        const hookType = keys.find((key) => hooksTypes[key]?.includes(hookData.address));
 
-    // Update hooks data to the database
-    return Promise.allSettled(
-        Object.keys(data).map((address) =>
-            prisma.prismaHook.update({
-                where: { address_chain: { address, chain } },
+        if (!hookType) {
+            continue;
+        }
+
+        // Get hooks data
+        const data = await fetchHookData(viemClient, hookData.address, hookType);
+
+        operations.push(
+            prisma.prismaPool.update({
+                where: { id_chain: { id: pool.id, chain } },
                 data: {
-                    dynamicData: data[address],
+                    hook: {
+                        ...(hookData as HookData),
+                        dynamicData: data,
+                    },
                 },
             }),
-        ),
-    ).then((results) => {
-        for (const result of results) {
-            if (result.status === 'rejected') {
-                console.error(result.reason);
-            }
-        }
-    });
+        );
+    }
+    await prismaBulkExecuteOperations(operations, false);
 };
