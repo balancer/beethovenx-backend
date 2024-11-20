@@ -432,6 +432,12 @@ export default <NetworkData>{
                 path: 'data.smaApr',
                 isIbYield: true,
             },
+            sdeUSD: {
+                tokenAddress: '0x5c5b196abe0d54485975d1ec29617d42d9198326',
+                sourceUrl: 'https://api-deusd-prod-public.elixir.xyz/public/deusd_apy',
+                path: 'deusd_apy',
+                isIbYield: true,
+            },
         },
     },
     datastudio: {

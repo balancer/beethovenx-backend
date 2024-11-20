@@ -157,16 +157,6 @@ export interface ReaperAprConfig {
     };
 }
 
-export interface TesseraAprConfig {
-    tokens: {
-        [tokenName: string]: {
-            tesseraPoolAddress: string;
-            tokenAddress: string;
-            isIbYield?: boolean;
-        };
-    };
-}
-
 export interface TetuAprConfig {
     sourceUrl: string;
     tokens: {
