@@ -6,6 +6,7 @@ import { BalancerPoolFragment } from '../../../subgraphs/balancer-subgraph/gener
 import { subgraphToPrismaCreate } from '../../../pool/subgraph-mapper';
 import { upsertBptBalancesV2 } from '../../user/upsert-bpt-balances-v2';
 import _ from 'lodash';
+import { syncPoolTypeOnchainData } from './sync-pool-type-onchain-data';
 
 export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain): Promise<string[]> => {
     const { block } = await subgraphService.legacyService.getMetadata();
@@ -28,6 +29,13 @@ export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain):
         const created = await createPoolRecord(subgraphPool, chain, block.number, allNestedTypePools);
         if (created) {
             createdPools.push(subgraphPool.id);
+            // When new FX pool is added, we need to get the quote token
+            if (subgraphPool.poolType === 'FX') {
+                await syncPoolTypeOnchainData(
+                    [{ id: subgraphPool.id, address: subgraphPool.address, type: subgraphPool.poolType }],
+                    chain,
+                );
+            }
         }
     }
 

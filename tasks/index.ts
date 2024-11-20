@@ -133,6 +133,10 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-sts-data') {
         return StakedSonicController().syncSonicStakingData();
     }
+    // Maintenance
+    else if (job === 'sync-fx-quote-tokens') {
+        return FXPoolsController().syncQuoteTokens(chain);
+    }
     return Promise.reject(new Error(`Unknown job: ${job}`));
 }
 
