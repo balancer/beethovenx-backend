@@ -3,14 +3,6 @@ import { BalancerSwapFragment } from '../../subgraphs/balancer-subgraph/generate
 import { Chain } from '@prisma/client';
 import { SwapEvent } from '../../../prisma/prisma-types';
 
-const USDC_ADDRESSES = [
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // MAINNET
-    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', // POLYGON - USDC.e
-    '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', // AVALANCHE
-    '0xaf88d065e77c8cc2239327c5edb3a432268e5831', // ARBITRUM
-    '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', // POLYGON - USDC
-];
-
 /**
  * Takes V2 subgraph swaps and transforms them into DB entries
  *
@@ -18,7 +10,11 @@ const USDC_ADDRESSES = [
  * @param chain
  * @returns
  */
-export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): SwapEvent {
+export function swapV2Transformer(
+    swap: BalancerSwapFragment,
+    chain: Chain,
+    fxPools: { id: string; typeData: { quoteToken: string } }[] = [],
+): SwapEvent {
     // Avoiding scientific notation
     const feeFloat = parseFloat(swap.tokenAmountIn) * parseFloat(swap.poolId.swapFee ?? 0);
     const fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
@@ -30,29 +26,31 @@ export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): Swa
     // Replica of the subgraph logic:
     // https://github.com/balancer/balancer-subgraph-v2/blob/60453224453bd07a0a3a22a8ad6cc26e65fd809f/src/mappings/vault.ts#L551-L564
     if (swap.poolId.poolType === 'FX') {
-        const tokenOutAddress = swap.tokenOut;
-        const tokenInAddress = swap.tokenIn;
-        let isTokenInBase = USDC_ADDRESSES.includes(tokenOutAddress);
-        let baseTokenAddress = isTokenInBase ? tokenInAddress : tokenOutAddress;
-        let quoteTokenAddress = isTokenInBase ? tokenOutAddress : tokenInAddress;
-        let baseToken = swap.poolId.tokens?.find(({ token }) => token.address == baseTokenAddress);
-        let quoteToken = swap.poolId.tokens?.find(({ token }) => token.address == quoteTokenAddress);
-        let baseRate = baseToken != null ? baseToken.token.latestFXPrice : null;
-        let quoteRate = quoteToken != null ? quoteToken.token.latestFXPrice : null;
+        // Find the pool that has the quote token
+        const fxPool = fxPools.find((pool) => pool.id === swap.poolId.id);
+        if (fxPool && [swap.tokenOut, swap.tokenIn].includes(fxPool.typeData.quoteToken)) {
+            const quoteTokenAddress = fxPool.typeData.quoteToken;
+            const baseTokenAddress = swap.tokenIn === quoteTokenAddress ? swap.tokenOut : swap.tokenIn;
+            let isTokenInBase = swap.tokenOut === quoteTokenAddress;
+            let baseToken = swap.poolId.tokens?.find(({ token }) => token.address == baseTokenAddress);
+            let quoteToken = swap.poolId.tokens?.find(({ token }) => token.address == quoteTokenAddress);
+            let baseRate = baseToken != null ? baseToken.token.latestFXPrice : null;
+            let quoteRate = quoteToken != null ? quoteToken.token.latestFXPrice : null;
 
-        if (baseRate && quoteRate) {
-            if (isTokenInBase) {
-                feeFloatUSD +=
-                    parseFloat(swap.tokenAmountIn) * parseFloat(baseRate) -
-                    parseFloat(swap.tokenAmountOut) * parseFloat(quoteRate);
-            } else {
-                feeFloatUSD +=
-                    parseFloat(swap.tokenAmountIn) * parseFloat(quoteRate) -
-                    parseFloat(swap.tokenAmountOut) * parseFloat(baseRate);
+            if (baseRate && quoteRate) {
+                if (isTokenInBase) {
+                    feeFloatUSD +=
+                        parseFloat(swap.tokenAmountIn) * parseFloat(baseRate) -
+                        parseFloat(swap.tokenAmountOut) * parseFloat(quoteRate);
+                } else {
+                    feeFloatUSD +=
+                        parseFloat(swap.tokenAmountIn) * parseFloat(quoteRate) -
+                        parseFloat(swap.tokenAmountOut) * parseFloat(baseRate);
+                }
             }
-        }
 
-        feeUSD = String(feeFloatUSD);
+            feeUSD = String(feeFloatUSD);
+        }
     }
 
     return {
