@@ -134,6 +134,68 @@ export const schema = gql`
         updatedBy: String
     }
 
+    """
+    Hook data
+    """
+    type GqlHook {
+        address: String!
+
+        """
+        Data points changing over time
+        """
+        dynamicData: GqlHookData
+
+        """
+        True when hook can change the amounts send to the vault. Necessary to deduct the fees.
+        """
+        enableHookAdjustedAmounts: Boolean!
+
+        """
+        The review for this hook if applicable.
+        """
+        reviewData: GqlHookReviewData
+        shouldCallAfterAddLiquidity: Boolean!
+        shouldCallAfterInitialize: Boolean!
+        shouldCallAfterRemoveLiquidity: Boolean!
+        shouldCallAfterSwap: Boolean!
+        shouldCallBeforeAddLiquidity: Boolean!
+        shouldCallBeforeInitialize: Boolean!
+        shouldCallBeforeRemoveLiquidity: Boolean!
+        shouldCallBeforeSwap: Boolean!
+        shouldCallComputeDynamicSwapFee: Boolean!
+    }
+
+    """
+    Collection of hook specific data. Percentage format is 0.01 -> 0.01%.
+    """
+    type GqlHookData {
+        addLiquidityFeePercentage: String
+        maxSurgeFeePercentage: String
+        removeLiquidityFeePercentage: String
+        surgeThresholdPercentage: String
+        swapFeePercentage: String
+    }
+
+    """
+    Represents the review data for the hook
+    """
+    type GqlHookReviewData {
+        """
+        The filename of the review of the hook
+        """
+        reviewFile: String!
+
+        """
+        A summary of the hook review, usually just says safe or unsafe
+        """
+        summary: String!
+
+        """
+        Warnings associated with the hook
+        """
+        warnings: [String!]!
+    }
+
     type GqlLatestSyncedBlocks {
         poolSyncBlock: BigInt!
         userStakeSyncBlock: BigInt!
@@ -167,7 +229,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         Unique identifier of the pool.
@@ -379,7 +441,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -704,7 +766,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -830,7 +892,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -956,7 +1018,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1155,7 +1217,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1195,7 +1257,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1283,7 +1345,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1320,7 +1382,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1401,7 +1463,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -1562,7 +1624,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -2113,7 +2175,7 @@ export const schema = gql`
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -3222,77 +3284,6 @@ export const schema = gql`
         type: GqlPoolType!
     }
 
-    """
-    Hook data
-    """
-    type Hook {
-        address: String!
-        chain: GqlChain!
-
-        """
-        Data points changing over time
-        """
-        dynamicData: HookData
-
-        """
-        True when hook can change the amounts send to the vault. Necessary to deduct the fees.
-        """
-        enableHookAdjustedAmounts: Boolean!
-
-        """
-        List of pools using the hook
-        """
-        poolsIds: [String]
-
-        """
-        The review for this hook if applicable.
-        """
-        reviewData: HookReviewData
-        shouldCallAfterAddLiquidity: Boolean!
-        shouldCallAfterInitialize: Boolean!
-        shouldCallAfterRemoveLiquidity: Boolean!
-        shouldCallAfterSwap: Boolean!
-        shouldCallBeforeAddLiquidity: Boolean!
-        shouldCallBeforeInitialize: Boolean!
-        shouldCallBeforeRemoveLiquidity: Boolean!
-        shouldCallBeforeSwap: Boolean!
-        shouldCallComputeDynamicSwapFee: Boolean!
-    }
-
-    """
-    Collection of hook specific data. Percentage format is 0.01 -> 0.01%.
-    """
-    type HookData {
-        addLiquidityFeePercentage: String
-        removeLiquidityFeePercentage: String
-        swapFeePercentage: String
-    }
-
-    """
-    Represents the review data for the hook
-    """
-    type HookReviewData {
-        """
-        The name of the hook
-        """
-        name: String!
-
-        """
-        The filename of the review of the hook
-        """
-        reviewFile: String!
-
-        """
-        A summary of the hook review, usually just says safe or unsafe
-        """
-        summary: String!
-
-        """
-        Warnings associated with the hook
-        """
-        warnings: [String!]!
-    }
-
     scalar JSON
 
     """
@@ -3369,11 +3360,6 @@ export const schema = gql`
         blocksGetBlocksPerSecond: Float!
         blocksGetBlocksPerYear: Float!
         contentGetNewsItems(chain: GqlChain): [GqlContentNewsItem!]!
-
-        """
-        Returns list of hooks.
-        """
-        hooks(chain: GqlChain): [Hook!]
         latestSyncedBlocks: GqlLatestSyncedBlocks!
 
         """

@@ -9,7 +9,7 @@ import {
     GqlSorSwapType,
     GqlSwapCallDataInput,
 } from '../../../schema';
-import { Chain, PrismaHook } from '@prisma/client';
+import { Chain } from '@prisma/client';
 import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
@@ -533,7 +533,11 @@ class SorPathService implements SwapService {
         const allPools = [...pools, ...lbps];
 
         // cache for 10s
-        this.cache.put(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`, allPools, 10 * 1000);
+        this.cache.put(
+            `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
+            allPools,
+            10 * 1000,
+        );
         return allPools;
     }
 

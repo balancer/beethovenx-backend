@@ -41,7 +41,7 @@ model PrismaPool {
 
     userPoolBalanceSnapshots    PrismaUserPoolBalanceSnapshot[]
 
-    hook                Json @default("{}")
+    hook                Json?
 
     @@index([categories(ops: ArrayOps)], type: Gin)
 }

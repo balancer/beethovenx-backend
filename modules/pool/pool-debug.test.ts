@@ -367,8 +367,12 @@ describe('pool debugging', () => {
         });
         const gqlPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
 
-        const pools = await prisma.prismaPool.findMany({
-            where: { hookId: null, chain: 'SEPOLIA' },
+        const allPools = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3 },
+        });
+
+        const poolsWithoutHooks = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { equals: {} } },
         });
 
         console.log(gqlPoolsWithHooks.length);

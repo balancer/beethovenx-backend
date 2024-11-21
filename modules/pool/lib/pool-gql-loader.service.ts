@@ -34,23 +34,14 @@ import {
     GqlPoolAprItemType,
     GqlUserStakedBalance,
     GqlPoolFilterCategory,
-    HookData,
     GqlPoolAggregator,
     LiquidityManagement,
-    Hook,
+    GqlHook,
 } from '../../../schema';
 import { isSameAddress } from '@balancer-labs/sdk';
 import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
-import {
-    Chain,
-    Prisma,
-    PrismaHook,
-    PrismaHookReviewData,
-    PrismaPoolAprType,
-    PrismaUserStakedBalance,
-    PrismaUserWalletBalance,
-} from '@prisma/client';
+import { Chain, Prisma, PrismaPoolAprType, PrismaUserStakedBalance, PrismaUserWalletBalance } from '@prisma/client';
 import { isWeightedPoolV2 } from './pool-utils';
 import { networkContext } from '../../network/network-context.service';
 import { fixedNumber } from '../../view-helpers/fixed-number';
@@ -60,8 +51,7 @@ import { SanityContentService } from '../../content/sanity-content.service';
 import { ElementData, FxData, GyroData, StableData } from '../subgraph-mapper';
 import { ZERO_ADDRESS } from '@balancer/sdk';
 import { tokenService } from '../../token/token.service';
-import { p } from 'msw/lib/glossary-dc3fd077';
-import { TokenSchema } from '../../sources/subgraphs/aura/generated/aura-subgraph-types';
+import { HookData } from '../../sources/transformers';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
 const isPoolId = (text: string) => isToken(text) || text.match(/^0x[0-9a-fA-F]{64}$/);
@@ -328,7 +318,7 @@ export class PoolGqlLoaderService {
         return {
             ...pool,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook: this.mapHookData(pool.hook || undefined, pool.hook?.reviewData || undefined),
+            hook: pool.hook as HookData as GqlHook,
             incentivized: pool.categories.some((category) => category === 'INCENTIVIZED'),
             vaultVersion: pool.protocolVersion,
             decimals: 18,
@@ -584,9 +574,9 @@ export class PoolGqlLoaderService {
                     : {}),
             },
             ...(where?.hasHook !== undefined && where.hasHook
-                ? { hookId: { not: null } }
+                ? { hook: { not: {} } }
                 : where?.hasHook !== undefined && !where.hasHook
-                ? { hookId: null }
+                ? { hook: { equals: {} } }
                 : {}),
         };
 
@@ -642,7 +632,7 @@ export class PoolGqlLoaderService {
             poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
             vaultVersion: poolWithoutTypeData.protocolVersion,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook: this.mapHookData(pool.hook || undefined, pool.hook?.reviewData || undefined),
+            hook: pool.hook as HookData as GqlHook,
         };
 
         switch (pool.type) {
@@ -720,7 +710,7 @@ export class PoolGqlLoaderService {
             vaultVersion: poolWithoutTypeData.protocolVersion,
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
-            hook: this.mapHookData(pool.hook || undefined, pool.hook?.reviewData || undefined),
+            hook: pool.hook as HookData as GqlHook,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
             hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
             hasNestedErc4626: pool.allTokens.some((token) =>
@@ -851,9 +841,6 @@ export class PoolGqlLoaderService {
         nestedPercentage = 1,
     ): GqlPoolTokenDetail {
         const { nestedPool } = poolToken;
-        if (nestedPool) {
-            const hookData = this.mapHookData(nestedPool.hook || undefined, nestedPool.hook?.reviewData || undefined);
-        }
 
         return {
             id: `${poolToken.poolId}-${poolToken.token.address}`,
@@ -899,7 +886,7 @@ export class PoolGqlLoaderService {
             ),
             swapFee: nestedPool.dynamicData?.swapFee || '0',
             bptPriceRate: (nestedPool.typeData as StableData).bptPriceRate || '1.0',
-            hook: this.mapHookData(nestedPool.hook || undefined, nestedPool.hook?.reviewData || undefined),
+            hook: (nestedPool.hook as HookData as GqlHook) || undefined,
         };
     }
 
@@ -1454,25 +1441,6 @@ export class PoolGqlLoaderService {
             index: poolToken.index,
             weight: poolToken.dynamicData?.weight,
             totalBalance: poolToken.dynamicData?.balance || '0',
-        };
-    }
-
-    private mapHookData(hook?: PrismaHook, reviewData?: PrismaHookReviewData): Hook | undefined {
-        if (!hook) {
-            return undefined;
-        }
-
-        return {
-            ...hook,
-            dynamicData: hook.dynamicData as HookData,
-            ...(reviewData
-                ? {
-                      reviewData: {
-                          ...reviewData,
-                          warnings: reviewData?.warnings?.split(',') || [],
-                      },
-                  }
-                : { reviewData: undefined }),
         };
     }
 

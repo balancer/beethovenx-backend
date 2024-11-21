@@ -3,23 +3,18 @@
 import { ViemMulticallCall } from '../../../web3/multicaller-viem';
 import stableSurgeHookAbi from '../abis/stable-surge-hook';
 
-export const stableSurgeHook = (address: string): ViemMulticallCall[] => [
+export const stableSurgeHook = (address: string, poolAddress: string): ViemMulticallCall[] => [
     {
-        path: `${address}.swapFeePercentage`,
+        path: `surgeThresholdPercentage`,
         address: address as `0x${string}`,
         abi: stableSurgeHookAbi,
-        functionName: 'hookSwapFeePercentage',
+        functionName: 'getSurgeThresholdPercentage',
+        args: [poolAddress],
     },
     {
-        path: `${address}.addLiquidityFeePercentage`,
+        path: `maxSurgeFeePercentage`,
         address: address as `0x${string}`,
         abi: stableSurgeHookAbi,
-        functionName: 'addLiquidityHookFeePercentage',
-    },
-    {
-        path: `${address}.removeLiquidityFeePercentage`,
-        address: address as `0x${string}`,
-        abi: stableSurgeHookAbi,
-        functionName: 'removeLiquidityHookFeePercentage',
+        functionName: 'MAX_SURGE_FEE_PERCENTAGE',
     },
 ];

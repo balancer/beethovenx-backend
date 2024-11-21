@@ -217,7 +217,7 @@ type GqlPoolMinimal {
     """
     Hook assigned to a pool
     """
-    hook: Hook
+    hook: GqlHook
     """
     Liquidity management settings for v3 pools.
     """
@@ -458,7 +458,7 @@ type GqlPoolAggregator {
     """
     Hook assigned to a pool
     """
-    hook: Hook
+    hook: GqlHook
 }
 
 """
@@ -572,7 +572,7 @@ interface GqlPoolBase {
     """
     Hook assigned to a pool
     """
-    hook: Hook
+    hook: GqlHook
 }
 
 type GqlPoolDynamicData {
@@ -707,7 +707,7 @@ type GqlPoolWeighted implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -745,7 +745,7 @@ type GqlPoolGyro implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     alpha: String!
     beta: String!
@@ -807,7 +807,7 @@ type GqlPoolFx implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     dynamicData: GqlPoolDynamicData!
     staking: GqlPoolStaking
@@ -841,7 +841,7 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -878,7 +878,7 @@ type GqlPoolStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     amp: BigInt!
@@ -913,7 +913,7 @@ type GqlPoolMetaStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
     amp: BigInt!
@@ -947,7 +947,7 @@ type GqlPoolComposableStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     """
     All tokens of the pool. If it is a nested pool, the nested pool is expanded with its own tokens again.
@@ -987,7 +987,7 @@ type GqlPoolElement implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
-    hook: Hook
+    hook: GqlHook
 
     #element specific fields
     unitSeconds: BigInt!
@@ -1199,7 +1199,7 @@ type GqlNestedPool {
     """
     Hook assigned to a pool
     """
-    hook: Hook
+    hook: GqlHook
 }
 
 interface GqlPoolTokenBase @deprecated(reason: "Use GqlPoolTokenDetail instead") {

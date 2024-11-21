@@ -11,6 +11,7 @@ export const fetchHookData = async (
     client: ViemClient,
     address: string,
     type: HookType,
+    poolAddress: string,
 ): Promise<Record<string, string>> => {
     let calls: ViemMulticallCall[] = [];
 
@@ -22,7 +23,7 @@ export const fetchHookData = async (
             calls = [...calls, ...exitFeeHook(address)];
             break;
         case 'stableSurgeHook':
-            calls = [...calls, ...stableSurgeHook(address)];
+            calls = [...calls, ...stableSurgeHook(address, poolAddress)];
             break;
         default:
             break;
@@ -31,10 +32,8 @@ export const fetchHookData = async (
     const results = await multicallViem(client, calls);
 
     // Parse all results bignumber values to percentages
-    for (const hook of Object.keys(results)) {
-        for (const key of Object.keys(results[hook])) {
-            results[hook][key] = formatEther(results[hook][key]);
-        }
+    for (const key of Object.keys(results)) {
+        results[key] = formatEther(results[key]);
     }
 
     return results;
