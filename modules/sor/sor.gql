@@ -55,7 +55,7 @@ extend type Query {
         """
         Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
         """
-        queryBatchSwap: Boolean
+        queryBatchSwap: Boolean @deprecated(reason: "Use Balancer SDK to query on-chain amounts from SOR response")
         """
         Which protocol version to use (currently 2 and 3). If none provided, will chose the better return from any version
         """
@@ -68,6 +68,7 @@ extend type Query {
         Input data to create and return transaction data. If this config is given, call data is added to the response.
         """
         callDataInput: GqlSwapCallDataInput
+            @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
     ): GqlSorGetSwapPaths!
 }
 
@@ -151,7 +152,7 @@ type GqlSorGetSwapPaths {
     """
     Transaction data that can be posted to an RPC to execute the swap.
     """
-    callData: GqlSorCallData
+    callData: GqlSorCallData @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
 }
 
 """

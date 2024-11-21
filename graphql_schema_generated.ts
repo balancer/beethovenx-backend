@@ -2548,7 +2548,7 @@ export const schema = gql`
         """
         Transaction data that can be posted to an RPC to execute the swap.
         """
-        callData: GqlSorCallData
+        callData: GqlSorCallData @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
 
         """
         The price of tokenOut in tokenIn.
@@ -3477,6 +3477,7 @@ export const schema = gql`
             Input data to create and return transaction data. If this config is given, call data is added to the response.
             """
             callDataInput: GqlSwapCallDataInput
+                @deprecated(reason: "Use Balancer SDK to build swap callData from SOR response")
 
             """
             The Chain to query
@@ -3491,7 +3492,7 @@ export const schema = gql`
             """
             Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
             """
-            queryBatchSwap: Boolean
+            queryBatchSwap: Boolean @deprecated(reason: "Use Balancer SDK to query on-chain amounts from SOR response")
 
             """
             The amount to swap, in human form.

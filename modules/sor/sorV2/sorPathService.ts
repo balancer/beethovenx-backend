@@ -237,7 +237,6 @@ class SorPathService implements SwapService {
         let outputAmount = getOutputAmount(paths);
 
         let callData: GqlSorCallData | undefined = undefined;
-        let callDataError: string | undefined = undefined;
 
         // TODO: deprecated on-chain query and callData functionality will be supported for v2 for a while, but should be removed in the future
         if (protocolVersion === 2) {
@@ -301,11 +300,7 @@ class SorPathService implements SwapService {
                         maxAmountInRaw: callDataExactOut.maxAmountIn.amount.toString(),
                     };
                 }
-            } else {
-                callDataError = 'callDataInput is required to provide callData';
             }
-        } else {
-            callDataError = 'callData is only supported for protocolVersion 2';
         }
 
         // TODO: replace price impact ABA with USD values approach (same as used in the FE)
@@ -380,7 +375,6 @@ class SorPathService implements SwapService {
                 error: priceImpactError,
             },
             callData,
-            callDataError,
         };
     }
 
