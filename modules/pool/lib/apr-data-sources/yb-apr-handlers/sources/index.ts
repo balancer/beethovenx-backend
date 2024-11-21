@@ -5,7 +5,6 @@ export * from './euler-apr-handler';
 export * from './gearbox-apr-handler';
 export * from './idle-apr-handler';
 export * from './ovix-apr-handler';
-export * from './tessera-apr-handler';
 export * from './tetu-apr-handler';
 export * from './tranchess-apr-handler';
 export * from './yearn-apr-handler';

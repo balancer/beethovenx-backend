@@ -15,7 +15,6 @@ const sourceToHandler = {
     maker: sources.MakerAprHandler,
     ovix: sources.OvixAprHandler,
     // reaper: sources.ReaperCryptAprHandler, // Removed, pools rekt
-    tessera: sources.TesseraAprHandler,
     tetu: sources.TetuAprHandler,
     tranchess: sources.TranchessAprHandler,
     yearn: sources.YearnAprHandler,
