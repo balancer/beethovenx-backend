@@ -10,6 +10,7 @@ import { ContentController } from '../controllers/content-controller';
 import { chainToIdMap } from '../network/network-config';
 import { PoolController } from '../controllers';
 import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
+import { Prisma } from '@prisma/client';
 describe('pool debugging', () => {
     it('query pools', async () => {
         initRequestScopedContext();
@@ -372,7 +373,11 @@ describe('pool debugging', () => {
         });
 
         const poolsWithoutHooks = await prisma.prismaPool.findMany({
-            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { equals: {} } },
+            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { equals: Prisma.AnyNull } },
+        });
+
+        const poolsWithHooks = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { not: {} } },
         });
 
         console.log(gqlPoolsWithHooks.length);

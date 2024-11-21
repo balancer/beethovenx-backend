@@ -576,7 +576,7 @@ export class PoolGqlLoaderService {
             ...(where?.hasHook !== undefined && where.hasHook
                 ? { hook: { not: {} } }
                 : where?.hasHook !== undefined && !where.hasHook
-                ? { hook: { equals: {} } }
+                ? { hook: { equals: Prisma.DbNull } }
                 : {}),
         };
 
