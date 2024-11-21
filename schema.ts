@@ -1803,8 +1803,16 @@ export interface GqlSorCallData {
 /** The swap paths for a swap */
 export interface GqlSorGetSwapPaths {
     __typename?: 'GqlSorGetSwapPaths';
-    /** Transaction data that can be posted to an RPC to execute the swap. */
+    /**
+     * Transaction data that can be posted to an RPC to execute the swap.
+     * @deprecated Use Balancer SDK to build swap callData from SOR response
+     */
     callData?: Maybe<GqlSorCallData>;
+    /**
+     * Error message incase there was an error in the callData generation.
+     * @deprecated Use Balancer SDK to build swap callData from SOR response
+     */
+    callDataError?: Maybe<Scalars['String']>;
     /** The price of tokenOut in tokenIn. */
     effectivePrice: Scalars['AmountHumanReadable'];
     /** The price of tokenIn in tokenOut. */
@@ -2545,9 +2553,15 @@ export interface QuerySftmxGetWithdrawalRequestsArgs {
 }
 
 export interface QuerySorGetSwapPathsArgs {
+    /**
+     * @deprecated Use Balancer SDK to build swap callData from SOR response
+     */
     callDataInput?: InputMaybe<GqlSwapCallDataInput>;
     chain: GqlChain;
     considerPoolsWithHooks?: InputMaybe<Scalars['Boolean']>;
+    /**
+     * @deprecated Use Balancer SDK to query on-chain amounts from SOR response
+     */
     queryBatchSwap?: InputMaybe<Scalars['Boolean']>;
     swapAmount: Scalars['AmountHumanReadable'];
     swapType: GqlSorSwapType;
