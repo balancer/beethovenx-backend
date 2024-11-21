@@ -9,7 +9,6 @@ export interface YbAprConfig {
     maker?: MakerAprConfig;
     ovix?: OvixAprConfig;
     reaper?: ReaperAprConfig;
-    tessera?: TesseraAprConfig;
     tetu?: TetuAprConfig;
     tranchess?: TranchessAprConfig;
     yearn?: YearnAprConfig;
