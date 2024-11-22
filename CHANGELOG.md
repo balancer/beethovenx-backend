@@ -1,5 +1,13 @@
 # backend
 
+## 1.23.4
+
+### Patch Changes
+
+-   02e139a: adding poolIds filter to SOR
+-   dcc6440: APR sources, remove sAPE, svETH, swETH, USDR; add sdeUSD
+-   21b40a4: Redo how hooks are synced and change the schema
+
 ## 1.23.3
 
 ### Patch Changes
