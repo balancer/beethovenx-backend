@@ -13,7 +13,7 @@ export const syncHookReviews = async (): Promise<void> => {
         description: item.description,
         summary: item.summary,
         reviewFile: item.review,
-        warnings: item.warnings.join(','),
+        warnings: item.warnings,
     }));
 
     // Get hook addresses from the database
