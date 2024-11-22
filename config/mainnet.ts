@@ -325,17 +325,6 @@ export default <NetworkData>{
                 path: 'yearlyAPR',
                 isIbYield: true,
             },
-            USDR: {
-                tokenAddress: '0xaf0d9d65fc54de245cda37af3d18cbec860a4d4b',
-                sourceUrl: 'http://usdr-api.us-east-1.elasticbeanstalk.com/usdr/apy',
-                path: 'usdr',
-                isIbYield: true,
-            },
-            swETH: {
-                tokenAddress: '0xf951e335afb289353dc249e82926178eac7ded78',
-                sourceUrl: 'https://v3.svc.swellnetwork.io/api/tokens/sweth/apr',
-                isIbYield: true,
-            },
             wjAURA: {
                 tokenAddress: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f',
                 sourceUrl: 'https://data.jonesdao.io/api/v1/jones/apy-wjaura',
