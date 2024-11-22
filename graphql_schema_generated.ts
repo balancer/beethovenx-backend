@@ -3684,6 +3684,7 @@ export const schema = gql`
         poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
         poolSyncAllCowSnapshots(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolSyncAllPoolsFromSubgraph: [String!]!
+        poolSyncFxQuoteTokens(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolUpdateLifetimeValuesForAllPools: String!
         poolUpdateLiquidityValuesForAllPools: String!
         protocolCacheMetrics: String!
