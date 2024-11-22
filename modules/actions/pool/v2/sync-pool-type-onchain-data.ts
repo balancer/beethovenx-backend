@@ -2,7 +2,26 @@ import { Abi } from 'abitype';
 import FX from '../../../pool/abi/FxPool.json';
 import { getViemClient, ViemClient } from '../../../sources/viem-client';
 import { Chain, PrismaPoolType } from '@prisma/client';
-import { update } from '../v3/type-data/update';
+import { prisma } from '../../../../prisma/prisma-client';
+
+const update = async (updates: { id: string; typeData: any }[]) => {
+    // Update the pool type data
+    return Promise.allSettled(
+        updates.map(
+            ({ id, typeData }) => prisma.$executeRaw`
+                UPDATE "PrismaPool"
+                SET "typeData" = "typeData" || ${JSON.stringify(typeData)}::jsonb
+                WHERE id = ${id};
+            `,
+        ),
+    ).then((results) => {
+        for (const result of results) {
+            if (result.status === 'rejected') {
+                console.error(result.reason);
+            }
+        }
+    });
+};
 
 export const syncPoolTypeOnchainData = async (
     pools: { id: string; address: string; type: PrismaPoolType }[],
