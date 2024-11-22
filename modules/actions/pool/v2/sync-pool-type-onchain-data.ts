@@ -3,28 +3,22 @@ import FX from '../../../pool/abi/FxPool.json';
 import { getViemClient, ViemClient } from '../../../sources/viem-client';
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
+import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 
-const update = async (updates: { id: string; typeData: any }[]) => {
+const update = async (data: { id: string; chain: Chain; typeData: any }[]) => {
     // Update the pool type data
-    return Promise.allSettled(
-        updates.map(
-            ({ id, typeData }) => prisma.$executeRaw`
-                UPDATE "PrismaPool"
-                SET "typeData" = "typeData" || ${JSON.stringify(typeData)}::jsonb
-                WHERE id = ${id};
-            `,
-        ),
-    ).then((results) => {
-        for (const result of results) {
-            if (result.status === 'rejected') {
-                console.error(result.reason);
-            }
-        }
-    });
+    const updates = data.map(({ id, chain, typeData }) =>
+        prisma.prismaPool.update({
+            where: { id_chain: { id, chain } },
+            data: { typeData },
+        }),
+    );
+
+    await prismaBulkExecuteOperations(updates, false);
 };
 
 export const syncPoolTypeOnchainData = async (
-    pools: { id: string; address: string; type: PrismaPoolType }[],
+    pools: { id: string; chain: Chain; address: string; type: PrismaPoolType; typeData: any }[],
     chain: Chain,
 ) => {
     const viemClient = getViemClient(chain);
@@ -37,7 +31,10 @@ export const syncPoolTypeOnchainData = async (
     return true;
 };
 
-export const fetchFxQuoteTokens = async (pools: { id: string; address: string }[], viemClient: ViemClient) => {
+export const fetchFxQuoteTokens = async (
+    pools: { id: string; chain: Chain; address: string; typeData: any }[],
+    viemClient: ViemClient,
+) => {
     // Fetch the tokens from the subgraph
     const contracts = pools.map(({ address }) => {
         return {
@@ -55,10 +52,13 @@ export const fetchFxQuoteTokens = async (pools: { id: string; address: string }[
             // If the call failed, return null
             if (call.status === 'failure') return null;
 
+            const typeData = { ...pools[index].typeData, quoteToken: (call.result as string).toLowerCase() };
+
             return {
                 id: pools[index].id,
-                typeData: { quoteToken: (call.result as string).toLowerCase() },
+                chain: pools[index].chain,
+                typeData,
             };
         })
-        .filter((quoteToken): quoteToken is { id: string; typeData: { quoteToken: string } } => quoteToken !== null);
+        .filter((quoteToken): quoteToken is { id: string; chain: Chain; typeData: any } => quoteToken !== null);
 };

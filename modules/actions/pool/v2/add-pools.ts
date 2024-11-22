@@ -1,4 +1,4 @@
-import { Chain } from '@prisma/client';
+import { Chain, PrismaPool } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { nestedPoolWithSingleLayerNesting } from '../../../../prisma/prisma-types';
 import { V2SubgraphClient } from '../../../subgraphs/balancer-subgraph';
@@ -26,15 +26,12 @@ export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain):
 
     const createdPools: string[] = [];
     for (const subgraphPool of newPools) {
-        const created = await createPoolRecord(subgraphPool, chain, block.number, allNestedTypePools);
-        if (created) {
+        const dbPool = await createPoolRecord(subgraphPool, chain, block.number, allNestedTypePools);
+        if (dbPool) {
             createdPools.push(subgraphPool.id);
             // When new FX pool is added, we need to get the quote token
             if (subgraphPool.poolType === 'FX') {
-                await syncPoolTypeOnchainData(
-                    [{ id: subgraphPool.id, address: subgraphPool.address, type: subgraphPool.poolType }],
-                    chain,
-                );
+                await syncPoolTypeOnchainData([dbPool], chain);
             }
         }
     }
@@ -56,7 +53,7 @@ const createPoolRecord = async (
     chain: Chain,
     blockNumber: number,
     nestedPools: { id: string; address: string }[],
-): Promise<Boolean> => {
+): Promise<PrismaPool | undefined> => {
     const poolTokens = pool.tokens || [];
 
     await prisma.prismaToken.createMany({
@@ -82,14 +79,14 @@ const createPoolRecord = async (
     const prismaPoolRecordWithAssociations = subgraphToPrismaCreate(pool, chain, blockNumber, nestedPools);
 
     try {
-        await prisma.prismaPool.create(prismaPoolRecordWithAssociations);
+        const pool = await prisma.prismaPool.create(prismaPoolRecordWithAssociations);
 
         await createAllTokensRelationshipForPool(pool.id, chain);
+
+        return pool;
     } catch (e) {
         console.error(`Could not create pool ${pool.id} on chain ${chain}. Skipping.`, e);
-        return false;
     }
-    return true;
 };
 
 const createAllTokensRelationshipForPool = async (poolId: string, chain: Chain): Promise<void> => {
