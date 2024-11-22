@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import { TranchessAprConfig } from '../../../../../network/apr-config-types';
 
 export class TranchessAprHandler implements AprHandler {

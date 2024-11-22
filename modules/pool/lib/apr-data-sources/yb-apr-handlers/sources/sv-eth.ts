@@ -1,6 +1,6 @@
 import { createPublicClient, formatEther, http, parseAbi } from 'viem';
 import { mainnet } from 'viem/chains';
-import type { AprHandler } from '../';
+import type { AprHandler } from '../types';
 import config from '../../../../../../config/mainnet';
 
 const client = createPublicClient({

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import { GearBoxAprConfig } from '../../../../../network/apr-config-types';
 
 export class GearboxAprHandler implements AprHandler {

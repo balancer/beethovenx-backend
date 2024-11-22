@@ -1,4 +1,4 @@
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import { MakerAprConfig } from '../../../../../network/apr-config-types';
 import { abi as makerPotAbi } from './abis/maker-pot';
 import config from '../../../../../../config';
