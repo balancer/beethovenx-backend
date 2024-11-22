@@ -269,6 +269,7 @@ export default <NetworkData>{
             url: 'https://gateway.yieldnest.finance/api/v1/graphql',
             token: '0x09db87a538bd693e9d08544577d5ccfaa6373a48',
         },
+        sveth: true,
         teth: true,
         defaultHandlers: {
             uniETH: {
