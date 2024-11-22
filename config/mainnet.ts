@@ -247,14 +247,6 @@ export default <NetworkData>{
         maker: {
             sdai: '0x83f20f44975d03b1b09e64809b757c47f942beea',
         },
-        tessera: {
-            tokens: {
-                sAPE: {
-                    tesseraPoolAddress: '0x5954ab967bc958940b7eb73ee84797dc8a2afbb9',
-                    tokenAddress: '0x7966c5bae631294d7cffcea5430b78c2f76db6fa',
-                },
-            },
-        },
         tranchess: {
             sourceUrl: 'https://tranchess.com/eth/api/v3/funds',
             tokens: {
