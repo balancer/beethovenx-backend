@@ -23,7 +23,7 @@ const sourceToHandler = {
     maple: sources.Maple,
     yieldnest: sources.Yieldnest,
     etherfi: sources.Etherfi,
-    sveth: sources.svEthAprHandler,
+    // sveth: sources.svEthAprHandler, // Savvy migrated to arbitrum
     dforce: sources.DForce,
     defillama: sources.Defillama,
     teth: sources.TreehouseAprHandler,

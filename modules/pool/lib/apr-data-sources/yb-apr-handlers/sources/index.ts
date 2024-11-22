@@ -17,7 +17,7 @@ export * from './stakewise-apr-handler';
 export * from './maple-apr-handler';
 export * from './yieldnest-apr-handler';
 export * from './etherfi-apr-handler';
-export * from './sv-eth';
+// export * from './sv-eth'; // Savvy migrated to arbitrum
 export * from './dforce-apr-handler';
 export * from './defillama-apr-handler';
 export * from './teth';
