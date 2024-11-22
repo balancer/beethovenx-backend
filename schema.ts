@@ -2548,6 +2548,7 @@ export interface QuerySorGetSwapPathsArgs {
     callDataInput?: InputMaybe<GqlSwapCallDataInput>;
     chain: GqlChain;
     considerPoolsWithHooks?: InputMaybe<Scalars['Boolean']>;
+    poolIds?: InputMaybe<Array<Scalars['String']>>;
     queryBatchSwap?: InputMaybe<Scalars['Boolean']>;
     swapAmount: Scalars['AmountHumanReadable'];
     swapType: GqlSorSwapType;

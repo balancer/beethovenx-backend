@@ -9,7 +9,7 @@ import {
     GqlSorSwapType,
     GqlSwapCallDataInput,
 } from '../../../schema';
-import { Chain } from '@prisma/client';
+import { Chain, Prisma, PrismaPoolType } from '@prisma/client';
 import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
@@ -153,11 +153,12 @@ class SorPathService implements SwapService {
             protocolVersion,
             graphTraversalConfig,
             considerPoolsWithHooks,
+            poolIds,
         }: GetSwapPathsInput,
         maxNonBoostedPathDepth = 4,
     ): Promise<PathWithAmount[] | null> {
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks);
+            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks, poolIds);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -467,15 +468,44 @@ class SorPathService implements SwapService {
         chain: Chain,
         protocolVersion: number,
         considerPoolsWithHooks: boolean,
+        poolIds?: string[],
     ): Promise<PrismaPoolAndHookWithDynamic[]> {
+        const type = {
+            in: [
+                'WEIGHTED',
+                'META_STABLE',
+                'PHANTOM_STABLE',
+                'COMPOSABLE_STABLE',
+                'STABLE',
+                'FX',
+                'GYRO',
+                'GYRO3',
+                'GYROE',
+            ] as PrismaPoolType[],
+        };
+
+        if (poolIds && poolIds.length > 0) {
+            return await prisma.prismaPool.findMany({
+                where: {
+                    id: { in: poolIds },
+                    chain,
+                    protocolVersion,
+                    type,
+                },
+                include: prismaPoolAndHookWithDynamic.include,
+            });
+        }
+
         const cached = this.cache.get(
             `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
         );
+
         if (cached) {
             return cached;
         }
 
         const poolIdsToExclude = AllNetworkConfigsKeyedOnChain[chain].data.sor?.poolIdsToExclude ?? [];
+
         const pools = await prisma.prismaPool.findMany({
             where: {
                 chain,
@@ -492,20 +522,8 @@ class SorPathService implements SwapService {
                 id: {
                     notIn: [...poolIdsToExclude, ...poolsToIgnore],
                 },
-                type: {
-                    in: [
-                        'WEIGHTED',
-                        'META_STABLE',
-                        'PHANTOM_STABLE',
-                        'COMPOSABLE_STABLE',
-                        'STABLE',
-                        'FX',
-                        'GYRO',
-                        'GYRO3',
-                        'GYROE',
-                    ],
-                },
-                ...(considerPoolsWithHooks ? {} : { hookId: null }),
+                type,
+                ...(considerPoolsWithHooks ? {} : { hook: { equals: Prisma.AnyNull } }),
             },
             include: prismaPoolAndHookWithDynamic.include,
         });

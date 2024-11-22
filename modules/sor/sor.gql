@@ -65,6 +65,10 @@ extend type Query {
         """
         considerPoolsWithHooks: Boolean
         """
+        Use specified poolIds only
+        """
+        poolIds: [String!]
+        """
         Input data to create and return transaction data. If this config is given, call data is added to the response.
         """
         callDataInput: GqlSwapCallDataInput

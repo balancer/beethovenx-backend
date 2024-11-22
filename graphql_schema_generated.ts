@@ -3489,6 +3489,11 @@ export const schema = gql`
             considerPoolsWithHooks: Boolean
 
             """
+            Use specified poolIds only
+            """
+            poolIds: [String!]
+
+            """
             Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
             """
             queryBatchSwap: Boolean

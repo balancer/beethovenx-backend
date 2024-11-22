@@ -67,6 +67,7 @@ export class SorService {
                   }
                 : undefined,
             considerPoolsWithHooks: args.considerPoolsWithHooks ?? false,
+            poolIds: args.poolIds ?? undefined,
         };
 
         if (args.useProtocolVersion) {
