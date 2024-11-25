@@ -286,6 +286,26 @@ query BalancerPoolHistoricalLiquidities(
     }
 }
 
+query BalancerSnapshotIds(
+    $skip: Int
+    $first: Int
+    $orderBy: PoolSnapshot_orderBy
+    $orderDirection: OrderDirection
+    $where: PoolSnapshot_filter
+    $block: Block_height
+) {
+    poolSnapshots(
+        skip: $skip
+        first: $first
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        where: $where
+        block: $block
+    ) {
+        id
+    }
+}
+
 query BalancerPoolSnapshots(
     $skip: Int
     $first: Int
@@ -310,6 +330,9 @@ fragment BalancerPoolSnapshot on PoolSnapshot {
     id
     pool {
         id
+        tokens {
+            address
+        }
     }
     amounts
     totalShares

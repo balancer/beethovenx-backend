@@ -6352,6 +6352,20 @@ export type BalancerPoolHistoricalLiquiditiesQuery = {
     }>;
 };
 
+export type BalancerSnapshotIdsQueryVariables = Exact<{
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<PoolSnapshot_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<PoolSnapshot_Filter>;
+    block?: Maybe<Block_Height>;
+}>;
+
+export type BalancerSnapshotIdsQuery = {
+    __typename?: 'Query';
+    poolSnapshots: Array<{ __typename?: 'PoolSnapshot'; id: string }>;
+};
+
 export type BalancerPoolSnapshotsQueryVariables = Exact<{
     skip?: Maybe<Scalars['Int']>;
     first?: Maybe<Scalars['Int']>;
@@ -6374,7 +6388,11 @@ export type BalancerPoolSnapshotsQuery = {
         liquidity: string;
         swapsCount: string;
         holdersCount: string;
-        pool: { __typename?: 'Pool'; id: string };
+        pool: {
+            __typename?: 'Pool';
+            id: string;
+            tokens?: Array<{ __typename?: 'PoolToken'; address: string }> | null | undefined;
+        };
     }>;
 };
 
@@ -6389,7 +6407,11 @@ export type BalancerPoolSnapshotFragment = {
     liquidity: string;
     swapsCount: string;
     holdersCount: string;
-    pool: { __typename?: 'Pool'; id: string };
+    pool: {
+        __typename?: 'Pool';
+        id: string;
+        tokens?: Array<{ __typename?: 'PoolToken'; address: string }> | null | undefined;
+    };
 };
 
 export type BalancerLatestPricesQueryVariables = Exact<{
@@ -7022,6 +7044,9 @@ export const BalancerPoolSnapshotFragmentDoc = gql`
         id
         pool {
             id
+            tokens {
+                address
+            }
         }
         amounts
         totalShares
@@ -7316,6 +7341,27 @@ export const BalancerPoolHistoricalLiquiditiesDocument = gql`
             poolShareValue
             pricingAsset
             block
+        }
+    }
+`;
+export const BalancerSnapshotIdsDocument = gql`
+    query BalancerSnapshotIds(
+        $skip: Int
+        $first: Int
+        $orderBy: PoolSnapshot_orderBy
+        $orderDirection: OrderDirection
+        $where: PoolSnapshot_filter
+        $block: Block_height
+    ) {
+        poolSnapshots(
+            skip: $skip
+            first: $first
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+            where: $where
+            block: $block
+        ) {
+            id
         }
     }
 `;
@@ -7676,6 +7722,19 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         { ...requestHeaders, ...wrappedRequestHeaders },
                     ),
                 'BalancerPoolHistoricalLiquidities',
+            );
+        },
+        BalancerSnapshotIds(
+            variables?: BalancerSnapshotIdsQueryVariables,
+            requestHeaders?: Dom.RequestInit['headers'],
+        ): Promise<BalancerSnapshotIdsQuery> {
+            return withWrapper(
+                (wrappedRequestHeaders) =>
+                    client.request<BalancerSnapshotIdsQuery>(BalancerSnapshotIdsDocument, variables, {
+                        ...requestHeaders,
+                        ...wrappedRequestHeaders,
+                    }),
+                'BalancerSnapshotIds',
             );
         },
         BalancerPoolSnapshots(
