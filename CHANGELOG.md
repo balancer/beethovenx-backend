@@ -1,5 +1,11 @@
 # backend
 
+## 1.23.5
+
+### Patch Changes
+
+-   35e8c33: vETH APR source update
+
 ## 1.23.4
 
 ### Patch Changes
