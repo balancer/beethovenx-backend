@@ -71,10 +71,23 @@ export default <NetworkData>{
                 scale: 1,
                 isIbYield: true,
             },
+            wstETH: {
+                tokenAddress: '0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            rETH: {
+                tokenAddress: '0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c',
+                sourceUrl: 'https://api.rocketpool.net/mainnet/reth/apr',
+                path: 'yearlyAPR',
+                isIbYield: true,
+            },
         },
         maker: {
             sdai: '0x99ac4484e8a1dbd6a185380b3a811913ac884d87',
         },
+        etherfi: '0x04c0599ae5a44757c0af6f9ec3b93da8976c150a',
         aave: {
             v3: {
                 subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/GQFbb95cE6d8mV989mL5figjaGaKCQB3xqYrr1bRyXqF`,
