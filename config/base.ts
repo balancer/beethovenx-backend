@@ -20,6 +20,9 @@ export default <NetworkData>{
         gauge: `https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest`,
         aura: 'https://data.aura.finance/graphql',
     },
+    gyro: {
+        config: '0x8a5eb9a5b726583a213c7e4de2403d2dfd42c8a6',
+    },
     eth: {
         address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         addressFormatted: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
