@@ -1,5 +1,11 @@
 # backend
 
+## 1.23.6
+
+### Patch Changes
+
+-   b6c978e: Adding Base aprs for wstETH, rETH, weETH.
+
 ## 1.23.5
 
 ### Patch Changes
