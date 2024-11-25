@@ -279,8 +279,8 @@ export default <NetworkData>{
             },
             vETH: {
                 tokenAddress: '0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f',
-                sourceUrl: 'https://apy.liebi.com/veth',
-                path: 'veth',
+                sourceUrl: 'https://dapi.bifrost.io/api/site',
+                path: 'vETH.totalApy',
             },
             stETH: {
                 tokenAddress: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
