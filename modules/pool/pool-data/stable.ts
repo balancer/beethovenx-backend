@@ -3,5 +3,6 @@ import { BalancerPoolFragment } from '../../subgraphs/balancer-subgraph/generate
 export const stable = (pool: BalancerPoolFragment) => {
     return {
         amp: pool.amp || '',
+        bptPriceRate: '',
     };
 };

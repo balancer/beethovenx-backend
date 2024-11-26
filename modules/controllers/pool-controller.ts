@@ -189,7 +189,7 @@ export function PoolController(tracer?: any) {
                 latestBlock,
             );
 
-            return added.map(({ id }) => id);
+            return added;
         },
         /**
          * Takes all the pools from subgraph, enriches with onchain data and upserts them to the database
@@ -216,12 +216,13 @@ export function PoolController(tracer?: any) {
             const vaultClient = getVaultClient(viemClient, vaultAddress);
             const latestBlock = await viemClient.getBlockNumber();
 
-            const pools = await upsertPoolsV3(allPools, vaultClient, chain, latestBlock);
+            const poolsIds = await upsertPoolsV3(allPools, vaultClient, chain, latestBlock);
+            const pools = await prisma.prismaPool.findMany({ where: { chain, id: { in: poolsIds } } });
             await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
 
             await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
 
-            return pools.map(({ id }) => id);
+            return poolsIds;
         },
         /**
          * Syncs database pools state with the onchain state
@@ -315,27 +316,13 @@ export function PoolController(tracer?: any) {
             }
 
             // Get hook addresses from the database
-            const addresses = await prisma.hook
-                .findMany({
-                    where: { chain },
-                    select: { address: true },
-                })
-                .then((hooks) => hooks.map(({ address }) => address));
-
-            // Map hooks to their config names
-            const mappedHooks = addresses.reduce((acc, address) => {
-                // find key in config object that has the same value as address
-                const keys = Object.keys(hooks) as HookType[];
-                const key = keys.find((key) => hooks[key]?.includes(address));
-                if (key) {
-                    acc[address] = key;
-                }
-                return acc;
-            }, {} as Record<string, HookType>);
+            const poolsWithHooks = await prisma.prismaPool.findMany({
+                where: { chain, hook: { not: {} } },
+            });
 
             const viemClient = getViemClient(chain);
 
-            await syncHookData(mappedHooks, viemClient, chain);
+            await syncHookData(poolsWithHooks, hooks, viemClient, chain);
         },
     };
 }

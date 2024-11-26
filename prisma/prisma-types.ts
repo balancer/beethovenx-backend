@@ -3,7 +3,6 @@ import { Prisma, PrismaToken, PrismaTokenTypeOption, PrismaPoolEvent } from '@pr
 export type PoolUpsertData = {
     pool: Prisma.PrismaPoolCreateInput;
     tokens: Prisma.PrismaTokenCreateInput[];
-    hook?: Prisma.HookCreateInput;
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
     poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
@@ -65,7 +64,6 @@ export type PrismaPoolTokenWithDynamicData = Prisma.PrismaPoolTokenGetPayload<ty
 export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: true,
         staking: {
             include: {
                 farm: {
@@ -275,7 +273,6 @@ export type PrismaTokenWithTypes = PrismaToken & {
 export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
-        hook: true,
         allTokens: {
             include: {
                 token: {
@@ -306,10 +303,36 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
         tokens: {
             orderBy: { index: 'asc' },
             include: {
+                dynamicData: true,
                 token: {
                     include: { types: true },
                 },
-                dynamicData: true,
+                nestedPool: {
+                    include: {
+                        dynamicData: true,
+                        tokens: {
+                            orderBy: { index: 'asc' },
+                            include: {
+                                token: {
+                                    include: { types: true },
+                                },
+                                dynamicData: true,
+                                nestedPool: {
+                                    include: {
+                                        dynamicData: true,
+                                        tokens: {
+                                            orderBy: { index: 'asc' },
+                                            include: {
+                                                token: true,
+                                                dynamicData: true,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         staking: {
@@ -361,7 +384,7 @@ export const prismaPoolBatchSwapWithSwaps = Prisma.validator<Prisma.PrismaPoolBa
 
 export type PrismaPoolBatchSwapWithSwaps = Prisma.PrismaPoolBatchSwapGetPayload<typeof prismaPoolBatchSwapWithSwaps>;
 
-export const prismaPoolWithDynamic = Prisma.validator<Prisma.PrismaPoolArgs>()({
+export const prismaPoolAndHookWithDynamic = Prisma.validator<Prisma.PrismaPoolArgs>()({
     include: {
         dynamicData: true,
         tokens: {
@@ -375,14 +398,4 @@ export const prismaPoolWithDynamic = Prisma.validator<Prisma.PrismaPoolArgs>()({
     },
 });
 
-export type PrismaPoolWithDynamic = Prisma.PrismaPoolGetPayload<typeof prismaPoolWithDynamic>;
-
-export const prismaHookWithDynamic = Prisma.validator<Prisma.HookArgs>()({
-    include: {
-        pools:true,
-    },
-});
-
-export type PrismaHookWithDynamic = Prisma.HookGetPayload<typeof prismaHookWithDynamic>;
-
-  
+export type PrismaPoolAndHookWithDynamic = Prisma.PrismaPoolGetPayload<typeof prismaPoolAndHookWithDynamic>;

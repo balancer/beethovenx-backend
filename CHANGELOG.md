@@ -1,5 +1,66 @@
 # backend
 
+## 1.23.6
+
+### Patch Changes
+
+-   b6c978e: Adding Base aprs for wstETH, rETH, weETH.
+
+## 1.23.5
+
+### Patch Changes
+
+-   35e8c33: vETH APR source update
+
+## 1.23.4
+
+### Patch Changes
+
+-   02e139a: adding poolIds filter to SOR
+-   dcc6440: APR sources, remove sAPE, svETH, swETH, USDR; add sdeUSD
+-   21b40a4: Redo how hooks are synced and change the schema
+
+## 1.23.3
+
+### Patch Changes
+
+-   f7ee6e5: Feat add pool with hook consider flag
+-   6551463: remove overnight apr
+-   c9e8d42: using total supply instead of working supply for gauge tvl, as per zen dragon
+-   6e4feff: adapt gauge apr again as per zen dragon
+
+## 1.23.2
+
+### Patch Changes
+
+-   3d6a3de: add poolTokens to minimal pool
+-   67a718c: SOR - Add support to Dola/USDC stable swap
+-   f5911fd: adding hook info to nested pools
+-   6b140a4: add ERC4626 and rateprovider data into poolTokens of MinimalPool
+
+## 1.23.1
+
+### Patch Changes
+
+-   7f0ee69: adapt nested balance and usd of a token to its share
+-   6d14f60: enable LBP in sor and sync
+
+## 1.23.0
+
+### Minor Changes
+
+-   23f6773: Add hook and erc4626 reviews and tags. Adapt to new metadata repo layout.
+
+### Patch Changes
+
+-   3c0909d: use new priceimpact calc for Beets SOR path
+-   5cabb48: sync bptPriceRate for v3 pools
+-   33ffa59: reduce vebal balance multicall batchsize
+-   daa73e2: fix review data exposure
+-   4337d11: return all token prices
+-   1b3ef2d: fix sor hops with buffers
+-   232ee9e: add tokenIn filter for tokens query
+
 ## 1.22.0
 
 ### Minor Changes

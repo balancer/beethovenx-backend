@@ -41,8 +41,7 @@ model PrismaPool {
 
     userPoolBalanceSnapshots    PrismaUserPoolBalanceSnapshot[]
 
-    hook               Hook? @relation(fields: [hookId], references: [id])
-    hookId             Int?
+    hook                Json?
 
     @@index([categories(ops: ArrayOps)], type: Gin)
 }

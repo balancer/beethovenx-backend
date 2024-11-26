@@ -14,6 +14,26 @@ export const schema = gql`
 
     scalar Date
 
+    """
+    The review data for the ERC4626 token
+    """
+    type Erc4626ReviewData {
+        """
+        The filename of the review of the ERC4626
+        """
+        reviewFile: String!
+
+        """
+        A summary of the ERC4626 review, usually just says safe or unsafe
+        """
+        summary: String!
+
+        """
+        Warnings associated with the ERC4626
+        """
+        warnings: [String!]!
+    }
+
     type GqlBalancePoolAprItem {
         apr: GqlPoolAprValue!
         id: ID!
@@ -114,6 +134,68 @@ export const schema = gql`
         updatedBy: String
     }
 
+    """
+    Hook data
+    """
+    type GqlHook {
+        address: String!
+
+        """
+        Data points changing over time
+        """
+        dynamicData: GqlHookData
+
+        """
+        True when hook can change the amounts send to the vault. Necessary to deduct the fees.
+        """
+        enableHookAdjustedAmounts: Boolean!
+
+        """
+        The review for this hook if applicable.
+        """
+        reviewData: GqlHookReviewData
+        shouldCallAfterAddLiquidity: Boolean!
+        shouldCallAfterInitialize: Boolean!
+        shouldCallAfterRemoveLiquidity: Boolean!
+        shouldCallAfterSwap: Boolean!
+        shouldCallBeforeAddLiquidity: Boolean!
+        shouldCallBeforeInitialize: Boolean!
+        shouldCallBeforeRemoveLiquidity: Boolean!
+        shouldCallBeforeSwap: Boolean!
+        shouldCallComputeDynamicSwapFee: Boolean!
+    }
+
+    """
+    Collection of hook specific data. Percentage format is 0.01 -> 0.01%.
+    """
+    type GqlHookData {
+        addLiquidityFeePercentage: String
+        maxSurgeFeePercentage: String
+        removeLiquidityFeePercentage: String
+        surgeThresholdPercentage: String
+        swapFeePercentage: String
+    }
+
+    """
+    Represents the review data for the hook
+    """
+    type GqlHookReviewData {
+        """
+        The filename of the review of the hook
+        """
+        reviewFile: String!
+
+        """
+        A summary of the hook review, usually just says safe or unsafe
+        """
+        summary: String!
+
+        """
+        Warnings associated with the hook
+        """
+        warnings: [String!]!
+    }
+
     type GqlLatestSyncedBlocks {
         poolSyncBlock: BigInt!
         userStakeSyncBlock: BigInt!
@@ -130,7 +212,7 @@ export const schema = gql`
         address: Bytes!
 
         """
-        Price rate of the Balancer Pool Token (BPT).
+        Price rate of this pool or the Balancer Pool Token (BPT).
         """
         bptPriceRate: BigDecimal!
 
@@ -143,6 +225,11 @@ export const schema = gql`
         Address of the factory contract that created the pool, if applicable.
         """
         factory: Bytes
+
+        """
+        Hook assigned to a pool
+        """
+        hook: GqlHook
 
         """
         Unique identifier of the pool.
@@ -354,7 +441,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -627,7 +714,7 @@ export const schema = gql`
         address: Bytes!
 
         """
-        Returns all pool tokens, including any nested tokens and phantom BPTs on one level.
+        Returns all pool tokens, including any nested tokens and phantom BPTs as a flattened array.
         """
         allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
 
@@ -679,7 +766,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -707,7 +794,7 @@ export const schema = gql`
         owner: Bytes
 
         """
-        Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
+        Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep.
         """
         poolTokens: [GqlPoolTokenDetail!]!
 
@@ -793,19 +880,19 @@ export const schema = gql`
 
     type GqlPoolComposableStable implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         amp: BigInt!
         bptPriceRate: BigDecimal!
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -920,18 +1007,18 @@ export const schema = gql`
 
     type GqlPoolElement implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         baseToken: Bytes!
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1116,7 +1203,7 @@ export const schema = gql`
 
     type GqlPoolFx implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         alpha: String!
         beta: String!
         categories: [GqlPoolFilterCategory]
@@ -1124,13 +1211,13 @@ export const schema = gql`
         createTime: Int!
         decimals: Int!
         delta: String!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         epsilon: String!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1156,7 +1243,7 @@ export const schema = gql`
 
     type GqlPoolGyro implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         alpha: String!
         beta: String!
         c: String!
@@ -1165,12 +1252,12 @@ export const schema = gql`
         createTime: Int!
         dSq: String!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         lambda: String!
@@ -1248,17 +1335,17 @@ export const schema = gql`
 
     type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1284,18 +1371,18 @@ export const schema = gql`
 
     type GqlPoolMetaStable implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         amp: BigInt!
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1326,7 +1413,7 @@ export const schema = gql`
         """
         Returns all pool tokens, including any nested tokens and phantom BPTs
         """
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
 
         """
         List of categories assigned by the team based on external factors
@@ -1351,7 +1438,7 @@ export const schema = gql`
         """
         Only returns main or underlying tokens, also known as leave tokens. Wont return any nested BPTs. Used for displaying the tokens that the pool consists of.
         """
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
 
         """
         Dynamic data such as token balances, swap fees or volume
@@ -1376,7 +1463,7 @@ export const schema = gql`
         """
         Hook assigned to a pool
         """
-        hook: Hook
+        hook: GqlHook
 
         """
         The pool id. This is equal to the address for protocolVersion 3 pools
@@ -1402,6 +1489,11 @@ export const schema = gql`
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
         owner: Bytes
+
+        """
+        Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
+        """
+        poolTokens: [GqlPoolTokenDetail!]!
 
         """
         The protocol version on which the pool is deployed, 1, 2 or 3
@@ -1520,18 +1612,19 @@ export const schema = gql`
 
     type GqlPoolStable implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         amp: BigInt!
+        bptPriceRate: BigDecimal!
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -1906,6 +1999,11 @@ export const schema = gql`
         decimals: Int!
 
         """
+        The ERC4626 review data for the token
+        """
+        erc4626ReviewData: Erc4626ReviewData
+
+        """
         Indicates whether this token is a BPT and therefor has a nested pool.
         """
         hasNestedPool: Boolean!
@@ -1966,7 +2064,7 @@ export const schema = gql`
         symbol: String!
 
         """
-        If it is an Erc4262, this will be the underlying token if present in the API.
+        If it is an ERC4626, this will be the underlying token if present in the API.
         """
         underlyingToken: GqlToken
 
@@ -2067,17 +2165,17 @@ export const schema = gql`
 
     type GqlPoolWeighted implements GqlPoolBase {
         address: Bytes!
-        allTokens: [GqlPoolTokenExpanded!]!
+        allTokens: [GqlPoolTokenExpanded!]! @deprecated(reason: "Use poolTokens instead")
         categories: [GqlPoolFilterCategory]
         chain: GqlChain!
         createTime: Int!
         decimals: Int!
-        displayTokens: [GqlPoolTokenDisplay!]!
+        displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
-        hook: Hook
+        hook: GqlHook
         id: ID!
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
@@ -2782,6 +2880,11 @@ export const schema = gql`
         discordUrl: String
 
         """
+        The ERC4626 review data for the token
+        """
+        erc4626ReviewData: Erc4626ReviewData
+
+        """
         Whether the token is considered an ERC4626 token.
         """
         isErc4626: Boolean!
@@ -2830,6 +2933,11 @@ export const schema = gql`
         The Twitter username of the token
         """
         twitterUsername: String
+
+        """
+        The ERC4626 underlying token address, if applicable.
+        """
+        underlyingTokenAddress: String
 
         """
         The website URL of the token
@@ -2947,6 +3055,16 @@ export const schema = gql`
         The timestamp when the data was last updated
         """
         updatedAt: String!
+    }
+
+    """
+    Provide filters for tokens
+    """
+    input GqlTokenFilter {
+        """
+        Only return tokens with these addresses
+        """
+        tokensIn: [String!]
     }
 
     """
@@ -3166,47 +3284,6 @@ export const schema = gql`
         type: GqlPoolType!
     }
 
-    """
-    Hook data
-    """
-    type Hook {
-        address: String!
-        chain: GqlChain!
-
-        """
-        Data points changing over time
-        """
-        dynamicData: HookData
-
-        """
-        True when hook can change the amounts send to the vault. Necessary to deduct the fees.
-        """
-        enableHookAdjustedAmounts: Boolean!
-
-        """
-        List of pools using the hook
-        """
-        poolsIds: [String]
-        shouldCallAfterAddLiquidity: Boolean!
-        shouldCallAfterInitialize: Boolean!
-        shouldCallAfterRemoveLiquidity: Boolean!
-        shouldCallAfterSwap: Boolean!
-        shouldCallBeforeAddLiquidity: Boolean!
-        shouldCallBeforeInitialize: Boolean!
-        shouldCallBeforeRemoveLiquidity: Boolean!
-        shouldCallBeforeSwap: Boolean!
-        shouldCallComputeDynamicSwapFee: Boolean!
-    }
-
-    """
-    Collection of hook specific data. Percentage format is 0.01 -> 0.01%.
-    """
-    type HookData {
-        addLiquidityFeePercentage: String
-        removeLiquidityFeePercentage: String
-        swapFeePercentage: String
-    }
-
     scalar JSON
 
     """
@@ -3283,11 +3360,6 @@ export const schema = gql`
         blocksGetBlocksPerSecond: Float!
         blocksGetBlocksPerYear: Float!
         contentGetNewsItems(chain: GqlChain): [GqlContentNewsItem!]!
-
-        """
-        Returns list of hooks.
-        """
-        hooks(chain: GqlChain): [Hook!]
         latestSyncedBlocks: GqlLatestSyncedBlocks!
 
         """
@@ -3410,6 +3482,16 @@ export const schema = gql`
             The Chain to query
             """
             chain: GqlChain!
+
+            """
+            Whether it should consider pools that have hooks. Default is false if not provided.
+            """
+            considerPoolsWithHooks: Boolean
+
+            """
+            Use specified poolIds only
+            """
+            poolIds: [String!]
 
             """
             Whether to run queryBatchSwap to update the return amount with most up-to-date on-chain values, default: false
@@ -3539,7 +3621,7 @@ export const schema = gql`
         """
         Returns all allowed tokens for a given chain or chains
         """
-        tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
+        tokenGetTokens(chains: [GqlChain!], where: GqlTokenFilter): [GqlToken!]!
 
         """
         Returns meta data for a given set of tokens such as description, website, etc.

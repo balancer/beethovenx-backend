@@ -1,4 +1,4 @@
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import { YbAprConfig } from '../../../../../network/apr-config-types';
 
 const query = `

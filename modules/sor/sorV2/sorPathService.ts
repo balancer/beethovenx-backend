@@ -9,8 +9,8 @@ import {
     GqlSorSwapType,
     GqlSwapCallDataInput,
 } from '../../../schema';
-import { Chain } from '@prisma/client';
-import { PrismaPoolWithDynamic, prismaPoolWithDynamic, PrismaHookWithDynamic } from '../../../prisma/prisma-types';
+import { Chain, Prisma, PrismaPoolType } from '@prisma/client';
+import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
 import { poolsToIgnore } from '../constants';
@@ -41,7 +41,7 @@ import { SwapLocal } from './lib/swapLocal';
 import { Cache } from 'memory-cache';
 
 class SorPathService implements SwapService {
-    private cache = new Cache<string, PrismaPoolWithDynamic[]>();
+    private cache = new Cache<string, PrismaPoolAndHookWithDynamic[]>();
     private readonly SOR_POOLS_CACHE_KEY = `sor:pools`;
 
     // This is only used for the old SOR service
@@ -52,7 +52,7 @@ class SorPathService implements SwapService {
         const protocolVersion = 2;
 
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion);
+            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, false);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -144,11 +144,21 @@ class SorPathService implements SwapService {
     }
 
     private async getSwapPathsFromSor(
-        { chain, tokenIn, tokenOut, swapType, swapAmount, protocolVersion, graphTraversalConfig }: GetSwapPathsInput,
+        {
+            chain,
+            tokenIn,
+            tokenOut,
+            swapType,
+            swapAmount,
+            protocolVersion,
+            graphTraversalConfig,
+            considerPoolsWithHooks,
+            poolIds,
+        }: GetSwapPathsInput,
         maxNonBoostedPathDepth = 4,
     ): Promise<PathWithAmount[] | null> {
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion);
+            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks, poolIds);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -454,13 +464,48 @@ class SorPathService implements SwapService {
      * Fetch pools from Prisma and map to b-sdk BasePool.
      * @returns
      */
-    private async getBasePoolsFromDb(chain: Chain, protocolVersion: number): Promise<PrismaPoolWithDynamic[]> {
-        const cached = this.cache.get(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`);
+    public async getBasePoolsFromDb(
+        chain: Chain,
+        protocolVersion: number,
+        considerPoolsWithHooks: boolean,
+        poolIds?: string[],
+    ): Promise<PrismaPoolAndHookWithDynamic[]> {
+        const type = {
+            in: [
+                'WEIGHTED',
+                'META_STABLE',
+                'PHANTOM_STABLE',
+                'COMPOSABLE_STABLE',
+                'STABLE',
+                'FX',
+                'GYRO',
+                'GYRO3',
+                'GYROE',
+            ] as PrismaPoolType[],
+        };
+
+        if (poolIds && poolIds.length > 0) {
+            return await prisma.prismaPool.findMany({
+                where: {
+                    id: { in: poolIds },
+                    chain,
+                    protocolVersion,
+                    type,
+                },
+                include: prismaPoolAndHookWithDynamic.include,
+            });
+        }
+
+        const cached = this.cache.get(
+            `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
+        );
+
         if (cached) {
             return cached;
         }
 
         const poolIdsToExclude = AllNetworkConfigsKeyedOnChain[chain].data.sor?.poolIdsToExclude ?? [];
+
         const pools = await prisma.prismaPool.findMany({
             where: {
                 chain,
@@ -477,26 +522,41 @@ class SorPathService implements SwapService {
                 id: {
                     notIn: [...poolIdsToExclude, ...poolsToIgnore],
                 },
-                type: {
-                    in: [
-                        'WEIGHTED',
-                        'META_STABLE',
-                        'PHANTOM_STABLE',
-                        'COMPOSABLE_STABLE',
-                        'STABLE',
-                        'FX',
-                        'GYRO',
-                        'GYRO3',
-                        'GYROE',
-                    ],
-                },
+                type,
+                ...(considerPoolsWithHooks ? {} : { hook: { equals: Prisma.AnyNull } }),
             },
-            include: prismaPoolWithDynamic.include,
+            include: prismaPoolAndHookWithDynamic.include,
         });
 
+        const lbps = await prisma.prismaPool.findMany({
+            where: {
+                chain,
+                protocolVersion,
+                dynamicData: {
+                    totalSharesNum: {
+                        gt: 0.000000000001,
+                    },
+                    swapEnabled: true,
+                },
+                id: {
+                    notIn: [...poolIdsToExclude, ...poolsToIgnore],
+                },
+                type: {
+                    in: ['LIQUIDITY_BOOTSTRAPPING'],
+                },
+            },
+            include: prismaPoolAndHookWithDynamic.include,
+        });
+
+        const allPools = [...pools, ...lbps];
+
         // cache for 10s
-        this.cache.put(`${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}`, pools, 10 * 1000);
-        return pools;
+        this.cache.put(
+            `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
+            allPools,
+            10 * 1000,
+        );
+        return allPools;
     }
 
     private mapRoutes(paths: PathWithAmount[], pools: GqlPoolMinimal[]): GqlSorSwapRoute[] {
@@ -507,7 +567,7 @@ class SorPathService implements SwapService {
             if (!pool) throw new Error('Pool not found while mapping route');
             return [this.mapSingleSwap(paths[0], pool)];
         }
-        return paths.filter((path) => !path.isBuffer).map((path) => this.mapBatchSwap(path, pools));
+        return paths.map((path) => this.mapBatchSwap(path, pools));
     }
 
     private mapBatchSwap(path: PathWithAmount, pools: GqlPoolMinimal[]): GqlSorSwapRoute {
@@ -516,22 +576,29 @@ class SorPathService implements SwapService {
         const tokenInAmount = formatUnits(path.inputAmount.amount, path.tokens[0].decimals);
         const tokenOutAmount = formatUnits(path.outputAmount.amount, path.tokens[path.tokens.length - 1].decimals);
 
-        return {
-            tokenIn,
-            tokenOut,
-            tokenInAmount,
-            tokenOutAmount,
-            share: 0.5, // TODO needed?
-            hops: path.pools.map((pool, i) => {
-                return {
+        const hops = [];
+        let i = 0;
+        for (const pool of path.pools) {
+            if (pool.poolType !== 'Buffer') {
+                hops.push({
                     tokenIn: `${path.tokens[i].address}`,
                     tokenOut: `${path.tokens[i + 1].address}`,
                     tokenInAmount: i === 0 ? tokenInAmount : '0',
                     tokenOutAmount: i === pools.length - 1 ? tokenOutAmount : '0',
                     poolId: pool.id,
                     pool: pools.find((p) => p.id === pool.id) as GqlPoolMinimal,
-                };
-            }),
+                });
+            }
+            i++;
+        }
+
+        return {
+            tokenIn,
+            tokenOut,
+            tokenInAmount,
+            tokenOutAmount,
+            share: 0.5, // TODO needed?
+            hops: hops,
         };
     }
 

@@ -1,25 +1,19 @@
-extend type Query {
-    """
-    Returns list of hooks.
-    """
-    hooks(chain: GqlChain): [Hook!]
-}
-
 """
 Collection of hook specific data. Percentage format is 0.01 -> 0.01%.
 """
-type HookData {
+type GqlHookData {
     swapFeePercentage: String
     addLiquidityFeePercentage: String
     removeLiquidityFeePercentage: String
+    surgeThresholdPercentage: String
+    maxSurgeFeePercentage: String
 }
 
 """
 Hook data
 """
-type Hook {
+type GqlHook {
     address: String!
-    chain: GqlChain!
     """
     True when hook can change the amounts send to the vault. Necessary to deduct the fees.
     """
@@ -36,9 +30,27 @@ type Hook {
     """
     Data points changing over time
     """
-    dynamicData: HookData
+    dynamicData: GqlHookData
     """
-    List of pools using the hook
+    The review for this hook if applicable.
     """
-    poolsIds: [String]
+    reviewData: GqlHookReviewData
+}
+
+"""
+Represents the review data for the hook
+"""
+type GqlHookReviewData {
+    """
+    A summary of the hook review, usually just says safe or unsafe
+    """
+    summary: String!
+    """
+    The filename of the review of the hook
+    """
+    reviewFile: String!
+    """
+    Warnings associated with the hook
+    """
+    warnings: [String!]!
 }

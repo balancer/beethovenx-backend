@@ -29,8 +29,9 @@ export const getChangedPoolsV2 = async (
     });
 
     // Get pools and make them unique
-    const changedPools = logs
+    const changedPools: string[] = logs
         .map((log) => (log as any).args.poolId)
         .filter((value, index, self) => self.indexOf(value) === index);
+
     return changedPools;
 };

@@ -5,35 +5,35 @@ import { multicallViem } from '../../../web3/multicaller-viem';
 import { ViemClient } from '../../types';
 import { feeTakingHook } from './fee-taking-hook';
 import { exitFeeHook } from './exit-fee-hook';
+import { stableSurgeHook } from './stable-surge-hook';
 
-export const fetchHookData = async (client: ViemClient, addresses?: Record<string, HookType>) => {
-    if (!addresses) {
-        return {};
-    }
-
+export const fetchHookData = async (
+    client: ViemClient,
+    address: string,
+    type: HookType,
+    poolAddress: string,
+): Promise<Record<string, string>> => {
     let calls: ViemMulticallCall[] = [];
 
-    // For each address, hook type get the calls
-    for (const [address, type] of Object.entries(addresses)) {
-        switch (type) {
-            case 'feeTakingHook':
-                calls = [...calls, ...feeTakingHook(address)];
-                break;
-            case 'exitFeeHook':
-                calls = [...calls, ...exitFeeHook(address)];
-                break;
-            default:
-                break;
-        }
+    switch (type) {
+        case 'feeTakingHook':
+            calls = [...calls, ...feeTakingHook(address)];
+            break;
+        case 'exitFeeHook':
+            calls = [...calls, ...exitFeeHook(address)];
+            break;
+        case 'stableSurgeHook':
+            calls = [...calls, ...stableSurgeHook(address, poolAddress)];
+            break;
+        default:
+            break;
     }
 
     const results = await multicallViem(client, calls);
 
     // Parse all results bignumber values to percentages
-    for (const hook of Object.keys(results)) {
-        for (const key of Object.keys(results[hook])) {
-            results[hook][key] = formatEther(results[hook][key]);
-        }
+    for (const key of Object.keys(results)) {
+        results[key] = formatEther(results[key]);
     }
 
     return results;

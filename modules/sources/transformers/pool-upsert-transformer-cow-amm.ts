@@ -24,6 +24,7 @@ export const poolUpsertTransformerCowAmm = (
         version: 1,
         createTime: Number(poolFragment.blockTimestamp),
         liquidityManagement: {},
+        hook: undefined,
     },
     tokens: [
         ...poolFragment.tokens.map((token) => ({
@@ -41,7 +42,6 @@ export const poolUpsertTransformerCowAmm = (
             chain,
         },
     ],
-    hook: undefined,
     poolDynamicData: {
         id: poolFragment.id,
         pool: {

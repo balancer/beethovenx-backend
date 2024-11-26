@@ -1,5 +1,5 @@
 import { ViemClient } from '../../types';
-import { stableContractCalls, parseStableContractCalls, PoolTypeData } from '../pool-type-data';
+import { stableContractCalls, parseStableContractCalls, PoolTypeData } from '../pool-type-dynamic-data';
 import { multicallViem, ViemMulticallCall } from '../../../web3/multicaller-viem';
 import { PrismaPoolType } from '@prisma/client';
 

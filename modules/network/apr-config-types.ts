@@ -9,7 +9,6 @@ export interface YbAprConfig {
     maker?: MakerAprConfig;
     ovix?: OvixAprConfig;
     reaper?: ReaperAprConfig;
-    tessera?: TesseraAprConfig;
     tetu?: TetuAprConfig;
     tranchess?: TranchessAprConfig;
     yearn?: YearnAprConfig;
@@ -153,16 +152,6 @@ export interface ReaperAprConfig {
                 isWstETH?: boolean;
                 isIbYield?: boolean;
             };
-        };
-    };
-}
-
-export interface TesseraAprConfig {
-    tokens: {
-        [tokenName: string]: {
-            tesseraPoolAddress: string;
-            tokenAddress: string;
-            isIbYield?: boolean;
         };
     };
 }

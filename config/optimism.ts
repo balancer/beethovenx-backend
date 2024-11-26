@@ -192,18 +192,6 @@ export default <NetworkData>{
                 path: 'yearlyAPR',
                 isIbYield: true,
             },
-            overnightDAIPlus: {
-                tokenAddress: '0x0b8f31480249cc717081928b8af733f45f6915bb',
-                sourceUrl: 'https://api.overnight.fi/optimism/dai+/fin-data/avg-apr/week',
-                path: 'value',
-                group: 'OVERNIGHT',
-            },
-            overnightUSDPlus: {
-                tokenAddress: '0xa348700745d249c3b49d2c2acac9a5ae8155f826',
-                sourceUrl: 'https://api.overnight.fi/optimism/usd+/fin-data/avg-apr/week',
-                path: 'value',
-                group: 'OVERNIGHT',
-            },
             sfrxETH: {
                 tokenAddress: '0x484c2d6e3cdd945a8b2df735e079178c1036578c',
                 sourceUrl: 'https://api.frax.finance/v2/frxeth/summary/latest',

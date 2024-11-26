@@ -15,7 +15,6 @@ const sourceToHandler = {
     maker: sources.MakerAprHandler,
     ovix: sources.OvixAprHandler,
     // reaper: sources.ReaperCryptAprHandler, // Removed, pools rekt
-    tessera: sources.TesseraAprHandler,
     tetu: sources.TetuAprHandler,
     tranchess: sources.TranchessAprHandler,
     yearn: sources.YearnAprHandler,
@@ -24,7 +23,7 @@ const sourceToHandler = {
     maple: sources.Maple,
     yieldnest: sources.Yieldnest,
     etherfi: sources.Etherfi,
-    sveth: sources.svEthAprHandler,
+    // sveth: sources.svEthAprHandler, // Savvy migrated to arbitrum
     dforce: sources.DForce,
     defillama: sources.Defillama,
     teth: sources.TreehouseAprHandler,

@@ -9,6 +9,8 @@ import { CowAmmController } from '../controllers/cow-amm-controller';
 import { ContentController } from '../controllers/content-controller';
 import { chainToIdMap } from '../network/network-config';
 import { PoolController } from '../controllers';
+import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
+import { Prisma } from '@prisma/client';
 describe('pool debugging', () => {
     it('query pools', async () => {
         initRequestScopedContext();
@@ -19,17 +21,22 @@ describe('pool debugging', () => {
         // await tokenService.updateTokenPrices(['MAINNET']);
         // await PoolController().reloadPoolsV3('SEPOLIA');
 
-        const allAggPools = await poolService.getAggregatorPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
-        });
+        // const allAggPools = await poolService.getAggregatorPools({
+        //     where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
+        // });
 
-        console.log(allAggPools.length);
+        // console.log(allAggPools.length);
 
         const allPools = await poolService.getGqlPools({
             where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
         });
 
         console.log(allPools.length);
+        for (const pool of allPools) {
+            console.log(pool.id);
+            console.log(pool.hasErc4626);
+            console.log(pool.hasNestedErc4626);
+        }
 
         // const poolAfterNewSync = await poolService.getGqlPool('0x8fc07bcf9b88ace84c7523248dc4a85f638c9536', 'SEPOLIA');
 
@@ -45,15 +52,21 @@ describe('pool debugging', () => {
         // await tokenService.updateTokenPrices(['MAINNET']);
         // await PoolController().reloadPoolsV3('SEPOLIA');
 
-        const allPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
+        // const allPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
+        await PoolController().syncOnchainDataForPoolsV2('FANTOM', [
+            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+        ]);
+        const stablev3 = (await poolService.getGqlPool(
+            '0x711fd80b36723bce3b42ad6622903e1e39d911dd',
+            'SEPOLIA',
+        )) as GqlPoolStable;
+        const stablev2 = (await poolService.getGqlPool(
+            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+            'FANTOM',
+        )) as GqlPoolComposableStable;
 
-        const allPoolsHooks = await poolService.getGqlPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3], hasHook: true },
-        });
-        const allPoolsNoHooks = await poolService.getGqlPools({
-            where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3], hasHook: false },
-        });
-        console.log(allPools.length);
+        console.log(stablev3.bptPriceRate);
+        console.log(stablev2.bptPriceRate);
 
         // const poolAfterNewSync = await poolService.getGqlPool('0x8fc07bcf9b88ace84c7523248dc4a85f638c9536', 'SEPOLIA');
 
@@ -62,24 +75,30 @@ describe('pool debugging', () => {
 
     it('sync aprs', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '1');
+        setRequestScopedContextValue('chainId', '42161');
         // //only do once before starting to debug
-        // // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncAllPoolsFromSubgraph();
+        await PoolController().syncOnchainDataForAllPoolsV2('ARBITRUM');
         // await userService.initWalletBalancesForAllPools();
         // await poolService.reloadStakingForAllPools(['GAUGE'], 'MAINNET');
         // await userService.initStakedBalances(['GAUGE']);
         // // await CowAmmController().reloadPools('MAINNET');
         // // await CowAmmController().syncSwaps('1');
-        // // await tokenService.updateTokenPrices(['MAINNET']);
-        // await poolService.syncStakingForPools(['MAINNET']);
-        // await poolService.updatePoolAprs('MAINNET');
-        const aprs = await prisma.prismaPoolAprItem.findMany({
-            where: { chain: 'MAINNET', poolId: '0xf08d4dea369c456d26a3168ff0024b904f2d8b91' },
-        });
-        console.log(aprs);
-        const pool = await poolService.getGqlPool('0xf08d4dea369c456d26a3168ff0024b904f2d8b91', 'MAINNET');
-        expect(pool.dynamicData.aprItems).toBeDefined();
-        expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
+        // await tokenService.updateTokenPrices(['ARBITRUM']);
+        // await PoolController().updateLiquidityValuesForActivePools('ARBITRUM');
+
+        // await poolService.syncStakingForPools(['ARBITRUM']);
+        await poolService.updatePoolAprs('ARBITRUM');
+        // const aprs = await prisma.prismaPoolAprItem.findMany({
+        //     where: { chain: 'FANTOM', poolId: '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760' },
+        // });
+        // console.log(aprs);
+        // const pool = await poolService.getGqlPool(
+        //     '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+        //     'FANTOM',
+        // );
+        // expect(pool.dynamicData.aprItems).toBeDefined();
+        // expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
 
         // await poolService.updatePoolAprs('MAINNET');
         // expect(aprs[0].apr).toBeGreaterThan(0);
@@ -275,7 +294,7 @@ describe('pool debugging', () => {
         // await tokenService.syncTokenContentData();
         // await poolService.loadOnChainDataForAllPools();
         // await tokenService.updateTokenPrices(['FANTOM']);
-        await poolService.updateLiquidityValuesForPools();
+        // await poolService.updateLiquidityValuesForPools();
         const pool = await poolService.getGqlPool(
             '0x80a02eb6c4197e571129657044b0cc41d6517b5a00010000000000000000084b',
             'FANTOM',
@@ -296,7 +315,7 @@ describe('pool debugging', () => {
         expect(pools.length).toBe(0);
 
         await poolService.syncAllPoolsFromSubgraph();
-        await poolService.initOnChainDataForAllPools();
+        // await poolService.initOnChainDataForAllPools();
         await poolService.reloadStakingForAllPools(['GAUGE'], 'FRAXTAL');
         await userService.initWalletBalancesForAllPools();
         await userService.initStakedBalances(['GAUGE']);
@@ -304,6 +323,130 @@ describe('pool debugging', () => {
         pools = await poolService.getGqlPools({ where: { chainIn: ['FRAXTAL'] } });
 
         expect(pools.length).toBeGreaterThan(0);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
+
+    it('pool tokens test', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const pool = await prisma.prismaPool.findFirst({
+            where: { chain: 'SEPOLIA', id: '0x711fd80b36723bce3b42ad6622903e1e39d911dd' },
+            include: {
+                allTokens: true,
+                allTokensNested: true,
+                tokensWithPoolNested: true,
+                tokens: true,
+            },
+        });
+
+        console.log(pool?.allTokens);
+        console.log(pool?.allTokensNested);
+        console.log(pool?.tokensWithPoolNested);
+        console.log(pool?.tokens);
+
+        const gqlPool = await poolService.getGqlPool('0x711fd80b36723bce3b42ad6622903e1e39d911dd', 'SEPOLIA');
+        console.log(gqlPool.allTokens);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
+
+    it('pool hook filter', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const gqlPoolsWithHooks = await poolService.getGqlPools({
+            where: { hasHook: true, chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
+        });
+        const gqlPoolsWithOutHooks = await poolService.getGqlPools({
+            where: { hasHook: false, chainIn: ['SEPOLIA'], protocolVersionIn: [3] },
+        });
+        const gqlPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
+
+        const allPools = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3 },
+        });
+
+        const poolsWithoutHooks = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { equals: Prisma.AnyNull } },
+        });
+
+        const poolsWithHooks = await prisma.prismaPool.findMany({
+            where: { chain: 'SEPOLIA', protocolVersion: 3, hook: { not: {} } },
+        });
+
+        console.log(gqlPoolsWithHooks.length);
+        console.log(gqlPoolsWithOutHooks.length);
+        console.log(gqlPools.length);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
+
+    it('pool hook data', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const pool = await prisma.prismaPool.findFirst({
+            where: { id: '0x75f49d54978d08e4e76a873da6c78e8f6b2901c2', chain: 'SEPOLIA' },
+        });
+
+        const gqlPool = await poolService.getGqlPool('0x75f49d54978d08e4e76a873da6c78e8f6b2901c2', 'SEPOLIA');
+
+        console.log(gqlPool.id);
+
+        //only do once before starting to debug
+        // await poolService.syncAllPoolsFromSubgraph();
+        // await poolService.syncChangedPools();
+    }, 5000000);
+
+    it('pool tokens minimalpool', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '11155111');
+
+        const gqlPools = await poolService.getGqlPools({
+            where: {
+                poolTypeIn: [
+                    'WEIGHTED',
+                    'STABLE',
+                    'COMPOSABLE_STABLE',
+                    'META_STABLE',
+                    'LIQUIDITY_BOOTSTRAPPING',
+                    'GYRO',
+                    'GYRO3',
+                    'GYROE',
+                    'COW_AMM',
+                    'FX',
+                ],
+                chainIn: [
+                    'MAINNET',
+                    'ARBITRUM',
+                    'AVALANCHE',
+                    'BASE',
+                    'GNOSIS',
+                    'POLYGON',
+                    'ZKEVM',
+                    'OPTIMISM',
+                    'MODE',
+                    'FRAXTAL',
+                    'SEPOLIA',
+                ],
+                userAddress: null,
+                minTvl: 0,
+                tagIn: null,
+                tagNotIn: ['BLACK_LISTED'],
+                protocolVersionIn: [3],
+            },
+            textSearch: null,
+        });
+
+        console.log(gqlPools.length);
 
         //only do once before starting to debug
         // await poolService.syncAllPoolsFromSubgraph();

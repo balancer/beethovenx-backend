@@ -1,4 +1,4 @@
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import axios from 'axios';
 import { YearnAprConfig } from '../../../../../network/apr-config-types';
 

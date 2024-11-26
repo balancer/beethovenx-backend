@@ -1,16 +1,21 @@
-import { Chain, Prisma } from '@prisma/client';
+import { Chain } from '@prisma/client';
 import { prisma } from '../../../prisma/prisma-client';
-import { getPoolCategories } from '../../sources/github/pool-categories';
+import { getPoolMetadataTags as getPoolMetadataTags } from '../../sources/github/pool-metadata-tags';
 import { syncIncentivizedCategory } from '../pool/sync-incentivized-category';
+import { getErc4626Tags } from '../../sources/github/pool-erc4626-tags';
+import { getPoolHookTags } from '../../sources/github/pool-hook-tags';
+import _ from 'lodash';
 
-export const syncCategories = async (): Promise<void> => {
-    // Get metadata
-    const metadataCategories = await getPoolCategories();
+export const syncTags = async (): Promise<void> => {
+    // Get metadata as tags
+    let allTags = await getPoolMetadataTags({});
+    allTags = await getErc4626Tags(allTags);
+    allTags = await getPoolHookTags(allTags);
 
-    // Convert the transformed object to an array of PoolCategories
-    const categoriesData = Object.entries(metadataCategories).map(([id, categories]) => ({
+    // Convert the transformed object to an array of PoolTags
+    const tagsData = Object.entries(allTags).map(([id, tags]) => ({
         id,
-        categories,
+        tags,
     }));
 
     // Check if the pool exists in the DB
@@ -29,9 +34,9 @@ export const syncCategories = async (): Promise<void> => {
     }, {} as Record<string, Chain>);
 
     // Skip items that are missing in the DB
-    const filteredMetadata = categoriesData.filter(({ id }) => existingPoolIds.includes(id));
+    const filteredMetadata = tagsData.filter(({ id }) => existingPoolIds.includes(id));
 
-    const data = filteredMetadata.map(({ id, categories }) => ({
+    const data = filteredMetadata.map(({ id, tags }) => ({
         where: {
             id_chain: {
                 id,
@@ -39,9 +44,9 @@ export const syncCategories = async (): Promise<void> => {
             },
         },
         data: {
-            categories: categories
-                .map((category) => category.toUpperCase())
-                .map((category) => (category === 'BLACKLISTED' ? 'BLACK_LISTED' : category)),
+            categories: [...tags]
+                .map((tag) => tag.toUpperCase())
+                .map((tag) => (tag === 'BLACKLISTED' ? 'BLACK_LISTED' : tag)),
         },
     }));
 

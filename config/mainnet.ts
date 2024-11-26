@@ -247,14 +247,6 @@ export default <NetworkData>{
         maker: {
             sdai: '0x83f20f44975d03b1b09e64809b757c47f942beea',
         },
-        tessera: {
-            tokens: {
-                sAPE: {
-                    tesseraPoolAddress: '0x5954ab967bc958940b7eb73ee84797dc8a2afbb9',
-                    tokenAddress: '0x7966c5bae631294d7cffcea5430b78c2f76db6fa',
-                },
-            },
-        },
         tranchess: {
             sourceUrl: 'https://tranchess.com/eth/api/v3/funds',
             tokens: {
@@ -277,7 +269,6 @@ export default <NetworkData>{
             url: 'https://gateway.yieldnest.finance/api/v1/graphql',
             token: '0x09db87a538bd693e9d08544577d5ccfaa6373a48',
         },
-        sveth: true,
         teth: true,
         defaultHandlers: {
             uniETH: {
@@ -288,8 +279,8 @@ export default <NetworkData>{
             },
             vETH: {
                 tokenAddress: '0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f',
-                sourceUrl: 'https://apy.liebi.com/veth',
-                path: 'veth',
+                sourceUrl: 'https://dapi.bifrost.io/api/site',
+                path: 'vETH.totalApy',
             },
             stETH: {
                 tokenAddress: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
@@ -332,17 +323,6 @@ export default <NetworkData>{
                 tokenAddress: '0xae78736cd615f374d3085123a210448e74fc6393',
                 sourceUrl: 'https://api.rocketpool.net/mainnet/reth/apr',
                 path: 'yearlyAPR',
-                isIbYield: true,
-            },
-            USDR: {
-                tokenAddress: '0xaf0d9d65fc54de245cda37af3d18cbec860a4d4b',
-                sourceUrl: 'http://usdr-api.us-east-1.elasticbeanstalk.com/usdr/apy',
-                path: 'usdr',
-                isIbYield: true,
-            },
-            swETH: {
-                tokenAddress: '0xf951e335afb289353dc249e82926178eac7ded78',
-                sourceUrl: 'https://v3.svc.swellnetwork.io/api/tokens/sweth/apr',
                 isIbYield: true,
             },
             wjAURA: {
@@ -430,6 +410,12 @@ export default <NetworkData>{
                 tokenAddress: '0x5e362eb2c0706bd1d134689ec75176018385430b',
                 sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
                 path: 'data.smaApr',
+                isIbYield: true,
+            },
+            sdeUSD: {
+                tokenAddress: '0x5c5b196abe0d54485975d1ec29617d42d9198326',
+                sourceUrl: 'https://api-deusd-prod-public.elixir.xyz/public/deusd_apy',
+                path: 'deusd_apy',
                 isIbYield: true,
             },
         },

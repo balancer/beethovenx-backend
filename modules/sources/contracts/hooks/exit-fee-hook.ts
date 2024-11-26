@@ -3,7 +3,7 @@ import exitFeeHookAbi from '../abis/exit-fee-hook';
 
 export const exitFeeHook = (address: string): ViemMulticallCall[] => [
     {
-        path: `${address}.removeLiquidityFeePercentage`,
+        path: `removeLiquidityFeePercentage`,
         address: address as `0x${string}`,
         abi: exitFeeHookAbi,
         functionName: 'exitFeePercentage',

@@ -1,5 +1,5 @@
 import { BeefyAprConfig } from '../../../../../network/apr-config-types';
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 import axios from 'axios';
 
 export class BeefyAprHandler implements AprHandler {

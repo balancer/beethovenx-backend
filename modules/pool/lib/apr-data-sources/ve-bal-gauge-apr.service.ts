@@ -86,10 +86,10 @@ export class GaugeAprService implements PoolAprService {
 
             // Calculate APRs
             const totalShares = parseFloat(pool.dynamicData.totalShares);
+            const gaugeTotalShares = parseFloat(gauge.totalSupply);
             const bptPrice = pool.dynamicData.totalLiquidity / totalShares;
-            const gaugeTvl = totalShares > 0 ? parseFloat(gauge.totalSupply) * bptPrice : 0;
+            const gaugeTvl = gaugeTotalShares * bptPrice;
             const workingSupply = parseFloat(gauge.workingSupply);
-            const workingSupplyTvl = workingSupply === 0 ? 0 : ((workingSupply + 0.4) / 0.4) * bptPrice;
 
             const aprItems = rewards
                 .map((reward) => {
@@ -118,10 +118,12 @@ export class GaugeAprService implements PoolAprService {
                     // this is deprecated
                     if (isVeBalemissions && (networkContext.chain === 'MAINNET' || gauge.version === 2)) {
                         let minApr = 0;
-                        if (workingSupplyTvl > 0) {
-                            minApr = rewardPerYear / workingSupplyTvl;
-                        } else if (gaugeTvl > 0) {
-                            minApr = rewardPerYear / gaugeTvl;
+                        if (gaugeTvl > 0) {
+                            if (workingSupply > 0 && gaugeTotalShares > 0) {
+                                minApr = (((gaugeTotalShares * 0.4) / workingSupply) * rewardPerYear) / gaugeTvl;
+                            } else {
+                                minApr = rewardPerYear / gaugeTvl;
+                            }
                         }
 
                         const aprRangeId = `${itemData.id}-range`;

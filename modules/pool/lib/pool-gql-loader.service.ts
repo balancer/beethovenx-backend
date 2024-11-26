@@ -34,9 +34,9 @@ import {
     GqlPoolAprItemType,
     GqlUserStakedBalance,
     GqlPoolFilterCategory,
-    HookData,
     GqlPoolAggregator,
     LiquidityManagement,
+    GqlHook,
 } from '../../../schema';
 import { isSameAddress } from '@balancer-labs/sdk';
 import _ from 'lodash';
@@ -51,6 +51,7 @@ import { SanityContentService } from '../../content/sanity-content.service';
 import { ElementData, FxData, GyroData, StableData } from '../subgraph-mapper';
 import { ZERO_ADDRESS } from '@balancer/sdk';
 import { tokenService } from '../../token/token.service';
+import { HookData } from '../../sources/transformers';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
 const isPoolId = (text: string) => isToken(text) || text.match(/^0x[0-9a-fA-F]{64}$/);
@@ -82,13 +83,13 @@ export class PoolGqlLoaderService {
         // load rate provider data into PoolTokenDetail model
         await this.enrichWithRateproviderData(mappedPool);
 
-        // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
-        await this.enrichWithUnderlyingTokenData(mappedPool);
+        // load underlying token info into PoolTokenDetail
+        await this.enrichWithErc4626Data(mappedPool);
 
         return mappedPool;
     }
 
-    private async enrichWithUnderlyingTokenData(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
+    private async enrichWithErc4626Data(mappedPool: GqlPoolUnion | GqlPoolAggregator | GqlPoolMinimal) {
         for (const token of mappedPool.poolTokens) {
             if (token.isErc4626) {
                 const prismaToken = await prisma.prismaToken.findUnique({
@@ -100,9 +101,21 @@ export class PoolGqlLoaderService {
                         mappedPool.chain,
                     );
                     token.underlyingToken = underlyingTokenDefinition;
-                    if ((mappedPool as GqlPoolUnion).displayTokens) {
-                        (mappedPool as GqlPoolUnion).displayTokens.push();
-                    }
+                }
+
+                const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
+                    where: {
+                        chain_erc4626Address: {
+                            chain: mappedPool.chain,
+                            erc4626Address: token.address,
+                        },
+                    },
+                });
+                if (erc4626ReviewData) {
+                    token.erc4626ReviewData = {
+                        ...erc4626ReviewData,
+                        warnings: erc4626ReviewData.warnings?.split(',') || [],
+                    };
                 }
             }
 
@@ -119,13 +132,28 @@ export class PoolGqlLoaderService {
                             );
                             nestedToken.underlyingToken = tokenDefinition;
                         }
+
+                        const erc4626ReviewData = await prisma.prismaErc4626ReviewData.findUnique({
+                            where: {
+                                chain_erc4626Address: {
+                                    chain: mappedPool.chain,
+                                    erc4626Address: nestedToken.address,
+                                },
+                            },
+                        });
+                        if (erc4626ReviewData) {
+                            nestedToken.erc4626ReviewData = {
+                                ...erc4626ReviewData,
+                                warnings: erc4626ReviewData.warnings?.split(',') || [],
+                            };
+                        }
                     }
                 }
             }
         }
     }
 
-    private async enrichWithRateproviderData(mappedPool: GqlPoolUnion | GqlPoolAggregator) {
+    private async enrichWithRateproviderData(mappedPool: GqlPoolMinimal | GqlPoolAggregator | GqlPoolUnion) {
         for (const token of mappedPool.poolTokens) {
             if (token.priceRateProvider && token.priceRateProvider !== ZERO_ADDRESS) {
                 const rateproviderData = await prisma.prismaPriceRateProviderData.findUnique({
@@ -204,8 +232,8 @@ export class PoolGqlLoaderService {
             // load rate provider data into PoolTokenDetail model
             await this.enrichWithRateproviderData(mappedPool);
 
-            // load underlying token info into PoolTokenDetail and GqlPoolTokenDisplay
-            await this.enrichWithUnderlyingTokenData(mappedPool);
+            // load underlying token info into PoolTokenDetail
+            await this.enrichWithErc4626Data(mappedPool);
         }
 
         return gqlPools;
@@ -227,7 +255,7 @@ export class PoolGqlLoaderService {
             const pools = await prisma.prismaPool.findMany({
                 ...this.mapQueryArgsToPoolQuery(args),
                 include: {
-                    ...this.getPoolInclude(args.where.userAddress),
+                    ...this.getPoolMinimalInclude(args.where.userAddress),
                 },
             });
 
@@ -238,6 +266,14 @@ export class PoolGqlLoaderService {
                     pool.staking.map((staking) => staking.userStakedBalances).flat(),
                 ),
             );
+
+            for (const mappedPool of gqlPools) {
+                // load rate provider data into PoolTokenDetail model
+                await this.enrichWithRateproviderData(mappedPool);
+
+                // load underlying token info into PoolTokenDetail
+                await this.enrichWithErc4626Data(mappedPool);
+            }
 
             if (args.orderBy === 'userbalanceUsd') {
                 let sortedPools = [];
@@ -258,10 +294,20 @@ export class PoolGqlLoaderService {
 
         const pools = await prisma.prismaPool.findMany({
             ...this.mapQueryArgsToPoolQuery(args),
-            include: prismaPoolMinimal.include,
+            include: this.getPoolInclude(),
         });
 
-        return pools.map((pool) => this.mapToMinimalGqlPool(pool));
+        const gqlPools = pools.map((pool) => this.mapToMinimalGqlPool(pool));
+
+        for (const mappedPool of gqlPools) {
+            // load rate provider data into PoolTokenDetail model
+            await this.enrichWithRateproviderData(mappedPool);
+
+            // load underlying token info into PoolTokenDetail
+            await this.enrichWithErc4626Data(mappedPool);
+        }
+
+        return gqlPools;
     }
 
     public mapToMinimalGqlPool(
@@ -272,19 +318,14 @@ export class PoolGqlLoaderService {
         return {
             ...pool,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                    }) ||
-                undefined,
+            hook: pool.hook as HookData as GqlHook,
             incentivized: pool.categories.some((category) => category === 'INCENTIVIZED'),
             vaultVersion: pool.protocolVersion,
             decimals: 18,
             dynamicData: this.getPoolDynamicData(pool),
             allTokens: this.mapAllTokens(pool),
             displayTokens: this.mapDisplayTokens(pool),
+            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
             staking: this.getStakingData(pool),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
             categories: pool.categories as GqlPoolFilterCategory[],
@@ -533,9 +574,9 @@ export class PoolGqlLoaderService {
                     : {}),
             },
             ...(where?.hasHook !== undefined && where.hasHook
-                ? { hook: { isNot: null } }
+                ? { hook: { not: {} } }
                 : where?.hasHook !== undefined && !where.hasHook
-                ? { hook: { is: null } }
+                ? { hook: { equals: Prisma.DbNull } }
                 : {}),
         };
 
@@ -591,13 +632,7 @@ export class PoolGqlLoaderService {
             poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
             vaultVersion: poolWithoutTypeData.protocolVersion,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                    }) ||
-                undefined,
+            hook: pool.hook as HookData as GqlHook,
         };
 
         switch (pool.type) {
@@ -660,8 +695,6 @@ export class PoolGqlLoaderService {
     ): GqlPoolUnion {
         const { typeData, ...poolWithoutTypeData } = pool;
 
-        const bpt = pool.tokens.find((token) => token.address === pool.address);
-
         const mappedData = {
             decimals: 18,
             staking: this.getStakingData(pool),
@@ -677,13 +710,7 @@ export class PoolGqlLoaderService {
             vaultVersion: poolWithoutTypeData.protocolVersion,
             categories: pool.categories as GqlPoolFilterCategory[],
             tags: pool.categories,
-            hook:
-                (pool.hook &&
-                    pool.hook.dynamicData && {
-                        ...pool.hook,
-                        dynamicData: pool.hook.dynamicData as HookData,
-                    }) ||
-                undefined,
+            hook: pool.hook as HookData as GqlHook,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
             hasErc4626: pool.allTokens.some((token) => token.token.types.some((type) => type.type === 'ERC4626')),
             hasNestedErc4626: pool.allTokens.some((token) =>
@@ -715,7 +742,6 @@ export class PoolGqlLoaderService {
                     ...poolWithoutTypeData,
                     ...(typeData as StableData),
                     ...mappedData,
-                    bptPriceRate: bpt?.dynamicData?.priceRate || '1.0',
                 };
             case 'ELEMENT':
                 return {
@@ -761,9 +787,7 @@ export class PoolGqlLoaderService {
             const poolToken = pool.tokens.find((poolToken) => poolToken.address === token.token.address);
             const isNested = !poolToken;
             const isPhantomBpt = token.tokenAddress === pool.address;
-            const isMainToken = !token.token.types.some(
-                (type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT' || type.type === 'ERC4626',
-            );
+            const isMainToken = !token.token.types.some((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT');
             const isErc4626 = token.token.types.some((type) => type.type === 'ERC4626');
 
             return {
@@ -811,15 +835,19 @@ export class PoolGqlLoaderService {
             });
     }
 
-    private mapPoolToken(poolToken: PrismaPoolTokenWithExpandedNesting, hasNestedPool: boolean): GqlPoolTokenDetail {
+    private mapPoolToken(
+        poolToken: PrismaPoolTokenWithExpandedNesting,
+        hasNestedPool: boolean,
+        nestedPercentage = 1,
+    ): GqlPoolTokenDetail {
         const { nestedPool } = poolToken;
 
         return {
             id: `${poolToken.poolId}-${poolToken.token.address}`,
             ...poolToken.token,
             index: poolToken.index,
-            balance: poolToken.dynamicData?.balance || '0',
-            balanceUSD: String(poolToken.dynamicData?.balanceUSD) || '0',
+            balance: String(parseFloat(poolToken.dynamicData?.balance || '0') * nestedPercentage),
+            balanceUSD: String((poolToken.dynamicData?.balanceUSD || 0) * nestedPercentage),
             priceRate: poolToken.dynamicData?.priceRate || '1.0',
             priceRateProvider: poolToken.priceRateProvider,
             weight: poolToken?.dynamicData?.weight,
@@ -837,7 +865,6 @@ export class PoolGqlLoaderService {
         const totalShares = parseFloat(nestedPool.dynamicData?.totalShares || '0');
         const percentOfSupplyNested = totalShares > 0 ? parseFloat(tokenBalance) / totalShares : 0;
         const totalLiquidity = nestedPool.dynamicData?.totalLiquidity || 0;
-        const bpt = nestedPool.tokens.find((token) => token.address === nestedPool.address);
 
         return {
             ...nestedPool,
@@ -854,10 +881,12 @@ export class PoolGqlLoaderService {
                         nestedPool: null,
                     },
                     token.nestedPool !== null,
+                    percentOfSupplyNested,
                 ),
             ),
             swapFee: nestedPool.dynamicData?.swapFee || '0',
-            bptPriceRate: bpt?.dynamicData?.priceRate || '1.0',
+            bptPriceRate: (nestedPool.typeData as StableData).bptPriceRate || '1.0',
+            hook: (nestedPool.hook as HookData as GqlHook) || undefined,
         };
     }
 
@@ -1449,6 +1478,46 @@ export class PoolGqlLoaderService {
         return 'NO_NESTING';
     }
 
+    private getPoolMinimalInclude(userAddress?: string) {
+        if (!userAddress) {
+            return {
+                ...prismaPoolMinimal.include,
+                staking: {
+                    include: {
+                        ...prismaPoolMinimal.include.staking.include,
+                        userStakedBalances: false,
+                    },
+                },
+                userWalletBalances: false,
+            };
+        }
+
+        return {
+            ...prismaPoolMinimal.include,
+            staking: {
+                include: {
+                    ...prismaPoolMinimal.include.staking.include,
+                    userStakedBalances: {
+                        where: {
+                            userAddress: {
+                                equals: userAddress.toLowerCase(),
+                            },
+                            balanceNum: { gt: 0 },
+                        },
+                    },
+                },
+            },
+            userWalletBalances: {
+                where: {
+                    userAddress: {
+                        equals: userAddress.toLowerCase(),
+                    },
+                    balanceNum: { gt: 0 },
+                },
+            },
+        };
+    }
+
     private getPoolInclude(userAddress?: string) {
         if (!userAddress) {
             return {
@@ -1460,7 +1529,6 @@ export class PoolGqlLoaderService {
                     },
                 },
                 userWalletBalances: false,
-                hook: true,
             };
         }
 
@@ -1487,7 +1555,6 @@ export class PoolGqlLoaderService {
                     balanceNum: { gt: 0 },
                 },
             },
-            hook: true,
         };
     }
 }
