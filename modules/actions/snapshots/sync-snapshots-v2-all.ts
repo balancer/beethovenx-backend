@@ -6,9 +6,13 @@ import { snapshotsV2Transformer } from '../../sources/transformers/snapshots-v2-
 
 const protocolVersion = 2;
 
-export async function syncSnapshotsV2All(subgraphClient: V2SubgraphClient, chain: Chain): Promise<string[]> {
+export async function syncSnapshotsV2All(
+    subgraphClient: V2SubgraphClient,
+    chain: Chain,
+    poolId?: string,
+): Promise<string[]> {
     // Get all snapshot IDs from subgraph
-    const snapshotIds = await subgraphClient.getAllSnapshotIds();
+    const snapshotIds = await subgraphClient.getAllSnapshotIds(poolId);
 
     // DB ids
     const dbIds = await prisma.prismaPoolSnapshot
@@ -16,6 +20,7 @@ export async function syncSnapshotsV2All(subgraphClient: V2SubgraphClient, chain
             where: {
                 chain,
                 protocolVersion,
+                poolId,
             },
             select: {
                 id: true,
@@ -27,8 +32,24 @@ export async function syncSnapshotsV2All(subgraphClient: V2SubgraphClient, chain
     console.log(`Found ${dbIds.length} snapshots in DB`);
 
     // Find missing snapshots
-    const missingIds = _.difference(snapshotIds, dbIds);
+    let missingIds = _.difference(snapshotIds, dbIds);
     console.log(`Found ${missingIds.length} missing snapshots`);
+
+    if (missingIds.length === 0) {
+        return [];
+    }
+
+    // Fetch missing snapshots, but only for current pool IDs
+    if (!poolId) {
+        const poolIds = await prisma.prismaPool
+            .findMany({
+                where: { chain },
+                select: { id: true },
+            })
+            .then((pools) => new Set(pools.map(({ id }) => id)));
+
+        missingIds = missingIds.filter((id) => poolIds.has(id.split('-')[0]));
+    }
 
     // Fetch missing snapshots
     // Batch missing ids by 1000 items
@@ -92,7 +113,7 @@ export async function syncSnapshotsV2All(subgraphClient: V2SubgraphClient, chain
             );
 
             return snapshotsTransformed
-                .filter((s) => s !== undefined)
+                .filter((s): s is NonNullable<typeof s> => s !== undefined)
                 .map((s) =>
                     prisma.prismaPoolSnapshot
                         .upsert({

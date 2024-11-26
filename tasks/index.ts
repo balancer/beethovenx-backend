@@ -57,6 +57,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return EventController().syncSwapsUpdateVolumeAndFeesV2(chain);
     } else if (job === 'sync-snapshots-v2') {
         return snapshotsController.syncSnapshotsV2(chain);
+    } else if (job === 'resync-snapshots-v2') {
+        return snapshotsController.resyncSnapshotsV2(chain);
     } else if (job === 'fill-missing-snapshots-v2') {
         return snapshotsController.fillMissingSnapshotsV2(chain);
     } else if (job === 'sync-snapshots-v3') {

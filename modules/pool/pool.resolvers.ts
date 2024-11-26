@@ -141,6 +141,13 @@ const balancerResolvers: Resolvers = {
 
             return 'success';
         },
+        poolSyncMissingSnapshotsV2: async (parent, { chain, poolId }, context) => {
+            isAdminRoute(context);
+
+            await SnapshotsController().resyncSnapshotsV2(chain, poolId ?? undefined);
+
+            return 'success';
+        },
         poolUpdateLifetimeValuesForAllPools: async (parent, args, context) => {
             isAdminRoute(context);
 

@@ -1,7 +1,14 @@
 import { Chain } from '@prisma/client';
 import config from '../../config';
 import { prisma } from '../../prisma/prisma-client';
-import { syncSnapshotsV3, syncSnapshotsV2, fillMissingSnapshotsV3, fillMissingSnapshotsV2 } from '../actions/snapshots';
+import {
+    syncSnapshotsV3,
+    syncSnapshotsV2,
+    fillMissingSnapshotsV3,
+    fillMissingSnapshotsV2,
+    syncSnapshotsV2All,
+    recalculateDailyValues,
+} from '../actions/snapshots';
 import { PoolSnapshotService } from '../actions/snapshots/pool-snapshot-service';
 import { chainIdToChain } from '../network/chain-id-to-chain';
 import { getVaultSubgraphClient } from '../sources/subgraphs';
@@ -38,6 +45,18 @@ export function SnapshotsController(tracer?: any) {
             const subgraphClient = getV2SubgraphClient(balancer, chain);
             const entries = await syncSnapshotsV2(subgraphClient, chain);
             return entries;
+        },
+        async resyncSnapshotsV2(chain: Chain, poolId?: string) {
+            const {
+                subgraphs: { balancer },
+            } = config[chain];
+
+            const client = getV2SubgraphClient(balancer, chain as Chain);
+            const ids = await syncSnapshotsV2All(client, chain as Chain, poolId);
+            await fillMissingSnapshotsV2(chain as Chain, poolId);
+            await recalculateDailyValues(chain as Chain, poolId);
+
+            return ids;
         },
         async syncSnapshotForPools(poolIds: string[], chain: Chain, reload = false) {
             const {

@@ -33,11 +33,15 @@ export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain):
 
     // Add user balances for new pools
     if (newPools.length > 0) {
-        await upsertBptBalancesV2(
-            newPools.map((pool) => pool.id),
-            subgraphService,
-            chain,
-        );
+        try {
+            await upsertBptBalancesV2(
+                newPools.map((pool) => pool.id),
+                subgraphService,
+                chain,
+            );
+        } catch (e) {
+            console.error('Could not add user balances for new pools', e);
+        }
     }
 
     return createdPools;

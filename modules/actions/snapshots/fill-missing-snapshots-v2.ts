@@ -5,7 +5,7 @@ import { snapshotsV2Transformer } from '../../sources/transformers/snapshots-v2-
 // For each pool in the database, find the missing snapshots,
 // fetch previous day entries from the database,
 // and fill the missing snapshots with the previous day's data.
-export const fillMissingSnapshotsV2 = async (chain: Chain): Promise<string[]> => {
+export const fillMissingSnapshotsV2 = async (chain: Chain, poolId?: string): Promise<string[]> => {
     const pools = await prisma.prismaPool.findMany({
         select: {
             id: true,
@@ -19,6 +19,7 @@ export const fillMissingSnapshotsV2 = async (chain: Chain): Promise<string[]> =>
         where: {
             protocolVersion: 2,
             chain,
+            ...(poolId ? { id: poolId } : {}),
         },
     });
 
@@ -46,6 +47,7 @@ export const fillMissingSnapshotsV2 = async (chain: Chain): Promise<string[]> =>
         );
 
         if (missingTimestamps.length === 0) {
+            console.log(`All snapshots in place for pool ${poolId}.`);
             continue;
         }
 

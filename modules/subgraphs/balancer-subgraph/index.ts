@@ -21,15 +21,16 @@ export function getV2SubgraphClient(urls: string[], chain: Chain) {
     return {
         ...sdkWithRetryAndRotation,
         legacyService: new BalancerSubgraphService(urls, chain),
-        async getAllSnapshotIds(): Promise<string[]> {
+        async getAllSnapshotIds(poolId?: string): Promise<string[]> {
             const limit = 1000;
             let hasMore = true;
             let id = `0x`;
             let items: { id: string }[] = [];
+            const where = poolId ? { pool: poolId } : {};
 
             while (hasMore) {
                 const response = await sdkWithRetryAndRotation.BalancerSnapshotIds({
-                    where: { id_gt: id },
+                    where: { ...where, id_gt: id },
                     orderBy: PoolSnapshot_OrderBy.Id,
                     orderDirection: OrderDirection.Asc,
                     first: limit,
