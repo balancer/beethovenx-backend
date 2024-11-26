@@ -1,6 +1,7 @@
 import { PrismaPoolType } from '@prisma/client';
 import { ViemClient } from '../../viem-client';
 import { fetchPoolTypeData } from './fetch-pool-type-data';
+import { PoolTypeData } from '../pool-type-dynamic-data';
 
 export interface PoolsClient {
     fetchPoolTypeData: (
@@ -9,7 +10,7 @@ export interface PoolsClient {
             type: PrismaPoolType;
         }[],
         blockNumber?: bigint,
-    ) => Promise<{ id: string; typeData: any }[]>;
+    ) => Promise<PoolTypeData[]>;
 }
 
 export const getPoolsClient = (viemClient: ViemClient): PoolsClient => {

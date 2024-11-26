@@ -66,7 +66,7 @@ export default [
     },
     { inputs: [{ internalType: 'address', name: 'sender', type: 'address' }], name: 'SenderIsNotVault', type: 'error' },
     { inputs: [], name: 'SenderNotAllowed', type: 'error' },
-    { inputs: [], name: 'StableGetBalanceDidNotConverge', type: 'error' },
+    { inputs: [], name: 'StableComputeBalanceDidNotConverge', type: 'error' },
     { inputs: [], name: 'StableInvariantDidNotConverge', type: 'error' },
     { inputs: [{ internalType: 'string', name: 'str', type: 'string' }], name: 'StringTooLong', type: 'error' },
     { inputs: [], name: 'ZeroDivision', type: 'error' },
@@ -161,7 +161,10 @@ export default [
         type: 'function',
     },
     {
-        inputs: [{ internalType: 'uint256[]', name: 'balancesLiveScaled18', type: 'uint256[]' }],
+        inputs: [
+            { internalType: 'uint256[]', name: 'balancesLiveScaled18', type: 'uint256[]' },
+            { internalType: 'enum Rounding', name: 'rounding', type: 'uint8' },
+        ],
         name: 'computeInvariant',
         outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
         stateMutability: 'view',
@@ -220,6 +223,16 @@ export default [
     },
     {
         inputs: [],
+        name: 'getAggregateFeePercentages',
+        outputs: [
+            { internalType: 'uint256', name: 'aggregateSwapFeePercentage', type: 'uint256' },
+            { internalType: 'uint256', name: 'aggregateYieldFeePercentage', type: 'uint256' },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+    },
+    {
+        inputs: [],
         name: 'getAmplificationParameter',
         outputs: [
             { internalType: 'uint256', name: 'value', type: 'uint256' },
@@ -238,7 +251,21 @@ export default [
     },
     {
         inputs: [],
+        name: 'getMaximumInvariantRatio',
+        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+        stateMutability: 'pure',
+        type: 'function',
+    },
+    {
+        inputs: [],
         name: 'getMaximumSwapFeePercentage',
+        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+        stateMutability: 'pure',
+        type: 'function',
+    },
+    {
+        inputs: [],
+        name: 'getMinimumInvariantRatio',
         outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
         stateMutability: 'pure',
         type: 'function',
@@ -263,13 +290,16 @@ export default [
         outputs: [
             {
                 components: [
-                    { internalType: 'uint256[]', name: 'liveBalances', type: 'uint256[]' },
+                    { internalType: 'uint256[]', name: 'balancesLiveScaled18', type: 'uint256[]' },
                     { internalType: 'uint256[]', name: 'tokenRates', type: 'uint256[]' },
                     { internalType: 'uint256', name: 'staticSwapFeePercentage', type: 'uint256' },
                     { internalType: 'uint256', name: 'totalSupply', type: 'uint256' },
                     { internalType: 'uint256', name: 'bptRate', type: 'uint256' },
                     { internalType: 'uint256', name: 'amplificationParameter', type: 'uint256' },
                     { internalType: 'bool', name: 'isAmpUpdating', type: 'bool' },
+                    { internalType: 'bool', name: 'isPoolInitialized', type: 'bool' },
+                    { internalType: 'bool', name: 'isPoolPaused', type: 'bool' },
+                    { internalType: 'bool', name: 'isPoolInRecoveryMode', type: 'bool' },
                 ],
                 internalType: 'struct StablePoolDynamicData',
                 name: 'data',
@@ -320,7 +350,7 @@ export default [
                 type: 'tuple[]',
             },
             { internalType: 'uint256[]', name: 'balancesRaw', type: 'uint256[]' },
-            { internalType: 'uint256[]', name: 'lastLiveBalances', type: 'uint256[]' },
+            { internalType: 'uint256[]', name: 'lastBalancesLiveScaled18', type: 'uint256[]' },
         ],
         stateMutability: 'view',
         type: 'function',
@@ -365,7 +395,7 @@ export default [
                     { internalType: 'address', name: 'router', type: 'address' },
                     { internalType: 'bytes', name: 'userData', type: 'bytes' },
                 ],
-                internalType: 'struct IBasePool.PoolSwapParams',
+                internalType: 'struct PoolSwapParams',
                 name: 'request',
                 type: 'tuple',
             },
@@ -390,6 +420,7 @@ export default [
         stateMutability: 'nonpayable',
         type: 'function',
     },
+    { inputs: [], name: 'revokePermit', outputs: [], stateMutability: 'nonpayable', type: 'function' },
     {
         inputs: [
             { internalType: 'uint256', name: 'rawEndValue', type: 'uint256' },

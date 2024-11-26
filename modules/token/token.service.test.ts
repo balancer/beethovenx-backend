@@ -29,4 +29,14 @@ describe('Token service', () => {
         const list = await tokenService.getTokenDefinitions(['FANTOM']);
         expect(list.length).toBeGreaterThan(0);
     });
+    test('get tokens filter', async () => {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', '250');
+        const list = await tokenService.getTokenDefinitions({
+            chains: ['FANTOM'],
+            where: { tokensIn: ['0xd7028092c830b5c8fce061af2e593413ebbc1fc1'] },
+        });
+        console.log(list);
+        expect(list.length).toBe(1);
+    });
 });

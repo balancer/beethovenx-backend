@@ -50,6 +50,17 @@ export const syncChangedPools = async (
         },
     });
     const changedPools = await getChangedPoolsV2(vaultAddress, viemClient, BigInt(startBlock), endBlock);
+
+    // always sync LBP pools
+    const lbps = await prisma.prismaPool.findMany({
+        where: {
+            chain,
+            type: 'LIQUIDITY_BOOTSTRAPPING',
+        },
+        select: { id: true },
+    });
+    changedPools.push(...lbps.map((lbp) => lbp.id));
+
     await poolOnChainDataService.updateOnChainData(changedPools, chain, Number(endBlock), tokenPrices);
 
     await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS, endBlock);

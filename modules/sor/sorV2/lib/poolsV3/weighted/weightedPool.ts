@@ -3,7 +3,7 @@ import { MAX_UINT256, SwapKind, Token, TokenAmount, WAD } from '@balancer/sdk';
 import { AddKind, RemoveKind, Vault, Weighted, WeightedState, HookState } from '@balancer-labs/balancer-maths';
 import { Chain } from '@prisma/client';
 
-import { PrismaHookWithDynamic, PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { GqlPoolType } from '../../../../../../schema';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
 import { chainToIdMap } from '../../../../../network/network-config';
@@ -36,7 +36,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
     private vault: Vault;
     private poolState: WeightedState;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamic): WeightedPoolV3 {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): WeightedPoolV3 {
         const poolTokens: WeightedPoolToken[] = [];
 
         if (!pool.dynamicData) {

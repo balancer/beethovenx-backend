@@ -16,6 +16,7 @@ import { formatFixed } from '@ethersproject/bignumber';
 import { replaceZeroAddressWithEth } from '../../web3/addresses';
 import { BatchSwapStep, SingleSwap, SwapKind, TokenAmount, ZERO_ADDRESS } from '@balancer/sdk';
 import { SwapLocal } from './lib/swapLocal';
+import { calculatePriceImpact } from './lib/utils/helpers';
 
 export class SwapResultV2 implements SwapResult {
     private swap: SwapLocal | null;
@@ -58,7 +59,13 @@ export class SwapResultV2 implements SwapResult {
         inputAmount: TokenAmount,
         outputAmount: TokenAmount,
     ): Promise<GqlSorGetSwapsResponse> {
-        const priceImpact = swap.priceImpact.decimal.toFixed(4);
+        let priceImpact: string | undefined;
+
+        try {
+            priceImpact = calculatePriceImpact(swap.paths, swap.swapKind).decimal.toFixed(4);
+        } catch (error) {}
+
+        // const priceImpact = swap.priceImpact.decimal.toFixed(4);
         let poolIds: string[];
         if (swap.isBatchSwap) {
             const swaps = swap.swaps as BatchSwapStep[];
@@ -136,7 +143,7 @@ export class SwapResultV2 implements SwapResult {
             })),
             effectivePrice: effectivePrice.toString(),
             effectivePriceReversed: effectivePriceReversed.toString(),
-            priceImpact: priceImpact,
+            priceImpact: priceImpact || '0',
         };
     }
 

@@ -4,7 +4,7 @@ import { MAX_UINT256, PoolType, SwapKind, Token, TokenAmount } from '@balancer/s
 import { AddKind, RemoveKind, StableState, Vault, HookState } from '@balancer-labs/balancer-maths';
 import { Chain } from '@prisma/client';
 
-import { PrismaPoolWithDynamic, PrismaHookWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { chainToIdMap } from '../../../../../network/network-config';
 import { StableData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
@@ -36,7 +36,7 @@ export class StablePool implements BasePoolV3 {
     private vault: Vault;
     private poolState: StableState;
 
-    static fromPrismaPool(pool: PrismaPoolWithDynamic): StablePool {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): StablePool {
         const poolTokens: StablePoolToken[] = [];
 
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');

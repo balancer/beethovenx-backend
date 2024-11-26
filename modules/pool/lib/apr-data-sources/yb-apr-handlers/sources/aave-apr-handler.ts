@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AprHandler } from '..';
+import { AprHandler } from '../types';
 
 export class AaveAprHandler implements AprHandler {
     tokens: {

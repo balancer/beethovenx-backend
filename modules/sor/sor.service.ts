@@ -66,6 +66,8 @@ export class SorService {
                       wethIsEth: wethIsEth,
                   }
                 : undefined,
+            considerPoolsWithHooks: args.considerPoolsWithHooks ?? false,
+            poolIds: args.poolIds ?? undefined,
         };
 
         if (args.useProtocolVersion) {
@@ -111,7 +113,7 @@ export class SorService {
             tokenOut: tokenOut,
         });
 
-        if (!swapResult) return emptyResponse;
+        if (!swapResult || !swapResult.isValid) return emptyResponse;
 
         try {
             // Updates with latest onchain data before returning

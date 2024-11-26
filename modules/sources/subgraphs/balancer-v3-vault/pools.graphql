@@ -23,6 +23,12 @@ fragment VaultPool on Pool {
         paysYieldFees
         nestedPool {
             id
+            tokens {
+                address
+                nestedPool {
+                    id
+                }
+            }
         }
         scalingFactor
     }

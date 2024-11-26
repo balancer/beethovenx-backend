@@ -156,6 +156,14 @@ export const mainnetNetworkConfig: NetworkConfig = {
             interval: every(1, 'hours'),
         },
         {
+            name: 'sync-hook-reviews',
+            interval: every(1, 'hours'),
+        },
+        {
+            name: 'sync-erc4626-reviews',
+            interval: every(1, 'hours'),
+        },
+        {
             name: 'update-surplus-aprs',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
         },
