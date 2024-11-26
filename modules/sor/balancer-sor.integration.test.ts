@@ -49,7 +49,7 @@ describe('Balancer SOR Integration Tests', () => {
 
     beforeAll(async () => {
         // start fork to run queries against
-        ({ rpcUrl } = await startFork(ANVIL_NETWORKS.SEPOLIA, undefined, BigInt(6989405)));
+        ({ rpcUrl } = await startFork(ANVIL_NETWORKS.SEPOLIA, undefined, BigInt(7116463)));
         client = createTestClient({
             mode: 'anvil',
             chain: sepolia,
@@ -547,7 +547,7 @@ describe('Balancer SOR Integration Tests', () => {
                 hook: exitFeeHook,
             });
         })
-        test.skip('SOR quote should match swap query with hooks', async () => {
+        test.only('SOR quote should match swap query with hooks', async () => {
             // This test does not trigger the ExitFeeHook, as the ExitFee is
             // applied on RemoveLiquidity operations
             const tIn = new Token(
@@ -593,7 +593,7 @@ describe('Balancer SOR Integration Tests', () => {
             const returnAmountQuery = (queryOutput as ExactInQueryOutput).expectedAmountOut;
             expect(returnAmountQuery.amount).toEqual(returnAmountSOR.amount);
         });
-        test.skip('SOR quote should match swap query with hook logic used', async () => {
+        test.only('SOR quote should match swap query with hook logic used', async () => {
             // This test applies the hook logic, as a BPT -> Token Swap will trigger
             // a RemoveLiquidity operation. 
             const tIn = new Token(
