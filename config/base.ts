@@ -17,7 +17,7 @@ export default <NetworkData>{
         ],
         beetsBar: '',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/6f2Z8rTvsBQinEMwRSBxbyg3BP2LTFiEA1hjPZxmy3xs`,
-        gauge: `https://api.studio.thegraph.com/query/24660/balancer-gauges-base/version/latest`,
+        gauge: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/CfBvJNYsbKZdxXzaCtNc6dUbHH6TjDupprjKKo9gnmwg`,
         aura: 'https://data.aura.finance/graphql',
     },
     gyro: {
