@@ -14,7 +14,7 @@ export default <NetworkData>{
         startDate: '2024-05-22',
         balancer: [`https://api.studio.thegraph.com/query/75376/balancer-mode-v2/version/latest`],
         beetsBar: '',
-        blocks: 'https://api.studio.thegraph.com/query/48427/bleu-mode-blocks/version/latest',
+        blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/8W1osXrVFmWcRuZhvE7PwEcwmgSRXUVRDnwnpuottha1`,
         gauge: `https://api.studio.thegraph.com/query/75376/balancer-gauges-mode/version/latest`,
     },
     eth: {
