@@ -17,6 +17,7 @@ import { updateVolumeAndFees } from '../actions/pool/update-volume-and-fees';
 import moment from 'moment';
 import { upsertBptBalances } from '../actions/cow-amm/upsert-bpt-balances';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../actions/pool/last-synced-block';
+import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
 
 export function CowAmmController(tracer?: any) {
     const getSubgraphClient = (chain: Chain) => {
@@ -125,6 +126,8 @@ export function CowAmmController(tracer?: any) {
         async syncSnapshots(chain: Chain) {
             const subgraphClient = getSubgraphClient(chain);
             const timestamp = await syncSnapshots(subgraphClient, chain);
+            // update lifetime values based on snapshots
+            await updateLifetimeValues(chain, undefined, 'COW_AMM');
             return timestamp;
         },
         async syncAllSnapshots(chain: Chain) {

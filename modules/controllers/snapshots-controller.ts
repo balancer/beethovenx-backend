@@ -6,6 +6,7 @@ import { PoolSnapshotService } from '../actions/snapshots/pool-snapshot-service'
 import { chainIdToChain } from '../network/chain-id-to-chain';
 import { getVaultSubgraphClient } from '../sources/subgraphs';
 import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
+import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
 
 /**
  * Controller responsible for configuring and executing ETL actions.
@@ -78,6 +79,8 @@ export function SnapshotsController(tracer?: any) {
 
             const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
             const entries = await syncSnapshotsV3(vaultSubgraphClient, chain);
+            // update lifetime values based on snapshots
+            await updateLifetimeValues(chain, 3);
             return entries;
         },
         async fillMissingSnapshotsV2(chain: Chain) {
