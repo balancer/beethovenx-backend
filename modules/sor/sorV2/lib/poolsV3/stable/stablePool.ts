@@ -267,7 +267,7 @@ export class StablePool implements BasePoolV3 {
 
     public getPoolState(): StableState {
         return {
-            poolType: 'Stable',
+            poolType: 'WEIGHTED',
             swapFee: this.swapFee,
             balancesLiveScaled18: this.tokens.map((t) => t.scale18),
             tokenRates: this.tokens.map((t) => t.rate),

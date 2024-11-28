@@ -81,6 +81,8 @@ export class WeightedPoolV3 implements BasePoolV3 {
             }
         }
 
+        // 
+
         //transform
         const hook = returnHookDataAccordingToHookName(pool);
 
@@ -269,7 +271,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
 
     public getPoolState(): WeightedState {
         return {
-            poolType: 'Weighted',
+            poolType: 'WEIGHTED',
             swapFee: this.swapFee,
             balancesLiveScaled18: this.tokens.map((t) => t.scale18),
             tokenRates: this.tokens.map((_) => WAD),
