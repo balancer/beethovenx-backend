@@ -24,7 +24,7 @@ export const getPoolHookTags = async (
 
     for (const hookMetadata of hooksMetadataList) {
         for (const chainId in hookMetadata.addresses) {
-            const addresses = hookMetadata.addresses[chainId];
+            const addresses = hookMetadata.addresses[chainId].map((address) => address.toLowerCase());
             for (const pool of poolsWithHooks) {
                 if (pool.chain === chainIdToChain[chainId] && addresses.includes((pool.hook as HookData).address)) {
                     if (!existingTags[pool.id]) {
