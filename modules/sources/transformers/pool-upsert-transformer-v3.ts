@@ -50,7 +50,9 @@ export const poolUpsertTransformerV3 = (
             decimals: 18,
             symbol: poolData.symbol,
             name: poolData.name,
-            owner: zeroAddress, //TODO
+            swapFeeManager: poolData.swapFeeManager,
+            pauseManager: poolData.pauseManager,
+            poolCreator: poolData.poolCreator,
             factory: poolData.factory.id.toLowerCase(),
             type: type,
             typeData: typeData,

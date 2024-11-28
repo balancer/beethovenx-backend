@@ -174,11 +174,13 @@ export enum AddRemove_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -578,11 +580,13 @@ export enum HookConfig_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -724,11 +728,13 @@ export enum LiquidityManagement_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -765,10 +771,12 @@ export type Pool = {
     liquidityManagement: LiquidityManagement;
     /** Name of the Pool */
     name: Scalars['String'];
-    /** Address of the pause manager for this Pool */
+    /** Account empowered to pause/unpause the pool */
     pauseManager: Scalars['Bytes'];
     /** Timestamp when the pause window ends */
     pauseWindowEndTime: Scalars['BigInt'];
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator: Scalars['Bytes'];
     /** Pool creator swap fee percentage */
     poolCreatorSwapFee: Scalars['BigDecimal'];
     /** Pool creator yield fee percentage */
@@ -783,6 +791,8 @@ export type Pool = {
     snapshots: Array<PoolSnapshot>;
     /** Swap fee percentage for this Pool */
     swapFee: Scalars['BigDecimal'];
+    /** Account empowered to set static swap fees for a pool */
+    swapFeeManager: Scalars['Bytes'];
     /** Total number of swaps performed in this Pool */
     swapsCount: Scalars['BigInt'];
     /** Symbol of the Pool */
@@ -912,11 +922,13 @@ export enum PoolShare_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -1064,11 +1076,13 @@ export enum PoolSnapshot_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -1339,11 +1353,13 @@ export enum PoolToken_OrderBy {
     NestedPoolName = 'nestedPool__name',
     NestedPoolPauseManager = 'nestedPool__pauseManager',
     NestedPoolPauseWindowEndTime = 'nestedPool__pauseWindowEndTime',
+    NestedPoolPoolCreator = 'nestedPool__poolCreator',
     NestedPoolPoolCreatorSwapFee = 'nestedPool__poolCreatorSwapFee',
     NestedPoolPoolCreatorYieldFee = 'nestedPool__poolCreatorYieldFee',
     NestedPoolProtocolSwapFee = 'nestedPool__protocolSwapFee',
     NestedPoolProtocolYieldFee = 'nestedPool__protocolYieldFee',
     NestedPoolSwapFee = 'nestedPool__swapFee',
+    NestedPoolSwapFeeManager = 'nestedPool__swapFeeManager',
     NestedPoolSwapsCount = 'nestedPool__swapsCount',
     NestedPoolSymbol = 'nestedPool__symbol',
     NestedPoolTotalShares = 'nestedPool__totalShares',
@@ -1360,11 +1376,13 @@ export enum PoolToken_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -1541,6 +1559,7 @@ export type Pool_Filter = {
     pauseWindowEndTime_lte?: InputMaybe<Scalars['BigInt']>;
     pauseWindowEndTime_not?: InputMaybe<Scalars['BigInt']>;
     pauseWindowEndTime_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+    poolCreator?: InputMaybe<Scalars['Bytes']>;
     poolCreatorSwapFee?: InputMaybe<Scalars['BigDecimal']>;
     poolCreatorSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
     poolCreatorSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1557,6 +1576,15 @@ export type Pool_Filter = {
     poolCreatorYieldFee_lte?: InputMaybe<Scalars['BigDecimal']>;
     poolCreatorYieldFee_not?: InputMaybe<Scalars['BigDecimal']>;
     poolCreatorYieldFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    poolCreator_contains?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_gt?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_gte?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    poolCreator_lt?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_lte?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_not?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_not_contains?: InputMaybe<Scalars['Bytes']>;
+    poolCreator_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
     protocolSwapFee?: InputMaybe<Scalars['BigDecimal']>;
     protocolSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
     protocolSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1576,6 +1604,16 @@ export type Pool_Filter = {
     rateProviders_?: InputMaybe<RateProvider_Filter>;
     snapshots_?: InputMaybe<PoolSnapshot_Filter>;
     swapFee?: InputMaybe<Scalars['BigDecimal']>;
+    swapFeeManager?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_contains?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_gt?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_gte?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    swapFeeManager_lt?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_lte?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_not?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_not_contains?: InputMaybe<Scalars['Bytes']>;
+    swapFeeManager_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
     swapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
     swapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
     swapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
@@ -1685,6 +1723,7 @@ export enum Pool_OrderBy {
     Name = 'name',
     PauseManager = 'pauseManager',
     PauseWindowEndTime = 'pauseWindowEndTime',
+    PoolCreator = 'poolCreator',
     PoolCreatorSwapFee = 'poolCreatorSwapFee',
     PoolCreatorYieldFee = 'poolCreatorYieldFee',
     ProtocolSwapFee = 'protocolSwapFee',
@@ -1692,6 +1731,7 @@ export enum Pool_OrderBy {
     RateProviders = 'rateProviders',
     Snapshots = 'snapshots',
     SwapFee = 'swapFee',
+    SwapFeeManager = 'swapFeeManager',
     SwapsCount = 'swapsCount',
     Symbol = 'symbol',
     Tokens = 'tokens',
@@ -2081,11 +2121,13 @@ export enum RateProvider_OrderBy {
     PoolName = 'pool__name',
     PoolPauseManager = 'pool__pauseManager',
     PoolPauseWindowEndTime = 'pool__pauseWindowEndTime',
+    PoolPoolCreator = 'pool__poolCreator',
     PoolPoolCreatorSwapFee = 'pool__poolCreatorSwapFee',
     PoolPoolCreatorYieldFee = 'pool__poolCreatorYieldFee',
     PoolProtocolSwapFee = 'pool__protocolSwapFee',
     PoolProtocolYieldFee = 'pool__protocolYieldFee',
     PoolSwapFee = 'pool__swapFee',
+    PoolSwapFeeManager = 'pool__swapFeeManager',
     PoolSwapsCount = 'pool__swapsCount',
     PoolSymbol = 'pool__symbol',
     PoolTotalShares = 'pool__totalShares',
@@ -3073,6 +3115,8 @@ export type VaultPoolFragment = {
     totalShares: string;
     pauseWindowEndTime: string;
     pauseManager: string;
+    swapFeeManager: string;
+    poolCreator: string;
     blockNumber: string;
     blockTimestamp: string;
     holdersCount: string;
@@ -3151,6 +3195,8 @@ export type PoolsQuery = {
         totalShares: string;
         pauseWindowEndTime: string;
         pauseManager: string;
+        swapFeeManager: string;
+        poolCreator: string;
         blockNumber: string;
         blockTimestamp: string;
         holdersCount: string;
@@ -3396,6 +3442,8 @@ export const VaultPoolFragmentDoc = gql`
         totalShares
         pauseWindowEndTime
         pauseManager
+        swapFeeManager
+        poolCreator
         blockNumber
         blockTimestamp
         holdersCount

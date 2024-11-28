@@ -90,7 +90,7 @@ const defaultWeightedPool: Prisma.PrismaPoolCreateInput = {
     name: 'A Late Quartet',
     decimals: 18,
     type: PrismaPoolType.WEIGHTED,
-    owner: '0x0000000000000000000000000000000000000000',
+    swapFeeManager: '0x0000000000000000000000000000000000000000',
     factory: '0x92b377187bccc6556fced2f1e6dad65850c20630',
     tokens: {},
     dynamicData: {

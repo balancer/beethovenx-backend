@@ -17,7 +17,7 @@ export const poolUpsertTransformerCowAmm = (
         decimals: 18,
         symbol: poolFragment.symbol,
         name: poolFragment.name,
-        owner: zeroAddress, //TODO
+        swapFeeManager: zeroAddress, // TODO
         factory: poolFragment.factory.id.toLowerCase(),
         type: 'COW_AMM',
         typeData: {},

@@ -1488,7 +1488,17 @@ export const schema = gql`
         """
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
@@ -1504,6 +1514,11 @@ export const schema = gql`
         Staking options of this pool which emit additional rewards
         """
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         The token symbol of the pool as per contract

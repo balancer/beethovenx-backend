@@ -6,6 +6,8 @@ fragment VaultPool on Pool {
     totalShares
     pauseWindowEndTime
     pauseManager
+    swapFeeManager
+    poolCreator
     blockNumber
     blockTimestamp
     holdersCount
