@@ -17,7 +17,7 @@ export function swapV2Transformer(
 ): SwapEvent {
     // Avoiding scientific notation
     const feeFloat = parseFloat(swap.tokenAmountIn) * parseFloat(swap.poolId.swapFee ?? 0);
-    const fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
+    let fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
     let feeFloatUSD = parseFloat(swap.valueUSD) * parseFloat(swap.poolId.swapFee ?? 0);
     let feeUSD =
         feeFloatUSD < 1e6 ? feeFloatUSD.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloatUSD);
@@ -42,10 +42,14 @@ export function swapV2Transformer(
                     feeFloatUSD +=
                         parseFloat(swap.tokenAmountIn) * parseFloat(baseRate) -
                         parseFloat(swap.tokenAmountOut) * parseFloat(quoteRate);
+                    // Need to set the fee in the tokenIn price, because it's later recalculated based on the DB prices
+                    fee = String(feeFloatUSD / parseFloat(baseRate)); // fee / tokenIn price
                 } else {
                     feeFloatUSD +=
                         parseFloat(swap.tokenAmountIn) * parseFloat(quoteRate) -
                         parseFloat(swap.tokenAmountOut) * parseFloat(baseRate);
+                    // Need to set the fee in the tokenIn price, because it's later recalculated based on the DB prices
+                    fee = String(feeFloatUSD / parseFloat(quoteRate)); // fee / tokenIn price
                 }
             }
 
