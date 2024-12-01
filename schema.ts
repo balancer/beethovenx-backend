@@ -2525,6 +2525,10 @@ export interface MutationUserInitStakedBalancesArgs {
     stakingTypes: Array<GqlPoolStakingType>;
 }
 
+export interface MutationUserInitWalletBalancesForAllPoolsArgs {
+    chain?: InputMaybe<GqlChain>;
+}
+
 export interface MutationUserInitWalletBalancesForPoolArgs {
     poolId: Scalars['String'];
 }
@@ -5385,7 +5389,12 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationUserInitStakedBalancesArgs, 'stakingTypes'>
     >;
-    userInitWalletBalancesForAllPools?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    userInitWalletBalancesForAllPools?: Resolver<
+        ResolversTypes['String'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationUserInitWalletBalancesForAllPoolsArgs, never>
+    >;
     userInitWalletBalancesForPool?: Resolver<
         ResolversTypes['String'],
         ParentType,
