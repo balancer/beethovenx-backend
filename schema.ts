@@ -207,10 +207,19 @@ export interface GqlNestedPool {
     nestedPercentage: Scalars['BigDecimal'];
     /** Number of shares of the parent pool in the nested pool. */
     nestedShares: Scalars['BigDecimal'];
-    /** Address of the pool's owner. */
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     /** Fee charged for swapping tokens in the pool as %. 0.01 -> 0.01% */
     swapFee: Scalars['BigDecimal'];
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     /** Symbol of the pool. */
     symbol: Scalars['String'];
     /** List of all tokens in the pool. */
@@ -294,8 +303,15 @@ export interface GqlPoolAggregator {
     liquidityManagement?: Maybe<LiquidityManagement>;
     /** The name of the pool as per contract */
     name: Scalars['String'];
-    /** The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP. */
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
     owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     /** Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep. */
     poolTokens: Array<GqlPoolTokenDetail>;
     /** The protocol version on which the pool is deployed, 1, 2 or 3 */
@@ -308,6 +324,8 @@ export interface GqlPoolAggregator {
     sqrtAlpha?: Maybe<Scalars['String']>;
     /** Data specific to gyro pools */
     sqrtBeta?: Maybe<Scalars['String']>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     /** The token symbol of the pool as per contract */
     symbol: Scalars['String'];
     /** Data specific to gyro pools */
@@ -457,14 +475,23 @@ export interface GqlPoolBase {
     liquidityManagement?: Maybe<LiquidityManagement>;
     /** The name of the pool as per contract */
     name: Scalars['String'];
-    /** The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP. */
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
     owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     /** Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep. */
     poolTokens: Array<GqlPoolTokenDetail>;
     /** The protocol version on which the pool is deployed, 1, 2 or 3 */
     protocolVersion: Scalars['Int'];
     /** Staking options of this pool which emit additional rewards */
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     /** The token symbol of the pool as per contract */
     symbol: Scalars['String'];
     /** List of tags assigned by the team based on external factors */
@@ -549,10 +576,20 @@ export interface GqlPoolComposableStable extends GqlPoolBase {
     name: Scalars['String'];
     /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /**
@@ -581,8 +618,18 @@ export interface GqlPoolComposableStableNested {
     name: Scalars['String'];
     /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     swapFee: Scalars['BigDecimal'];
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /** @deprecated Use poolTokens instead */
@@ -668,11 +715,21 @@ export interface GqlPoolElement extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     principalToken: Scalars['Bytes'];
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /** @deprecated Use poolTokens instead */
@@ -824,10 +881,20 @@ export interface GqlPoolFx extends GqlPoolBase {
     lambda: Scalars['String'];
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
     owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /**
@@ -872,7 +939,15 @@ export interface GqlPoolGyro extends GqlPoolBase {
     name: Scalars['String'];
     /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     root3Alpha: Scalars['String'];
@@ -880,6 +955,8 @@ export interface GqlPoolGyro extends GqlPoolBase {
     sqrtAlpha: Scalars['String'];
     sqrtBeta: Scalars['String'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     tauAlphaX: Scalars['String'];
@@ -967,10 +1044,20 @@ export interface GqlPoolLiquidityBootstrapping extends GqlPoolBase {
     name: Scalars['String'];
     /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /**
@@ -1009,10 +1096,20 @@ export interface GqlPoolMetaStable extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /** @deprecated Use poolTokens instead */
@@ -1172,10 +1269,20 @@ export interface GqlPoolStable extends GqlPoolBase {
     investConfig: GqlPoolInvestConfig;
     liquidityManagement?: Maybe<LiquidityManagement>;
     name: Scalars['String'];
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /** @deprecated Use poolTokens instead */
@@ -1571,10 +1678,20 @@ export interface GqlPoolWeighted extends GqlPoolBase {
     name: Scalars['String'];
     /** @deprecated Removed without replacement */
     nestingType: GqlPoolNestingType;
-    owner: Scalars['Bytes'];
+    /**
+     * The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+     * @deprecated Use swapFeeManager instead
+     */
+    owner?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to pause/unpause the pool (or 0 to delegate to governance) */
+    pauseManager?: Maybe<Scalars['Bytes']>;
+    /** Account empowered to set the pool creator fee percentage */
+    poolCreator?: Maybe<Scalars['Bytes']>;
     poolTokens: Array<GqlPoolTokenDetail>;
     protocolVersion: Scalars['Int'];
     staking?: Maybe<GqlPoolStaking>;
+    /** Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance) */
+    swapFeeManager?: Maybe<Scalars['Bytes']>;
     symbol: Scalars['String'];
     tags?: Maybe<Array<Maybe<Scalars['String']>>>;
     /**
@@ -3314,8 +3431,11 @@ export type GqlNestedPoolResolvers<
     nestedLiquidity?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     nestedPercentage?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     nestedShares?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     swapFee?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     totalLiquidity?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
@@ -3368,12 +3488,15 @@ export type GqlPoolAggregatorResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     root3Alpha?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     s?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     sqrtAlpha?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     sqrtBeta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tauAlphaX?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     tauAlphaY?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -3471,9 +3594,12 @@ export type GqlPoolBaseResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     type?: Resolver<ResolversTypes['GqlPoolType'], ParentType, ContextType>;
@@ -3552,10 +3678,13 @@ export type GqlPoolComposableStableResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestingType?: Resolver<ResolversTypes['GqlPoolNestingType'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenUnion']>, ParentType, ContextType>;
@@ -3580,8 +3709,11 @@ export type GqlPoolComposableStableNestedResolvers<
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestingType?: Resolver<ResolversTypes['GqlPoolNestingType'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     swapFee?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenComposableStableNestedUnion']>, ParentType, ContextType>;
@@ -3662,11 +3794,14 @@ export type GqlPoolElementResolvers<
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     principalToken?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolToken']>, ParentType, ContextType>;
@@ -3767,9 +3902,12 @@ export type GqlPoolFxResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenUnion']>, ParentType, ContextType>;
@@ -3807,7 +3945,9 @@ export type GqlPoolGyroResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestingType?: Resolver<ResolversTypes['GqlPoolNestingType'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     root3Alpha?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3815,6 +3955,7 @@ export type GqlPoolGyroResolvers<
     sqrtAlpha?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     sqrtBeta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tauAlphaX?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3900,10 +4041,13 @@ export type GqlPoolLiquidityBootstrappingResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestingType?: Resolver<ResolversTypes['GqlPoolNestingType'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenUnion']>, ParentType, ContextType>;
@@ -3936,10 +4080,13 @@ export type GqlPoolMetaStableResolvers<
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolToken']>, ParentType, ContextType>;
@@ -4050,10 +4197,13 @@ export type GqlPoolStableResolvers<
     investConfig?: Resolver<ResolversTypes['GqlPoolInvestConfig'], ParentType, ContextType>;
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolToken']>, ParentType, ContextType>;
@@ -4432,10 +4582,13 @@ export type GqlPoolWeightedResolvers<
     liquidityManagement?: Resolver<Maybe<ResolversTypes['LiquidityManagement']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestingType?: Resolver<ResolversTypes['GqlPoolNestingType'], ParentType, ContextType>;
-    owner?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
+    owner?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    pauseManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
+    poolCreator?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     poolTokens?: Resolver<Array<ResolversTypes['GqlPoolTokenDetail']>, ParentType, ContextType>;
     protocolVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     staking?: Resolver<Maybe<ResolversTypes['GqlPoolStaking']>, ParentType, ContextType>;
+    swapFeeManager?: Resolver<Maybe<ResolversTypes['Bytes']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
     tokens?: Resolver<Array<ResolversTypes['GqlPoolTokenUnion']>, ParentType, ContextType>;

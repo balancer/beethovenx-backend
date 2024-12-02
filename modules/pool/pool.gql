@@ -362,7 +362,19 @@ type GqlPoolAggregator {
     """
     The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
     """
-    owner: Bytes
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     """
     The factory contract address from which the pool was created.
     """
@@ -516,7 +528,19 @@ interface GqlPoolBase {
     """
     The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
     """
-    owner: Bytes
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     """
     The factory contract address from which the pool was created.
     """
@@ -705,7 +729,22 @@ type GqlPoolWeighted implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -743,7 +782,22 @@ type GqlPoolGyro implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -806,7 +860,22 @@ type GqlPoolFx implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -839,7 +908,22 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -876,7 +960,22 @@ type GqlPoolStable implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -911,7 +1010,22 @@ type GqlPoolMetaStable implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -945,7 +1059,22 @@ type GqlPoolComposableStable implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -984,7 +1113,22 @@ type GqlPoolElement implements GqlPoolBase {
     symbol: String!
     address: Bytes!
     decimals: Int!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
@@ -1017,7 +1161,22 @@ type GqlPoolComposableStableNested @deprecated(reason: "use GqlPoolTokenDetail i
     name: String!
     symbol: String!
     address: Bytes!
-    owner: Bytes!
+    """
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+    """
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     factory: Bytes
     createTime: Int!
     tokens: [GqlPoolTokenComposableStableNestedUnion!]! @deprecated(reason: "Use poolTokens instead")
@@ -1161,9 +1320,21 @@ type GqlNestedPool {
     """
     version: Int!
     """
-    Address of the pool's owner.
+    The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
     """
-    owner: Bytes!
+    owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+    """
+    Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+    """
+    swapFeeManager: Bytes
+    """
+    Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+    """
+    pauseManager: Bytes
+    """
+    Account empowered to set the pool creator fee percentage
+    """
+    poolCreator: Bytes
     """
     Address of the factory contract that created the pool, if applicable.
     """

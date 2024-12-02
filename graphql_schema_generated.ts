@@ -262,14 +262,29 @@ export const schema = gql`
         nestedShares: BigDecimal!
 
         """
-        Address of the pool's owner.
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes!
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Fee charged for swapping tokens in the pool as %. 0.01 -> 0.01%
         """
         swapFee: BigDecimal!
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         Symbol of the pool.
@@ -466,7 +481,17 @@ export const schema = gql`
         """
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
@@ -497,6 +522,11 @@ export const schema = gql`
         Data specific to gyro pools
         """
         sqrtBeta: String
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         The token symbol of the pool as per contract
@@ -791,7 +821,17 @@ export const schema = gql`
         """
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep.
@@ -807,6 +847,11 @@ export const schema = gql`
         Staking options of this pool which emit additional rewards
         """
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         The token symbol of the pool as per contract
@@ -898,10 +943,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -926,8 +990,27 @@ export const schema = gql`
         id: ID!
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         swapFee: BigDecimal!
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolTokenComposableStableNestedUnion!]! @deprecated(reason: "Use poolTokens instead")
@@ -1023,11 +1106,30 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         principalToken: Bytes!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1223,10 +1325,29 @@ export const schema = gql`
         lambda: String!
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -1264,7 +1385,21 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         root3Alpha: String!
@@ -1272,6 +1407,11 @@ export const schema = gql`
         sqrtAlpha: String!
         sqrtBeta: String!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tauAlphaX: String!
@@ -1351,10 +1491,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -1387,10 +1546,29 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1644,10 +1822,29 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -2196,10 +2393,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
