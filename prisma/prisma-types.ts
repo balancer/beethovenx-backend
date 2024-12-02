@@ -394,7 +394,6 @@ export const prismaPoolAndHookWithDynamic = Prisma.validator<Prisma.PrismaPoolAr
                 dynamicData: true,
             },
         },
-        hook: true
     },
 });
 
