@@ -2513,10 +2513,10 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@balancer-labs/balancer-maths@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@balancer-labs/balancer-maths/-/balancer-maths-0.0.12.tgz#2a02a5768c1e81cdce4049dea86c990e83bb9396"
-  integrity sha512-IjjXyTAhVn/rtfMn9kEvv8gsOLAGg1yXh04zZb3GyYgbV89x08dsCivoLTvqj71cSlsnpbmYvpM9N3DEhVaczQ==
+"@balancer-labs/balancer-maths@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@balancer-labs/balancer-maths/-/balancer-maths-0.0.18.tgz#152c88a553fd1222d20e1e600f3c8c183e603e39"
+  integrity sha512-IVbaNQpcLaesjzZaMx6Hr2XJqgh+3lW3v8FthWpjavLJ6R8R2oBGi2IbrV7tER9rnTSv4IxKueCKMy6AialXlg==
 
 "@balancer-labs/sdk@github:beethovenxfi/balancer-sdk#beethovenx-master":
   version "0.1.1"
@@ -2535,10 +2535,10 @@
     graphology "^0.24.1"
     isomorphic-fetch "^2.2.1"
 
-"@balancer/sdk@0.30.1":
-  version "0.30.1"
-  resolved "https://registry.yarnpkg.com/@balancer/sdk/-/sdk-0.30.1.tgz#b7a05d1b0e1e922021c36c7c542f90ec9adc58fa"
-  integrity sha512-gDL07iHAqp6i4RC5w6IulXupJkgIHJKbJy+I1HJfPakhGvIoK6cciD1q3RclgCbSgtKUGQCmIuSPhHdpf/8AEA==
+"@balancer/sdk@0.33.0":
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/@balancer/sdk/-/sdk-0.33.0.tgz#6d882dbbbda6b1552bf0b217208528da7120bdb2"
+  integrity sha512-4ZnFAvUXicNi3A+zM+8kWKWTxmZdbcPn7pcHtaYVqd4CgwJa0bVMJhkXrOByKWsKKacu9cK9e1G4nBevVVkkAg==
   dependencies:
     decimal.js-light "^2.5.1"
     lodash.clonedeep "^4.5.0"
