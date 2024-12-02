@@ -14,6 +14,8 @@ import { WeightedErc4626PoolToken } from './weightedErc4626PoolToken';
 
 import { returnHookDataAccordingToHookName } from '../../utils/helpers';
 
+import { LiquidityManagement } from '../../../../../sor/types.ts';
+
 
 type WeightedPoolToken = WeightedBasePoolToken | WeightedErc4626PoolToken;
 
@@ -30,6 +32,8 @@ export class WeightedPoolV3 implements BasePoolV3 {
     public readonly MAX_IN_RATIO = 300000000000000000n; // 0.3
     public readonly MAX_OUT_RATIO = 300000000000000000n; // 0.3
     public readonly hook: HookState | undefined;
+    public readonly hookType: string;
+    public readonly liquidityManagement: LiquidityManagement;
 
     private readonly tokenMap: Map<string, WeightedPoolToken>;
 
@@ -95,7 +99,9 @@ export class WeightedPoolV3 implements BasePoolV3 {
             parseEther(pool.dynamicData.totalShares),
             poolTokens,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            hook
+            pool.hook ? pool.hook.name : undefined,
+            pool.liquidityManagement,
+            hook,
         );
     }
 
@@ -108,6 +114,8 @@ export class WeightedPoolV3 implements BasePoolV3 {
         totalShares: bigint,
         tokens: WeightedPoolToken[],
         tokenPairs: TokenPairData[],
+        hookType: string,
+        liquidityManagement: LiquidityManagement,
         hook: HookState | undefined = undefined,
     ) {
         this.chain = chain;
@@ -119,7 +127,10 @@ export class WeightedPoolV3 implements BasePoolV3 {
         this.tokens = tokens;
         this.tokenMap = new Map(tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
+        this.liquidityManagement = liquidityManagement;
         this.hook = hook
+        this.hookType = hookType;
+
 
         // add BPT to tokenMap, so we can handle add/remove liquidity operations
         const bpt = new Token(tokens[0].token.chainId, this.id, 18, 'BPT', 'BPT');
@@ -184,6 +195,14 @@ export class WeightedPoolV3 implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // remove liquidity
             const { amountsOutRaw } = this.vault.removeLiquidity(
                 {
@@ -197,6 +216,14 @@ export class WeightedPoolV3 implements BasePoolV3 {
             );
             calculatedAmount = amountsOutRaw[tOut.index];
         } else if (tOut.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // add liquidity
             const { bptAmountOutRaw } = this.vault.addLiquidity(
                 {
@@ -231,6 +258,14 @@ export class WeightedPoolV3 implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // remove liquidity
             const { bptAmountInRaw } = this.vault.removeLiquidity(
                 {
@@ -243,6 +278,14 @@ export class WeightedPoolV3 implements BasePoolV3 {
             );
             calculatedAmount = bptAmountInRaw;
         } else if (tOut.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // add liquidity
             const { amountsInRaw } = this.vault.addLiquidity(
                 {
@@ -278,8 +321,9 @@ export class WeightedPoolV3 implements BasePoolV3 {
             totalSupply: this.totalShares,
             weights: this.tokens.map((t) => t.weight),
             tokens: this.tokens.map((t) => t.token.address),
-            scalingFactors: this.tokens.map((t) => t.scalar * WAD),
+            scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
+            hookType: this.hookType,
         };
     }
 

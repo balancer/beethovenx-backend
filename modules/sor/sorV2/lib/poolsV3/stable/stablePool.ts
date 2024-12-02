@@ -30,6 +30,9 @@ export class StablePool implements BasePoolV3 {
     public totalShares: bigint;
     public tokens: StablePoolToken[];
     public readonly hook: HookState | undefined;
+    public readonly hookType: string;
+    public readonly liquidityManagement: LiquidityManagement;
+
 
     private readonly tokenMap: Map<string, StablePoolToken>;
 
@@ -90,6 +93,8 @@ export class StablePool implements BasePoolV3 {
             poolTokens,
             totalShares,
             pool.dynamicData.tokenPairsData as TokenPairData[],
+            pool.hook ? pool.hook.name : undefined,
+            pool.liquidityManagement,
             hook,
         );
     }
@@ -103,6 +108,8 @@ export class StablePool implements BasePoolV3 {
         tokens: StablePoolToken[],
         totalShares: bigint,
         tokenPairs: TokenPairData[],
+        hookType: string,
+        liquidityManagement: LiquidityManagement,
         hook: HookState | undefined = undefined,
     ) {
         this.chain = chain;
@@ -116,6 +123,9 @@ export class StablePool implements BasePoolV3 {
         this.tokenMap = new Map(this.tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
         this.hook = hook;
+        this.hookType = hookType;
+        this.liquidityManagement = liquidityManagement;
+
 
         // add BPT to tokenMap, so we can handle add/remove liquidity operations
         const bpt = new Token(tokens[0].token.chainId, this.id, 18, 'BPT', 'BPT');
@@ -165,6 +175,13 @@ export class StablePool implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // remove liquidity
             const { amountsOutRaw } = this.vault.removeLiquidity(
                 {
@@ -178,6 +195,14 @@ export class StablePool implements BasePoolV3 {
             );
             calculatedAmount = amountsOutRaw[tOut.index];
         } else if (tOut.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // add liquidity
             const { bptAmountOutRaw } = this.vault.addLiquidity(
                 {
@@ -212,6 +237,14 @@ export class StablePool implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // remove liquidity
             const { bptAmountInRaw } = this.vault.removeLiquidity(
                 {
@@ -224,6 +257,14 @@ export class StablePool implements BasePoolV3 {
             );
             calculatedAmount = bptAmountInRaw;
         } else if (tOut.token.isSameAddress(this.id)) {
+
+            // if liquidityManagement.disableUnbalancedLiquidity is true return 0
+            // as the pool does not allow unbalanced operations. 0 return marks the
+            // route as truly unfeasible route.
+            if (this.liquidityManagement.disableUnbalancedLiquidity) {
+                return TokenAmount.fromRawAmount(tOut.token, 0n);
+            }
+
             // add liquidity
             const { amountsInRaw } = this.vault.addLiquidity(
                 {
@@ -266,6 +307,7 @@ export class StablePool implements BasePoolV3 {
     }
 
     public getPoolState(): StableState {
+
         return {
             poolType: 'STABLE',
             swapFee: this.swapFee,
@@ -274,8 +316,9 @@ export class StablePool implements BasePoolV3 {
             totalSupply: this.totalShares,
             amp: this.amp,
             tokens: this.tokens.map((t) => t.token.address),
-            scalingFactors: this.tokens.map((t) => t.scalar * WAD),
+            scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
+            hookType: this.hookType,
         };
     }
 
