@@ -1,31 +1,32 @@
 import { Factory } from 'fishery';
-import { PrismaHookWithDynamic } from '../../prisma/prisma-types';
 import { createRandomAddress } from '../utils';
 import { Chain } from '@prisma/client';
 
-class PrismaHookFactory extends Factory<PrismaHookWithDynamic> {
-    
-}
+import { HookData } from '../../modules/sources/transformers/hook-transformer';
+
+class PrismaHookFactory extends Factory<HookData> {}
 
 export const hookFactory = PrismaHookFactory.define(({ params }) => {
     const hookAddress = params?.address ?? createRandomAddress();
 
     return {
-        id: Math.floor(Math.random() * (100)) + 1,
-        name: params.name || 'Test Hook',
         address: hookAddress,
-        chain: params?.chain || Chain.SEPOLIA,
-        dynamicData: params?.dynamicData ?? {},
+        name: params.name || 'Test Hook',
         enableHookAdjustedAmounts: params?.enableHookAdjustedAmounts ?? false,
-        shouldCallAfterAddLiquidity: params?.shouldCallAfterAddLiquidity ?? false,
-        shouldCallAfterInitialize: params?.shouldCallAfterInitialize ?? false,
-        shouldCallAfterRemoveLiquidity: params?.shouldCallAfterRemoveLiquidity ?? false,
         shouldCallAfterSwap: params?.shouldCallAfterSwap ?? false,
-        shouldCallBeforeAddLiquidity: params?.shouldCallBeforeAddLiquidity ?? false,
-        shouldCallBeforeInitialize: params?.shouldCallBeforeInitialize ?? false,
-        shouldCallBeforeRemoveLiquidity: params?.shouldCallBeforeRemoveLiquidity ?? false,
         shouldCallBeforeSwap: params?.shouldCallBeforeSwap ?? false,
+        shouldCallAfterInitialize: params?.shouldCallAfterInitialize ?? false,
+        shouldCallBeforeInitialize: params?.shouldCallBeforeInitialize ?? false,
+        shouldCallAfterAddLiquidity: params?.shouldCallAfterAddLiquidity ?? false,
+        shouldCallBeforeAddLiquidity: params?.shouldCallBeforeAddLiquidity ?? false,
+        shouldCallAfterRemoveLiquidity: params?.shouldCallAfterRemoveLiquidity ?? false,
+        shouldCallBeforeRemoveLiquidity: params?.shouldCallBeforeRemoveLiquidity ?? false,
         shouldCallComputeDynamicSwapFee: params?.shouldCallComputeDynamicSwapFee ?? false,
-        pools: params?.pools ?? [],
-    };
+        dynamicData: params?.dynamicData ?? {},
+        reviewData: params?.reviewData ?? {
+            summary: '',
+            reviewFile: '',
+            warnings: [],
+        },
+    } as HookData;
 });

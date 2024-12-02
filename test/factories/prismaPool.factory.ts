@@ -2,8 +2,10 @@ import { Factory } from 'fishery';
 import { PrismaPoolAndHookWithDynamic } from '../../prisma/prisma-types';
 import { prismaPoolTokenFactory } from './prismaToken.factory';
 import { createRandomAddress } from '../utils';
-import { Chain, PrismaPoolType, Hook } from '@prisma/client';
+import { Chain, PrismaPoolType } from '@prisma/client';
 import { prismaPoolDynamicDataFactory } from './prismaPoolDynamicData.factory';
+import { LiquidityManagement } from '../../modules/sor/types';
+import { HookState } from '@balancer-labs/balancer-maths';
 
 class PrismaPoolFactory extends Factory<PrismaPoolAndHookWithDynamic> {
     stable(amp?: string) {
@@ -13,6 +15,13 @@ class PrismaPoolFactory extends Factory<PrismaPoolAndHookWithDynamic> {
 
 export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
     const poolAddress = params.address ?? createRandomAddress();
+    const hook: HookState | undefined = params.hook as HookState | undefined;
+    const liquidityManagement: LiquidityManagement = (params.liquidityManagement as unknown as LiquidityManagement) ?? {
+        disableUnbalancedLiquidity: false,
+        enableAddLiquidityCustom: false,
+        enableDonation: false,
+        enableRemoveLiquidityCustom: false,
+    };
 
     return {
         id: poolAddress,
@@ -34,12 +43,7 @@ export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
         dynamicData: prismaPoolDynamicDataFactory.build({ id: poolAddress, chain: params?.chain || Chain.SEPOLIA }),
         tokens: prismaPoolTokenFactory.buildList(2),
         hookId: null,
-        hook: params.hook as Hook ?? null,
-        liquidityManagement: {
-            disableUnbalancedLiquidity: params.disableUnbalancedLiquidity ?? false,
-            enableAddLiquidityCustom: params.enableAddLiquidityCustom ?? false,
-            enableDonation: params.enableDonation ?? false,
-            enableRemoveLiquidityCustom: params.enableRemoveLiquidityCustom ?? false,
-        },
+        hook: hook,
+        liquidityManagement: liquidityManagement,
     };
 });

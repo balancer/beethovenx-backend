@@ -7,6 +7,9 @@ import { parseEther, parseUnits, Address } from 'viem';
 import { TokenPairData } from '../../../modules/sources/contracts/v3/fetch-tokenpair-data';
 import { StablePool } from '../../../modules/sor/sorV2/lib/poolsV3';
 import { StableBasePoolToken } from '../../../modules/sor/sorV2/lib/poolsV3/stable/stableBasePoolToken';
+import { LiquidityManagement } from '../../../modules/sor/types'; 
+import { HookState } from '@balancer-labs/balancer-maths';
+
 
 export const StablePoolFactory = Factory.define<StablePool>(({ params }) => {
     const chain: Chain = params.chain || faker.helpers.arrayElement<Chain>(['MAINNET', 'SEPOLIA']);
@@ -15,6 +18,13 @@ export const StablePoolFactory = Factory.define<StablePool>(({ params }) => {
     const amp = params.amp || parseUnits(faker.number.int({ min: 1, max: 500 }).toString(), 3);
     const swapFee = params.swapFee || parseEther(faker.number.float({ min: 0.0001, max: 0.01 }).toString());
     const totalShares = params.totalShares || parseEther(faker.number.int({ min: 1000, max: 1000000 }).toString());
+    const hook: HookState | undefined = params.hook as HookState | undefined;
+    const liquidityManagement: LiquidityManagement = {
+        disableUnbalancedLiquidity: params.liquidityManagement?.disableUnbalancedLiquidity ?? false,
+        enableAddLiquidityCustom: params.liquidityManagement?.enableAddLiquidityCustom ?? true,
+        enableDonation: params.liquidityManagement?.enableDonation ?? true,
+        enableRemoveLiquidityCustom: params.liquidityManagement?.enableRemoveLiquidityCustom ?? true,
+    };
 
     const tokens =
         params.tokens ||
@@ -44,5 +54,5 @@ export const StablePoolFactory = Factory.define<StablePool>(({ params }) => {
             spotPrice: faker.number.int({ min: 1, max: 1000 }).toString(),
         }));
 
-    return new StablePool(id, address, chain, amp, swapFee, tokens, totalShares, tokenPairs);
+    return new StablePool(id, address, chain, amp, swapFee, tokens, totalShares, tokenPairs, liquidityManagement, hook);
 });
