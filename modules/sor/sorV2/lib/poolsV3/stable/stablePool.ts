@@ -14,7 +14,10 @@ import { BasePoolV3 } from '../../poolsV2/basePool';
 import { StableBasePoolToken } from './stableBasePoolToken';
 import { Erc4626PoolToken } from '../../poolsV2/erc4626PoolToken';
 
-import { returnHookDataAccordingToHookName } from '../../utils/helpers';
+import { returnHookDataAccordingToHookName, isLiquidityManagement } from '../../utils/helpers';
+
+import { LiquidityManagement } from '../../../../../sor/types';
+
 
 type StablePoolToken = StableBasePoolToken | Erc4626PoolToken;
 
@@ -30,7 +33,6 @@ export class StablePool implements BasePoolV3 {
     public totalShares: bigint;
     public tokens: StablePoolToken[];
     public readonly hook: HookState | undefined;
-    public readonly hookType: string;
     public readonly liquidityManagement: LiquidityManagement;
 
 
@@ -84,6 +86,11 @@ export class StablePool implements BasePoolV3 {
         //transform
         const hook = returnHookDataAccordingToHookName(pool);
 
+        // typeguard
+        if (!isLiquidityManagement(pool.liquidityManagement)) {
+            throw new Error('LiquidityManagement must be of type LiquidityManagement and cannot be null');
+        }
+
         return new StablePool(
             pool.id as Hex,
             pool.address,
@@ -93,8 +100,7 @@ export class StablePool implements BasePoolV3 {
             poolTokens,
             totalShares,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            pool.hook ? pool.hook.name : undefined,
-            pool.liquidityManagement,
+            pool.liquidityManagement as unknown as LiquidityManagement,
             hook,
         );
     }
@@ -108,7 +114,6 @@ export class StablePool implements BasePoolV3 {
         tokens: StablePoolToken[],
         totalShares: bigint,
         tokenPairs: TokenPairData[],
-        hookType: string,
         liquidityManagement: LiquidityManagement,
         hook: HookState | undefined = undefined,
     ) {
@@ -123,7 +128,6 @@ export class StablePool implements BasePoolV3 {
         this.tokenMap = new Map(this.tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
         this.hook = hook;
-        this.hookType = hookType;
         this.liquidityManagement = liquidityManagement;
 
 
@@ -310,6 +314,7 @@ export class StablePool implements BasePoolV3 {
 
         return {
             poolType: 'STABLE',
+            poolAddress: this.address,
             swapFee: this.swapFee,
             balancesLiveScaled18: this.tokens.map((t) => t.scale18),
             tokenRates: this.tokens.map((t) => t.rate),
@@ -318,21 +323,9 @@ export class StablePool implements BasePoolV3 {
             tokens: this.tokens.map((t) => t.token.address),
             scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
-            hookType: this.hookType,
         };
     }
 
-    public getHookState(): HookState | undefined {
-        if (this.hook === undefined) {
-            return undefined;
-        }
-    
-        // returned hook state will depend on hook type eventually
-        return {
-            tokens: this.tokens.map((t) => t.token.address),
-            removeLiquidityHookFeePercentage: this.hook.removeLiquidityHookFeePercentage,
-        };
-    }
 
     public getPoolTokens(tokenIn: Token, tokenOut: Token): { tIn: StablePoolToken; tOut: StablePoolToken } {
         const tIn = this.tokenMap.get(tokenIn.wrapped);

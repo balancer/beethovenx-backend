@@ -12,9 +12,9 @@ import { BasePoolV3 } from '../../poolsV2/basePool';
 import { WeightedBasePoolToken } from '../../poolsV2/weighted/weightedBasePoolToken';
 import { WeightedErc4626PoolToken } from './weightedErc4626PoolToken';
 
-import { returnHookDataAccordingToHookName } from '../../utils/helpers';
+import { returnHookDataAccordingToHookName, isLiquidityManagement } from '../../utils/helpers';
 
-import { LiquidityManagement } from '../../../../../sor/types.ts';
+import { LiquidityManagement } from '../../../../../sor/types';
 
 
 type WeightedPoolToken = WeightedBasePoolToken | WeightedErc4626PoolToken;
@@ -32,7 +32,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
     public readonly MAX_IN_RATIO = 300000000000000000n; // 0.3
     public readonly MAX_OUT_RATIO = 300000000000000000n; // 0.3
     public readonly hook: HookState | undefined;
-    public readonly hookType: string;
     public readonly liquidityManagement: LiquidityManagement;
 
     private readonly tokenMap: Map<string, WeightedPoolToken>;
@@ -85,10 +84,13 @@ export class WeightedPoolV3 implements BasePoolV3 {
             }
         }
 
-        // 
-
         //transform
         const hook = returnHookDataAccordingToHookName(pool);
+
+        // typeguard
+        if (!isLiquidityManagement(pool.liquidityManagement)) {
+            throw new Error('LiquidityManagement must be of type LiquidityManagement and cannot be null');
+        }
 
         return new WeightedPoolV3(
             pool.id as Hex,
@@ -99,8 +101,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
             parseEther(pool.dynamicData.totalShares),
             poolTokens,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            pool.hook ? pool.hook.name : undefined,
-            pool.liquidityManagement,
+            pool.liquidityManagement as unknown as LiquidityManagement,
             hook,
         );
     }
@@ -114,7 +115,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
         totalShares: bigint,
         tokens: WeightedPoolToken[],
         tokenPairs: TokenPairData[],
-        hookType: string,
         liquidityManagement: LiquidityManagement,
         hook: HookState | undefined = undefined,
     ) {
@@ -129,7 +129,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
         this.tokenPairs = tokenPairs;
         this.liquidityManagement = liquidityManagement;
         this.hook = hook
-        this.hookType = hookType;
 
 
         // add BPT to tokenMap, so we can handle add/remove liquidity operations
@@ -315,6 +314,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
     public getPoolState(): WeightedState {
         return {
             poolType: 'WEIGHTED',
+            poolAddress: this.address,
             swapFee: this.swapFee,
             balancesLiveScaled18: this.tokens.map((t) => t.scale18),
             tokenRates: this.tokens.map((_) => WAD),
@@ -323,21 +323,9 @@ export class WeightedPoolV3 implements BasePoolV3 {
             tokens: this.tokens.map((t) => t.token.address),
             scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
-            hookType: this.hookType,
         };
     }
 
-    public getHookState(): HookState | undefined {
-        if (this.hook === undefined) {
-            return undefined;
-        }
-    
-        // returned hook state will depend on hook type eventually
-        return {
-            tokens: this.tokens.map((t) => t.token.address),
-            removeLiquidityHookFeePercentage: this.hook.removeLiquidityHookFeePercentage,
-        };
-    }
 
     // Helper methods
 

@@ -117,9 +117,6 @@ export class BufferPool implements BasePoolV3 {
         };
     }
 
-    public getHookState(): undefined {
-        return undefined;
-    }
 
     // Helper methods
 

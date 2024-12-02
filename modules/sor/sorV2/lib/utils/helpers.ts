@@ -14,6 +14,8 @@ import { MathSol, abs } from './math';
 import { HookState } from '@balancer-labs/balancer-maths';
 import { PrismaPoolAndHookWithDynamic } from '../../../../../prisma/prisma-types';
 
+import { LiquidityManagement } from '../../../types';
+
 export function checkInputs(
     tokenIn: Token,
     tokenOut: Token,
@@ -76,7 +78,7 @@ export function getOutputAmount(paths: PathWithAmount[]): TokenAmount {
 }
 
 export function returnHookDataAccordingToHookName(pool: any): HookState | undefined {
-    if (pool.hook === null) {
+    if (pool.hook === undefined) {
         return undefined;
     }
 
@@ -94,7 +96,7 @@ export function returnHookDataAccordingToHookName(pool: any): HookState | undefi
 
     if (pool.hook.name === 'DirectionalFee') {
         // this hook does not require a hook state to be passed
-        return {};
+        return {} as HookState;
     }
 
     if (pool.hook.name === 'StableSurge') {
@@ -113,3 +115,14 @@ function percentageStringToBigInt(percentage: string): bigint {
     const scaledNumber = Math.round(percentageNumber * 10 ** 18);
     return BigInt(scaledNumber);
 }
+
+export function isLiquidityManagement(value: any): value is LiquidityManagement {
+    return (
+        value &&
+        typeof value.disableUnbalancedLiquidity === 'boolean' &&
+        typeof value.enableAddLiquidityCustom === 'boolean' &&
+        typeof value.enableDonation === 'boolean' &&
+        typeof value.enableRemoveLiquidityCustom === 'boolean'
+    )
+}
+

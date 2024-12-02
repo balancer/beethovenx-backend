@@ -23,5 +23,4 @@ export interface BasePool {
 export interface BasePoolV3 extends BasePool {
     tokens: (BasePoolToken | Erc4626PoolToken)[];
     getPoolState(): PoolState | BufferState;
-    getHookState(): HookState | undefined;
 }
