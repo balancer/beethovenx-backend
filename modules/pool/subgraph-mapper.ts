@@ -81,7 +81,7 @@ const subgraphMapper = (
         decimals: 18,
         type: type,
         version: version,
-        owner: pool.owner || AddressZero,
+        swapFeeManager: pool.owner || AddressZero,
         factory: pool.factory,
     };
 

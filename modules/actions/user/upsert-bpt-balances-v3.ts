@@ -8,6 +8,27 @@ export const upsertBptBalancesV3 = async (vaultSubgraphClient: V3VaultSubgraphCl
 
     const dbEntries = poolShares.map((poolShare) => poolShareToUserBalance(poolShare, chain));
 
+    // Delete balances missing from the subgraph data and those with 0 balance
+    const existingIDs = await prisma.prismaUserWalletBalance
+        .findMany({
+            where: {
+                chain,
+            },
+            select: {
+                id: true,
+            },
+        })
+        .then((entries) => entries.map(({ id }) => id));
+
+    const missingIDs = dbEntries.map(({ id }) => id).filter((id) => !existingIDs.includes(id));
+
+    await prisma.prismaUserWalletBalance.deleteMany({
+        where: {
+            id: { in: missingIDs },
+            chain,
+        },
+    });
+
     // wallet balances are related to users table, so we need to create all users records first
     await prisma.prismaUser.createMany({
         data: dbEntries.map(({ userAddress }) => ({ address: userAddress })),

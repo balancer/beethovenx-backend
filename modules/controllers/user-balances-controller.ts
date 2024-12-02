@@ -36,7 +36,7 @@ export function UserBalancesController(tracer?: any) {
 
             // Guard against unconfigured chains
             if (!balancerV3) {
-                throw new Error(`Chain not configured: ${chain}`);
+                return [];
             }
 
             const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);

@@ -218,9 +218,6 @@ class SorPathService implements SwapService {
     ): Promise<GqlSorGetSwapPaths> {
         const swapKind = this.mapSwapTypeToSwapKind(swapType);
 
-        // TODO for v3 we need to update per swap path
-        let queryOutput: ExactInQueryOutput | ExactOutQueryOutput | undefined = undefined;
-        let updatedAmount: TokenAmount | undefined = undefined;
         const sdkSwap = new Swap({
             chainId: parseFloat(chainToIdMap[chain]),
             paths: paths.map((path) => ({
@@ -237,73 +234,77 @@ class SorPathService implements SwapService {
             swapKind,
         });
 
-        if (queryFirst) {
-            try {
-                queryOutput = await sdkSwap.query(AllNetworkConfigsKeyedOnChain[chain].data.rpcUrl);
-            } catch (error) {
-                throw new Error('SOR queryBatchSwap failed');
-            }
-            if (swapKind === SwapKind.GivenIn) {
-                updatedAmount = (queryOutput as ExactInQueryOutput).expectedAmountOut;
-            } else {
-                updatedAmount = (queryOutput as ExactOutQueryOutput).expectedAmountIn;
-            }
-        }
-
         let inputAmount = getInputAmount(paths);
         let outputAmount = getOutputAmount(paths);
 
-        // only total inputAmount or outputAmount is updated. We can't inputAmount or outputAmount per path.
-        // this means that also subsequent calcs dont take the updatedAmount into account, i.e. priceImpact, paths and routes
-        if (updatedAmount) {
-            inputAmount = swapKind === SwapKind.GivenIn ? inputAmount : updatedAmount;
-            outputAmount = swapKind === SwapKind.GivenIn ? updatedAmount : outputAmount;
-        }
-
         let callData: GqlSorCallData | undefined = undefined;
-        if (callDataInput) {
-            if (swapKind === SwapKind.GivenIn) {
-                const callDataExactIn = sdkSwap.buildCall({
-                    sender: callDataInput.sender as `0x${string}`,
-                    recipient: callDataInput.receiver as `0x${string}`,
-                    wethIsEth: callDataInput.wethIsEth,
-                    queryOutput: {
-                        swapKind,
-                        expectedAmountOut: outputAmount,
-                        amountIn: inputAmount,
-                    },
-                    slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
-                    deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
-                }) as SwapBuildOutputExactIn;
-                callData = {
-                    callData: callDataExactIn.callData,
-                    to: callDataExactIn.to,
-                    value: callDataExactIn.value.toString(),
-                    minAmountOutRaw: callDataExactIn.minAmountOut.amount.toString(),
-                };
-            } else {
-                const callDataExactOut = sdkSwap.buildCall({
-                    sender: callDataInput.sender as `0x${string}`,
-                    recipient: callDataInput.receiver as `0x${string}`,
-                    wethIsEth: callDataInput.wethIsEth,
-                    queryOutput: {
-                        swapKind,
-                        expectedAmountIn: inputAmount,
-                        amountOut: outputAmount,
-                    },
-                    slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
-                    deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
-                }) as SwapBuildOutputExactOut;
-                callData = {
-                    callData: callDataExactOut.callData,
-                    to: callDataExactOut.to,
-                    value: callDataExactOut.value.toString(),
-                    maxAmountInRaw: callDataExactOut.maxAmountIn.amount.toString(),
-                };
+
+        // TODO: deprecated on-chain query and callData functionality will be supported for v2 for a while, but should be removed in the future
+        if (protocolVersion === 2) {
+            let queryOutput: ExactInQueryOutput | ExactOutQueryOutput | undefined = undefined;
+            let updatedAmount: TokenAmount | undefined = undefined;
+            if (queryFirst) {
+                try {
+                    queryOutput = await sdkSwap.query(AllNetworkConfigsKeyedOnChain[chain].data.rpcUrl);
+                } catch (error) {
+                    throw new Error('SOR queryBatchSwap failed');
+                }
+                if (swapKind === SwapKind.GivenIn) {
+                    updatedAmount = (queryOutput as ExactInQueryOutput).expectedAmountOut;
+                } else {
+                    updatedAmount = (queryOutput as ExactOutQueryOutput).expectedAmountIn;
+                }
+            }
+            // only total inputAmount or outputAmount is updated
+            if (updatedAmount) {
+                inputAmount = swapKind === SwapKind.GivenIn ? inputAmount : updatedAmount;
+                outputAmount = swapKind === SwapKind.GivenIn ? updatedAmount : outputAmount;
+            }
+
+            if (callDataInput) {
+                if (swapKind === SwapKind.GivenIn) {
+                    const callDataExactIn = sdkSwap.buildCall({
+                        sender: callDataInput.sender as `0x${string}`,
+                        recipient: callDataInput.receiver as `0x${string}`,
+                        wethIsEth: callDataInput.wethIsEth,
+                        queryOutput: {
+                            swapKind,
+                            expectedAmountOut: outputAmount,
+                            amountIn: inputAmount,
+                        },
+                        slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
+                        deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
+                    }) as SwapBuildOutputExactIn;
+                    callData = {
+                        callData: callDataExactIn.callData,
+                        to: callDataExactIn.to,
+                        value: callDataExactIn.value.toString(),
+                        minAmountOutRaw: callDataExactIn.minAmountOut.amount.toString(),
+                    };
+                } else {
+                    const callDataExactOut = sdkSwap.buildCall({
+                        sender: callDataInput.sender as `0x${string}`,
+                        recipient: callDataInput.receiver as `0x${string}`,
+                        wethIsEth: callDataInput.wethIsEth,
+                        queryOutput: {
+                            swapKind,
+                            expectedAmountIn: inputAmount,
+                            amountOut: outputAmount,
+                        },
+                        slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
+                        deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
+                    }) as SwapBuildOutputExactOut;
+                    callData = {
+                        callData: callDataExactOut.callData,
+                        to: callDataExactOut.to,
+                        value: callDataExactOut.value.toString(),
+                        maxAmountInRaw: callDataExactOut.maxAmountIn.amount.toString(),
+                    };
+                }
             }
         }
 
-        // price impact does not take the updatedAmount into account
+        // TODO: replace price impact ABA with USD values approach (same as used in the FE)
         let priceImpact: string | undefined;
         let priceImpactError: string | undefined;
         try {
@@ -374,7 +375,7 @@ class SorPathService implements SwapService {
                 priceImpact: priceImpact,
                 error: priceImpactError,
             },
-            callData: callData,
+            callData,
         };
     }
 

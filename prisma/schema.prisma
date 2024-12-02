@@ -68,7 +68,9 @@ model PrismaPool {
     type                PrismaPoolType
     version             Int                 @default(1)
     decimals            Int                 @default(18)
-    owner               String
+    pauseManager        String?
+    swapFeeManager      String
+    poolCreator         String?
     factory             String?
 
     protocolVersion        Int                 @default(2)

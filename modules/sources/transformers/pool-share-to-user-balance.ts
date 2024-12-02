@@ -1,4 +1,3 @@
-import { formatEther } from 'viem';
 import { PoolShareFragment } from '../subgraphs/balancer-v3-vault/generated/types';
 import { Chain, Prisma } from '@prisma/client';
 
@@ -15,6 +14,6 @@ export const poolShareToUserBalance = (
         userAddress,
         tokenAddress: poolId,
         balance: poolShare.balance,
-        balanceNum: parseFloat(formatEther(BigInt(poolShare.balance))),
+        balanceNum: parseFloat(poolShare.balance),
     };
 };

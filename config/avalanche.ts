@@ -16,7 +16,7 @@ export default <NetworkData>{
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmNudbtVu2eACfxNpFz37MVwKxxHPh1Lg5MzFKwQZG2xsU`,
         ],
         beetsBar: 'https://',
-        blocks: 'https://api.studio.thegraph.com/query/48427/avalanche-blocks/version/latest',
+        blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/97YH6dMhGcXoTvVwDAML6GxYm9hBh7PCz6WPscUkrFhv`,
         gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmYCJJToWTY31LgsJG2vZTNkKWpQ7i91cTVYgPUBsJ5nQZ`,
         aura: 'https://data.aura.finance/graphql',
     },
@@ -107,7 +107,6 @@ export default <NetworkData>{
                         wrappedTokens: {
                             stataAvaWAVAX: '0xa291ae608d8854cdbf9838e28e9badcf10181669',
                             stataAvaWAVAX2: '0x6a02c7a974f1f13a67980c80f774ec1d2ed8f98d',
-
                         },
                     },
                     wBTC: {

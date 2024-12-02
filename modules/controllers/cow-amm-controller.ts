@@ -163,7 +163,13 @@ export function CowAmmController(tracer?: any) {
             return true;
         },
         async syncBalances(chain: Chain) {
-            const subgraphClient = getSubgraphClient(chain);
+            let subgraphClient: ReturnType<typeof getSubgraphClient>;
+            try {
+                subgraphClient = getSubgraphClient(chain);
+            } catch (e) {
+                return false;
+            }
+
             await upsertBptBalances(subgraphClient, chain);
 
             return true;

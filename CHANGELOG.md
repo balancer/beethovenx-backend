@@ -1,5 +1,12 @@
 # backend
 
+## 1.23.7
+
+### Patch Changes
+
+-   1bd6dfa: base api key gauges subgraph url
+-   848b8a3: API key URLs for block subgraphs
+
 ## 1.23.6
 
 ### Patch Changes
