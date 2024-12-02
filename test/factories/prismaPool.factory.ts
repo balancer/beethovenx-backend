@@ -31,9 +31,13 @@ export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
         createTime: 1708433018,
         dynamicData: prismaPoolDynamicDataFactory.build({ id: poolAddress, chain: params?.chain || Chain.SEPOLIA }),
         tokens: prismaPoolTokenFactory.buildList(2),
-        hook: null,
         hookId: null,
         hook: params.hook as Hook ?? null,
-        liquidityManagement: {},
+        liquidityManagement: {
+            disableUnbalancedLiquidity: params.disableUnbalancedLiquidity ?? false,
+            enableAddLiquidityCustom: params.enableAddLiquidityCustom ?? false,
+            enableDonation: params.enableDonation ?? false,
+            enableRemoveLiquidityCustom: params.enableRemoveLiquidityCustom ?? false,
+        },
     };
 });

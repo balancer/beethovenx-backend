@@ -42,3 +42,10 @@ export interface SwapResult {
 export interface SwapService {
     getSwapResult(inputs: GetSwapsInput): Promise<SwapResult>;
 }
+
+export interface LiquidityManagement {
+    disableUnbalancedLiquidity: boolean;
+    enableAddLiquidityCustom: boolean;
+    enableDonation: boolean;
+    enableRemoveLiquidityCustom: boolean;
+}
