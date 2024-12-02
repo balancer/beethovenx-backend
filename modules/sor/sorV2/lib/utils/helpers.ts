@@ -12,7 +12,7 @@ import { PathWithAmount } from '../path';
 import { MathSol, abs } from './math';
 
 import { HookState } from '@balancer-labs/balancer-maths';
-import { PrismaPoolWithDynamic } from '../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../prisma/prisma-types';
 
 export function checkInputs(
     tokenIn: Token,
@@ -75,24 +75,37 @@ export function getOutputAmount(paths: PathWithAmount[]): TokenAmount {
     return amounts.reduce((a, b) => a.add(b));
 }
 
-export function returnHookDataAccordingToHookName(pool: PrismaPoolWithDynamic): HookState | undefined {
-    if (pool.hook == null) {
+export function returnHookDataAccordingToHookName(pool: any): HookState | undefined {
+    if (pool.hook === null) {
         return undefined;
-    } else {
-        if (pool.hook.name == 'ExitFeeHook') {
-            // api for this hook is an Object with removeLiquidityFeePercentage key & fee as string
-            const dynamicData = pool.hook.dynamicData as { removeLiquidityFeePercentage: string };
-
-            return {
-                tokens: pool.tokens.map(token => token.address),
-                // ExitFeeHook will always have dynamicData as part of the API response
-                removeLiquidityHookFeePercentage: percentageStringToBigInt(dynamicData.removeLiquidityFeePercentage),
-            };
-        }
-        else if (pool.hook.name != 'ExitFeeHook') {
-            throw new Error(`${pool.hook.name} hook not implemented`);
-        }
     }
+
+    
+    if (pool.hook.name === 'ExitFee') {
+        // api for this hook is an Object with removeLiquidityFeePercentage key & fee as string
+        const dynamicData = pool.hook.dynamicData as { removeLiquidityFeePercentage: string };
+
+        return {
+            tokens: pool.tokens.map((token: { address: string }) => token.address),
+            // ExitFeeHook will always have dynamicData as part of the API response
+            removeLiquidityHookFeePercentage: percentageStringToBigInt(dynamicData.removeLiquidityFeePercentage),
+        };
+    }
+
+    if (pool.hook.name === 'DirectionalFee') {
+        // this hook does not require a hook state to be passed
+        return {};
+    }
+
+    if (pool.hook.name === 'StableSurge') {
+        return {
+            amp: pool.dynamicData.amp,
+            surgeThresholdPercentage: pool.dynamicData.surgeThresholdPercentage, 
+        }
+
+    }
+    
+    throw new Error(`${pool.hook.name} hook not implemented`);
 }
 
 function percentageStringToBigInt(percentage: string): bigint {
