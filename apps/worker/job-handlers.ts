@@ -27,6 +27,7 @@ import {
     EventController,
     StakingController,
     StakedSonicController,
+    UserBalancesController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 import { TokenController } from '../../modules/controllers/token-controller';
@@ -117,13 +118,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             await runIfNotAlreadyRunning(name, chainId, () => PoolController().syncChangedPoolsV2(chain), res, next);
             break;
         case 'user-sync-wallet-balances-for-all-pools':
-            await runIfNotAlreadyRunning(
-                name,
-                chainId,
-                () => userService.syncChangedWalletBalancesForAllPools(),
-                res,
-                next,
-            );
+            await runIfNotAlreadyRunning(name, chainId, () => UserBalancesController().syncBalances(chain), res, next);
             break;
         case 'user-sync-staked-balances':
             await runIfNotAlreadyRunning(name, chainId, () => userService.syncChangedStakedBalances(chain), res, next);

@@ -28,12 +28,72 @@ export const getCowAmmSubgraphClient = (subgraphUrl: string, chain: Chain) => {
     return {
         ...sdk,
         async getMetadata() {
-            const { meta } = await sdk.Metadata();
-            if (!meta) {
-                throw new Error('Missing meta data');
-            }
-            return meta;
+            return sdk.Metadata().then((response) => {
+                if (response && response.meta) {
+                    return response.meta;
+                } else {
+                    // Return a default value if meta is not present
+                    return Promise.reject('Error fetching metadata');
+                }
+            });
         },
+        async getAllPoolSharesWithBalance(
+            poolIds: string[] = [],
+            excludedAddresses: string[],
+            startBlock?: number,
+        ): Promise<Prisma.PrismaUserWalletBalanceCreateManyInput[]> {
+            const allPoolShares: PoolShareFragment[] = [];
+            let hasMore = true;
+            let id = `0x`;
+            const pageSize = 1000;
+
+            while (hasMore) {
+                const shares = await sdk.PoolShares({
+                    where: {
+                        id_gt: id,
+                        pool_in: poolIds.length > 0 && poolIds.length < 10 ? poolIds : undefined,
+                        user_not_in: excludedAddresses,
+                        _change_block: startBlock && startBlock > 0 ? { number_gte: startBlock } : undefined,
+                    },
+                    orderBy: PoolShare_OrderBy.Id,
+                    orderDirection: OrderDirection.Asc,
+                    first: pageSize,
+                });
+
+                if (shares.poolShares.length === 0) {
+                    break;
+                }
+
+                if (shares.poolShares.length < pageSize) {
+                    hasMore = false;
+                }
+
+                allPoolShares.push(...shares.poolShares);
+                id = shares.poolShares[shares.poolShares.length - 1].id;
+            }
+
+            return allPoolShares
+                .map((poolShare) => {
+                    const poolId = poolShare.id.substring(0, 42).toLowerCase();
+                    const userAddress = `0x${poolShare.id.substring(42)}`.toLowerCase();
+                    const id = `${poolId}-${userAddress}`;
+
+                    if (poolId === userAddress) return false;
+
+                    return {
+                        id,
+                        poolId,
+                        userAddress,
+                        chain: chain,
+                        tokenAddress: poolId,
+                        balance: poolShare.balance,
+                        balanceNum: Number(poolShare.balance),
+                    };
+                })
+                .filter((share): share is Exclude<typeof share, false> => Boolean(share))
+                .filter((share) => (poolIds.length > 0 ? poolIds.includes(share.poolId) : true));
+        },
+
         async getAllPools(where: PoolsQueryVariables['where']): Promise<CowAmmPoolFragment[]> {
             const limit = 1000;
             let hasMore = true;

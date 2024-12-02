@@ -24,11 +24,66 @@ export function getVaultSubgraphClient(url: string, chain: Chain) {
     return {
         ...sdk,
         async getMetadata() {
-            const { meta } = await sdk.Metadata();
-            if (!meta) {
-                throw new Error('Missing meta data');
+            return sdk.Metadata().then((response) => {
+                if (response && response.meta) {
+                    return response.meta;
+                } else {
+                    // Return a default value if meta is not present
+                    return Promise.reject('Error fetching metadata');
+                }
+            });
+        },
+        async getAllPoolSharesWithBalance(
+            poolIds: string[] = [],
+            excludedAddresses: string[],
+            startBlock?: number,
+        ): Promise<Prisma.PrismaUserWalletBalanceCreateManyInput[]> {
+            const allPoolShares: PoolShareFragment[] = [];
+            let hasMore = true;
+            let id = `0`;
+            const pageSize = 1000;
+
+            while (hasMore) {
+                const shares = await sdk.PoolShares({
+                    where: {
+                        id_gt: id,
+                        pool_in: poolIds.length > 0 ? poolIds : undefined,
+                        user_not_in: excludedAddresses,
+                        _change_block: startBlock && startBlock > 0 ? { number_gte: startBlock } : undefined,
+                    },
+                    orderBy: PoolShare_OrderBy.Id,
+                    orderDirection: OrderDirection.Asc,
+                    first: pageSize,
+                });
+
+                if (shares.poolShares.length === 0) {
+                    break;
+                }
+
+                if (shares.poolShares.length < pageSize) {
+                    hasMore = false;
+                }
+
+                allPoolShares.push(...shares.poolShares);
+                id = shares.poolShares[shares.poolShares.length - 1].id;
             }
-            return meta;
+
+            return allPoolShares
+                .map(({ id, balance }) => {
+                    const [poolId, userAddress] = id.split('-').map((x) => x.toLowerCase());
+
+                    return {
+                        id,
+                        poolId,
+                        chain,
+                        //ensure the user balance isn't negative, unsure how the subgraph ever allows this to happen
+                        balance: parseFloat(balance) < 0 ? '0' : balance,
+                        balanceNum: Math.max(0, parseFloat(balance)),
+                        tokenAddress: poolId,
+                        userAddress,
+                    };
+                })
+                .filter((share) => (poolIds.length > 0 ? poolIds.includes(share.poolId) : true));
         },
         async getAllInitializedPools(where: PoolsQueryVariables['where']): Promise<VaultPoolFragment[]> {
             const limit = 1000;

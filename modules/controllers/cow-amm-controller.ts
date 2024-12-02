@@ -14,7 +14,7 @@ import { syncSnapshots } from '../actions/snapshots/sync-snapshots';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { updateVolumeAndFees } from '../actions/pool/update-volume-and-fees';
 import moment from 'moment';
-import { upsertBptBalances } from '../actions/cow-amm/upsert-bpt-balances';
+import { syncBptBalancesFromSubgraph } from '../actions/user/bpt-balances/helpers/sync-bpt-balances-from-subgraph';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../actions/pool/last-synced-block';
 import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
 import { AllNetworkConfigs, AllNetworkConfigsKeyedOnChain } from '../network/network-config';
@@ -49,7 +49,7 @@ export function CowAmmController(tracer?: any) {
 
             const ids = await upsertPools(newPools, viemClient, subgraphClient, chain, blockNumber);
             // Initialize balances for the new pools
-            await upsertBptBalances(subgraphClient, chain, ids);
+            await syncBptBalancesFromSubgraph(ids, subgraphClient, chain);
 
             return ids;
         },
@@ -183,7 +183,7 @@ export function CowAmmController(tracer?: any) {
                 return false;
             }
 
-            await upsertBptBalances(subgraphClient, chain);
+            await syncBptBalancesFromSubgraph([], subgraphClient, chain);
 
             return true;
         },

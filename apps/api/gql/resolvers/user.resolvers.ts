@@ -66,7 +66,12 @@ const resolvers: Resolvers = {
         userSyncChangedWalletBalancesForAllPools: async (parent, {}, context) => {
             isAdminRoute(context);
 
-            await userService.syncChangedWalletBalancesForAllPools();
+            const chain = headerChain();
+            if (!chain) {
+                throw new Error('userSyncChangedWalletBalancesForAllPools error: Provide "chainId" header');
+            }
+
+            await UserBalancesController().syncBalances(chain);
 
             return 'success';
         },
@@ -77,7 +82,7 @@ const resolvers: Resolvers = {
                 throw new Error('userInitWalletBalancesForAllPools error: Provide "chain" param');
             }
 
-            await UserBalancesController().syncUserBalancesFromV2Subgraph(chain);
+            await UserBalancesController().syncBalances(chain);
 
             return 'success';
         },

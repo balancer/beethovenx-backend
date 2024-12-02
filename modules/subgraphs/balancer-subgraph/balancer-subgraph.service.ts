@@ -86,6 +86,7 @@ export class BalancerSubgraphService {
     public async getAllPoolSharesWithBalance(
         poolIds: string[],
         excludedAddresses: string[],
+        startBlock?: number,
     ): Promise<Prisma.PrismaUserWalletBalanceCreateManyInput[]> {
         const allPoolShares: BalancerPoolShareFragment[] = [];
         let hasMore = true;
@@ -96,9 +97,10 @@ export class BalancerSubgraphService {
             const shares = await this.sdk.BalancerPoolShares({
                 where: {
                     id_gt: id,
-                    poolId_in: poolIds.length > 0 ? poolIds : undefined,
+                    // Fetch all pools when requesting more than 100 pools
+                    poolId_in: poolIds.length > 0 && poolIds.length < 100 ? poolIds : undefined,
                     userAddress_not_in: excludedAddresses,
-                    balance_gt: '0',
+                    _change_block: startBlock && startBlock > 0 ? { number_gte: startBlock } : undefined,
                 },
                 orderBy: PoolShare_OrderBy.Id,
                 orderDirection: OrderDirection.Asc,
@@ -117,16 +119,18 @@ export class BalancerSubgraphService {
             id = shares.poolShares[shares.poolShares.length - 1].id;
         }
 
-        return allPoolShares.map((shares) => ({
-            ...shares,
-            poolId: shares.poolId.id.toLowerCase(),
-            chain: this.chain,
-            //ensure the user balance isn't negative, unsure how the subgraph ever allows this to happen
-            balance: parseFloat(shares.balance) < 0 ? '0' : shares.balance,
-            balanceNum: Math.max(0, parseFloat(shares.balance)),
-            tokenAddress: shares.id.toLowerCase().split('-')[0],
-            userAddress: shares.id.toLowerCase().split('-')[1],
-        }));
+        return allPoolShares
+            .map((share) => ({
+                ...share,
+                poolId: share.poolId.id.toLowerCase(),
+                chain: this.chain,
+                //ensure the user balance isn't negative, unsure how the subgraph ever allows this to happen
+                balance: parseFloat(share.balance) < 0 ? '0' : share.balance,
+                balanceNum: Math.max(0, parseFloat(share.balance)),
+                tokenAddress: share.id.toLowerCase().split('-')[0],
+                userAddress: share.id.toLowerCase().split('-')[1],
+            }))
+            .filter((share) => (poolIds.length > 0 ? poolIds.includes(share.poolId) : true));
     }
 
     public async getAllPools(
