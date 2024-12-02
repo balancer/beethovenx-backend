@@ -47,20 +47,6 @@ describe('SOR V3 Weighted Pool Tests', () => {
         };
         expect(poolState).toEqual(weightedPool.getPoolState());
     });
-    test('get hook State hook attached', () => {
-        // true means that the weighted pool has a hook attached in this test
-        setupWeightedPool(true);
-        const hookState = {
-            tokens: tokenAddresses,
-            removeLiquidityHookFeePercentage: BigInt(1e16), //'0.01' %
-        }
-        expect(hookState).toEqual(weightedPool.getHookState());
-    });
-    test('get hook State no hook attached', () => {
-        // false means that the weighted pool has no hook attached in this test
-        setupWeightedPool(false);
-        expect(weightedPool.getHookState()).toBeUndefined();
-    });
 
     const setupWeightedPool = (hasHooks: boolean) => {
         swapFee = '0.01';

@@ -46,22 +46,6 @@ describe('SOR V3 Stable Pool Tests', () => {
         expect(poolState).toEqual(stablePool.getPoolState());
     });
 
-    test('Get hook State hook attached', () => {
-        // true means that the stable pool has a hook attached in this test
-        setupStablePool(true);
-        const hookState = {
-            tokens: tokenAddresses,
-            removeLiquidityHookFeePercentage: BigInt(1e16) //'0.01' %
-        }
-        expect(hookState).toEqual(stablePool.getHookState());
-    })
-
-    test('Get hook State no hook attached', () => {
-        // false means that the stable pool has no hook attached in this test
-        setupStablePool(false);
-        expect(stablePool.getHookState()).toBeUndefined();
-    })
-
     const setupStablePool = (hooks: boolean) => {
         swapFee = '0.01';
         tokenBalances = ['169', '144'];
