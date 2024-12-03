@@ -22,12 +22,6 @@ export async function sorGetPathsWithPools(
     const basePools: BasePool[] = [];
 
     for (const prismaPool of prismaPools) {
-        // TODO: Once more hooks infrastructure exists, allow pools with hooks to be considered for routing
-        // for now they are discarded.
-        // Discard pools with hooks
-        /* if (prismaPool.hook !== null) {
-            continue;
-        } */
         switch (prismaPool.type) {
             case 'WEIGHTED':
             /// LBPs can be handled like weighted pools
