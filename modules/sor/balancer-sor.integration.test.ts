@@ -1,6 +1,6 @@
 // yarn vitest balancer-sor.integration.test.ts
 
-import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path, RemoveLiquidity, RemoveLiquiditySingleTokenExactInInput, RemoveLiquidityConfig, RemoveLiquidityInput, PoolState, RemoveLiquidityKind, BalancerApi, InputAmount } from '@balancer/sdk';
+import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path } from '@balancer/sdk';
 
 import { PathWithAmount } from './sorV2/lib/path';
 import { sorGetPathsWithPools } from './sorV2/lib/static';
@@ -13,8 +13,7 @@ import {
     prismaPoolFactory,
     prismaPoolTokenDynamicDataFactory,
     prismaPoolTokenFactory,
-    hookDataFactory,
-    hookFactory
+    hookFactory,
 } from '../../test/factories';
 import { createTestClient, formatEther, Hex, http, parseEther, TestClient } from 'viem';
 import { sepolia } from 'viem/chains';
@@ -40,7 +39,7 @@ import { sepolia } from 'viem/chains';
 
 // this test works with 11th deployment.
 // Vault explorer is at 0xa9F171e84A95c103aD4aFAC3Ec83810f9cA193a8
-// 
+//
 
 const protocolVersion = 3;
 
@@ -151,7 +150,7 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0xb77eb1a70a96fdaaeb31db1b42f2b8b5846b2613',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '50',
+                    balance: '50.000000000000000289',
                     priceRate: '1.0',
                 }),
             });
@@ -228,16 +227,16 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '42209.815545',
-                    priceRate: '1.193850440527398265',
+                    balance: '42230.832348',
+                    priceRate: '1.194918240223213261',
                 }),
             });
             const stataEthUSDT = prismaPoolTokenFactory.build({
                 address: '0x978206fae13faf5a8d293fb614326b237684b750',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '40454.112405',
-                    priceRate: '1.337898725398761012',
+                    balance: '40555.143372',
+                    priceRate: '1.339234815977479571',
                 }),
             });
             boostedPool = prismaPoolFactory.stable('1000').build({
@@ -255,14 +254,14 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0xd63db0b88dca565633fb8d70a70b9b8093d34a7e',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '381.951319372097',
+                    balance: '381.951319372096996711',
                 }),
             });
             WETH = prismaPoolTokenFactory.build({
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '0.7925757355543132',
+                    balance: '0.792575735554313101',
                 }),
             });
             weightedPool = prismaPoolFactory.build({
@@ -461,15 +460,22 @@ describe('Balancer SOR Integration Tests', () => {
     describe('Pools Path with hooks -', async () => {
         // the 11th testnet deployment has pools of the following type:
         // ExitFeeHook - triggered on removeLiquidity operations
-        // FeeTakingHook - 
-        // DirectionalFeeHook - 
+        // FeeTakingHook -
+        // DirectionalFeeHook -
         // LotteryHook -
-        
-        let WETH, BAL, stataDAI, stataUSDC, aaveFaucetDai, aaveFaucetUsdc: ReturnType<typeof prismaPoolTokenFactory.build>;
-        let prismaWeightedPool, prismaStablePool, prismaStablePoolWithDirectionalFee: ReturnType<typeof prismaPoolFactory.build>;
+
+        let WETH,
+            BAL,
+            stataDAI,
+            stataUSDC,
+            aaveFaucetDai,
+            aaveFaucetUsdc: ReturnType<typeof prismaPoolTokenFactory.build>;
+        let prismaWeightedPool,
+            prismaStablePool,
+            prismaStablePoolWithDirectionalFee: ReturnType<typeof prismaPoolFactory.build>;
         let exitFeeHook, directionalFeeHook: ReturnType<typeof hookFactory.build>;
 
-        beforeAll(async() => {
+        beforeAll(async () => {
             // setup mock pool data - Weighted
             WETH = prismaPoolTokenFactory.build({
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
@@ -497,7 +503,7 @@ describe('Balancer SOR Integration Tests', () => {
                 // Add any specific dynamic data parameters here
                 addLiquidityFeePercentage: '0.01',
                 removeLiquidityFeePercentage: '0.01',
-                swapFeePercentage: '0.01'
+                swapFeePercentage: '0.01',
             };
             exitFeeHook = hookFactory.build({
                 name: 'ExitFee',
@@ -514,7 +520,7 @@ describe('Balancer SOR Integration Tests', () => {
                 shouldCallComputeDynamicSwapFee: true,
             });
 
-            // 11th testnet deployment the hook is at 0xD9e535a65eb38F962B84f7BBD2bf60293bA54058 
+            // 11th testnet deployment the hook is at 0xD9e535a65eb38F962B84f7BBD2bf60293bA54058
             directionalFeeHook = hookFactory.build({
                 name: 'DirectionalFee',
                 dynamicData: dynamicData,
@@ -529,7 +535,7 @@ describe('Balancer SOR Integration Tests', () => {
                 shouldCallBeforeSwap: true,
                 shouldCallComputeDynamicSwapFee: true,
             });
-            
+
             // this pool has an exitFee hook
             prismaWeightedPool = prismaPoolFactory.build({
                 address: '0x75f49d54978d08e4e76a873da6c78e8f6b2901c2',
@@ -544,9 +550,9 @@ describe('Balancer SOR Integration Tests', () => {
                 liquidityManagement: {
                     disableUnbalancedLiquidity: true,
                     enableAddLiquidityCustom: false,
-                    enableDonation: false, 
-                    enableRemoveLiquidityCustom: false
-                }
+                    enableDonation: false,
+                    enableRemoveLiquidityCustom: false,
+                },
             });
 
             prismaStablePool = prismaPoolFactory.stable('1000').build({
@@ -559,8 +565,7 @@ describe('Balancer SOR Integration Tests', () => {
                 hook: exitFeeHook,
             });
 
-
-            //  
+            //
             aaveFaucetDai = prismaPoolTokenFactory.build({
                 address: '0xff34b3d4aee8ddcd6f9afffb6fe49bd371b8a357',
                 token: { decimals: 18 },
@@ -579,7 +584,7 @@ describe('Balancer SOR Integration Tests', () => {
                 }),
             });
 
-            // 11th testnet deployment this pool at is 0x676F89B5e1563Eef4D1344Dc629812b1e9c1B0d7 
+            // 11th testnet deployment this pool at is 0x676F89B5e1563Eef4D1344Dc629812b1e9c1B0d7
             prismaStablePoolWithDirectionalFee = prismaPoolFactory.stable('1000').build({
                 address: '0x676F89B5e1563Eef4D1344Dc629812b1e9c1B0d7',
                 tokens: [aaveFaucetUsdc, aaveFaucetDai],
@@ -588,25 +593,16 @@ describe('Balancer SOR Integration Tests', () => {
                     swapFee: '0.001',
                 }),
                 hook: directionalFeeHook,
-
             });
-
-
-
-
-        })
+        });
         test('SOR quote should match swap query with exit fee hook used', async () => {
             // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
             // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
-            // are disallowed. 
+            // are disallowed.
 
             // BPT swap
-            const bpt = new Token(
-                parseFloat(chainToIdMap[BAL.token.chain]),
-                prismaWeightedPool.address as Address,
-                18,
-            );
+            const bpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaWeightedPool.address as Address, 18);
             const weth = new Token(
                 parseFloat(chainToIdMap[WETH.token.chain]),
                 WETH.address as Address,
@@ -626,9 +622,8 @@ describe('Balancer SOR Integration Tests', () => {
             // The pools liquidity management disallowed unbalanced joins/exits.
             // The sor sets the output amount to 0 in this case.
             expect(paths[0].outputAmount.amount).toEqual(0n);
-        })
+        });
         test('SOR quote should match swap query with directional fee hook used', async () => {
-
             // GIVEN IN
             const dai = new Token(
                 parseFloat(chainToIdMap[BAL.token.chain]),
@@ -673,7 +668,7 @@ describe('Balancer SOR Integration Tests', () => {
             const queryOutput = await sdkSwap.query(rpcUrl);
             const returnAmountQuery = (queryOutput as ExactInQueryOutput).expectedAmountOut;
             expect(returnAmountQuery.amount).toEqual(returnAmountSOR.amount);
-        })
+        });
     });
     afterAll(async () => {
         await stopAnvilForks();
