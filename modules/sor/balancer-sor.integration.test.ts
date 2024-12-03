@@ -543,6 +543,9 @@ describe('Balancer SOR Integration Tests', () => {
                 hook: exitFeeHook,
                 liquidityManagement: {
                     disableUnbalancedLiquidity: true,
+                    enableAddLiquidityCustom: false,
+                    enableDonation: false, 
+                    enableRemoveLiquidityCustom: false
                 }
             });
 
