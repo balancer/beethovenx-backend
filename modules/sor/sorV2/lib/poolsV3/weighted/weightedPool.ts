@@ -101,7 +101,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
             parseEther(pool.dynamicData.totalShares),
             poolTokens,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            pool.liquidityManagement as unknown as LiquidityManagement,
+            pool.liquidityManagement,
             hook,
         );
     }
