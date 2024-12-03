@@ -25,15 +25,15 @@ import { sepolia } from 'viem/chains';
  * In order to properly compare SOR quotes vs SDK queries, we need to setup test data from a specific blockNumber.
  * Although the API does not provide that functionality, we can use subgraph to achieve it.
  * These tests run against the 10th testnet deployment and these are their respective subgraphs:
- * - data common to all pools: [balancer subgraph](https://api.studio.thegraph.com/query/31386/balancer-v3-sepolia-10th/version/latest/graphql)
+ * - data common to all pools: [balancer subgraph](https://api.studio.thegraph.com/query/31386/balancer-v3-sepolia-11th/version/latest/graphql)
  *   - tokens (address, balance, decimals)
  *   - totalShares
  *   - swapFee
- * - data specific to each pool type: [pools subgraph](https://api.studio.thegraph.com/proxy/31386/balancer-pools-v3-sepolia-6th/version/latest/graphql)
+ * - data specific to each pool type: [pools subgraph](https://api.studio.thegraph.com/proxy/31386/balancer-pools-v3-sepolia-11th/version/latest/graphql)
  *   - weight
  *   - amp
  * The only item missing from subgraph is priceRate, which can be fetched from a Tenderly simulation (getPoolTokenRates)
- * against the VaultExplorer contract (0x376Fe27C7745e35F6b825eF14Cc1EF8169816883).
+ * against the VaultExplorer contract (0xa9F171e84A95c103aD4aFAC3Ec83810f9cA193a8).
  *
  * TODO: improve test data setup by creating a script that fetches all necessary data automatically for a given blockNumber.
  */
@@ -53,7 +53,7 @@ describe('Balancer SOR Integration Tests', () => {
 
     beforeAll(async () => {
         // start fork to run queries against
-        ({ rpcUrl } = await startFork(ANVIL_NETWORKS.SEPOLIA, undefined, BigInt(7194758)));
+        ({ rpcUrl } = await startFork(ANVIL_NETWORKS.SEPOLIA, undefined, BigInt(7202051)));
         client = createTestClient({
             mode: 'anvil',
             chain: sepolia,
@@ -138,20 +138,20 @@ describe('Balancer SOR Integration Tests', () => {
     describe('Stable Pool Path', () => {
         beforeAll(async () => {
             // setup mock pool data for a stable pool
-            const poolAddress = '0x946e59e9637f44eb122fe64b372aaf6ed0441da1';
+            const poolAddress = '0xd320b050444aa50f24e6666e22a503f765e74263';
             const stataUSDC = prismaPoolTokenFactory.build({
-                address: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8',
+                address: '0x6bf294b80c7d8dc72dee762af5d01260b756a051',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '5000',
+                    balance: '50.600001',
                     priceRate: '1.0',
                 }),
             });
             const stataDAI = prismaPoolTokenFactory.build({
-                address: '0xff34b3d4aee8ddcd6f9afffb6fe49bd371b8a357',
+                address: '0xb77eb1a70a96fdaaeb31db1b42f2b8b5846b2613',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '5000',
+                    balance: '50',
                     priceRate: '1.0',
                 }),
             });
@@ -159,7 +159,7 @@ describe('Balancer SOR Integration Tests', () => {
                 address: poolAddress,
                 tokens: [stataUSDC, stataDAI],
                 dynamicData: prismaPoolDynamicDataFactory.build({
-                    totalShares: '4658.364513711819743703',
+                    totalShares: '100.599999212453631895',
                     swapFee: '0.01',
                 }),
             });
@@ -228,23 +228,23 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '40115.966516',
-                    priceRate: '1.188786817374030336',
+                    balance: '42209.815545',
+                    priceRate: '1.193850440527398265',
                 }),
             });
             const stataEthUSDT = prismaPoolTokenFactory.build({
                 address: '0x978206fae13faf5a8d293fb614326b237684b750',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '39902.990379',
-                    priceRate: '1.331374983002799388',
+                    balance: '40454.112405',
+                    priceRate: '1.337898725398761012',
                 }),
             });
             boostedPool = prismaPoolFactory.stable('1000').build({
                 address: boostedPoolAddress,
                 tokens: [stataEthUSDC, stataEthUSDT],
                 dynamicData: prismaPoolDynamicDataFactory.build({
-                    totalShares: '103653.516813821815363945',
+                    totalShares: '103829.535903465177760864',
                     swapFee: '0.001',
                 }),
             });
@@ -255,14 +255,14 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0xd63db0b88dca565633fb8d70a70b9b8093d34a7e',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '312.91923822067736',
+                    balance: '381.951319372097',
                 }),
             });
             WETH = prismaPoolTokenFactory.build({
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '0.9655661351585926',
+                    balance: '0.7925757355543132',
                 }),
             });
             weightedPool = prismaPoolFactory.build({
@@ -386,23 +386,23 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6, underlyingTokenAddress: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8' },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '40115.966516',
-                    priceRate: '1.188786817374030336',
+                    balance: '42209.815545',
+                    priceRate: '1.193850440527398265',
                 }),
             });
             const stataDAI = prismaPoolTokenFactory.build({
                 address: '0x978206fae13faf5a8d293fb614326b237684b750',
                 token: { decimals: 6, underlyingTokenAddress: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0' },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '39902.990379',
-                    priceRate: '1.331374983002799388',
+                    balance: '40454.112405',
+                    priceRate: '1.337898725398761012',
                 }),
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,
                 tokens: [stataUSDC, stataDAI],
                 dynamicData: prismaPoolDynamicDataFactory.build({
-                    totalShares: '103653.516813821815363945',
+                    totalShares: '103829.535903465177760864',
                     swapFee: '0.001',
                 }),
             });
@@ -565,7 +565,7 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0xff34b3d4aee8ddcd6f9afffb6fe49bd371b8a357',
                 token: { decimals: 18 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '25000',
+                    balance: '24585.49732543445',
                     priceRate: '1.0',
                 }),
             });
@@ -574,7 +574,7 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8',
                 token: { decimals: 6 },
                 dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '25000',
+                    balance: '25416.416426',
                     priceRate: '1.0',
                 }),
             });
