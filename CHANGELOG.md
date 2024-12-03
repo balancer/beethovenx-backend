@@ -1,5 +1,19 @@
 # backend
 
+## 1.23.8
+
+### Patch Changes
+
+-   8f09f97: no casesensitive compare for hook metadata
+-   28f4778: V3 deployment 11
+-   16aebc3: Adding V3 pool roles to the db model
+-   f17f276: fix wallet balance ID to follow subgraph use of poolAddress instead of poolId
+-   a44f00f: Deprecate callData related inputs and outputs from SOR
+-   2fca2d8: fix tokens query resultset to include missing rate provider data
+-   4b5454a: fix V3 BPT balance syncing
+-   094b17f: fix adding missing role accounts to pools
+-   e2f315b: skip token name in the pool textSearch
+
 ## 1.23.7
 
 ### Patch Changes
