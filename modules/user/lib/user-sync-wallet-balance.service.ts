@@ -5,15 +5,10 @@ import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { BeetsBarSubgraphService } from '../../subgraphs/beets-bar-subgraph/beets-bar.service';
-import { BeetsBarUserFragment } from '../../subgraphs/beets-bar-subgraph/generated/beets-bar-subgraph-types';
 import { Multicaller, MulticallUserBalance } from '../../web3/multicaller';
-import ERC20Abi from '../../web3/abi/ERC20.json';
 import { networkContext } from '../../network/network-context.service';
 import { AllNetworkConfigs } from '../../network/network-config';
-import { getEvents } from '../../web3/events';
-import { CowAmmController, UserBalancesController } from '../../controllers';
 import { Prisma } from '@prisma/client';
-import { BALANCES_SYNC_BLOCKS_MARGIN } from '../../../config';
 
 export class UserSyncWalletBalanceService {
     beetsBarService?: BeetsBarSubgraphService;
@@ -67,132 +62,6 @@ export class UserSyncWalletBalanceService {
         return AllNetworkConfigs[this.chainId].data.rpcMaxBlockRange;
     }
 
-    public async syncChangedBalancesForAllPools() {
-        const latestBlock = await this.provider.getBlockNumber();
-        const syncStatus = await prisma.prismaUserBalanceSyncStatus.findUnique({
-            where: { type_chain: { type: 'WALLET', chain: this.chain } },
-        });
-        const response = await prisma.prismaPool.findMany({
-            select: { id: true, address: true },
-            where: { chain: this.chain },
-        });
-
-        const poolAddresses = response.map((item) => item.address);
-
-        if (this.isFantomNetwork) {
-            poolAddresses.push(this.fbeetsAddress);
-        }
-
-        if (!syncStatus) {
-            throw new Error('UserWalletBalanceService: syncBalances called before initBalances');
-        }
-
-        const fromBlock = syncStatus.blockNumber - BALANCES_SYNC_BLOCKS_MARGIN;
-
-        // no new blocks have been minted, needed for slow networks
-        if (fromBlock > latestBlock) {
-            return;
-        }
-
-        // Split the range into smaller chunks to avoid RPC limits, setting up to 5 times max block range
-        const toBlock = Math.min(fromBlock + 5 * this.rpcMaxBlockRange, latestBlock);
-        console.log(`UserWalletBalanceService: syncing balances from ${fromBlock} to ${toBlock}`);
-        console.log(`user-sync-wallet-balances-for-all-pools-${this.chainId} getLogs of ${poolAddresses.length} pools`);
-
-        const events = await getEvents(
-            fromBlock,
-            toBlock,
-            poolAddresses,
-            ['Transfer'],
-            AllNetworkConfigs[this.chainId].data.rpcUrl,
-            this.rpcMaxBlockRange,
-            ERC20Abi,
-        );
-
-        console.log(
-            `user-sync-wallet-balances-for-all-pools-${this.chainId} getLogs of ${poolAddresses.length} pools done`,
-        );
-
-        const relevantERC20Addresses = poolAddresses;
-
-        if (this.isFantomNetwork) {
-            relevantERC20Addresses.push(this.fbeetsAddress);
-        }
-
-        const balancesToFetch = _.uniqBy(
-            events
-                .filter((event) =>
-                    //we also need to track fbeets balance
-                    relevantERC20Addresses.includes(event.address.toLowerCase()),
-                )
-                .map((event) => [
-                    { erc20Address: event.address, userAddress: event.args?.from as string },
-                    { erc20Address: event.address, userAddress: event.args?.to as string },
-                ])
-                .flat(),
-            (entry) => entry.erc20Address + entry.userAddress,
-        );
-
-        console.log(
-            `user-sync-wallet-balances-for-all-pools-${this.chainId} got ${balancesToFetch.length} balances to fetch.`,
-        );
-
-        if (balancesToFetch.length === 0) {
-            await prisma.prismaUserBalanceSyncStatus.upsert({
-                where: { type_chain: { type: 'WALLET', chain: this.chain } },
-                create: { type: 'WALLET', chain: this.chain, blockNumber: toBlock },
-                update: { blockNumber: toBlock },
-            });
-
-            return;
-        }
-
-        const balances = await Multicaller.fetchBalances({
-            multicallAddress: this.multicallAddress,
-            provider: this.provider,
-            balancesToFetch,
-        });
-
-        await prismaBulkExecuteOperations(
-            [
-                //make sure all users exist
-                prisma.prismaUser.createMany({
-                    data: balances.map((item) => ({ address: item.userAddress })),
-                    skipDuplicates: true,
-                }),
-                //update balances
-                ...balances
-                    .filter(({ userAddress }) => userAddress !== AddressZero)
-                    .map((userBalance) => {
-                        if (this.isFantomNetwork && addressesMatch(userBalance.erc20Address, this.fbeetsAddress)) {
-                            return this.getUserWalletBalanceUpsertForFbeets(
-                                userBalance.userAddress,
-                                formatFixed(userBalance.balance, 18),
-                            );
-                        }
-                        const poolId = response.find((item) => item.address === userBalance.erc20Address)?.id;
-                        return this.getUserWalletBalanceUpsert(userBalance, poolId!);
-                    }),
-                prisma.prismaUserBalanceSyncStatus.upsert({
-                    where: { type_chain: { type: 'WALLET', chain: this.chain } },
-                    create: { type: 'WALLET', chain: this.chain, blockNumber: toBlock },
-                    update: { blockNumber: toBlock },
-                }),
-            ],
-            true,
-        );
-
-        // Attach CowAMM syncing
-        console.log('syncChangedBalancesForAllPools: syncing CowAMM balances...');
-        await CowAmmController().syncBalances(this.chain);
-        console.log('syncChangedBalancesForAllPools: finished syncing CowAMM balances');
-
-        // Attach V3 syncing
-        console.log('syncChangedBalancesForAllPools: syncing V3 balances...');
-        await UserBalancesController().syncUserBalancesFromV3Subgraph(this.chain);
-        console.log('syncChangedBalancesForAllPools: finished syncing V3 balances');
-    }
-
     public async initBalancesForPool(poolId: string) {
         const { block } = await this.balancerSubgraphService.getMetadata();
 
@@ -242,22 +111,6 @@ export class UserSyncWalletBalanceService {
                 chain: this.chain,
             },
             update: { balance: share.balance, balanceNum: share.balanceNum },
-        });
-    }
-
-    private getUserWalletBalanceUpsertForFbeets(userAddress: string, balance: string) {
-        return prisma.prismaUserWalletBalance.upsert({
-            where: { id_chain: { id: `fbeets-${userAddress}`, chain: this.chain } },
-            create: {
-                id: `fbeets-${userAddress}`,
-                chain: this.chain,
-                userAddress: userAddress,
-                tokenAddress: this.fbeetsAddress,
-                balance,
-                balanceNum: parseFloat(balance),
-                poolId: this.fbeetsPoolId,
-            },
-            update: { balance: balance, balanceNum: parseFloat(balance), poolId: this.fbeetsPoolId },
         });
     }
 
