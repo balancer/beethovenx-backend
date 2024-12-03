@@ -8,8 +8,12 @@ export const balancesToDb = (
     syncType?: PrismaLastBlockSyncedCategory,
 ) => {
     // Make sure we have all the balances from the same chain
-    if (_.uniq(balances.map(({ chain }) => chain)).length !== 1) {
+    if (balances.length > 0 && _.uniq(balances.map(({ chain }) => chain)).length !== 1) {
         throw new Error('Balances should be from the same chain');
+    }
+
+    if (balances.length === 0) {
+        return [];
     }
 
     const obsoleteIDs = balances.filter((balance) => balance.balanceNum === 0).map(({ id }) => id);
