@@ -18,12 +18,12 @@ export const StablePoolFactory = Factory.define<StablePool>(({ params }) => {
     const amp = params.amp || parseUnits(faker.number.int({ min: 1, max: 500 }).toString(), 3);
     const swapFee = params.swapFee || parseEther(faker.number.float({ min: 0.0001, max: 0.01 }).toString());
     const totalShares = params.totalShares || parseEther(faker.number.int({ min: 1000, max: 1000000 }).toString());
-    const hook: HookState | undefined = params.hook as HookState | undefined;
-    const liquidityManagement: LiquidityManagement = {
-        disableUnbalancedLiquidity: params.liquidityManagement?.disableUnbalancedLiquidity ?? false,
-        enableAddLiquidityCustom: params.liquidityManagement?.enableAddLiquidityCustom ?? true,
-        enableDonation: params.liquidityManagement?.enableDonation ?? true,
-        enableRemoveLiquidityCustom: params.liquidityManagement?.enableRemoveLiquidityCustom ?? true,
+    const hook = params.hook ?? null;
+    const liquidityManagement = params.liquidityManagement ?? {
+        disableUnbalancedLiquidity: false,
+        enableAddLiquidityCustom: false,
+        enableDonation: false,
+        enableRemoveLiquidityCustom: false,
     };
 
     const tokens =
@@ -54,5 +54,5 @@ export const StablePoolFactory = Factory.define<StablePool>(({ params }) => {
             spotPrice: faker.number.int({ min: 1, max: 1000 }).toString(),
         }));
 
-    return new StablePool(id, address, chain, amp, swapFee, tokens, totalShares, tokenPairs, liquidityManagement, hook);
+    return new StablePool(id, address, chain, amp, swapFee, tokens, totalShares, tokenPairs, liquidityManagement as LiquidityManagement, hook as HookState);
 });
