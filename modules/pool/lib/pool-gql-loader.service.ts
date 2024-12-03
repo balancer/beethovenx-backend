@@ -601,20 +601,10 @@ export class PoolGqlLoaderService {
                         ...userArgs,
                         allTokens: {
                             some: {
-                                OR: [
-                                    {
-                                        token: {
-                                            name: textSearch,
-                                            address: filterArgs.allTokens?.some?.token?.address,
-                                        },
-                                    },
-                                    {
-                                        token: {
-                                            symbol: textSearch,
-                                            address: filterArgs.allTokens?.some?.token?.address,
-                                        },
-                                    },
-                                ],
+                                token: {
+                                    symbol: textSearch,
+                                    address: filterArgs.allTokens?.some?.token?.address,
+                                },
                             },
                         },
                     },
