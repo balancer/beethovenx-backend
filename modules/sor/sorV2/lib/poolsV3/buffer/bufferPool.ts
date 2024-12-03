@@ -117,7 +117,6 @@ export class BufferPool implements BasePoolV3 {
         };
     }
 
-
     // Helper methods
 
     public getPoolTokens(tokenIn: Token, tokenOut: Token): { tIn: BasePoolToken; tOut: BasePoolToken } {
