@@ -271,7 +271,7 @@ class SorPathService implements SwapService {
                             swapKind,
                             expectedAmountOut: outputAmount,
                             amountIn: inputAmount,
-                        },
+                        } as ExactInQueryOutput,
                         slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
                     }) as SwapBuildOutputExactIn;
@@ -290,7 +290,7 @@ class SorPathService implements SwapService {
                             swapKind,
                             expectedAmountIn: inputAmount,
                             amountOut: outputAmount,
-                        },
+                        } as ExactOutQueryOutput,
                         slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
                     }) as SwapBuildOutputExactOut;

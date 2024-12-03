@@ -5,7 +5,7 @@ import { createRandomAddress } from '../utils';
 import { Chain, PrismaPoolType } from '@prisma/client';
 import { prismaPoolDynamicDataFactory } from './prismaPoolDynamicData.factory';
 import { LiquidityManagement } from '../../modules/sor/types';
-import { HookState } from '@balancer-labs/balancer-maths';
+
 
 class PrismaPoolFactory extends Factory<PrismaPoolAndHookWithDynamic> {
     stable(amp?: string) {
@@ -15,8 +15,8 @@ class PrismaPoolFactory extends Factory<PrismaPoolAndHookWithDynamic> {
 
 export const prismaPoolFactory = PrismaPoolFactory.define(({ params }) => {
     const poolAddress = params.address ?? createRandomAddress();
-    const hook: HookState | undefined = params.hook as HookState | undefined;
-    const liquidityManagement: LiquidityManagement = (params.liquidityManagement as unknown as LiquidityManagement) ?? {
+    const hook = params.hook ?? null;
+    const liquidityManagement = params.liquidityManagement ?? {
         disableUnbalancedLiquidity: false,
         enableAddLiquidityCustom: false,
         enableDonation: false,
