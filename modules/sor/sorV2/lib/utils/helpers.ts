@@ -12,8 +12,6 @@ import { PathWithAmount } from '../path';
 import { MathSol, abs } from './math';
 
 import { HookState } from '@balancer-labs/balancer-maths';
-import { PrismaPoolAndHookWithDynamic } from '../../../../../prisma/prisma-types';
-
 import { LiquidityManagement } from '../../../types';
 
 export function checkInputs(
@@ -78,7 +76,7 @@ export function getOutputAmount(paths: PathWithAmount[]): TokenAmount {
 }
 
 export function returnHookDataAccordingToHookName(pool: any): HookState | undefined {
-    if (pool.hook === undefined) {
+    if (pool.hook === undefined || pool.hook === null) {
         return undefined;
     }
 
@@ -110,7 +108,7 @@ export function returnHookDataAccordingToHookName(pool: any): HookState | undefi
     throw new Error(`${pool.hook.name} hook not implemented`);
 }
 
-function percentageStringToBigInt(percentage: string): bigint {
+export function percentageStringToBigInt(percentage: string): bigint {
     const percentageNumber = parseFloat(percentage);
     const scaledNumber = Math.round(percentageNumber * 10 ** 18);
     return BigInt(scaledNumber);
