@@ -112,16 +112,6 @@ export const poolUpsertTransformerV3 = (
             balanceUSD: 0, // enriched later
             priceRate: '1.0', // enriched later
         })),
-        poolTokenDynamicData: poolData.tokens.map((token) => ({
-            id: `${poolData.id}-${token.address}`.toLowerCase(),
-            poolTokenId: `${poolData.id}-${token.address}`.toLowerCase(),
-            chain,
-            blockNumber: Number(blockNumber),
-            balance: token.balance,
-            weight: poolData.weightedParams ? poolData.weightedParams.weights[token.index] ?? null : null,
-            balanceUSD: 0, // enriched later
-            priceRate: '1.0', // enriched later
-        })),
         poolExpandedTokens: allTokens.map((token) => ({
             poolId: poolData.id.toLowerCase(),
             chain,

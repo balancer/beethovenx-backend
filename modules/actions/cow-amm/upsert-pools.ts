@@ -55,7 +55,6 @@ export const upsertPools = async (
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
                 poolToken: update.poolToken,
-                poolTokenDynamicData: update.poolTokenDynamicData,
             };
         })
         .map((upsert) => {
@@ -63,7 +62,6 @@ export const upsertPools = async (
                 {
                     poolDynamicData: upsert.poolDynamicData,
                     poolToken: upsert.poolToken,
-                    poolTokenDynamicData: upsert.poolTokenDynamicData,
                 },
                 prices,
             );
@@ -71,13 +69,12 @@ export const upsertPools = async (
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
                 poolToken: update.poolToken,
-                poolTokenDynamicData: update.poolTokenDynamicData,
             };
         });
 
     // Upserts pools to the database
     // TODO: extract to a DB helper
-    for (const { pool, tokens, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {
+    for (const { pool, tokens, poolToken, poolDynamicData, poolExpandedTokens } of pools) {
         try {
             await prisma.$transaction([
                 prisma.prismaToken.createMany({
@@ -99,16 +96,10 @@ export const upsertPools = async (
 
                 // First nullify the pool tokens and then insert them again
                 prisma.prismaPoolToken.deleteMany({ where: { poolId: pool.id } }),
-                prisma.prismaPoolTokenDynamicData.deleteMany({ where: { poolTokenId: { startsWith: pool.id } } }),
                 prisma.prismaPoolExpandedTokens.deleteMany({ where: { poolId: pool.id } }),
 
                 prisma.prismaPoolToken.createMany({
                     data: poolToken,
-                    skipDuplicates: true,
-                }),
-
-                prisma.prismaPoolTokenDynamicData.createMany({
-                    data: poolTokenDynamicData,
                     skipDuplicates: true,
                 }),
 

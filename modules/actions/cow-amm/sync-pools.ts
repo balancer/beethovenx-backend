@@ -44,7 +44,6 @@ export const syncPools = async (ids: string[], viemClient: ViemClient, chain: Ch
             {
                 poolDynamicData: upsert.poolDynamicData,
                 poolToken: upsert.poolToken,
-                poolTokenDynamicData: upsert.poolTokenDynamicData,
             },
             prices,
         ),
@@ -52,7 +51,7 @@ export const syncPools = async (ids: string[], viemClient: ViemClient, chain: Ch
 
     // Upsert RPC data to the database
     // Update pools data to the database
-    for (const { poolDynamicData, poolToken, poolTokenDynamicData } of poolsWithUSD) {
+    for (const { poolDynamicData, poolToken } of poolsWithUSD) {
         try {
             await prisma.$transaction([
                 prisma.prismaPoolDynamicData.update({
@@ -66,17 +65,6 @@ export const syncPools = async (ids: string[], viemClient: ViemClient, chain: Ch
                 }),
                 ...poolToken.map((token) =>
                     prisma.prismaPoolToken.update({
-                        where: {
-                            id_chain: {
-                                id: token.id,
-                                chain: token.chain,
-                            },
-                        },
-                        data: token,
-                    }),
-                ),
-                ...poolTokenDynamicData.map((token) =>
-                    prisma.prismaPoolTokenDynamicData.update({
                         where: {
                             id_chain: {
                                 id: token.id,

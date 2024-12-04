@@ -38,12 +38,12 @@ const syncVaultData = async (
         .then((prices) => Object.fromEntries(prices.map((price) => [price.tokenAddress, price.price])));
 
     const poolsWithUSD = dbUpdates.map((upsert) => enrichPoolUpsertsUsd(
-        { poolDynamicData: upsert.poolDynamicData, poolToken: upsert.poolToken, poolTokenDynamicData: upsert.poolTokenDynamicData },
+        { poolDynamicData: upsert.poolDynamicData, poolToken: upsert.poolToken },
         prices,
     ));
 
     // Update pools data to the database
-    for (const { poolDynamicData, poolTokenDynamicData } of poolsWithUSD) {
+    for (const { poolDynamicData } of poolsWithUSD) {
         try {
             await prisma.prismaPoolDynamicData.update({
                 where: {
@@ -54,18 +54,6 @@ const syncVaultData = async (
                 },
                 data: poolDynamicData,
             });
-
-            for (const tokenUpdate of poolTokenDynamicData) {
-                await prisma.prismaPoolTokenDynamicData.update({
-                    where: {
-                        id_chain: {
-                            id: tokenUpdate.id,
-                            chain: tokenUpdate.chain,
-                        },
-                    },
-                    data: tokenUpdate,
-                });
-            }
         } catch (e) {
             console.error('Error upserting pool', e);
         }
@@ -77,7 +65,7 @@ const syncVaultData = async (
 /**
  * Gets and syncs all the pools state with the database
  *
- * TODO: simplify the schema by merging the pool and poolDynamicData tables and the poolToken, poolTokenDynamicData, expandedToken tables
+ * TODO: simplify the schema by merging the pool and poolDynamicData tables and the poolToken, expandedToken tables
  *
  * @param pools - The pools to sync
  * @param viemClient

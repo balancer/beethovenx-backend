@@ -139,19 +139,6 @@ export class PoolCreatorService {
 
         await prisma.prismaPool.create(prismaPoolRecordWithAssociations);
 
-        await prisma.prismaPoolTokenDynamicData.createMany({
-            data: poolTokens.map((token) => ({
-                id: token.id,
-                chain: this.chain,
-                poolTokenId: token.id,
-                blockNumber,
-                priceRate: token.priceRate || '1.0',
-                weight: token.weight,
-                balance: token.balance,
-                balanceUSD: 0,
-            })),
-        });
-
         await this.createAllTokensRelationshipForPool(pool.id);
         await this.userService.initWalletBalancesForPool(pool.id);
     }
@@ -199,20 +186,6 @@ export class PoolCreatorService {
                 },
             });
         }
-
-        await prisma.prismaPoolTokenDynamicData.createMany({
-            skipDuplicates: true,
-            data: pool.tokens!.map((token) => ({
-                id: token.id,
-                chain: this.chain,
-                poolTokenId: token.id,
-                blockNumber,
-                priceRate: token.priceRate || '1.0',
-                weight: token.weight,
-                balance: token.balance,
-                balanceUSD: 0,
-            })),
-        });
 
         await prisma.prismaPool.update({
             data: poolWithoutTokens,

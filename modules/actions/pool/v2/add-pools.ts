@@ -76,19 +76,6 @@ const createPoolRecord = async (
     try {
         await prisma.prismaPool.create(prismaPoolRecordWithAssociations);
 
-        await prisma.prismaPoolTokenDynamicData.createMany({
-            data: poolTokens.map((token) => ({
-                id: token.id,
-                chain,
-                poolTokenId: token.id,
-                blockNumber,
-                priceRate: token.priceRate || '1.0',
-                weight: token.weight,
-                balance: token.balance,
-                balanceUSD: 0,
-            })),
-        });
-
         await createAllTokensRelationshipForPool(pool.id, chain);
     } catch (e) {
         console.error(`Could not create pool ${pool.id} on chain ${chain}. Skipping.`, e);

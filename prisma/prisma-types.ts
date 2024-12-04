@@ -5,14 +5,12 @@ export type PoolUpsertData = {
     tokens: Prisma.PrismaTokenCreateInput[];
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
-    poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
     poolExpandedTokens: Prisma.PrismaPoolExpandedTokensCreateManyInput[];
 };
 
 export type PoolDynamicUpsertData = {
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
-    poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
 };
 
 export type SwapEvent = PrismaPoolEvent & {

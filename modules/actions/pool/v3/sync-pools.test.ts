@@ -7,9 +7,6 @@ jest.mock('../../../prisma/prisma-client', () => ({
         prismaPoolDynamicData: {
             update: jest.fn(),
         },
-        prismaPoolTokenDynamicData: {
-            update: jest.fn(),
-        },
         prismaToken: {
             findMany: jest.fn().mockResolvedValue([]),
         },

@@ -113,12 +113,6 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
                     data: { balanceUSD: item.balanceUSD },
                 }),
             );
-            updates.push(
-                prisma.prismaPoolTokenDynamicData.update({
-                    where: { id_chain: { id: item.id, chain: pool.chain } },
-                    data: { balanceUSD: item.balanceUSD },
-                }),
-            );
         }
         if (!isSupportedInt(totalLiquidity)) {
             Sentry.captureException(

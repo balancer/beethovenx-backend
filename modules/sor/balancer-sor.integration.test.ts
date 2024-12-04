@@ -8,12 +8,7 @@ import { getOutputAmount } from './sorV2/lib/utils/helpers';
 import { chainToIdMap } from '../network/network-config';
 
 import { ANVIL_NETWORKS, startFork, stopAnvilForks } from '../../test/anvil/anvil-global-setup';
-import {
-    prismaPoolDynamicDataFactory,
-    prismaPoolFactory,
-    prismaPoolTokenDynamicDataFactory,
-    prismaPoolTokenFactory,
-} from '../../test/factories';
+import { prismaPoolDynamicDataFactory, prismaPoolFactory, prismaPoolTokenFactory } from '../../test/factories';
 import { createTestClient, formatEther, Hex, http, parseEther, TestClient } from 'viem';
 import { sepolia } from 'viem/chains';
 
@@ -68,17 +63,13 @@ describe('Balancer SOR Integration Tests', () => {
             // setup mock pool data
             const WETH = prismaPoolTokenFactory.build({
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '0.005',
-                    weight: '0.5',
-                }),
+                balance: '0.005',
+                weight: '0.5',
             });
             const BAL = prismaPoolTokenFactory.build({
                 address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75',
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '5',
-                    weight: '0.5',
-                }),
+                balance: '5',
+                weight: '0.5',
             });
             const prismaWeightedPool = prismaPoolFactory.build({
                 address: '0x03bf996c7bd45b3386cb41875761d45e27eab284',
@@ -136,18 +127,14 @@ describe('Balancer SOR Integration Tests', () => {
             const stataUSDC = prismaPoolTokenFactory.build({
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.046992819427282715',
-                }),
+                balance: '500',
+                priceRate: '1.046992819427282715',
             });
             const stataDAI = prismaPoolTokenFactory.build({
                 address: '0xde46e43f46ff74a23a65ebb0580cbe3dfe684a17',
                 token: { decimals: 18 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.101882285912091736',
-                }),
+                balance: '500',
+                priceRate: '1.101882285912091736',
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,
@@ -218,18 +205,14 @@ describe('Balancer SOR Integration Tests', () => {
             stataUSDC = prismaPoolTokenFactory.build({
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.046992819427282715',
-                }),
+                balance: '500',
+                priceRate: '1.046992819427282715',
             });
             const DAI = prismaPoolTokenFactory.build({
                 address: '0xde46e43f46ff74a23a65ebb0580cbe3dfe684a17',
                 token: { decimals: 18 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.101882285912091736',
-                }),
+                balance: '500',
+                priceRate: '1.101882285912091736',
             });
             nestedPool = prismaPoolFactory.stable('1000').build({
                 address: nestedPoolAddress,
@@ -244,16 +227,12 @@ describe('Balancer SOR Integration Tests', () => {
             const DAI_USDC_BPT = prismaPoolTokenFactory.build({
                 address: '0x302b75a27e5e157f93c679dd7a25fdfcdbc1473c',
                 token: { decimals: 18 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '100',
-                }),
+                balance: '100',
             });
             WETH = prismaPoolTokenFactory.build({
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
                 token: { decimals: 18 },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '0.03',
-                }),
+                balance: '0.03',
             });
             weightedPool = prismaPoolFactory.build({
                 address: weightedPoolAddress,
@@ -375,18 +354,14 @@ describe('Balancer SOR Integration Tests', () => {
             const stataUSDC = prismaPoolTokenFactory.build({
                 address: '0x8a88124522dbbf1e56352ba3de1d9f78c143751e',
                 token: { decimals: 6, underlyingTokenAddress: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8' },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.046992819427282715',
-                }),
+                balance: '500',
+                priceRate: '1.046992819427282715',
             });
             const stataDAI = prismaPoolTokenFactory.build({
                 address: '0xde46e43f46ff74a23a65ebb0580cbe3dfe684a17',
                 token: { decimals: 18, underlyingTokenAddress: '0xff34b3d4aee8ddcd6f9afffb6fe49bd371b8a357' },
-                dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                    balance: '500',
-                    priceRate: '1.101882285912091736',
-                }),
+                balance: '500',
+                priceRate: '1.101882285912091736',
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,

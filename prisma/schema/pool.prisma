@@ -149,8 +149,6 @@ model PrismaPoolToken {
     priceRateProvider           String?
     exemptFromProtocolYieldFee  Boolean             @default(false)
 
-    dynamicData         PrismaPoolTokenDynamicData?
-
     scalingFactor               String?
 
     balance             String
@@ -162,24 +160,6 @@ model PrismaPoolToken {
     @@index([poolId, chain])
     @@index([address, chain])
     @@index([nestedPoolId, chain])
-}
-
-model PrismaPoolTokenDynamicData {
-    @@id([id, chain])
-    @@unique([poolTokenId, chain])
-
-    id                  String
-    poolTokenId         String
-    poolToken           PrismaPoolToken     @relation(fields:[poolTokenId, chain], references: [id, chain], onDelete: Cascade)
-    chain               Chain
-    blockNumber         Int
-    updatedAt           DateTime            @updatedAt
-
-    balance             String
-    balanceUSD          Float
-    weight              String?
-    priceRate           String
-    latestFxPrice       Float?
 }
 
 model PrismaPoolSwap {

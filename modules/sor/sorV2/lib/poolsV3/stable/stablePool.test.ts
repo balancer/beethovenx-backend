@@ -2,7 +2,7 @@
 
 import { parseEther, parseUnits } from 'viem';
 
-import { PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { WAD } from '../../utils/math';
 import { StablePool } from './stablePool';
 
@@ -11,7 +11,6 @@ import {
     poolTokenFactory,
     prismaPoolDynamicDataFactory,
     prismaPoolFactory,
-    prismaPoolTokenDynamicDataFactory,
     prismaPoolTokenFactory,
 } from '../../../../../../test/factories';
 
@@ -19,7 +18,7 @@ describe('SOR V3 Stable Pool Tests', () => {
     let amp: string;
     let scalingFactors: bigint[];
     let stablePool: StablePool;
-    let stablePrismaPool: PrismaPoolWithDynamic;
+    let stablePrismaPool: PrismaPoolAndHookWithDynamic;
     let swapFee: string;
     let tokenAddresses: string[];
     let tokenBalances: string[];
@@ -38,17 +37,13 @@ describe('SOR V3 Stable Pool Tests', () => {
 
         const poolToken1 = prismaPoolTokenFactory.build({
             token: poolTokenFactory.build({ decimals: tokenDecimals[0] }),
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                balance: tokenBalances[0],
-                priceRate: tokenRates[0],
-            }),
+            balance: tokenBalances[0],
+            priceRate: tokenRates[0],
         });
         const poolToken2 = prismaPoolTokenFactory.build({
             token: poolTokenFactory.build({ decimals: tokenDecimals[1] }),
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                balance: tokenBalances[1],
-                priceRate: tokenRates[1],
-            }),
+            balance: tokenBalances[1],
+            priceRate: tokenRates[1],
         });
 
         tokenAddresses = [poolToken1.address, poolToken2.address];
