@@ -6,7 +6,23 @@ import { poolShareToUserBalance } from '../../sources/transformers/pool-share-to
 export const upsertBptBalancesV3 = async (vaultSubgraphClient: V3VaultSubgraphClient, chain: Chain) => {
     const poolShares = await vaultSubgraphClient.getAllPoolShares();
 
-    const dbEntries = poolShares.map((poolShare) => poolShareToUserBalance(poolShare, chain));
+    let dbEntries = poolShares.map((poolShare) => poolShareToUserBalance(poolShare, chain));
+
+    // Temporary filter out balances that dont exist in the DB yet
+    await prisma.prismaPool
+        .findMany({
+            where: {
+                chain,
+                protocolVersion: 3,
+            },
+            select: {
+                id: true,
+            },
+        })
+        .then((pools) => pools.map(({ id }) => id))
+        .then((ids) => {
+            dbEntries = dbEntries.filter((entry) => ids.includes(entry.poolId!));
+        });
 
     // wallet balances are related to users table, so we need to create all users records first
     await prisma.prismaUser.createMany({
