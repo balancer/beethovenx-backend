@@ -204,6 +204,32 @@ export class PoolOnChainDataService {
                     }
 
                     if (
+                        poolToken.balance !== balance ||
+                        poolToken.priceRate !== priceRate ||
+                        poolToken.weight !== weight
+                    ) {
+                        operations.push(
+                            prisma.prismaPoolToken.update({
+                                where: { id_chain: { id: poolToken.id, chain: poolToken.chain } },
+                                data: {
+                                    balance,
+                                    priceRate,
+                                    weight,
+                                    balanceUSD:
+                                        poolToken.address === pool.address
+                                            ? 0
+                                            : (tokenPrices.find(
+                                                  (tokenPrice) =>
+                                                      tokenPrice.tokenAddress.toLowerCase() ===
+                                                          poolToken.address.toLowerCase() &&
+                                                      tokenPrice.chain === poolToken.chain,
+                                              )?.price || 0) * parseFloat(balance),
+                                },
+                            }),
+                        );
+                    }
+
+                    if (
                         !poolToken.dynamicData ||
                         poolToken.dynamicData.balance !== balance ||
                         poolToken.dynamicData.priceRate !== priceRate ||

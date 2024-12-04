@@ -32,7 +32,7 @@ export class Gyro3Pool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.balance) {
+            if (!poolToken.balance) {
                 throw new Error('Gyro pool as no dynamic pool token data');
             }
             const token = new Token(
@@ -42,7 +42,7 @@ export class Gyro3Pool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
             poolTokens.push(new BasePoolToken(token, tokenAmount.amount, poolToken.index));

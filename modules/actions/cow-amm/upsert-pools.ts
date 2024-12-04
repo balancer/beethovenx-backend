@@ -54,17 +54,23 @@ export const upsertPools = async (
             return {
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
+                poolToken: update.poolToken,
                 poolTokenDynamicData: update.poolTokenDynamicData,
             };
         })
         .map((upsert) => {
             const update = enrichPoolUpsertsUsd(
-                { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
+                {
+                    poolDynamicData: upsert.poolDynamicData,
+                    poolToken: upsert.poolToken,
+                    poolTokenDynamicData: upsert.poolTokenDynamicData,
+                },
                 prices,
             );
             return {
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
+                poolToken: update.poolToken,
                 poolTokenDynamicData: update.poolTokenDynamicData,
             };
         });

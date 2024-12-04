@@ -41,36 +41,52 @@ export const syncPools = async (ids: string[], viemClient: ViemClient, chain: Ch
 
     const poolsWithUSD = dbPools.map((upsert) =>
         enrichPoolUpsertsUsd(
-            { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
+            {
+                poolDynamicData: upsert.poolDynamicData,
+                poolToken: upsert.poolToken,
+                poolTokenDynamicData: upsert.poolTokenDynamicData,
+            },
             prices,
         ),
     );
 
     // Upsert RPC data to the database
     // Update pools data to the database
-    for (const { poolDynamicData, poolTokenDynamicData } of poolsWithUSD) {
+    for (const { poolDynamicData, poolToken, poolTokenDynamicData } of poolsWithUSD) {
         try {
-            await prisma.prismaPoolDynamicData.update({
-                where: {
-                    poolId_chain: {
-                        poolId: poolDynamicData.id,
-                        chain: chain,
-                    },
-                },
-                data: poolDynamicData,
-            });
-
-            for (const tokenUpdate of poolTokenDynamicData) {
-                await prisma.prismaPoolTokenDynamicData.update({
+            await prisma.$transaction([
+                prisma.prismaPoolDynamicData.update({
                     where: {
-                        id_chain: {
-                            id: tokenUpdate.id,
-                            chain: tokenUpdate.chain,
+                        poolId_chain: {
+                            poolId: poolDynamicData.id,
+                            chain: chain,
                         },
                     },
-                    data: tokenUpdate,
-                });
-            }
+                    data: poolDynamicData,
+                }),
+                ...poolToken.map((token) =>
+                    prisma.prismaPoolToken.update({
+                        where: {
+                            id_chain: {
+                                id: token.id,
+                                chain: token.chain,
+                            },
+                        },
+                        data: token,
+                    }),
+                ),
+                ...poolTokenDynamicData.map((token) =>
+                    prisma.prismaPoolTokenDynamicData.update({
+                        where: {
+                            id_chain: {
+                                id: token.id,
+                                chain: token.chain,
+                            },
+                        },
+                        data: token,
+                    }),
+                ),
+            ]);
         } catch (e) {
             console.error('Error upserting pool', e);
         }

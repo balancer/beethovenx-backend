@@ -35,6 +35,31 @@ export const applyOnchainDataUpdateV3 = (
             swapEnabled: true,
             totalLiquidity: 0,
         },
+        poolToken:
+            data.poolToken?.map((token) => {
+                const tokenData = onchainPoolData.tokens?.find(
+                    (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+                );
+                if (!tokenData) {
+                    return token;
+                }
+                return {
+                    ...token,
+                    balance: formatUnits(tokenData.balance ?? 0n, decimals[tokenData.address.toLocaleLowerCase()]),
+                    priceRate: tokenData.rate ? formatEther(tokenData.rate) : '1',
+                    balanceUSD: 0,
+                };
+            }) ||
+            onchainPoolData.tokens?.map((tokenData, index) => ({
+                id: `${poolId}-${tokenData.address.toLowerCase()}`,
+                chain: chain,
+                poolId,
+                address: tokenData.address.toLowerCase(),
+                index,
+                balance: formatUnits(tokenData.balance, decimals[tokenData.address.toLowerCase()]),
+                priceRate: formatEther(tokenData.rate),
+                balanceUSD: 0,
+            })),
         poolTokenDynamicData:
             data.poolTokenDynamicData?.map((token) => {
                 const tokenData = onchainPoolData.tokens?.find(
@@ -88,6 +113,33 @@ export const applyOnchainDataUpdateCowAmm = (
             swapEnabled: true,
             totalLiquidity: 0,
         },
+        poolToken:
+            data.poolToken?.map((token) => {
+                const tokenData = onchainPoolData.tokens?.find(
+                    (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+                );
+
+                if (!tokenData) {
+                    return token;
+                }
+
+                return {
+                    ...token,
+                    balance: formatUnits(tokenData.balance ?? 0n, decimals[tokenData.address.toLocaleLowerCase()]),
+                    priceRate: '1',
+                    balanceUSD: 0,
+                };
+            }) ||
+            onchainPoolData.tokens?.map((tokenData, index) => ({
+                id: `${poolId}-${tokenData.address.toLowerCase()}`,
+                chain: chain,
+                poolId,
+                address: tokenData.address.toLowerCase(),
+                index,
+                balance: formatUnits(tokenData.balance, decimals[tokenData.address.toLowerCase()]),
+                priceRate: '1',
+                balanceUSD: 0,
+            })),
         poolTokenDynamicData:
             data.poolTokenDynamicData?.map((token) => {
                 const tokenData = onchainPoolData.tokens?.find(

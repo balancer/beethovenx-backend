@@ -49,7 +49,6 @@ export class YbTokensAprService implements PoolAprService {
                     orderBy: { index: 'asc' },
                     include: {
                         token: true,
-                        dynamicData: true,
                     },
                 },
             },
@@ -71,7 +70,7 @@ export class YbTokensAprService implements PoolAprService {
                 }
 
                 const tokenPrice = tokenService.getPriceForToken(tokenPrices, token.address, pool.chain);
-                const tokenBalance = token.dynamicData?.balance;
+                const tokenBalance = token.balance;
 
                 const tokenLiquidity = tokenPrice * parseFloat(tokenBalance || '0');
                 const tokenPercentageInPool = tokenLiquidity / totalLiquidity;

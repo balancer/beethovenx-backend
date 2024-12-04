@@ -29,7 +29,7 @@ export class MetaStablePool implements BasePool {
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.priceRate) throw new Error('Meta Stable pool token does not have a price rate');
+            if (!poolToken.priceRate) throw new Error('Meta Stable pool token does not have a price rate');
             const token = new Token(
                 parseFloat(chainToIdMap[pool.chain]),
                 poolToken.address as Address,
@@ -37,7 +37,7 @@ export class MetaStablePool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
             poolTokens.push(
@@ -45,7 +45,7 @@ export class MetaStablePool implements BasePool {
                     token,
                     tokenAmount.amount,
                     poolToken.index,
-                    parseEther(poolToken.dynamicData.priceRate),
+                    parseEther(poolToken.priceRate),
                 ),
             );
         }

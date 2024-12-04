@@ -20,17 +20,34 @@ export const syncLatestFXPrices = async (subgraphUrls: string[], chain: Chain) =
 
         for (const token of tokens) {
             try {
-                await prisma.prismaPoolTokenDynamicData.update({
-                    where: {
-                        id_chain: {
-                            id: token.id,
-                            chain,
+                await prisma.$transaction([
+                    prisma.prismaPoolToken.update({
+                        where: {
+                            id_chain: {
+                                id: token.id,
+                                chain,
+                            },
                         },
-                    },
-                    data: {
-                        latestFxPrice: token.token.latestFXPrice ? parseFloat(token.token.latestFXPrice) : undefined,
-                    },
-                });
+                        data: {
+                            latestFxPrice: token.token.latestFXPrice
+                                ? parseFloat(token.token.latestFXPrice)
+                                : undefined,
+                        },
+                    }),
+                    prisma.prismaPoolTokenDynamicData.update({
+                        where: {
+                            id_chain: {
+                                id: token.id,
+                                chain,
+                            },
+                        },
+                        data: {
+                            latestFxPrice: token.token.latestFXPrice
+                                ? parseFloat(token.token.latestFXPrice)
+                                : undefined,
+                        },
+                    }),
+                ]);
             } catch (e) {
                 console.error(`Error updating latest FX price for token ${token.id} on chain ${chain}: ${e}`);
             }

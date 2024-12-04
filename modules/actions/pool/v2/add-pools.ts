@@ -62,7 +62,7 @@ const createPoolRecord = async (
                 chain,
             })),
             {
-                address: pool.address,
+                address: pool.address.toLowerCase(),
                 symbol: pool.symbol || '',
                 name: pool.name || '',
                 decimals: 18,

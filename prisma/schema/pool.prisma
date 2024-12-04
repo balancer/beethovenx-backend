@@ -153,6 +153,12 @@ model PrismaPoolToken {
 
     scalingFactor               String?
 
+    balance             String
+    balanceUSD          Float
+    weight              String?
+    priceRate           String
+    latestFxPrice       Float?
+
     @@index([poolId, chain])
     @@index([address, chain])
     @@index([nestedPoolId, chain])

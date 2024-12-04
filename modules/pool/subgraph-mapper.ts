@@ -121,6 +121,10 @@ const subgraphMapper = (
                     : false,
                 nestedPoolId: nestedPool?.id,
                 index: token.index || pool.tokensList.findIndex((address) => address === token.address),
+                balance: token.balance,
+                balanceUSD: 0,
+                weight: token.weight,
+                priceRate: token.priceRate || '1.0',
             };
         }) ?? [];
 

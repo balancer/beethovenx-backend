@@ -38,7 +38,7 @@ const syncVaultData = async (
         .then((prices) => Object.fromEntries(prices.map((price) => [price.tokenAddress, price.price])));
 
     const poolsWithUSD = dbUpdates.map((upsert) => enrichPoolUpsertsUsd(
-        { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
+        { poolDynamicData: upsert.poolDynamicData, poolToken: upsert.poolToken, poolTokenDynamicData: upsert.poolTokenDynamicData },
         prices,
     ));
 

@@ -5,6 +5,11 @@ export const enrichPoolUpsertsUsd = (
     data: PoolDynamicUpsertData,
     prices: { [address: string]: number },
 ): PoolDynamicUpsertData => {
+    const poolToken = data.poolToken.map((token) => ({
+        ...token,
+        balanceUSD: parseFloat(token.balance) * prices[token.id.split('-')[1]] || 0,
+    }));
+
     const poolTokenDynamicData = data.poolTokenDynamicData.map((token) => ({
         ...token,
         balanceUSD: parseFloat(token.balance) * prices[token.id.split('-')[1]] || 0,
@@ -18,6 +23,7 @@ export const enrichPoolUpsertsUsd = (
     return {
         ...data,
         poolDynamicData,
+        poolToken,
         poolTokenDynamicData,
     };
 };

@@ -45,7 +45,7 @@ export class VeBalVotingListService {
                 type: pool.type,
                 tokens: pool.tokens.map((token) => ({
                     address: token.address,
-                    weight: token.dynamicData?.weight,
+                    weight: token.weight,
                     symbol: token.token.symbol,
                     logoURI: token.token.logoURI || '',
                 })),
@@ -76,11 +76,7 @@ export class VeBalVotingListService {
                 tokens: {
                     select: {
                         address: true,
-                        dynamicData: {
-                            select: {
-                                weight: true,
-                            },
-                        },
+                        weight: true,
                         token: {
                             select: {
                                 symbol: true,

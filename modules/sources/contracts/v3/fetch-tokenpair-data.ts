@@ -11,13 +11,11 @@ interface PoolInput {
     tokens: {
         address: string;
         index: number;
+        balance: string;
+        balanceUSD: number;
         token: {
             decimals: number;
         };
-        dynamicData: {
-            balance: string;
-            balanceUSD: number;
-        } | null;
     }[];
     dynamicData: {
         totalLiquidity: number;
@@ -161,8 +159,8 @@ function generateTokenPairs(filteredPools: PoolInput[]): TokenPair[] {
         const poolTokens = pool.tokens.map((token) => ({
             address: token.address,
             decimals: token.token.decimals,
-            balance: token.dynamicData?.balance || '0',
-            balanceUsd: token.dynamicData?.balanceUSD || 0,
+            balance: token.balance || '0',
+            balanceUsd: token.balanceUSD || 0,
             index: token.index,
         }));
         const poolTvl = pool.dynamicData?.totalLiquidity || 0;

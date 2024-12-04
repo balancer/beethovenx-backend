@@ -169,7 +169,7 @@ export function PoolController(tracer?: any) {
             }
 
             const pools = await prisma.prismaPool.findMany({
-                where: { chain },
+                where: { chain, protocolVersion: 3 },
             });
             const ids = pools.map((pool) => pool.id);
             if (ids.length === 0) ids.push('');

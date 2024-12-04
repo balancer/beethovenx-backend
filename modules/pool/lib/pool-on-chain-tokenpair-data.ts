@@ -10,13 +10,11 @@ interface PoolInput {
     address: string;
     tokens: {
         address: string;
+        balance: string;
+        balanceUSD: number;
         token: {
             decimals: number;
         };
-        dynamicData: {
-            balance: string;
-            balanceUSD: number;
-        } | null;
     }[];
     dynamicData: {
         totalShares: string;
@@ -164,15 +162,12 @@ function generateTokenPairs(filteredPools: PoolInput[]): TokenPair[] {
                 const valid =
                     (pool.dynamicData?.totalLiquidity || 0) >= 1000 &&
                     !pool.tokens.some((token) => {
-                        const balance =
-                            token.address === pool.address ? pool.dynamicData?.totalShares : token.dynamicData?.balance;
+                        const balance = token.address === pool.address ? pool.dynamicData?.totalShares : token.balance;
                         return (balance || '0') === '0';
                     }) &&
                     !pool.tokens.some((token) => {
                         const balanceUSD =
-                            token.address === pool.address
-                                ? pool.dynamicData?.totalLiquidity
-                                : token.dynamicData?.balanceUSD;
+                            token.address === pool.address ? pool.dynamicData?.totalLiquidity : token.balanceUSD;
                         return (balanceUSD || 0) === 0;
                     });
 
@@ -186,11 +181,11 @@ function generateTokenPairs(filteredPools: PoolInput[]): TokenPair[] {
                         balance:
                             tokenA.address === pool.address
                                 ? pool.dynamicData?.totalShares || '0'
-                                : tokenA.dynamicData?.balance || '0',
+                                : tokenA.balance || '0',
                         balanceUsd:
                             tokenA.address === pool.address
                                 ? pool.dynamicData?.totalLiquidity || 0
-                                : tokenA.dynamicData?.balanceUSD || 0,
+                                : tokenA.balanceUSD || 0,
                     },
                     tokenB: {
                         address: tokenB.address,
@@ -198,11 +193,11 @@ function generateTokenPairs(filteredPools: PoolInput[]): TokenPair[] {
                         balance:
                             tokenB.address === pool.address
                                 ? pool.dynamicData?.totalShares || '0'
-                                : tokenB.dynamicData?.balance || '0',
+                                : tokenB.balance || '0',
                         balanceUsd:
                             tokenB.address === pool.address
                                 ? pool.dynamicData?.totalLiquidity || 0
-                                : tokenB.dynamicData?.balanceUSD || 0,
+                                : tokenB.balanceUSD || 0,
                     },
                     normalizedLiqudity: 0n,
                     spotPrice: 0n,

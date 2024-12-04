@@ -29,7 +29,7 @@ export class FbeetsPriceHandlerService implements TokenPriceHandler {
         const fbeets = await prisma.prismaFbeets.findFirst({});
         const pool = await prisma.prismaPool.findUnique({
             where: { id_chain: { id: fbeetsPoolId, chain: 'FANTOM' } },
-            include: { dynamicData: true, tokens: { include: { dynamicData: true, token: true } } },
+            include: { dynamicData: true, tokens: { include: { token: true } } },
         });
         const tokenPrices = await prisma.prismaTokenCurrentPrice.findMany({
             where: { tokenAddress: { in: pool?.tokens.map((token) => token.address) }, chain: 'FANTOM' },
@@ -42,7 +42,7 @@ export class FbeetsPriceHandlerService implements TokenPriceHandler {
         const fbeetsPrice = _.sum(
             pool.tokens.map((token) => {
                 const totalShares = parseFloat(pool.dynamicData?.totalShares || '0');
-                const balance = parseFloat(token.dynamicData?.balance || '0');
+                const balance = parseFloat(token.balance || '0');
                 const tokenPrice = tokenPrices.find((price) => price.tokenAddress === token.address)?.price || 0;
 
                 if (totalShares === 0) {

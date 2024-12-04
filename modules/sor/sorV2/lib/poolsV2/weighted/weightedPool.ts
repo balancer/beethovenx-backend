@@ -31,7 +31,7 @@ export class WeightedPool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.weight) {
+            if (!poolToken.weight) {
                 throw new Error('Weighted pool token does not have a weight');
             }
 
@@ -42,15 +42,10 @@ export class WeightedPool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
             poolTokens.push(
-                new WeightedPoolToken(
-                    token,
-                    tokenAmount.amount,
-                    poolToken.index,
-                    parseEther(poolToken.dynamicData.weight),
-                ),
+                new WeightedPoolToken(token, tokenAmount.amount, poolToken.index, parseEther(poolToken.weight)),
             );
         }
 

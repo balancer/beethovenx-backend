@@ -17,7 +17,11 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
         priceRateProvider: ZERO_ADDRESS,
         exemptFromProtocolYieldFee: false,
         token: prismaTokenFactory.build({ address: tokenAddress }),
-        dynamicData: prismaPoolTokenDynamicDataFactory.build({ id: poolId + '-' + tokenAddress }),
+        balance: '10.000000000000000000',
+        balanceUSD: 10,
+        weight: '0.5',
+        priceRate: '1',
+        latestFxPrice: null,
         scalingFactor: null,
     };
 });
@@ -43,21 +47,3 @@ export const prismaTokenFactory = Factory.define<PrismaToken>(() => {
         underlyingTokenAddress: null,
     };
 });
-
-export const prismaPoolTokenDynamicDataFactory = Factory.define<PrismaPoolTokenWithDynamicData['dynamicData']>(
-    ({ params }) => {
-        const id = params?.id || createRandomAddress();
-        return {
-            id,
-            poolTokenId: id,
-            blockNumber: 1710806400,
-            updatedAt: new Date(),
-            chain: 'SEPOLIA',
-            balance: '10.000000000000000000',
-            balanceUSD: 10,
-            weight: '0.5',
-            priceRate: '1',
-            latestFxPrice: null,
-        };
-    },
-);

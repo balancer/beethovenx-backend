@@ -107,7 +107,7 @@ export class PoolService {
                             address: token.address,
                             isNested: token.nestedPoolId !== null,
                             isPhantomBpt: token.address === swap.pool.address,
-                            weight: token.dynamicData?.weight,
+                            weight: token.weight,
                         })),
                     },
                 };
