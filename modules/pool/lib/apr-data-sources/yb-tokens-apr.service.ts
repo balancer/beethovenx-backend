@@ -10,12 +10,12 @@ import { YbAprConfig } from '../../../network/apr-config-types';
 
 export class YbTokensAprService implements PoolAprService {
     private ybTokensAprHandlers: YbAprHandlers;
-    private aaveUnderlyingMap: { [wrapper: string]: string } = {};
+    private underlyingMap: { [wrapper: string]: string } = {};
 
     constructor(private aprConfig: YbAprConfig, private chain: Chain) {
         this.ybTokensAprHandlers = new YbAprHandlers(this.aprConfig, chain);
         // Build a map of wrapped tokens to underlying tokens for Aave
-        this.aaveUnderlyingMap = Object.fromEntries(
+        this.underlyingMap = Object.fromEntries(
             Object.values({
                 ...aprConfig.aave?.v3?.tokens,
                 ...aprConfig.aave?.lido?.tokens,
@@ -83,7 +83,7 @@ export class YbTokensAprService implements PoolAprService {
                 let userApr = tokenApr.apr * tokenPercentageInPool;
 
                 // AAVE + LST case, we need to apply the underlying token APR on top of the AAVE market APR
-                const aaveUnderlying = this.aaveUnderlyingMap[token.address];
+                const aaveUnderlying = this.underlyingMap[token.address];
                 if (aaveUnderlying) {
                     const underlyingTokenApr = aprs.get(aaveUnderlying);
                     if (underlyingTokenApr) {
