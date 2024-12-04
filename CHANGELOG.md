@@ -1,5 +1,11 @@
 # backend
 
+## 1.23.9
+
+### Patch Changes
+
+-   77ceae7: dont remove user balances unless 0
+
 ## 1.23.8
 
 ### Patch Changes
