@@ -1,5 +1,13 @@
 # backend
 
+## 1.23.10
+
+### Patch Changes
+
+-   fe549d3: updating holderCount stat for v3 pools
+-   2046d6f: change 7 and 30 days swap apr to use snapshots
+-   c92ac36: filter out balances for missing pools
+
 ## 1.23.9
 
 ### Patch Changes
