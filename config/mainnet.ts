@@ -147,6 +147,7 @@ export default <NetworkData>{
                         wrappedTokens: {
                             waUSDC: '0x57d20c946a7a3812a7225b881cdcd8431d23431c',
                             stataEthUSDC: '0x02c2d189b45ce213a40097b62d311cf0dd16ec92',
+                            stataV2USDC: '0xd4fa2d31b7968e448877f69a96de69f5de8cd23e',
                         },
                     },
                     USDT: {
@@ -156,6 +157,7 @@ export default <NetworkData>{
                             waUSDT: '0xa7e0e66f38b8ad8343cff67118c1f33e827d1455',
                             stataEthUSDT: '0x65799b9fd4206cdaa4a1db79254fcbc2fd2ffee6',
                             stataEthUSDT2: '0x862c57d48becb45583aeba3f489696d22466ca1b',
+                            stataV2USDT: '0x7bc3485026ac48b6cf9baf0a377477fff5703af8',
                         },
                     },
                     DAI: {
@@ -172,6 +174,7 @@ export default <NetworkData>{
                         wrappedTokens: {
                             waWETH: '0x59463bb67ddd04fe58ed291ba36c26d99a39fbc6',
                             stataEthWETH: '0x03928473f25bb2da6bc880b07ecbadc636822264',
+                            stataV2WETH: '0x0bfc9d54fc184518a81162f8fb99c2eaca081202',
                         },
                     },
                     crvUSD: {
@@ -186,6 +189,25 @@ export default <NetworkData>{
                         aTokenAddress: '0x3fe6a295459fae07df8a0cecc36f37160fe86aa9',
                         wrappedTokens: {
                             stataEthLUSD: '0xdbf5e36569798d1e39ee9d7b1c61a7409a74f23a',
+                        },
+                    },
+                },
+            },
+            lido: {
+                subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/5vxMbXRhG1oQr55MWC5j6qg78waWujx1wjeuEWDA6j3`,
+                tokens: {
+                    LidoWETH: {
+                        underlyingAssetAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                        aTokenAddress: '0xfa1fdbbd71b0aa16162d76914d69cd8cb3ef92da',
+                        wrappedTokens: {
+                            waEthLido: '0x0fe906e030a44ef24ca8c7dc7b7c53a6c4f00ce9',
+                        },
+                    },
+                    LidoWSTETH: {
+                        underlyingAssetAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+                        aTokenAddress: '0xc035a7cf15375ce2706766804551791ad035e0c2',
+                        wrappedTokens: {
+                            waEthLidowstETH: '0x775f661b0bd1739349b9a2a3ef60be277c5d2d29',
                         },
                     },
                 },

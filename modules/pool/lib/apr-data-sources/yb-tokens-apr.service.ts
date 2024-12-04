@@ -10,9 +10,19 @@ import { YbAprConfig } from '../../../network/apr-config-types';
 
 export class YbTokensAprService implements PoolAprService {
     private ybTokensAprHandlers: YbAprHandlers;
+    private aaveUnderlyingMap: { [wrapper: string]: string } = {};
 
-    constructor(aprConfig: YbAprConfig, private chain: Chain) {
-        this.ybTokensAprHandlers = new YbAprHandlers(aprConfig, chain);
+    constructor(private aprConfig: YbAprConfig, private chain: Chain) {
+        this.ybTokensAprHandlers = new YbAprHandlers(this.aprConfig, chain);
+        // Build a map of wrapped tokens to underlying tokens for Aave
+        this.aaveUnderlyingMap = Object.fromEntries(
+            Object.values({
+                ...aprConfig.aave?.v3?.tokens,
+                ...aprConfig.aave?.lido?.tokens,
+            }).flatMap((market) =>
+                Object.values(market.wrappedTokens).map((wrapper) => [wrapper, market.underlyingAssetAddress]),
+            ),
+        );
     }
 
     getAprServiceName(): string {
@@ -72,10 +82,21 @@ export class YbTokensAprService implements PoolAprService {
 
                 let userApr = tokenApr.apr * tokenPercentageInPool;
 
-                if (collectsYieldFee(pool) && tokenCollectsYieldFee(token) && token.dynamicData) {
+                // AAVE + LST case, we need to apply the underlying token APR on top of the AAVE market APR
+                const aaveUnderlying = this.aaveUnderlyingMap[token.address];
+                if (aaveUnderlying) {
+                    const underlyingTokenApr = aprs.get(aaveUnderlying);
+                    if (underlyingTokenApr) {
+                        userApr = ((1 + tokenApr.apr) * (1 + underlyingTokenApr.apr) - 1) * tokenPercentageInPool;
+                    }
+                }
+
+                if (collectsYieldFee(pool) && tokenCollectsYieldFee(token) && pool.dynamicData) {
                     const fee =
                         pool.type === 'META_STABLE'
                             ? parseFloat(pool.dynamicData.protocolSwapFee || '0')
+                            : pool.protocolVersion === 3
+                            ? parseFloat(pool.dynamicData.aggregateYieldFee || '0.1')
                             : parseFloat(pool.dynamicData.protocolYieldFee || '0');
 
                     userApr = userApr * (1 - fee);

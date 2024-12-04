@@ -101,6 +101,21 @@ export default <NetworkData>{
                         aTokenAddress: '0xc0333cb85b59a788d8c7cae5e1fd6e229a3e5a65',
                         wrappedTokens: {
                             stataGnoUSDCe: '0xf0e7ec247b918311afa054e0aedb99d74c31b809',
+                            waGnoUSDCe: '0x51350d88c1bd32cc6a79368c9fb70373fb71f375',
+                        },
+                    },
+                    WETH: {
+                        underlyingAssetAddress: '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1',
+                        aTokenAddress: '0xa818f1b57c201e092c4a2017a91815034326efd1',
+                        wrappedTokens: {
+                            waGnoWETH: '0x57f664882f762fa37903fc864e2b633d384b411a',
+                        },
+                    },
+                    GNO: {
+                        underlyingAssetAddress: '0x9c58bacc331c9aa871afd802db6379a98e80cedb',
+                        aTokenAddress: '0xa1fa064a85266e2ca82dee5c5ccec84df445760e',
+                        wrappedTokens: {
+                            waGnoGNO: '0x7c16f0185a26db0ae7a9377f23bc18ea7ce5d644',
                         },
                     },
                 },
