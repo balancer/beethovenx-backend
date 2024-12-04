@@ -4,7 +4,6 @@ import { tokenService } from '../token/token.service';
 import {
     BoostedPoolAprService,
     SwapFeeAprService,
-    SwapFeeFromEventsAprService,
     GaugeAprService,
     YbTokensAprService,
     VeBalProtocolAprService,
@@ -28,7 +27,7 @@ export const mainnetNetworkConfig: NetworkConfig = {
     poolAprServices: [
         new YbTokensAprService(data.ybAprConfig, data.chain.prismaId),
         new BoostedPoolAprService(),
-        new SwapFeeFromEventsAprService(),
+        new SwapFeeAprService(),
         new GaugeAprService(tokenService, [data.bal!.address]),
         new VeBalProtocolAprService(data.rpcUrl),
         new VeBalVotingAprService(),
@@ -61,10 +60,6 @@ export const mainnetNetworkConfig: NetworkConfig = {
         },
         {
             name: 'update-liquidity-for-active-pools',
-            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
-        },
-        {
-            name: 'update-pool-apr',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
         },
         {
@@ -162,6 +157,15 @@ export const mainnetNetworkConfig: NetworkConfig = {
         {
             name: 'sync-erc4626-reviews',
             interval: every(1, 'hours'),
+        },
+        // APRs
+        {
+            name: 'update-pool-apr',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
+        },
+        {
+            name: 'update-7-30-days-swap-apr',
+            interval: every(8, 'hours'),
         },
         {
             name: 'update-surplus-aprs',

@@ -2,19 +2,20 @@ import { PoolAprService } from '../../pool-types';
 import { PrismaPoolWithTokens } from '../../../../prisma/prisma-types';
 import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
-import { networkContext } from '../../../network/network-context.service';
 
 const MAX_DB_INT = 9223372036854775807;
+
 export class SwapFeeAprService implements PoolAprService {
     public getAprServiceName(): string {
         return 'SwapFeeAprService';
     }
 
     public async updateAprForPools(pools: PrismaPoolWithTokens[]): Promise<void> {
+        const chain = pools[0].chain;
         const operations: any[] = [];
 
         const poolsExpanded = await prisma.prismaPool.findMany({
-            where: { chain: networkContext.chain, id: { in: pools.map((pool) => pool.id) } },
+            where: { chain, id: { in: pools.map((pool) => pool.id) } },
             include: {
                 dynamicData: true,
             },
@@ -46,14 +47,26 @@ export class SwapFeeAprService implements PoolAprService {
 
                 operations.push(
                     prisma.prismaPoolAprItem.upsert({
-                        where: { id_chain: { id: `${pool.id}-swap-apr`, chain: networkContext.chain } },
+                        where: { id_chain: { id: `${pool.id}-swap-apr`, chain } },
                         create: {
                             id: `${pool.id}-swap-apr`,
-                            chain: networkContext.chain,
+                            chain,
                             poolId: pool.id,
                             title: 'Swap fees APR',
                             apr: userApr,
                             type: 'SWAP_FEE',
+                        },
+                        update: { apr: userApr },
+                    }),
+                    prisma.prismaPoolAprItem.upsert({
+                        where: { id_chain: { id: `${pool.id}-swap-apr-24h`, chain } },
+                        create: {
+                            id: `${pool.id}-swap-apr-24h`,
+                            chain,
+                            poolId: pool.id,
+                            title: 'Swap fees APR (24h)',
+                            apr: userApr,
+                            type: 'SWAP_FEE_24H',
                         },
                         update: { apr: userApr },
                     }),

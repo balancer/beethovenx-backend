@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { DeploymentEnv, NetworkConfig } from './network-config-types';
 import { tokenService } from '../token/token.service';
 import { BoostedPoolAprService } from '../pool/lib/apr-data-sources/nested-pool-apr.service';
-import { SwapFeeFromEventsAprService } from '../pool/lib/apr-data-sources/';
+import { SwapFeeAprService } from '../pool/lib/apr-data-sources/';
 import { GaugeAprService } from '../pool/lib/apr-data-sources/ve-bal-gauge-apr.service';
 import { UserSyncGaugeBalanceService } from '../user/lib/user-sync-gauge-balance.service';
 import { every } from '../../apps/scheduler/intervals';
@@ -21,7 +21,7 @@ export const sepoliaNetworkConfig: NetworkConfig = {
     poolAprServices: [
         new YbTokensAprService(sepoliaNetworkData.ybAprConfig, sepoliaNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
-        new SwapFeeFromEventsAprService(),
+        new SwapFeeAprService(),
         new GaugeAprService(tokenService, [sepoliaNetworkData.bal!.address]),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService()],
@@ -52,6 +52,10 @@ export const sepoliaNetworkConfig: NetworkConfig = {
         {
             name: 'update-pool-apr',
             interval: every(2, 'minutes'),
+        },
+        {
+            name: 'update-7-30-days-swap-apr',
+            interval: every(8, 'hours'),
         },
         {
             name: 'load-on-chain-data-for-pools-with-active-updates',

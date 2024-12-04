@@ -125,6 +125,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return 'OK';
     } else if (job === 'sync-merkl') {
         return AprsController().syncMerkl();
+    } else if (job === 'update-7-30-days-swap-apr') {
+        return AprsController().update7And30DaysSwapAprs(chain);
     } else if (job === 'sync-rate-provider-reviews') {
         return ContentController().syncRateProviderReviews();
     } else if (job === 'sync-hook-reviews') {

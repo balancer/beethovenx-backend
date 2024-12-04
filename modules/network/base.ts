@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { DeploymentEnv, NetworkConfig, NetworkData } from './network-config-types';
 import { tokenService } from '../token/token.service';
 import { BoostedPoolAprService } from '../pool/lib/apr-data-sources/nested-pool-apr.service';
-import { SwapFeeFromEventsAprService } from '../pool/lib/apr-data-sources/';
+import { SwapFeeAprService } from '../pool/lib/apr-data-sources/';
 import { GaugeAprService } from '../pool/lib/apr-data-sources/ve-bal-gauge-apr.service';
 import { UserSyncGaugeBalanceService } from '../user/lib/user-sync-gauge-balance.service';
 import { every } from '../../apps/scheduler/intervals';
@@ -22,7 +22,7 @@ export const baseNetworkConfig: NetworkConfig = {
     poolAprServices: [
         new YbTokensAprService(baseNetworkData.ybAprConfig, baseNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
-        new SwapFeeFromEventsAprService(),
+        new SwapFeeAprService(),
         new GaugeAprService(tokenService, [baseNetworkData.bal!.address]),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
@@ -53,6 +53,10 @@ export const baseNetworkConfig: NetworkConfig = {
         {
             name: 'update-pool-apr',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
+        },
+        {
+            name: 'update-7-30-days-swap-apr',
+            interval: every(8, 'hours'),
         },
         {
             name: 'load-on-chain-data-for-pools-with-active-updates',
