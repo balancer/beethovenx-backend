@@ -52,18 +52,6 @@ export class SwapFeeAprService implements PoolAprService {
 
                 operations.push(
                     prisma.prismaPoolAprItem.upsert({
-                        where: { id_chain: { id: `${pool.id}-swap-apr`, chain } },
-                        create: {
-                            id: `${pool.id}-swap-apr`,
-                            chain,
-                            poolId: pool.id,
-                            title: 'Swap fees APR',
-                            apr: userApr,
-                            type: 'SWAP_FEE',
-                        },
-                        update: { apr: userApr },
-                    }),
-                    prisma.prismaPoolAprItem.upsert({
                         where: { id_chain: { id: `${pool.id}-swap-apr-24h`, chain } },
                         create: {
                             id: `${pool.id}-swap-apr-24h`,
