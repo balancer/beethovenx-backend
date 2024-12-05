@@ -1,5 +1,15 @@
 # backend
 
+## 1.25.0
+
+### Minor Changes
+
+-   7a93ab8: removing poolTokenDynamicData dependency
+
+### Patch Changes
+
+-   3f22a3d: apply v3 protocol swap fees
+
 ## 1.24.0
 
 ### Minor Changes
