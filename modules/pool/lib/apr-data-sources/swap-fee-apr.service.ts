@@ -33,6 +33,11 @@ export class SwapFeeAprService implements PoolAprService {
                     // Gyro has custom protocol fee structure
                     protocolFee = parseFloat(pool.dynamicData.protocolYieldFee || '0');
                 }
+
+                if (pool.protocolVersion === 3) {
+                    protocolFee = parseFloat(pool.dynamicData.aggregateSwapFee);
+                }
+
                 if (pool.dynamicData.isInRecoveryMode || pool.type === 'LIQUIDITY_BOOTSTRAPPING') {
                     // pool does not collect any protocol fees
                     protocolFee = 0;
