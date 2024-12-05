@@ -17,7 +17,7 @@ export default <NetworkData>{
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmWUgkiUM5c3BW1Z51DUkZfnyQfyfesE8p3BRnEtA9vyPL`,
         ],
         beetsBar: 'https://',
-        blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/GX4hfTpVpr1juHghwkznw6C6UA8Vda7VAZRHmX1XyH3r`,
+        blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/5168uf6G9YZJFWnZxTf2EXc2CmFk54ptZ9PRhfRJ66bL`,
         gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/Qmdtj1ix1nUCRtSoiyF7a3oKMSvrKT8KTEFJdep53EHtRy`,
         aura: 'https://data.aura.finance/graphql',
     },
