@@ -1,5 +1,15 @@
 # backend
 
+## 1.24.0
+
+### Minor Changes
+
+-   751e1e8: new aave aprs and default yield fee
+
+### Patch Changes
+
+-   40937e2: move op blocks to builders dao
+
 ## 1.23.10
 
 ### Patch Changes
