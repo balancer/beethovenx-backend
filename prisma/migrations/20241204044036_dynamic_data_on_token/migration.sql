@@ -8,8 +8,8 @@ ADD COLUMN "weight" TEXT;
 UPDATE "PrismaPoolToken" t
 SET "balance" = d.balance,
     "balanceUSD" = d."balanceUSD",
-    "priceRate" = d."priceRate"
-    "weight" = d."weight"
+    "priceRate" = d."priceRate",
+    "weight" = d."weight",
     "latestFxPrice" = d."latestFxPrice"
 FROM "PrismaPoolTokenDynamicData" d
 WHERE t.id = d.id AND t.chain = d.chain;
