@@ -206,5 +206,30 @@ export const mainnetNetworkConfig: NetworkConfig = {
             name: 'update-cow-amm-volume-and-fees',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
         },
+        // V3 jobs
+        {
+            name: 'add-pools-v3',
+            interval: every(2, 'minutes'),
+        },
+        {
+            name: 'sync-pools-v3',
+            interval: every(30, 'seconds'),
+        },
+        {
+            name: 'sync-join-exits-v3',
+            interval: every(1, 'minutes'),
+        },
+        {
+            name: 'sync-swaps-v3',
+            interval: every(1, 'minutes'),
+        },
+        {
+            name: 'sync-snapshots-v3',
+            interval: every(90, 'minutes'),
+        },
+        {
+            name: 'sync-hook-data',
+            interval: every(1, 'hours'),
+        },
     ],
 };
