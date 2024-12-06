@@ -14,8 +14,10 @@ export default <NetworkData>{
         startDate: '2023-05-03',
         cowAmm: 'https://api.studio.thegraph.com/query/75376/balancer-cow-amm-sepolia/version/latest',
         balancer: ['https://api.studio.thegraph.com/query/24660/balancer-sepolia-v2/version/latest'],
-        balancerV3: 'https://api.studio.thegraph.com/query/31386/balancer-v3-sepolia-11th/version/latest',
-        balancerPoolsV3: 'https://api.studio.thegraph.com/query/31386/balancer-pools-v3-sepolia-11th/version/latest',
+        // https://api.studio.thegraph.com/query/75376/balancer-v3-sepolia/version/latest
+        balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmQf2B21pX5h1pChmSJ3CGLkcTCwNc84XdMawYXxSaJxDR`,
+        // https://api.studio.thegraph.com/query/75376/balancer-pools-v3-sepolia/version/latest
+        balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmPhGhDpaPe8yvmMg95CvNetsLFMr8gSHDB7ZjEj1Wp47q`,
         beetsBar: 'https://',
         blocks: `https://api.studio.thegraph.com/query/48427/bleu-sepolia-blocks/version/latest`,
         gauge: `https://api.studio.thegraph.com/query/24660/balancer-gauges-sepolia/version/latest`,
@@ -55,15 +57,16 @@ export default <NetworkData>{
             balancerQueriesAddress: '0xe39b5e3b6d74016b2f6a9673d7d7493b6df549d5',
         },
         v3: {
-            vaultAddress: '0xBC582d2628FcD404254a1e12CB714967Ce428915',
-            routerAddress: '0x4D2aA7a3CD7F8dA6feF37578A1881cD63Fd3715E',
+            vaultAddress: '0xba1333333333a1ba1108e8412f11850a5c319ba9',
+            protocolFeeController: '0xa731c23d7c95436baaae9d52782f966e1ed07cc8',
+            routerAddress: '0x0bf61f706105ea44694f2e92986bd01c39930280',
             defaultSwapFeePercentage: '0.5',
             defaultYieldFeePercentage: '0.1',
         },
     },
     hooks: {
-        feeTakingHook: ['0x790ae803b6c0467C6A4cbDc6d6d712DE34CfdB76'],
-        exitFeeHook: ['0x2Aa9D4066DAe16ef001765efF2cA8F41Bde0b019'],
+        feeTakingHook: ['0x790ae803b6c0467c6a4cbdc6d6d712de34cfdb76'],
+        exitFeeHook: ['0x2aa9d4066dae16ef001765eff2ca8f41bde0b019'],
         stableSurgeHook: ['0x1adc55adb4caae71abb4c33f606493f4114d2091'],
     },
     multicall: '0x25eef291876194aefad0d60dff89e268b90754bb',
