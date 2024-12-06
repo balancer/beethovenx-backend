@@ -34,6 +34,7 @@ import {
     SwapKind,
     ExactInQueryOutput,
     ExactOutQueryOutput,
+    VAULT,
 } from '@balancer/sdk';
 import { PathWithAmount } from './lib/path';
 import { calculatePriceImpact, getInputAmount, getOutputAmount } from './lib/utils/helpers';
@@ -271,6 +272,7 @@ class SorPathService implements SwapService {
                             swapKind,
                             expectedAmountOut: outputAmount,
                             amountIn: inputAmount,
+                            to: VAULT[parseInt(chainToIdMap[chain])],
                         },
                         slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
@@ -290,6 +292,7 @@ class SorPathService implements SwapService {
                             swapKind,
                             expectedAmountIn: inputAmount,
                             amountOut: outputAmount,
+                            to: VAULT[parseInt(chainToIdMap[chain])],
                         },
                         slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
