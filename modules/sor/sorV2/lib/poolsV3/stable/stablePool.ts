@@ -255,14 +255,15 @@ export class StablePool implements BasePoolV3 {
 
     public getPoolState(): StableState {
         return {
-            poolType: 'Stable',
+            poolType: 'STABLE',
+            poolAddress: this.address,
             swapFee: this.swapFee,
             balancesLiveScaled18: this.tokens.map((t) => t.scale18),
             tokenRates: this.tokens.map((t) => t.rate),
             totalSupply: this.totalShares,
             amp: this.amp,
             tokens: this.tokens.map((t) => t.token.address),
-            scalingFactors: this.tokens.map((t) => t.scalar * WAD),
+            scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
         };
     }
