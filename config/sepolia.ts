@@ -14,10 +14,10 @@ export default <NetworkData>{
         startDate: '2023-05-03',
         cowAmm: 'https://api.studio.thegraph.com/query/75376/balancer-cow-amm-sepolia/version/latest',
         balancer: ['https://api.studio.thegraph.com/query/24660/balancer-sepolia-v2/version/latest'],
-        // https://api.studio.thegraph.com/query/75376/balancer-v3-sepolia/version/latest
-        balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmQf2B21pX5h1pChmSJ3CGLkcTCwNc84XdMawYXxSaJxDR`,
-        // https://api.studio.thegraph.com/query/75376/balancer-pools-v3-sepolia/version/latest
-        balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmPhGhDpaPe8yvmMg95CvNetsLFMr8gSHDB7ZjEj1Wp47q`,
+        balancerV3: 'https://api.studio.thegraph.com/query/75376/balancer-v3-sepolia/version/latest',
+        // balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmQf2B21pX5h1pChmSJ3CGLkcTCwNc84XdMawYXxSaJxDR`,
+        balancerPoolsV3: 'https://api.studio.thegraph.com/query/75376/balancer-pools-v3-sepolia/version/latest',
+        // balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmPhGhDpaPe8yvmMg95CvNetsLFMr8gSHDB7ZjEj1Wp47q`,
         beetsBar: 'https://',
         blocks: `https://api.studio.thegraph.com/query/48427/bleu-sepolia-blocks/version/latest`,
         gauge: `https://api.studio.thegraph.com/query/24660/balancer-gauges-sepolia/version/latest`,
