@@ -249,7 +249,7 @@ export default <NetworkData>{
             },
             wUSDL: {
                 tokenAddress: '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559',
-                sourceUrl: 'https://usdl-apy.replit.app/usdl_apy',
+                sourceUrl: 'https://api.paxos.com/v2/tokens/usdl/apy',
                 path: 'apy',
                 isIbYield: true,
             },
