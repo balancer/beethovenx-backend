@@ -1289,6 +1289,24 @@ type GqlPoolTokenDetail {
     The ERC4626 review data for the token
     """
     erc4626ReviewData: Erc4626ReviewData
+    """
+    Coingecko ID
+    """
+    coingeckoId: String
+    """
+    Token logo
+    """
+    logoURI: String
+    """
+    Is the token tradable
+    """
+    tradable: Boolean
+    """
+    The priority of the token, can be used for sorting.
+    """
+    priority: Int
+    chain: GqlChain
+    chainId: Int
 }
 
 """

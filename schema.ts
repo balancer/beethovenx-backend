@@ -1547,6 +1547,10 @@ export interface GqlPoolTokenDetail {
     balance: Scalars['BigDecimal'];
     /** USD Balance of the pool token. */
     balanceUSD: Scalars['BigDecimal'];
+    chain?: Maybe<GqlChain>;
+    chainId?: Maybe<Scalars['Int']>;
+    /** Coingecko ID */
+    coingeckoId?: Maybe<Scalars['String']>;
     /** Decimals of the pool token. */
     decimals: Scalars['Int'];
     /** The ERC4626 review data for the token */
@@ -1561,6 +1565,8 @@ export interface GqlPoolTokenDetail {
     isAllowed: Scalars['Boolean'];
     /** Whether the token is considered an ERC4626 token. */
     isErc4626: Scalars['Boolean'];
+    /** Token logo */
+    logoURI?: Maybe<Scalars['String']>;
     /** Name of the pool token. */
     name: Scalars['String'];
     /** Additional data for the nested pool if the token is a BPT. Null otherwise. */
@@ -1571,10 +1577,14 @@ export interface GqlPoolTokenDetail {
     priceRateProvider?: Maybe<Scalars['String']>;
     /** Additional data for the price rate provider, such as reviews or warnings. */
     priceRateProviderData?: Maybe<GqlPriceRateProviderData>;
+    /** The priority of the token, can be used for sorting. */
+    priority?: Maybe<Scalars['Int']>;
     /** Conversion factor used to adjust for token decimals for uniform precision in calculations. V3 only. */
     scalingFactor?: Maybe<Scalars['BigDecimal']>;
     /** Symbol of the pool token. */
     symbol: Scalars['String'];
+    /** Is the token tradable */
+    tradable?: Maybe<Scalars['Boolean']>;
     /** If it is an ERC4626, this will be the underlying token if present in the API. */
     underlyingToken?: Maybe<GqlToken>;
     /** The weight of the token in the pool if it is a weighted pool, null otherwise */
@@ -4466,6 +4476,9 @@ export type GqlPoolTokenDetailResolvers<
     address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     balance?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     balanceUSD?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+    chain?: Resolver<Maybe<ResolversTypes['GqlChain']>, ParentType, ContextType>;
+    chainId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+    coingeckoId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     erc4626ReviewData?: Resolver<Maybe<ResolversTypes['Erc4626ReviewData']>, ParentType, ContextType>;
     hasNestedPool?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -4473,13 +4486,16 @@ export type GqlPoolTokenDetailResolvers<
     index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     isAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     isErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    logoURI?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestedPool?: Resolver<Maybe<ResolversTypes['GqlNestedPool']>, ParentType, ContextType>;
     priceRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     priceRateProvider?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     priceRateProviderData?: Resolver<Maybe<ResolversTypes['GqlPriceRateProviderData']>, ParentType, ContextType>;
+    priority?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
     scalingFactor?: Resolver<Maybe<ResolversTypes['BigDecimal']>, ParentType, ContextType>;
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    tradable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     underlyingToken?: Resolver<Maybe<ResolversTypes['GqlToken']>, ParentType, ContextType>;
     weight?: Resolver<Maybe<ResolversTypes['BigDecimal']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

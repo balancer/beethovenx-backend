@@ -847,6 +847,9 @@ export class PoolGqlLoaderService {
             ),
             isErc4626: poolToken.token.types.some((type) => type.type === 'ERC4626'),
             scalingFactor: poolToken.scalingFactor,
+            tradable: !poolToken.token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
+            chain: poolToken.chain,
+            chainId: Number(chainToIdMap[poolToken.chain]),
         };
     }
 

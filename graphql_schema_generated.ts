@@ -2204,6 +2204,13 @@ export const schema = gql`
         USD Balance of the pool token.
         """
         balanceUSD: BigDecimal!
+        chain: GqlChain
+        chainId: Int
+
+        """
+        Coingecko ID
+        """
+        coingeckoId: String
 
         """
         Decimals of the pool token.
@@ -2241,6 +2248,11 @@ export const schema = gql`
         isErc4626: Boolean!
 
         """
+        Token logo
+        """
+        logoURI: String
+
+        """
         Name of the pool token.
         """
         name: String!
@@ -2266,6 +2278,11 @@ export const schema = gql`
         priceRateProviderData: GqlPriceRateProviderData
 
         """
+        The priority of the token, can be used for sorting.
+        """
+        priority: Int
+
+        """
         Conversion factor used to adjust for token decimals for uniform precision in calculations. V3 only.
         """
         scalingFactor: BigDecimal
@@ -2274,6 +2291,11 @@ export const schema = gql`
         Symbol of the pool token.
         """
         symbol: String!
+
+        """
+        Is the token tradable
+        """
+        tradable: Boolean
 
         """
         If it is an ERC4626, this will be the underlying token if present in the API.
