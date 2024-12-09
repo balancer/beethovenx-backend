@@ -73,10 +73,24 @@ export class ProtocolService {
         const client = getV2SubgraphClient(AllNetworkConfigsKeyedOnChain[chain].data.subgraphs.balancer, chain);
 
         const { balancers } = await client.BalancerProtocolData({});
-        const { totalSwapFee, totalSwapVolume, poolCount } = balancers[0];
+        const { totalSwapFee, totalSwapVolume } = balancers[0];
 
         const pools = await prisma.prismaPool.findMany({
             where: {
+                type: {
+                    in: [
+                        'WEIGHTED',
+                        'STABLE',
+                        'COMPOSABLE_STABLE',
+                        'META_STABLE',
+                        'LIQUIDITY_BOOTSTRAPPING',
+                        'GYRO',
+                        'GYRO3',
+                        'GYROE',
+                        'COW_AMM',
+                        'FX',
+                    ],
+                },
                 NOT: { categories: { has: 'BLACK_LISTED' } },
                 dynamicData: {
                     totalSharesNum: {
@@ -87,6 +101,8 @@ export class ProtocolService {
             },
             include: { dynamicData: true },
         });
+
+        const poolCount = pools.length;
 
         const swaps = await prisma.prismaPoolEvent.findMany({
             select: { poolId: true, valueUSD: true, blockTimestamp: true },
