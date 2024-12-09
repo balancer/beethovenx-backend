@@ -28,6 +28,18 @@ const aaveTokens = {
             aToken: '0x98c23e9d8f34fefb1b7bd6a91b7ff122f4e16f5c',
             underlying: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         },
+        {
+            // waEthLido
+            wrappedToken: '0x0fe906e030a44ef24ca8c7dc7b7c53a6c4f00ce9',
+            aToken: '0xfa1fdbbd71b0aa16162d76914d69cd8cb3ef92da',
+            underlying: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        },
+        {
+            // waEthLidowstETH
+            wrappedToken: '0x775f661b0bd1739349b9a2a3ef60be277c5d2d29',
+            aToken: '0xc035a7cf15375ce2706766804551791ad035e0c2',
+            underlying: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+        },
     ],
     [Chain.OPTIMISM]: [
         {
@@ -145,6 +157,38 @@ const aaveTokens = {
             wrappedToken: '0x4ea71a20e655794051d1ee8b6e4a3269b13ccacc',
             aToken: '0x4e65fe4dba92790696d040ac24aa414708f5c0ab ',
             underlying: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        },
+    ],
+    [Chain.GNOSIS]: [
+        {
+            // stataGnoUSDC
+            wrappedToken: '0x270ba1f35d8b87510d24f693fccc0da02e6e4eeb',
+            aToken: '0xc6b7aca6de8a6044e0e32d0c841a89244a10d284',
+            underlying: '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
+        },
+        {
+            // stataGnoUSDCe
+            wrappedToken: '0xf0e7ec247b918311afa054e0aedb99d74c31b809',
+            aToken: '0xc0333cb85b59a788d8c7cae5e1fd6e229a3e5a65',
+            underlying: '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0',
+        },
+        {
+            // waGnoUSDCe
+            wrappedToken: '0x51350d88c1bd32cc6a79368c9fb70373fb71f375',
+            aToken: '0xc0333cb85b59a788d8c7cae5e1fd6e229a3e5a65',
+            underlying: '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0',
+        },
+        {
+            // waGnoWETH
+            wrappedToken: '0x57f664882f762fa37903fc864e2b633d384b411a',
+            aToken: '0xa818f1b57c201e092c4a2017a91815034326efd1',
+            underlying: '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1',
+        },
+        {
+            // waGnoGNO
+            wrappedToken: '0x7c16f0185a26db0ae7a9377f23bc18ea7ce5d644',
+            aToken: '0xa1fa064a85266e2ca82dee5c5ccec84df445760e',
+            underlying: '0x9c58bacc331c9aa871afd802db6379a98e80cedb',
         },
     ],
     [Chain.SEPOLIA]: [
