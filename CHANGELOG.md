@@ -1,5 +1,13 @@
 # backend
 
+## 1.26.1
+
+### Patch Changes
+
+-   caa0e6c: updated usdL apr source
+-   ddd87af: protocol stats alignment with pools list
+-   c5e9911: more aave prices, but still missing rates for new tokens
+
 ## 1.26.0
 
 ### Minor Changes
