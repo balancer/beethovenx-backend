@@ -1,5 +1,17 @@
 # backend
 
+## 1.26.0
+
+### Minor Changes
+
+-   c507c33: V3 mainnet and gnosis
+
+### Patch Changes
+
+-   d7706da: expose additional fields in the poolTokenDetails schema
+-   0c9901a: sepolia v12
+-   6d4c98e: Update SDK and Balancer Maths dependencies
+
 ## 1.25.0
 
 ### Minor Changes
