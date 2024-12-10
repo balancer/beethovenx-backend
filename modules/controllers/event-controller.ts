@@ -53,7 +53,7 @@ export function EventController() {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
             const entries = await syncJoinExitsV3(vaultSubgraphClient, chain);
             return entries;
         },
@@ -67,7 +67,7 @@ export function EventController() {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
             const entries = await syncSwapsV3(vaultSubgraphClient, chain);
             return entries;
         },
@@ -81,7 +81,7 @@ export function EventController() {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
 
             const poolsWithNewSwaps = await syncSwapsV3(vaultSubgraphClient, chain);
             await updateVolumeAndFees(chain, poolsWithNewSwaps);

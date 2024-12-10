@@ -1,6 +1,7 @@
 import { getVaultSubgraphClient } from './balancer-v3-vault';
 import { getPoolsSubgraphClient } from './balancer-v3-pools';
 import { PoolsQueryVariables } from './balancer-v3-vault/generated/types';
+import { Chain } from '@prisma/client';
 
 export type V3JoinedSubgraphClient = ReturnType<typeof getV3JoinedSubgraphClient>;
 
@@ -10,8 +11,8 @@ export type V3JoinedSubgraphPool = ReturnType<V3JoinedSubgraphClient['getAllInit
     ? T
     : never;
 
-export const getV3JoinedSubgraphClient = (vaultSubgraphUrl: string, poolsSubgraphUrl: string) => {
-    const vaultSubgraphClient = getVaultSubgraphClient(vaultSubgraphUrl);
+export const getV3JoinedSubgraphClient = (vaultSubgraphUrl: string, poolsSubgraphUrl: string, chain: Chain) => {
+    const vaultSubgraphClient = getVaultSubgraphClient(vaultSubgraphUrl, chain);
     const poolsSubgraphClient = getPoolsSubgraphClient(poolsSubgraphUrl);
 
     return {

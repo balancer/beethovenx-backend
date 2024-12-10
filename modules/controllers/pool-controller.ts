@@ -173,7 +173,7 @@ export function PoolController(tracer?: any) {
             });
             const ids = pools.map((pool) => pool.id);
             if (ids.length === 0) ids.push('');
-            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
 
             // TODO this might break once we have a lot of pools because the filter gets too big
             const newPools = await client.getAllInitializedPools({ id_not_in: ids });
@@ -209,7 +209,7 @@ export function PoolController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
             const allPools = await client.getAllInitializedPools();
 
             const viemClient = getViemClient(chain);
@@ -243,7 +243,7 @@ export function PoolController(tracer?: any) {
             }
 
             const viemClient = getViemClient(chain);
-            const subgraphClient = getVaultSubgraphClient(balancerV3);
+            const subgraphClient = getVaultSubgraphClient(balancerV3, chain);
 
             const lastSyncBlock = await getLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3);
             const fromBlock = lastSyncBlock + 1;
@@ -292,7 +292,7 @@ export function PoolController(tracer?: any) {
             } = config[chain];
 
             // Guard against unconfigured chains
-            const subgraph = balancerV3 && getVaultSubgraphClient(balancerV3);
+            const subgraph = balancerV3 && getVaultSubgraphClient(balancerV3, chain);
 
             if (!subgraph) {
                 throw new Error(`Chain not configured: ${chain}`);
