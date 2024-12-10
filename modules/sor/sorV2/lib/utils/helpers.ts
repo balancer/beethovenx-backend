@@ -14,6 +14,8 @@ import { MathSol, abs } from './math';
 import { HookState } from '@balancer-labs/balancer-maths';
 import { LiquidityManagement } from '../../../types';
 
+import { parseEther } from 'viem';
+
 export function checkInputs(
     tokenIn: Token,
     tokenOut: Token,
@@ -88,7 +90,7 @@ export function getHookState(pool: any): HookState | undefined {
         return {
             tokens: pool.tokens.map((token: { address: string }) => token.address),
             // ExitFeeHook will always have dynamicData as part of the API response
-            removeLiquidityHookFeePercentage: percentageStringToBigInt(dynamicData.removeLiquidityFeePercentage),
+            removeLiquidityHookFeePercentage: parseEther(dynamicData.removeLiquidityFeePercentage),
         };
     }
 
@@ -106,12 +108,6 @@ export function getHookState(pool: any): HookState | undefined {
     }
     
     throw new Error(`${pool.hook.name} hook not implemented`);
-}
-
-export function percentageStringToBigInt(percentage: string): bigint {
-    const percentageNumber = parseFloat(percentage);
-    const scaledNumber = Math.round(percentageNumber * 10 ** 18);
-    return BigInt(scaledNumber);
 }
 
 export function isLiquidityManagement(value: any): value is LiquidityManagement {
