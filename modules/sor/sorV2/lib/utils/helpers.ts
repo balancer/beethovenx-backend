@@ -101,10 +101,9 @@ export function getHookState(pool: any): HookState | undefined {
 
     if (pool.hook.name === 'StableSurge') {
         return {
-            amp: pool.dynamicData.amp,
-            surgeThresholdPercentage: pool.dynamicData.surgeThresholdPercentage, 
-        }
-
+            amp: pool.typeData.amp,
+            surgeThresholdPercentage: parseEther(pool.dynamicData.surgeThresholdPercentage), 
+        };
     }
     
     throw new Error(`${pool.hook.name} hook not implemented`);
