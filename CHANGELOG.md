@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.2
+
+### Patch Changes
+
+-   7f6df7f: boosted tag only on v3
+
 ## 1.26.1
 
 ### Patch Changes
