@@ -14,7 +14,7 @@ import { BasePoolV3 } from '../../poolsV2/basePool';
 import { StableBasePoolToken } from './stableBasePoolToken';
 import { Erc4626PoolToken } from '../../poolsV2/erc4626PoolToken';
 
-import { returnHookDataAccordingToHookName, isLiquidityManagement } from '../../utils/helpers';
+import { getHookState, isLiquidityManagement } from '../../utils/helpers';
 
 import { LiquidityManagement } from '../../../../../sor/types';
 
@@ -84,7 +84,7 @@ export class StablePool implements BasePoolV3 {
         const amp = parseUnits((pool.typeData as StableData).amp, 3);
 
         //transform
-        const hook = returnHookDataAccordingToHookName(pool);
+        const hook = getHookState(pool);
 
         // typeguard
         if (!isLiquidityManagement(pool.liquidityManagement)) {

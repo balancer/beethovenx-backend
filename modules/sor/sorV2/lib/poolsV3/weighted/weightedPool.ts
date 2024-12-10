@@ -12,7 +12,7 @@ import { BasePoolV3 } from '../../poolsV2/basePool';
 import { WeightedBasePoolToken } from '../../poolsV2/weighted/weightedBasePoolToken';
 import { WeightedErc4626PoolToken } from './weightedErc4626PoolToken';
 
-import { returnHookDataAccordingToHookName, isLiquidityManagement } from '../../utils/helpers';
+import { getHookState, isLiquidityManagement } from '../../utils/helpers';
 
 import { LiquidityManagement } from '../../../../../sor/types';
 
@@ -85,7 +85,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
         }
 
         //transform
-        const hook = returnHookDataAccordingToHookName(pool);
+        const hook = getHookState(pool);
 
         // typeguard
         if (!isLiquidityManagement(pool.liquidityManagement)) {

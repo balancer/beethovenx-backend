@@ -75,7 +75,7 @@ export function getOutputAmount(paths: PathWithAmount[]): TokenAmount {
     return amounts.reduce((a, b) => a.add(b));
 }
 
-export function returnHookDataAccordingToHookName(pool: any): HookState | undefined {
+export function getHookState(pool: any): HookState | undefined {
     if (pool.hook === undefined || pool.hook === null) {
         return undefined;
     }
