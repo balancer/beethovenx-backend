@@ -2,15 +2,14 @@ import { Chain } from '@prisma/client';
 import config from '../../config';
 import { prisma } from '../../prisma/prisma-client';
 import {
-    syncSnapshotsV3,
     syncSnapshotsV2,
     fillMissingSnapshotsV3,
     fillMissingSnapshotsV2,
     syncSnapshotsV2All,
     recalculateDailyValues,
+    syncSnapshots,
 } from '../actions/snapshots';
 import { PoolSnapshotService } from '../actions/snapshots/pool-snapshot-service';
-import { chainIdToChain } from '../network/chain-id-to-chain';
 import { getVaultSubgraphClient } from '../sources/subgraphs';
 import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
 import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
@@ -96,8 +95,24 @@ export function SnapshotsController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
-            const entries = await syncSnapshotsV3(vaultSubgraphClient, chain);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
+            const entries = await syncSnapshots(vaultSubgraphClient, 'SNAPSHOTS_V3', chain);
+            // update lifetime values based on snapshots
+            await updateLifetimeValues(chain, 3);
+            return entries;
+        },
+        async syncAllSnapshotsV3(chain: Chain) {
+            const {
+                subgraphs: { balancerV3 },
+            } = config[chain];
+
+            // Guard against unconfigured chains
+            if (!balancerV3) {
+                throw new Error(`Chain not configured: ${chain}`);
+            }
+
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
+            const entries = await syncSnapshots(vaultSubgraphClient, 'SNAPSHOTS_V3', chain, { syncLatest: false });
             // update lifetime values based on snapshots
             await updateLifetimeValues(chain, 3);
             return entries;

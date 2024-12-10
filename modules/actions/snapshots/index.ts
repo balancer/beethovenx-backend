@@ -4,3 +4,4 @@ export * from './sync-snapshots-v2';
 export * from './fill-missing-snapshots-v2';
 export * from './sync-snapshots-v2-all';
 export * from './recalculate-daily-values';
+export * from './sync-snapshots';

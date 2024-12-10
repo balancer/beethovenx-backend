@@ -3040,6 +3040,21 @@ export type PoolBalancesQuery = {
     }>;
 };
 
+export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MetadataQuery = {
+    __typename?: 'Query';
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
+};
+
 export type PoolShareFragment = { __typename?: 'PoolShare'; id: string; balance: string };
 
 export type PoolSharesQueryVariables = Exact<{
@@ -3587,6 +3602,17 @@ export const PoolBalancesDocument = gql`
     }
     ${PoolBalancesFragmentDoc}
 `;
+export const MetadataDocument = gql`
+    query Metadata {
+        meta: _meta {
+            block {
+                number
+            }
+            deployment
+            hasIndexingErrors
+        }
+    }
+`;
 export const PoolSharesDocument = gql`
     query PoolShares(
         $skip: Int
@@ -3731,6 +3757,19 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolBalances',
+            );
+        },
+        Metadata(
+            variables?: MetadataQueryVariables,
+            requestHeaders?: Dom.RequestInit['headers'],
+        ): Promise<MetadataQuery> {
+            return withWrapper(
+                (wrappedRequestHeaders) =>
+                    client.request<MetadataQuery>(MetadataDocument, variables, {
+                        ...requestHeaders,
+                        ...wrappedRequestHeaders,
+                    }),
+                'Metadata',
             );
         },
         PoolShares(
