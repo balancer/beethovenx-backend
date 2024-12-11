@@ -121,6 +121,13 @@ export default <NetworkData>{
                             waGnoGNO: '0x7c16f0185a26db0ae7a9377f23bc18ea7ce5d644',
                         },
                     },
+                    wstETH: {
+                        underlyingAssetAddress: '0x6c76971f98945ae98dd7d4dfca8711ebea946ea6',
+                        aTokenAddress: '0x23e4e76d01b2002be436ce8d6044b0aa2f68b68a',
+                        wrappedTokens: {
+                            waGnowstETH: '0x773cda0cade2a3d86e6d4e30699d40bb95174ff2',
+                        },
+                    },
                 },
             },
         },
