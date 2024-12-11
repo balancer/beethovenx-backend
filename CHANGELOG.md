@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.5
+
+### Patch Changes
+
+-   e81774e: fix syncing v3 changed pools
+-   8768e95: handle custom morpho rewards
+
 ## 1.26.4
 
 ### Patch Changes
