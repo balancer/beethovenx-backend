@@ -324,6 +324,7 @@ enum PrismaPoolAprItemGroup {
     EULER
     MAKER
     DEFAULT
+    MORPHO
 }
 
 model PrismaPoolExpandedTokens {
