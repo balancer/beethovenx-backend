@@ -8,6 +8,9 @@ import { tokenService } from '../../../token/token.service';
 import { collectsYieldFee, tokenCollectsYieldFee } from '../pool-utils';
 import { YbAprConfig } from '../../../network/apr-config-types';
 
+const MORPHO_TOKEN = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
+const MORPHO_RATE = 0.07605350252138458;
+
 export class YbTokensAprService implements PoolAprService {
     private ybTokensAprHandlers: YbAprHandlers;
     private underlyingMap: { [wrapper: string]: string } = {};
@@ -31,7 +34,14 @@ export class YbTokensAprService implements PoolAprService {
 
     public async updateAprForPools(pools: PrismaPoolWithTokens[]): Promise<void> {
         const operations: any[] = [];
-        const tokenPrices = await tokenService.getTokenPrices(pools[0].chain);
+        const chains = Array.from(new Set(pools.map((pool) => pool.chain)));
+        const tokenPrices = await tokenService.getCurrentTokenPrices(chains).then((prices) =>
+            Object.fromEntries(
+                prices.map((price) => {
+                    return [price.tokenAddress, price.price];
+                }),
+            ),
+        );
         const aprs = await this.fetchYieldTokensApr();
         const poolsWithYbTokens = pools.filter((pool) => {
             return pool.tokens.find((token) => {
@@ -63,35 +73,34 @@ export class YbTokensAprService implements PoolAprService {
                 continue;
             }
 
-            for (const token of pool.tokens) {
+            const tokenAprs = pool.tokens.map((token) => {
                 const tokenApr = aprs.get(token.address);
-                if (!tokenApr) {
+                return {
+                    ...token,
+                    ...tokenApr,
+                    share: (parseFloat(token.balance) * tokenPrices[token.address]) / totalLiquidity,
+                };
+            });
+
+            for (const token of tokenAprs) {
+                if (!token.apr || !token.share) {
                     continue;
                 }
 
-                const tokenPrice = tokenService.getPriceForToken(tokenPrices, token.address, pool.chain);
-                const tokenBalance = token.balance;
-
-                const tokenLiquidity = tokenPrice * parseFloat(tokenBalance || '0');
-                const tokenPercentageInPool = tokenLiquidity / totalLiquidity;
-
-                if (!tokenApr || !tokenPercentageInPool) {
-                    continue;
-                }
-
-                let userApr = tokenApr.apr * tokenPercentageInPool;
+                let userApr = token.apr * token.share;
 
                 // AAVE + LST case, we need to apply the underlying token APR on top of the AAVE market APR
                 const aaveUnderlying = this.underlyingMap[token.address];
                 if (aaveUnderlying) {
                     const underlyingTokenApr = aprs.get(aaveUnderlying);
                     if (underlyingTokenApr) {
-                        userApr = ((1 + tokenApr.apr) * (1 + underlyingTokenApr.apr) - 1) * tokenPercentageInPool;
+                        userApr = ((1 + token.apr) * (1 + underlyingTokenApr.apr) - 1) * token.share;
                     }
                 }
 
+                let fee = 0;
                 if (collectsYieldFee(pool) && tokenCollectsYieldFee(token) && pool.dynamicData) {
-                    const fee =
+                    fee =
                         pool.type === 'META_STABLE'
                             ? parseFloat(pool.dynamicData.protocolSwapFee || '0')
                             : pool.protocolVersion === 3
@@ -111,11 +120,35 @@ export class YbTokensAprService implements PoolAprService {
                     poolId: pool.id,
                     title: `${token.token.symbol} APR`,
                     apr: userApr,
-                    group: tokenApr.group as PrismaPoolAprItemGroup,
+                    group: token.group as PrismaPoolAprItemGroup,
                     type: yieldType,
                     rewardTokenAddress: token.address,
                     rewardTokenSymbol: token.token.symbol,
                 };
+
+                // Custom APR for MORPHO vaults, hardcoding, because it's complicated to get it from the API
+                if (data.group === PrismaPoolAprItemGroup.MORPHO) {
+                    const morphoTokensShare = tokenAprs
+                        .filter((t) => t.group === 'MORPHO')
+                        .reduce((acc, t) => acc + t.share, 0);
+                    const morphoId = `${pool.id}-morpho`;
+                    const morphoData = {
+                        ...data,
+                        id: morphoId,
+                        apr: MORPHO_RATE * morphoTokensShare,
+                        type: PrismaPoolAprType.IB_YIELD,
+                        title: 'MORPHO APR',
+                        rewardTokenAddress: MORPHO_TOKEN,
+                        rewardTokenSymbol: 'MORPHO',
+                    };
+                    operations.push(
+                        prisma.prismaPoolAprItem.upsert({
+                            where: { id_chain: { id: morphoId, chain: pool.chain } },
+                            create: morphoData,
+                            update: morphoData,
+                        }),
+                    );
+                }
 
                 operations.push(
                     prisma.prismaPoolAprItem.upsert({

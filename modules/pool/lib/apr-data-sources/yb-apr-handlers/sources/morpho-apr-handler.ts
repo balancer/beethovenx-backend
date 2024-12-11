@@ -12,6 +12,8 @@ const query = gql`
                     network
                 }
                 state {
+                    apy
+                    fee
                     netApy
                 }
             }
@@ -25,6 +27,8 @@ type Vault = {
         network: 'ethereum' | 'base';
     };
     state: {
+        apy: number;
+        fee: number;
         netApy: number;
     };
 };
@@ -56,7 +60,7 @@ export class MorphoAprHandler implements AprHandler {
                     .map((vault) => [
                         vault.address.toLowerCase(),
                         {
-                            apr: vault.state.netApy,
+                            apr: vault.state.apy * (1 - vault.state.fee),
                             group: this.group,
                             isIbYield: true,
                         },
