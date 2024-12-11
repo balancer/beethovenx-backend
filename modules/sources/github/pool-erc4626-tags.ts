@@ -18,7 +18,7 @@ export const getErc4626Tags = async (
 
     for (const erc4626Metadata of erc4626MetadataList) {
         for (const chainId in erc4626Metadata.addresses) {
-            const addresses = erc4626Metadata.addresses[chainId];
+            const addresses = erc4626Metadata.addresses[chainId].map((address) => address.toLowerCase());
             const poolsWithThisErc4626Token = await prisma.prismaPool.findMany({
                 where: {
                     chain: chainIdToChain[chainId],
