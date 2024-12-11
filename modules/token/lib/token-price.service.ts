@@ -15,6 +15,7 @@ import { BptPriceHandlerService } from './token-price-handlers/bpt-price-handler
 import { SwapsPriceHandlerService } from './token-price-handlers/swaps-price-handler.service';
 import { PrismaTokenWithTypes } from '../../../prisma/prisma-types';
 import { AavePriceHandlerService } from './token-price-handlers/aave-price-handler.service';
+import { MorphoPriceHandlerService } from './token-price-handlers/morpho-price-handler.service';
 import config from '../../../config';
 
 export class TokenPriceService {
@@ -23,6 +24,7 @@ export class TokenPriceService {
         new FbeetsPriceHandlerService(),
         new ClqdrPriceHandlerService(),
         new AavePriceHandlerService(),
+        new MorphoPriceHandlerService(),
         new CoingeckoPriceHandlerService(),
         new BptPriceHandlerService(),
         new SwapsPriceHandlerService(),

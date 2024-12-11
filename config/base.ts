@@ -66,6 +66,7 @@ export default <NetworkData>{
         },
     },
     ybAprConfig: {
+        morpho: true,
         defaultHandlers: {
             cbETH: {
                 tokenAddress: '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22',

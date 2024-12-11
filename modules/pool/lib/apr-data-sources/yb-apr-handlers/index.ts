@@ -7,13 +7,10 @@ export type { AprHandler, AprHandlerConstructor, TokenApr };
 const sourceToHandler = {
     aave: sources.AaveAprHandler,
     beefy: sources.BeefyAprHandler,
-    bloom: sources.BloomAprHandler,
-    sftmx: sources.SftmxAprHandler,
     // euler: sources.EulerAprHandler, // Removed, pools rekt
     // gearbox: sources.GearboxAprHandler, // Removed, endpoint is down
     // idle: sources.IdleAprHandler, // Removed, endpoint is down
     maker: sources.MakerAprHandler,
-    ovix: sources.OvixAprHandler,
     // reaper: sources.ReaperCryptAprHandler, // Removed, pools rekt
     tetu: sources.TetuAprHandler,
     tranchess: sources.TranchessAprHandler,
@@ -27,6 +24,10 @@ const sourceToHandler = {
     dforce: sources.DForce,
     defillama: sources.Defillama,
     teth: sources.TreehouseAprHandler,
+    morpho: sources.MorphoAprHandler,
+    ovix: sources.OvixAprHandler,
+    bloom: sources.BloomAprHandler,
+    sftmx: sources.SftmxAprHandler,
 };
 
 export class YbAprHandlers {
