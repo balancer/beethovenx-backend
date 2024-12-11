@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.4
+
+### Patch Changes
+
+-   63a4492: waGnowstETH APR and price
+
 ## 1.26.3
 
 ### Patch Changes
