@@ -1,5 +1,14 @@
 # backend
 
+## 1.26.3
+
+### Patch Changes
+
+-   cdf0cb6: aave pricing
+-   d497a71: fix: handle checksum addresses in tags assignment
+-   1a0f088: Morpho APRs and pricing
+-   75cb205: handle all aave prices from aprs config
+
 ## 1.26.2
 
 ### Patch Changes
