@@ -54,7 +54,7 @@ export class MorphoAprHandler implements AprHandler {
                 items
                     .filter((vault) => vault.chain.network === morphoChain)
                     .map((vault) => [
-                        vault.address,
+                        vault.address.toLowerCase(),
                         {
                             apr: vault.state.netApy,
                             group: this.group,
