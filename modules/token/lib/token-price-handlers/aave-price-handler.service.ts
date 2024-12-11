@@ -32,18 +32,17 @@ export class AavePriceHandlerService implements TokenPriceHandler {
     }
 
     public async updatePricesForTokens(tokens: PrismaTokenWithTypes[]): Promise<PrismaTokenWithTypes[]> {
-        const acceptedTokens = this.getAcceptedTokens(tokens);
-        const acceptedAddresses = acceptedTokens.map((token) => token.address);
-        const acceptedAaveTokens = this.aaveTokens.filter((token) => acceptedAddresses.includes(token.wrappedToken));
+        const addresses = tokens.map((token) => token.address);
+        const aaveTokens = this.aaveTokens.filter((token) => addresses.includes(token.wrappedToken));
         const tokenAndPrices: tokenAndPrice[] = [];
         const timestamp = timestampRoundedUpToNearestHour();
 
         // Group tokens by chain
-        const tokensByChain = _.groupBy(acceptedTokens, 'chain');
+        const tokensByChain = _.groupBy(aaveTokens, 'chain');
 
         const updatedTokens: PrismaTokenWithTypes[] = [];
         for (const chain in tokensByChain) {
-            const aaveTokensForChain = acceptedAaveTokens.filter((token) => token.chain === (chain as Chain));
+            const aaveTokensForChain = tokensByChain[chain];
             if (!aaveTokensForChain.length) {
                 continue;
             }
@@ -73,22 +72,26 @@ export class AavePriceHandlerService implements TokenPriceHandler {
                 underlyingPrices,
             );
 
-            for (const token of tokensByChain[chain]) {
-                const underlying = aaveTokensForChain.find((t) => t.wrappedToken === token.address)?.underlying;
-                if (!underlying) {
-                    throw new Error(`AavePriceHandlerService: Underlying token for ${token.address} not found`);
+            for (const token of aaveTokensForChain) {
+                const dbToken = tokens.find((t) => t.address === token.wrappedToken);
+                const underlying = token.underlying;
+                if (!dbToken || !underlyingMap[underlying]) {
+                    console.error(
+                        `AavePriceHandlerService: Underlying price for ${token.wrappedToken} on ${chain} not found`,
+                    );
+                    continue;
                 }
                 try {
-                    const price = Number((rateMap[token.address] * underlyingMap[underlying].price).toFixed(2));
+                    const price = Number((rateMap[token.wrappedToken] * underlyingMap[underlying].price).toFixed(2));
 
-                    updatedTokens.push(token);
+                    updatedTokens.push(dbToken);
                     tokenAndPrices.push({
-                        address: token.address,
+                        address: token.wrappedToken,
                         chain: token.chain,
                         price,
                     });
                 } catch (e: any) {
-                    console.error('Aave price failed for', token.address, chain, e.message);
+                    console.error('Aave price failed for', token.wrappedToken, chain, e.message);
                 }
             }
         }
