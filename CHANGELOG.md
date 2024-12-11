@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.7
+
+### Patch Changes
+
+-   26e0aca: fix balance scaling
+
 ## 1.26.6
 
 ### Patch Changes
