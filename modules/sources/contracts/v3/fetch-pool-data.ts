@@ -98,7 +98,7 @@ export async function fetchPoolData(
                 isPoolInRecoveryMode: config?.isPoolInRecoveryMode,
                 tokens: poolTokenInfo?.[0].map((token: string, i: number) => ({
                     address: token.toLowerCase(),
-                    balance: poolTokenInfo[3][i],
+                    balance: poolTokenInfo[2][i],
                     paysYieldFees: poolTokenInfo[1][i].paysYieldFees,
                     rateProvider: poolTokenInfo[1][i].rateProvider,
                     rate: poolTokenRates ? poolTokenRates[1][i] : 1000000000000000000n,
