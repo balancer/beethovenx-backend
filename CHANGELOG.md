@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.6
+
+### Patch Changes
+
+-   0887858: fix onchain balances for v3
+
 ## 1.26.5
 
 ### Patch Changes
