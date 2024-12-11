@@ -15,17 +15,9 @@ const syncVaultData = async (
     // Enrich with onchain data for all the pools
     const onchainData = await vaultClient.fetchPoolData(ids, blockNumber);
 
-    // Needed to get the token decimals for the USD calculations,
-    // Keeping it external, because we fetch these tokens in the upsert pools function
-    const allTokens = await prisma.prismaToken.findMany({
-        where: {
-            chain: chain,
-        },
-    });
-
     // Get the data for the tables about pools
     const dbUpdates = Object.keys(onchainData).map((id) =>
-        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, chain, id, blockNumber),
+        applyOnchainDataUpdateV3({}, onchainData[id], chain, id, blockNumber),
     );
 
     // Get the prices

@@ -6,12 +6,10 @@ import { PoolDynamicUpsertData, PoolUpsertData } from '../../../prisma/prisma-ty
 export const applyOnchainDataUpdateV3 = (
     data: Partial<PoolUpsertData> = {},
     onchainPoolData: OnchainDataV3,
-    allTokens: { address: string; decimals: number }[],
     chain: Chain,
     poolId: string,
     blockNumber: bigint,
 ): PoolDynamicUpsertData => {
-    const decimals = Object.fromEntries(allTokens.map((token) => [token.address, token.decimals]));
     return {
         poolDynamicData: {
             ...data.poolDynamicData,
@@ -45,7 +43,7 @@ export const applyOnchainDataUpdateV3 = (
                 }
                 return {
                     ...token,
-                    balance: formatUnits(tokenData.balance ?? 0n, decimals[tokenData.address.toLocaleLowerCase()]),
+                    balance: formatEther(tokenData.balance ?? 0n),
                     priceRate: tokenData.rate ? formatEther(tokenData.rate) : '1',
                     balanceUSD: 0,
                 };
@@ -56,7 +54,7 @@ export const applyOnchainDataUpdateV3 = (
                 poolId,
                 address: tokenData.address.toLowerCase(),
                 index,
-                balance: formatUnits(tokenData.balance, decimals[tokenData.address.toLowerCase()]),
+                balance: formatEther(tokenData.balance),
                 priceRate: formatEther(tokenData.rate),
                 balanceUSD: 0,
             })),

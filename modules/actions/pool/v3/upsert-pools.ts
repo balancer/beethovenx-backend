@@ -87,7 +87,6 @@ export const upsertPools = async (
             const update = applyOnchainDataUpdateV3(
                 upsert,
                 onchainData[upsert.pool.id],
-                upsert.tokens,
                 chain,
                 upsert.pool.id,
                 blockNumber,
