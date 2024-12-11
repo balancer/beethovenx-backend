@@ -231,17 +231,19 @@ export function PoolController(tracer?: any) {
          */
         async syncChangedPoolsV3(chain: Chain) {
             const {
+                subgraphs: { balancerV3 },
                 balancer: {
                     v3: { vaultAddress, routerAddress },
                 },
             } = config[chain];
 
             // Guard against unconfigured chains
-            if (!vaultAddress) {
+            if (!vaultAddress || !balancerV3) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
             const viemClient = getViemClient(chain);
+            const subgraphClient = getVaultSubgraphClient(balancerV3);
 
             const lastSyncBlock = await getLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3);
             const fromBlock = lastSyncBlock + 1;
@@ -259,9 +261,14 @@ export function PoolController(tracer?: any) {
                 where: { chain, protocolVersion: 3 },
             });
 
-            const changedPools = await getChangedPoolsV3(vaultAddress, viemClient, BigInt(fromBlock), BigInt(toBlock));
+            // RPC for some reason isn't working, maybe event signatures are wrong?
+            // const changedPools = await getChangedPoolsV3(vaultAddress, viemClient, BigInt(fromBlock), BigInt(toBlock));
+            const changedPoolsIds = await subgraphClient
+                .getAllInitializedPools({
+                    _change_block: { number_gte: fromBlock },
+                })
+                .then((pools) => pools.map((pool) => pool.id.toLowerCase()));
 
-            const changedPoolsIds = changedPools.map((id) => id.toLowerCase());
             const poolsToSync = pools.filter((pool) => changedPoolsIds.includes(pool.id.toLowerCase())); // only sync pools that are in the database
             if (poolsToSync.length === 0) {
                 return [];
@@ -274,7 +281,8 @@ export function PoolController(tracer?: any) {
                 chain,
             );
 
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock);
+            // Leaving safety margin for reorgs
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock - 10n);
 
             return poolsToSync.map(({ id }) => id);
         },
