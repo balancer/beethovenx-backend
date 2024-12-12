@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.12
+
+### Patch Changes
+
+-   b96a671: fix: swap fee token
+
 ## 1.26.11
 
 ### Patch Changes
