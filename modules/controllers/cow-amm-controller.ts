@@ -119,7 +119,7 @@ export function CowAmmController(tracer?: any) {
             await updateVolumeAndFees(chain, poolsToSync);
             await updateSurplusAPRs();
 
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.COW_AMM_POOLS, toBlock);
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.COW_AMM_POOLS, Number(toBlock));
 
             return poolsToSync;
         },

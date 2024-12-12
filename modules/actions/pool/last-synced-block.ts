@@ -17,7 +17,7 @@ export const getLastSyncedBlock = async (chain: Chain, syncCategory: PrismaLastB
 export const upsertLastSyncedBlock = async (
     chain: Chain,
     syncCategory: PrismaLastBlockSyncedCategory,
-    blockNumber: bigint,
+    blockNumber: number,
 ) => {
     await prisma.prismaLastBlockSynced.upsert({
         where: {
@@ -27,11 +27,11 @@ export const upsertLastSyncedBlock = async (
             },
         },
         update: {
-            blockNumber: Number(blockNumber),
+            blockNumber: blockNumber,
         },
         create: {
             category: syncCategory,
-            blockNumber: Number(blockNumber),
+            blockNumber: blockNumber,
             chain,
         },
     });

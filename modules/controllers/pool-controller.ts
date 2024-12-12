@@ -220,7 +220,7 @@ export function PoolController(tracer?: any) {
             const pools = await prisma.prismaPool.findMany({ where: { chain, id: { in: poolsIds } } });
             await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
 
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, Number(latestBlock));
 
             return poolsIds;
         },
@@ -246,8 +246,8 @@ export function PoolController(tracer?: any) {
             const subgraphClient = getVaultSubgraphClient(balancerV3, chain);
 
             const lastSyncBlock = await getLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3);
-            const fromBlock = lastSyncBlock + 1;
-            const toBlock = await viemClient.getBlockNumber();
+            const fromBlock = lastSyncBlock;
+            const toBlock = await subgraphClient.getMetadata().then((metadata) => metadata.block.number);
 
             // Sepolia vault deployment block, uncomment to test from the beginning
             // const fromBlock = 5274748n;
@@ -269,22 +269,27 @@ export function PoolController(tracer?: any) {
                 })
                 .then((pools) => pools.map((pool) => pool.id.toLowerCase()));
 
-            const poolsToSync = pools.filter((pool) => changedPoolsIds.includes(pool.id.toLowerCase())); // only sync pools that are in the database
-            if (poolsToSync.length === 0) {
-                return [];
-            }
-            await syncPoolsV3(poolsToSync, viemClient, vaultAddress, chain, toBlock);
-            await syncTokenPairs(
-                poolsToSync.map(({ id }) => id),
-                viemClient,
-                routerAddress,
-                chain,
+            console.log(
+                `[syncChangedPoolsV3] Changed ${changedPoolsIds.length} pools between ${fromBlock} and ${toBlock} `,
+                changedPoolsIds,
             );
 
-            // Leaving safety margin for reorgs
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock - 10n);
+            const poolsToSync = pools.filter((pool) => changedPoolsIds.includes(pool.id.toLowerCase())); // only sync pools that are in the database
+            if (poolsToSync.length === 0) {
+                console.log(`[syncChangedPoolsV3] no pools in DB`);
+                return [];
+            }
+            const poolsToSyncIds = poolsToSync.map(({ id }) => id);
 
-            return poolsToSync.map(({ id }) => id);
+            await syncPoolsV3(poolsToSync, viemClient, vaultAddress, chain, BigInt(toBlock));
+            await syncTokenPairs(poolsToSyncIds, viemClient, routerAddress, chain);
+
+            // Leaving safety margin for reorgs
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock - 10);
+
+            console.log(`[syncChangedPoolsV3] updated pools: `, poolsToSyncIds);
+
+            return poolsToSyncIds;
         },
         async updateLiquidity24hAgoV3(chain: Chain) {
             const {

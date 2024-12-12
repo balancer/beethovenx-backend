@@ -63,7 +63,7 @@ export const syncChangedPools = async (
 
     await poolOnChainDataService.updateOnChainData(changedPools, chain, Number(endBlock), tokenPrices);
 
-    await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS, endBlock);
+    await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS, Number(endBlock));
 
     return changedPools;
 };
