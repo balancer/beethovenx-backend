@@ -149,7 +149,7 @@ export function timestampRoundedUpToNearestHour(m: moment.Moment = moment()): nu
 export const roundToHour = (timestamp: number) => Math.floor(timestamp / 3600) * 3600;
 
 /**
- * Time helper to round timestamp to the nearest midnight
+ * Time helper to round timestamp down to the midnight
  */
 export const roundToMidnight = (timestamp: number) => Math.floor(timestamp / 86400) * 86400;
 

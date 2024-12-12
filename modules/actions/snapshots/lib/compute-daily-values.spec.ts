@@ -28,8 +28,8 @@ describe('computeDailyValues', () => {
                 timestamp: 86400,
                 totalSwapVolume: 100,
                 totalSwapFee: 10,
-                volume24h: 100,
-                fees24h: 10,
+                volume24h: 0,
+                fees24h: 0,
             },
             {
                 id: '2',
@@ -83,8 +83,8 @@ describe('computeDailyValues', () => {
                 timestamp: 86400,
                 totalSwapVolume: 100,
                 totalSwapFee: 10,
-                volume24h: 100,
-                fees24h: 10,
+                volume24h: 0,
+                fees24h: 0,
             },
             {
                 id: '2',
@@ -101,8 +101,8 @@ describe('computeDailyValues', () => {
                 timestamp: 86400,
                 totalSwapVolume: 200,
                 totalSwapFee: 20,
-                volume24h: 200,
-                fees24h: 20,
+                volume24h: 0,
+                fees24h: 0,
             },
             {
                 id: '4',

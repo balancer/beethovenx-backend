@@ -15,13 +15,15 @@ export const computeDailyValues = (
         return sortedSnapshots.map((snapshot, index) => {
             const previousSnapshot = sortedSnapshots[index - 1];
 
+            // Initialize daily values with the snapshot values
+            let volume24h = snapshot.volume24h || 0;
+            let fees24h = snapshot.fees24h || 0;
+
             // Calculate daily values as the difference from the previous snapshot
-            const volume24h = previousSnapshot
-                ? Math.max((snapshot.totalSwapVolume || 0) - (previousSnapshot?.totalSwapVolume || 0), 0)
-                : snapshot.volume24h;
-            const fees24h = previousSnapshot
-                ? Math.max((snapshot.totalSwapFee || 0) - (previousSnapshot?.totalSwapFee || 0), 0)
-                : snapshot.fees24h;
+            if (previousSnapshot) {
+                volume24h = Math.max((snapshot.totalSwapVolume || 0) - (previousSnapshot.totalSwapVolume || 0), 0);
+                fees24h = Math.max((snapshot.totalSwapFee || 0) - (previousSnapshot.totalSwapFee || 0), 0);
+            }
 
             return {
                 ...snapshot,

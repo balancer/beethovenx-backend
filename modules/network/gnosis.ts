@@ -168,7 +168,7 @@ export const gnosisNetworkConfig: NetworkConfig = {
         },
         {
             name: 'sync-snapshots-v3',
-            interval: every(5, 'minutes'),
+            interval: every(10, 'minutes'),
         },
         {
             name: 'sync-hook-data',
