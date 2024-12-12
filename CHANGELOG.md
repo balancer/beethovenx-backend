@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.8
+
+### Patch Changes
+
+-   0b6d99e: remove rpc dependency on pool upserts
+-   4a6e3c7: replace USDL APR source
+
 ## 1.26.7
 
 ### Patch Changes
