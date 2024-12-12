@@ -2,9 +2,9 @@ import { Prisma, Chain } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { now, roundToMidnight } from '../../../common/time';
 import _ from 'lodash';
+import cache from 'memory-cache';
 
-const priceCacheTTL = 5 * 60; // 5 minutes
-const priceCache: Record<string, { ttl: number; items: Record<string, number> }> = {};
+const priceCacheTTL = 5 * 60 * 1000; // 5 minutes
 
 export const applyUSDValues = async (
     rawSnapshots: Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
@@ -79,9 +79,9 @@ const calculateValue = (amounts: string[], tokens: Record<number, any>, prices: 
 const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Record<string, number>> => {
     // Check cache
     const cacheKey = `${chain}-${timestamp || 'current'}`;
-    const cachedPrices = priceCache[cacheKey];
-    if (cachedPrices && cachedPrices.items.length > 0 && cachedPrices.ttl > now()) {
-        return cachedPrices.items;
+    const cachedPrices = cache.get(cacheKey);
+    if (cachedPrices) {
+        return cachedPrices;
     }
 
     const selector = {
@@ -97,7 +97,7 @@ const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Reco
 
     // Update cache
     if (Object.keys(prices).length > 0) {
-        priceCache[cacheKey] = { ttl: now() + priceCacheTTL, items: prices };
+        cache.put(cacheKey, prices, priceCacheTTL);
     }
 
     return prices;
