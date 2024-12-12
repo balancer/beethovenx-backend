@@ -225,7 +225,7 @@ export const mainnetNetworkConfig: NetworkConfig = {
         },
         {
             name: 'sync-snapshots-v3',
-            interval: every(1, 'minutes'),
+            interval: every(5, 'minutes'),
         },
         {
             name: 'sync-hook-data',

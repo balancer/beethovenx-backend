@@ -93,7 +93,9 @@ export function SnapshotsController(tracer?: any) {
             }
 
             const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
-            const entries = await syncSnapshots(vaultSubgraphClient, 'SNAPSHOTS_V3', chain, { syncLatest: false });
+            const entries = await syncSnapshots(vaultSubgraphClient, 'SNAPSHOTS_V3', chain, {
+                startFromLastSyncedBlock: false,
+            });
             // update lifetime values based on snapshots
             await updateLifetimeValues(chain, 3);
             return entries;

@@ -5,8 +5,6 @@
 -- multiple migrations, each migration adding only one value to
 -- the enum.
 
-
-ALTER TYPE "PrismaLastBlockSyncedCategory" ADD VALUE 'SNAPSHOTS_BEETS';
 ALTER TYPE "PrismaLastBlockSyncedCategory" ADD VALUE 'SNAPSHOTS_COW_AMM';
 ALTER TYPE "PrismaLastBlockSyncedCategory" ADD VALUE 'SNAPSHOTS_V2';
 ALTER TYPE "PrismaLastBlockSyncedCategory" ADD VALUE 'SNAPSHOTS_V3';

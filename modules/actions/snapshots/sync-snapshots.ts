@@ -17,14 +17,14 @@ export async function syncSnapshots(
     chain: Chain,
     options: {
         poolIds?: string[]; // Optional: Specific pool IDs to sync
-        syncLatest?: boolean; // Optional: Whether to sync based on the latest block
+        startFromLastSyncedBlock?: boolean; // Optional: Whether to sync based on the latest block
     } = {},
 ): Promise<string[]> {
-    const { poolIds = [], syncLatest = true } = options;
+    const { poolIds = [], startFromLastSyncedBlock = true } = options;
     const currentBlock = await subgraphClient.getMetadata().then((meta) => meta.block.number);
 
     let lastBlock = 0;
-    if (syncLatest) {
+    if (startFromLastSyncedBlock) {
         lastBlock = await prisma.prismaLastBlockSynced
             .findFirst({
                 where: { chain, category },
@@ -35,14 +35,18 @@ export async function syncSnapshots(
 
     // Fetch pool IDs from DB
     const poolIdsInDb = await prisma.prismaPool
-        .findMany({ where: { chain } })
+        .findMany({ where: { chain, ...(poolIds.length > 0 ? { id: { in: poolIds } } : {}) } })
         .then((pools) => pools.map((pool) => pool.id));
+
+    if (poolIdsInDb.length === 0) {
+        return [];
+    }
 
     // Fetch snapshots from subgraph client
     const snapshots = await subgraphClient
         .getAllSnapshots({
             pool_: { isInitialized: true },
-            ...(syncLatest && lastBlock > 0 ? { _change_block: { number_gte: lastBlock } } : {}),
+            ...(startFromLastSyncedBlock && lastBlock > 0 ? { _change_block: { number_gte: lastBlock } } : {}),
             ...(poolIds.length > 0 ? { pool_in: poolIds } : {}),
         })
         .then((snapshots) => snapshots.filter((snapshot) => poolIdsInDb.includes(snapshot.poolId)));
@@ -53,7 +57,7 @@ export async function syncSnapshots(
 
     let mergedSnapshots: Prisma.PrismaPoolSnapshotUncheckedCreateInput[] = snapshots;
 
-    if (syncLatest) {
+    if (startFromLastSyncedBlock) {
         // Get pool IDs and fetch the 2 latest snapshots for each from the DB
         const poolIds = [...new Set(snapshots.map((snapshot) => snapshot.poolId))];
         const dbSnapshots: Prisma.PrismaPoolSnapshotUncheckedCreateInput[] = await prisma.$queryRaw<
@@ -103,7 +107,7 @@ export async function syncSnapshots(
     }
 
     // Update the last block synced
-    if (syncLatest || poolIds.length === 0) {
+    if (startFromLastSyncedBlock || poolIds.length === 0) {
         await prisma.prismaLastBlockSynced.upsert({
             where: { category_chain: { chain, category } },
             create: { chain, category, blockNumber: currentBlock },
