@@ -1,13 +1,14 @@
-import { Chain } from '@prisma/client';
+import { Chain, PrismaTokenTypeOption } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { tokensTransformer } from '../../../sources/transformers/tokens-transformer';
 import { V3JoinedSubgraphPool } from '../../../sources/subgraphs';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
 import type { VaultClient } from '../../../sources/contracts';
-import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/fetch-erc4626-token-data';
-import { getViemClient } from '../../../sources/viem-client';
 import { poolUpsertTransformerV3 } from '../../../sources/transformers/pool-upsert-transformer-v3';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
+
+// Helper type to make a property required
+type MakePropertyRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 /**
  * Gets and syncs all the pools state with the database
@@ -34,43 +35,37 @@ export const upsertPools = async (
     // Store pool tokens and BPT in the tokens table before creating the pools
     const allTokens = tokensTransformer(subgraphPools, chain);
 
-    const enrichedTokensWithErc4626Data = await fetchErc4626AndUnderlyingTokenData(allTokens, getViemClient(chain));
-
     try {
-        await prisma.prismaToken.createMany({
-            data: enrichedTokensWithErc4626Data,
-            skipDuplicates: true,
-        });
+        await prisma.$transaction([
+            prisma.prismaToken.createMany({
+                data: allTokens,
+                skipDuplicates: true,
+            }),
+            // Add ERC4626 tags to tokens with the underlyingTokenAddress
+            ...allTokens
+                .filter(
+                    (token): token is MakePropertyRequired<typeof token, 'underlyingTokenAddress'> =>
+                        !!token.underlyingTokenAddress,
+                )
+                .map((token) => ({
+                    id: `${token.underlyingTokenAddress}-erc4626`,
+                    chain,
+                    tokenAddress: token.underlyingTokenAddress,
+                    type: PrismaTokenTypeOption.ERC4626,
+                }))
+                .map((typeData) =>
+                    prisma.prismaTokenType.upsert({
+                        where: { id_chain: { id: typeData.id, chain: typeData.chain } },
+                        create: typeData,
+                        update: typeData,
+                    }),
+                ),
+        ]);
     } catch (e) {
         console.error('Error creating tokens', e);
     }
 
-    // update ERC4626 type data
-    for (const token of enrichedTokensWithErc4626Data) {
-        if (token.underlyingTokenAddress) {
-            await prisma.prismaTokenType.upsert({
-                where: {
-                    id_chain: {
-                        id: `${token.address}-erc4626`,
-                        chain,
-                    },
-                },
-                create: {
-                    id: `${token.address}-erc4626`,
-                    chain,
-                    tokenAddress: token.address,
-                    type: 'ERC4626',
-                },
-                update: {
-                    id: `${token.address}-erc4626`,
-                    chain,
-                    tokenAddress: token.address,
-                    type: 'ERC4626',
-                },
-            });
-        }
-    }
-
+    // There won't be pricing for new tokens
     // Get the prices
     const prices = await prisma.prismaTokenCurrentPrice
         .findMany({

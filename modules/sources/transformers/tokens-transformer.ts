@@ -15,13 +15,28 @@ export function tokensTransformer(
 ) {
     return vaultSubgraphPools.flatMap((pool) => {
         return [
-            ...pool.tokens.map((token) => ({
-                address: token.address,
-                decimals: token.decimals,
-                name: token.name,
-                symbol: token.symbol,
-                chain: chain,
-            })),
+            ...pool.tokens.flatMap((token) => [
+                {
+                    address: token.address,
+                    decimals: token.decimals,
+                    name: token.name,
+                    symbol: token.symbol,
+                    chain: chain,
+                    underlyingTokenAddress: token.buffer?.underlyingToken?.address,
+                },
+                // Underlying token is needed for getting the pricing data based on the underlying token
+                ...(token.buffer?.underlyingToken
+                    ? [
+                          {
+                              address: token.buffer.underlyingToken.address,
+                              decimals: token.buffer.underlyingToken.decimals,
+                              name: token.buffer.underlyingToken.name,
+                              symbol: token.buffer.underlyingToken.symbol,
+                              chain: chain,
+                          },
+                      ]
+                    : []),
+            ]),
             {
                 address: pool.address,
                 decimals: 18,
