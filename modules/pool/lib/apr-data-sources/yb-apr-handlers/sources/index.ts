@@ -18,6 +18,7 @@ export * from './dforce-apr-handler';
 export * from './defillama-apr-handler';
 export * from './teth';
 export * from './morpho-apr-handler';
+export * from './usdl-apr-handler';
 // These need a refactor, because they depend on the network context
 export * from './sftmx-apr-handler';
 export * from './ovix-apr-handler';

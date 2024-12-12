@@ -113,6 +113,7 @@ export default <NetworkData>{
         },
     },
     ybAprConfig: {
+        usdl: true,
         morpho: true,
         aave: {
             v2: {

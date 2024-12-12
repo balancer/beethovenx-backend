@@ -67,6 +67,7 @@ export default <NetworkData>{
     multicall3: '0xca11bde05977b3631167028862be2a173976ca11',
     avgBlockSpeed: 1,
     ybAprConfig: {
+        usdl: true,
         aave: {
             v3: {
                 subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/DLuE98kEb5pQNXAcKFQGQgfSQ57Xdou4jnVbAEqMfy3B`,
@@ -245,12 +246,6 @@ export default <NetworkData>{
                 tokenAddress: '0xd3443ee1e91af28e5fb858fbd0d72a63ba8046e0',
                 sourceUrl: 'https://backend-arbitrum.gains.trade/apr',
                 path: 'collateralRewards.{symbol == "USDC"}.vaultApr',
-                isIbYield: true,
-            },
-            wUSDL: {
-                tokenAddress: '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559',
-                sourceUrl: 'https://api.paxos.com/v2/tokens/usdl/apy',
-                path: 'apy',
                 isIbYield: true,
             },
         },

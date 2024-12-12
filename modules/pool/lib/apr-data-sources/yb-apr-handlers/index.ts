@@ -25,6 +25,7 @@ const sourceToHandler = {
     defillama: sources.Defillama,
     teth: sources.TreehouseAprHandler,
     morpho: sources.MorphoAprHandler,
+    usdl: sources.UsdlAprHandler,
     ovix: sources.OvixAprHandler,
     bloom: sources.BloomAprHandler,
     sftmx: sources.SftmxAprHandler,
