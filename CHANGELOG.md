@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.10
+
+### Patch Changes
+
+-   f02c667: fixed V3 snapshot fees
+
 ## 1.26.9
 
 ### Patch Changes
