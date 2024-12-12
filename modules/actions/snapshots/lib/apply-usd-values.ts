@@ -3,10 +3,13 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { now, roundToMidnight } from '../../../common/time';
 import _ from 'lodash';
 
+const priceCacheTTL = 5 * 60; // 5 minutes
+const priceCache: Record<string, { ttl: number; items: Record<string, number> }> = {};
+
 export const applyUSDValues = async (
     rawSnapshots: Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
-    fetchPrices: (chain: Chain, timestamp?: number) => Promise<Record<string, number>> = fetchPricesHelper,
-    fetchPoolTokens: (poolIds: string[]) => Promise<Record<string, any[]>> = fetchPoolTokensHelper,
+    fetchPrices = fetchPricesHelper,
+    fetchPoolTokens = fetchPoolTokensHelper,
 ): Promise<Prisma.PrismaPoolSnapshotUncheckedCreateInput[]> => {
     const lastMidnight = roundToMidnight(now());
     const snapshots: Prisma.PrismaPoolSnapshotUncheckedCreateInput[] = [];
@@ -67,15 +70,37 @@ const calculateValue = (amounts: string[], tokens: Record<number, any>, prices: 
     }, 0);
 };
 
+/**
+ *
+ * @param chain
+ * @param timestamp No timestamp for current prices
+ * @returns
+ */
 const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Record<string, number>> => {
+    // Check cache
+    const cacheKey = `${chain}-${timestamp || 'current'}`;
+    const cachedPrices = priceCache[cacheKey];
+    if (cachedPrices && cachedPrices.items.length > 0 && cachedPrices.ttl > now()) {
+        return cachedPrices.items;
+    }
+
     const selector = {
-        where: { chain, ...(timestamp ? { timestamp } : {}) },
+        where: { chain, ...(timestamp ? { timestamp } : {}) }, // No timestamp for current prices
         select: { tokenAddress: true, price: true },
-    }; // For current prices
+    };
+
     const priceData = await (timestamp
         ? prisma.prismaTokenPrice.findMany(selector)
         : prisma.prismaTokenCurrentPrice.findMany(selector));
-    return priceData.reduce((acc, { tokenAddress, price }) => ({ ...acc, [tokenAddress]: price }), {});
+
+    const prices = priceData.reduce((acc, { tokenAddress, price }) => ({ ...acc, [tokenAddress]: price }), {});
+
+    // Update cache
+    if (Object.keys(prices).length > 0) {
+        priceCache[cacheKey] = { ttl: now() + priceCacheTTL, items: prices };
+    }
+
+    return prices;
 };
 
 const fetchPoolTokensHelper = (poolIds: string[]): Promise<Record<string, any[]>> => {

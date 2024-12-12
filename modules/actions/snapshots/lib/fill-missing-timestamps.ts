@@ -13,10 +13,6 @@ export const fillMissingTimestamps = (
         // Sort the group by timestamp
         const sortedItems = _.sortBy(groupItems, 'timestamp');
 
-        if (sortedItems.length === 0) {
-            return [];
-        }
-
         // Find the range of timestamps
         const timestamps = sortedItems.map((item) => item.timestamp);
         const minTimestamp = _.min(timestamps) ?? 0;
@@ -26,6 +22,11 @@ export const fillMissingTimestamps = (
         const allTimestamps: number[] = [];
         for (let ts = minTimestamp; ts <= maxTimestamp; ts += secondsPerDay) {
             allTimestamps.push(ts);
+        }
+
+        // If all timestamps are already present, no need to fill
+        if (sortedItems.length === allTimestamps.length) {
+            return sortedItems;
         }
 
         // Fill missing timestamps
