@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.9
+
+### Patch Changes
+
+-   dbbe6a9: refactored v3 snapshots syncing
+
 ## 1.26.8
 
 ### Patch Changes
