@@ -1128,6 +1128,8 @@ export type PoolToken = {
     totalProtocolSwapFee: Scalars['BigDecimal'];
     /** Total protocol yield fees collected for this token */
     totalProtocolYieldFee: Scalars['BigDecimal'];
+    /** Total swap fees collected for this token */
+    totalSwapFee: Scalars['BigDecimal'];
     /** Total volume of this token traded in the Pool */
     volume: Scalars['BigDecimal'];
 };
@@ -1320,6 +1322,14 @@ export type PoolToken_Filter = {
     totalProtocolYieldFee_lte?: InputMaybe<Scalars['BigDecimal']>;
     totalProtocolYieldFee_not?: InputMaybe<Scalars['BigDecimal']>;
     totalProtocolYieldFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     volume?: InputMaybe<Scalars['BigDecimal']>;
     volume_gt?: InputMaybe<Scalars['BigDecimal']>;
     volume_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1392,6 +1402,7 @@ export enum PoolToken_OrderBy {
     Symbol = 'symbol',
     TotalProtocolSwapFee = 'totalProtocolSwapFee',
     TotalProtocolYieldFee = 'totalProtocolYieldFee',
+    TotalSwapFee = 'totalSwapFee',
     Volume = 'volume',
 }
 
@@ -2145,6 +2156,7 @@ export enum RateProvider_OrderBy {
     TokenSymbol = 'token__symbol',
     TokenTotalProtocolSwapFee = 'token__totalProtocolSwapFee',
     TokenTotalProtocolYieldFee = 'token__totalProtocolYieldFee',
+    TokenTotalSwapFee = 'token__totalSwapFee',
     TokenVolume = 'token__volume',
 }
 
@@ -3080,6 +3092,7 @@ export type PoolSnapshotFragment = {
     swapsCount: string;
     holdersCount: string;
     totalSwapVolumes: Array<string>;
+    totalSwapFees: Array<string>;
     totalProtocolSwapFees: Array<string>;
     totalProtocolYieldFees: Array<string>;
     pool: {
@@ -3110,6 +3123,7 @@ export type PoolSnapshotsQuery = {
         swapsCount: string;
         holdersCount: string;
         totalSwapVolumes: Array<string>;
+        totalSwapFees: Array<string>;
         totalProtocolSwapFees: Array<string>;
         totalProtocolYieldFees: Array<string>;
         pool: {
@@ -3470,6 +3484,7 @@ export const PoolSnapshotFragmentDoc = gql`
         swapsCount
         holdersCount
         totalSwapVolumes
+        totalSwapFees
         totalProtocolSwapFees
         totalProtocolYieldFees
     }

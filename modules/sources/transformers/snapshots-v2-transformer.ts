@@ -47,6 +47,7 @@ export const snapshotsV2Transformer = (
         holdersCount: Number(snapshot?.holdersCount) || previousDaySnapshot?.holdersCount || 0,
         amounts: snapshot?.amounts || previousDaySnapshot?.amounts || defaultZeros,
         totalVolumes: [], // V3 field only, it's a split in token volumes
+        totalSwapFees: [], // V3 field only, it's a split in token volumes
         totalProtocolSwapFees: [], // V3 field only, it's a split in fees per token
         totalProtocolYieldFees: [], // V3 field only, it's a split in fees per token
         totalSurpluses: [], // V3 field only, it's a split in token surpluses

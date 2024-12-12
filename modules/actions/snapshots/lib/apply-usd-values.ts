@@ -35,7 +35,7 @@ export const applyUSDValues = async (
                 poolTokens[snapshot.poolId].length === 0 ||
                 !snapshot.amounts ||
                 !snapshot.totalVolumes ||
-                !snapshot.totalProtocolSwapFees
+                !snapshot.totalSwapFees
             ) {
                 snapshots.push(snapshot);
                 continue;
@@ -51,7 +51,7 @@ export const applyUSDValues = async (
             // Swap volume is only for the tokenIn
             const totalSwapVolume = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
             const totalLiquidity = calculateValue(snapshot.amounts as string[], tokens, prices);
-            const totalSwapFee = calculateValue(snapshot.totalProtocolSwapFees as string[], tokens, prices);
+            const totalSwapFee = calculateValue(snapshot.totalSwapFees as string[], tokens, prices);
             const sharePrice = snapshot.totalSharesNum === 0 ? 0 : totalLiquidity / snapshot.totalSharesNum;
 
             // Calculate USD values

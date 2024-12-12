@@ -542,6 +542,7 @@ model PrismaPoolSnapshot {
     holdersCount        Int
     amounts             String[]
     totalVolumes        String[] @default([]) // Used for V3 snapshots
+    totalSwapFees       String[] @default([]) // Used for V3 snapshots
     totalSurpluses      String[] @default([]) // Used for cow amm snapshots
     totalProtocolSwapFees String[] @default([]) // Used for V3 snapshots
     totalProtocolYieldFees String[] @default([]) // Used for V3 snapshots

@@ -50,6 +50,12 @@ export const snapshotsCowAmmTransformer = (
             }) ||
             previousDaySnapshot?.totalVolumes ||
             defaultZeros,
+        totalSwapFees:
+            snapshot?.totalSwapFees.map((balance, index) => {
+                return String(weiToFloat(balance, orderedTokens[index].decimals || 18));
+            }) ||
+            previousDaySnapshot?.totalSwapFees ||
+            defaultZeros,
         totalSurpluses:
             snapshot?.totalSurpluses.map((balance, index) => {
                 return String(weiToFloat(balance, orderedTokens[index].decimals || 18));

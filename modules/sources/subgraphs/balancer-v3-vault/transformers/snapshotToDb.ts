@@ -20,6 +20,7 @@ export const snapshotToDb = (
         swapsCount: Number(snapshot?.swapsCount) || 0,
         holdersCount: Number(snapshot?.holdersCount) || 0,
         totalVolumes: snapshot?.totalSwapVolumes || defaultZeros,
+        totalSwapFees: snapshot?.totalSwapFees || defaultZeros,
         totalProtocolSwapFees: snapshot?.totalProtocolSwapFees || defaultZeros,
         totalProtocolYieldFees: snapshot?.totalProtocolYieldFees || defaultZeros,
         amounts: snapshot?.balances || defaultZeros,
