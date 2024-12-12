@@ -22,9 +22,13 @@ export class YbTokensAprService implements PoolAprService {
             Object.values({
                 ...aprConfig.aave?.v3?.tokens,
                 ...aprConfig.aave?.lido?.tokens,
-            }).flatMap((market) =>
-                Object.values(market.wrappedTokens).map((wrapper) => [wrapper, market.underlyingAssetAddress]),
-            ),
+            }).flatMap((market) => [
+                ...Object.values(market.wrappedTokens).map((wrapper) => [wrapper, market.underlyingAssetAddress]),
+                // Morpho Steakhouse USDC
+                ['0xbeef01735c132ada46aa9aa4c54623caa92a64cb', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+                // Morpho Coinshift USDL
+                ['0xbeefc01767ed5086f35decb6c00e6c12bc7476c1', '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559 '],
+            ]),
         );
     }
 
@@ -90,11 +94,11 @@ export class YbTokensAprService implements PoolAprService {
                 let userApr = token.apr * token.share;
 
                 // AAVE + LST case, we need to apply the underlying token APR on top of the AAVE market APR
-                const aaveUnderlying = this.underlyingMap[token.address];
-                if (aaveUnderlying) {
-                    const underlyingTokenApr = aprs.get(aaveUnderlying);
-                    if (underlyingTokenApr) {
-                        userApr = ((1 + token.apr) * (1 + underlyingTokenApr.apr) - 1) * token.share;
+                const underlying = this.underlyingMap[token.address];
+                if (underlying) {
+                    const underlyingApr = aprs.get(underlying);
+                    if (underlyingApr) {
+                        userApr = ((1 + token.apr) * (1 + underlyingApr.apr) - 1) * token.share;
                     }
                 }
 
