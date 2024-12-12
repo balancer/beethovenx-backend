@@ -1,7 +1,7 @@
 import { Chain } from '@prisma/client';
 import config from '../../config';
 import { prisma } from '../../prisma/prisma-client';
-import { syncSnapshotsV2, fillMissingSnapshotsV3, fillMissingSnapshotsV2, syncSnapshots } from '../actions/snapshots';
+import { syncSnapshotsV2, fillMissingSnapshotsV2, syncSnapshots } from '../actions/snapshots';
 import { PoolSnapshotService } from '../actions/snapshots/pool-snapshot-service';
 import { getVaultSubgraphClient } from '../sources/subgraphs';
 import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
@@ -100,10 +100,6 @@ export function SnapshotsController(tracer?: any) {
         },
         async fillMissingSnapshotsV2(chain: Chain) {
             const entries = await fillMissingSnapshotsV2(chain);
-            return entries;
-        },
-        async fillMissingSnapshotsV3(chain: Chain) {
-            const entries = await fillMissingSnapshotsV3(chain);
             return entries;
         },
     };
