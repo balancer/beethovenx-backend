@@ -26,7 +26,7 @@ export async function swapV3Transformer(swaps: SwapFragment[], chain: Chain): Pr
         valueUSD: 0, // Will be calculated later
         payload: {
             fee: {
-                address: swap.tokenOut,
+                address: swap.swapFeeToken,
                 amount: swap.swapFeeAmount,
                 valueUSD: '0', // Will be calculated later
             },
