@@ -69,8 +69,6 @@ extend type Mutation {
     tokenSyncLatestFxPrices(chain: GqlChain!): String!
     tokenDeleteTokenType(tokenAddress: String!, type: GqlTokenType!): String!
     tokenReloadAllTokenTypes: String!
-
-    tokenReloadErc4626Tokens(chains: [GqlChain!]!): [GqlTokenMutationResult!]!
 }
 
 """

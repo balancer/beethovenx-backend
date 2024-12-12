@@ -3582,7 +3582,6 @@ export const schema = gql`
         sftmxSyncWithdrawalRequests: String!
         tokenDeleteTokenType(tokenAddress: String!, type: GqlTokenType!): String!
         tokenReloadAllTokenTypes: String!
-        tokenReloadErc4626Tokens(chains: [GqlChain!]!): [GqlTokenMutationResult!]!
         tokenReloadTokenPrices(chains: [GqlChain!]!): Boolean
         tokenSyncLatestFxPrices(chain: GqlChain!): String!
         tokenSyncTokenDefinitions: String!

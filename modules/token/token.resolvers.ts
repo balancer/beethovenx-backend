@@ -6,7 +6,6 @@ import { headerChain } from '../context/header-chain';
 import { syncLatestFXPrices } from './latest-fx-price';
 import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 import moment from 'moment';
-import { TokenController } from '../controllers/token-controller';
 
 const resolvers: Resolvers = {
     Query: {
@@ -207,23 +206,6 @@ const resolvers: Resolvers = {
             await tokenService.reloadAllTokenTypes();
 
             return 'success';
-        },
-        tokenReloadErc4626Tokens: async (parent, { chains }, context) => {
-            isAdminRoute(context);
-
-            const result: { type: string; chain: GqlChain; success: boolean; error: string | undefined }[] = [];
-
-            for (const chain of chains) {
-                try {
-                    await TokenController().syncErc4626Tokens(chain);
-                    result.push({ type: 'v3', chain, success: true, error: undefined });
-                } catch (e) {
-                    result.push({ type: 'v3', chain, success: false, error: `${e}` });
-                    console.log(`Could not reload v3 pools for chain ${chain}: ${e}`);
-                }
-            }
-
-            return result;
         },
     },
 };

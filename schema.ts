@@ -2392,7 +2392,6 @@ export interface Mutation {
     sftmxSyncWithdrawalRequests: Scalars['String'];
     tokenDeleteTokenType: Scalars['String'];
     tokenReloadAllTokenTypes: Scalars['String'];
-    tokenReloadErc4626Tokens: Array<GqlTokenMutationResult>;
     tokenReloadTokenPrices?: Maybe<Scalars['Boolean']>;
     tokenSyncLatestFxPrices: Scalars['String'];
     tokenSyncTokenDefinitions: Scalars['String'];
@@ -2435,10 +2434,6 @@ export interface MutationPoolSyncAllCowSnapshotsArgs {
 export interface MutationTokenDeleteTokenTypeArgs {
     tokenAddress: Scalars['String'];
     type: GqlTokenType;
-}
-
-export interface MutationTokenReloadErc4626TokensArgs {
-    chains: Array<GqlChain>;
 }
 
 export interface MutationTokenReloadTokenPricesArgs {
@@ -5220,12 +5215,6 @@ export type MutationResolvers<
         RequireFields<MutationTokenDeleteTokenTypeArgs, 'tokenAddress' | 'type'>
     >;
     tokenReloadAllTokenTypes?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    tokenReloadErc4626Tokens?: Resolver<
-        Array<ResolversTypes['GqlTokenMutationResult']>,
-        ParentType,
-        ContextType,
-        RequireFields<MutationTokenReloadErc4626TokensArgs, 'chains'>
-    >;
     tokenReloadTokenPrices?: Resolver<
         Maybe<ResolversTypes['Boolean']>,
         ParentType,
