@@ -2,6 +2,25 @@ import { computeDailyValues } from './compute-daily-values';
 import { Prisma } from '@prisma/client';
 
 describe('computeDailyValues', () => {
+    it('should compute inital values for a single snapshot', () => {
+        const inputSnapshots = [{ id: '1', poolId: 'poolA', timestamp: 86400, totalSwapVolume: 100, totalSwapFee: 10 }];
+
+        const expectedOutput = [
+            {
+                id: '1',
+                poolId: 'poolA',
+                timestamp: 86400,
+                totalSwapVolume: 100,
+                totalSwapFee: 10,
+                volume24h: 100,
+                fees24h: 10,
+            },
+        ];
+
+        const result = computeDailyValues(inputSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[]);
+
+        expect(result).toEqual(expectedOutput);
+    });
     it('should compute daily values for a single pool', () => {
         const inputSnapshots = [
             { id: '1', poolId: 'poolA', timestamp: 86400, totalSwapVolume: 100, totalSwapFee: 10 },

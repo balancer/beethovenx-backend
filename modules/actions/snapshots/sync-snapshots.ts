@@ -5,7 +5,6 @@ import { PoolSnapshot_Filter } from '../../sources/subgraphs/balancer-v3-vault/g
 import { fillMissingTimestamps } from './lib/fill-missing-timestamps';
 import { computeDailyValues } from './lib/compute-daily-values';
 import { applyUSDValues } from './lib/apply-usd-values';
-import { specialCaseForInitialSnapshots } from './special-case-for-inital-snapshots';
 
 type SnapshotsSubgraphClient = {
     getMetadata: () => Promise<{ block: { number: number } }>;
@@ -114,12 +113,6 @@ export async function syncSnapshots(
             create: { chain, category, blockNumber: currentBlock },
             update: { blockNumber: currentBlock },
         });
-    }
-
-    // This will go away once we have daily buckets in SG
-    // Also, i don't want to run it on every sync
-    if (processedSnapshots.length > 0) {
-        await specialCaseForInitialSnapshots(chain);
     }
 
     return processedSnapshots.map((snapshot) => snapshot.id);

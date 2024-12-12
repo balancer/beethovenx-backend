@@ -12,6 +12,17 @@ export const computeDailyValues = (
         // Sort snapshots by timestamp for the pool
         const sortedSnapshots = _.sortBy(snapshots, 'timestamp');
 
+        // Handle edge case when there is only one snapshot per pool
+        if (sortedSnapshots.length === 1) {
+            return [
+                {
+                    ...sortedSnapshots[0],
+                    volume24h: sortedSnapshots[0].totalSwapVolume || 0,
+                    fees24h: sortedSnapshots[0].totalSwapFee || 0,
+                },
+            ];
+        }
+
         return sortedSnapshots.map((snapshot, index) => {
             const previousSnapshot = sortedSnapshots[index - 1];
 
