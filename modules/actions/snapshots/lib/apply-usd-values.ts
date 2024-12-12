@@ -78,7 +78,7 @@ const calculateValue = (amounts: string[], tokens: Record<number, any>, prices: 
  */
 const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Record<string, number>> => {
     // Check cache
-    const cacheKey = `${chain}-${timestamp || 'current'}`;
+    const cacheKey = `prices-${chain}-${timestamp || 'current'}`;
     const cachedPrices = cache.get(cacheKey);
     if (cachedPrices) {
         return cachedPrices;
