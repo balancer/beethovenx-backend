@@ -18,18 +18,21 @@ export class YbTokensAprService implements PoolAprService {
     constructor(private aprConfig: YbAprConfig, private chain: Chain) {
         this.ybTokensAprHandlers = new YbAprHandlers(this.aprConfig, chain);
         // Build a map of wrapped tokens to underlying tokens for Aave
-        this.underlyingMap = Object.fromEntries(
-            Object.values({
-                ...aprConfig.aave?.v3?.tokens,
-                ...aprConfig.aave?.lido?.tokens,
-            }).flatMap((market) => [
-                ...Object.values(market.wrappedTokens).map((wrapper) => [wrapper, market.underlyingAssetAddress]),
-                // Morpho Steakhouse USDC
-                ['0xbeef01735c132ada46aa9aa4c54623caa92a64cb', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
-                // Morpho Coinshift USDL
-                ['0xbeefc01767ed5086f35decb6c00e6c12bc7476c1', '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559 '],
-            ]),
+        const aaveMerged = {
+            ...aprConfig.aave?.v3?.tokens,
+            ...aprConfig.aave?.lido?.tokens,
+        };
+
+        const aaveTokens = Object.fromEntries(
+            Object.values(aaveMerged).flatMap((market) =>
+                Object.values(market.wrappedTokens).map((wrapper) => [wrapper, market.underlyingAssetAddress]),
+            ),
         );
+
+        this.underlyingMap = {
+            ...aaveTokens,
+            ...(aprConfig.morpho?.tokens || {}),
+        };
     }
 
     getAprServiceName(): string {
