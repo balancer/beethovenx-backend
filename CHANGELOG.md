@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.11
+
+### Patch Changes
+
+-   e2c788f: fix: handle swap fees in V3 snapshots
+
 ## 1.26.10
 
 ### Patch Changes
