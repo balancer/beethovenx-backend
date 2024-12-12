@@ -97,8 +97,6 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return allSnapshotsSynced;
     } else if (job === 'sync-cow-amm-swaps') {
         return CowAmmController().syncSwaps(chain);
-    } else if (job === 'update-com-amm-volume-and-fees') {
-        return CowAmmController().updateVolumeAndFees(chain);
     } else if (job === 'sync-cow-amm-join-exits') {
         return CowAmmController().syncJoinExits(chain);
     } else if (job === 'update-surplus-aprs') {

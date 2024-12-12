@@ -269,14 +269,8 @@ export function PoolController(tracer?: any) {
                 })
                 .then((pools) => pools.map((pool) => pool.id.toLowerCase()));
 
-            console.log(
-                `[syncChangedPoolsV3] Changed ${changedPoolsIds.length} pools between ${fromBlock} and ${toBlock} `,
-                changedPoolsIds,
-            );
-
             const poolsToSync = pools.filter((pool) => changedPoolsIds.includes(pool.id.toLowerCase())); // only sync pools that are in the database
             if (poolsToSync.length === 0) {
-                console.log(`[syncChangedPoolsV3] no pools in DB`);
                 return [];
             }
             const poolsToSyncIds = poolsToSync.map(({ id }) => id);
@@ -286,8 +280,6 @@ export function PoolController(tracer?: any) {
 
             // Leaving safety margin for reorgs
             await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock - 10);
-
-            console.log(`[syncChangedPoolsV3] updated pools: `, poolsToSyncIds);
 
             return poolsToSyncIds;
         },
