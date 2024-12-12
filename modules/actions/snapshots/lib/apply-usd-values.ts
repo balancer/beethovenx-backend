@@ -43,8 +43,14 @@ export const applyUSDValues = async (
 
             const tokens = _.keyBy(poolTokens[snapshot.poolId], 'index');
 
+            // With token do we have the price for?
+            let swapTokenIndex = Object.values(tokens).findIndex(({ address }) => prices[address]);
+            if (swapTokenIndex < 0) swapTokenIndex = 0;
+            const swapVolume = (snapshot.totalVolumes as string[])[swapTokenIndex];
+
+            // Swap volume is only for the tokenIn
+            const totalSwapVolume = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
             const totalLiquidity = calculateValue(snapshot.amounts as string[], tokens, prices);
-            const totalSwapVolume = calculateValue(snapshot.totalVolumes as string[], tokens, prices);
             const totalSwapFee = calculateValue(snapshot.totalProtocolSwapFees as string[], tokens, prices);
             const sharePrice = snapshot.totalSharesNum === 0 ? 0 : totalLiquidity / snapshot.totalSharesNum;
 
