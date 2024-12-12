@@ -16,8 +16,12 @@ export const computeDailyValues = (
             const previousSnapshot = sortedSnapshots[index - 1];
 
             // Calculate daily values as the difference from the previous snapshot
-            const volume24h = Math.max((snapshot.totalSwapVolume || 0) - (previousSnapshot?.totalSwapVolume || 0), 0);
-            const fees24h = Math.max((snapshot.totalSwapFee || 0) - (previousSnapshot?.totalSwapFee || 0), 0);
+            const volume24h = previousSnapshot
+                ? Math.max((snapshot.totalSwapVolume || 0) - (previousSnapshot?.totalSwapVolume || 0), 0)
+                : snapshot.volume24h;
+            const fees24h = previousSnapshot
+                ? Math.max((snapshot.totalSwapFee || 0) - (previousSnapshot?.totalSwapFee || 0), 0)
+                : snapshot.fees24h;
 
             return {
                 ...snapshot,

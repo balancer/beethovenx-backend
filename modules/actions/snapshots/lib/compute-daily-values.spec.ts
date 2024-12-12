@@ -119,23 +119,38 @@ describe('computeDailyValues', () => {
 
         expect(result).toEqual(expectedOutput);
     });
-
     it('should handle missing totalSwapVolume and totalSwapFee gracefully', () => {
         const inputSnapshots = [
-            { id: '1', poolId: 'poolA', timestamp: 86400 },
-            { id: '2', poolId: 'poolA', timestamp: 2 * 86400, totalSwapVolume: 300, totalSwapFee: 30 },
-        ];
-
-        const expectedOutput = [
-            { id: '1', poolId: 'poolA', timestamp: 86400, volume24h: 0, fees24h: 0 },
             {
                 id: '2',
                 poolId: 'poolA',
                 timestamp: 2 * 86400,
-                totalSwapVolume: 300,
-                totalSwapFee: 30,
-                volume24h: 300,
-                fees24h: 30,
+                totalSwapVolume: 200,
+                totalSwapFee: 20,
+                volume24h: 100,
+                fees24h: 10,
+            },
+            { id: '3', poolId: 'poolA', timestamp: 3 * 86400, totalSwapVolume: 400, totalSwapFee: 40 },
+        ];
+
+        const expectedOutput = [
+            {
+                id: '2',
+                poolId: 'poolA',
+                timestamp: 2 * 86400,
+                totalSwapVolume: 200,
+                totalSwapFee: 20,
+                volume24h: 100,
+                fees24h: 10,
+            },
+            {
+                id: '3',
+                poolId: 'poolA',
+                timestamp: 3 * 86400,
+                totalSwapVolume: 400,
+                totalSwapFee: 40,
+                volume24h: 200,
+                fees24h: 20,
             },
         ];
 
