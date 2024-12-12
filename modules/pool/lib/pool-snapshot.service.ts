@@ -222,6 +222,7 @@ export class PoolSnapshotService {
             totalProtocolSwapFees: [],
             totalProtocolYieldFees: [],
             totalVolumes: [],
+            totalSwapFees: [],
             totalSurpluses: [],
         };
     }
