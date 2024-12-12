@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.13
+
+### Patch Changes
+
+-   958fd86: fix: changed pools syncing
+
 ## 1.26.12
 
 ### Patch Changes
