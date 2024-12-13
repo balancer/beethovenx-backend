@@ -45,8 +45,3 @@ export const AllNetworkConfigsKeyedOnChain: { [chain in Chain]: NetworkConfig } 
 
 export const BalancerChainIds = ['1', '137', '42161', '100', '1101', '43114', '8453', '11155111', '252', '34443'];
 export const BeethovenChainIds = ['250', '10'];
-
-export const chainToIdMap = Object.values(AllNetworkConfigs).reduce((acc, config) => {
-    acc[config.data.chain.gqlId] = String(config.data.chain.id);
-    return acc;
-}, {} as { [chain in Chain]: string });

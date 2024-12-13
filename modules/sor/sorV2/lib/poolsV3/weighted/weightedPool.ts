@@ -6,7 +6,7 @@ import { Chain } from '@prisma/client';
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { GqlPoolType } from '../../../../../../schema';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 
 import { BasePoolV3 } from '../../poolsV2/basePool';
 import { WeightedBasePoolToken } from '../../poolsV2/weighted/weightedBasePoolToken';

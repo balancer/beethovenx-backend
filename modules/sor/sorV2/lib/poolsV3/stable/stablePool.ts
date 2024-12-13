@@ -5,7 +5,7 @@ import { AddKind, RemoveKind, StableState, Vault } from '@balancer-labs/balancer
 import { Chain } from '@prisma/client';
 
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { StableData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
 

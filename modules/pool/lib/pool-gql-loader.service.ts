@@ -45,7 +45,8 @@ import { Chain, Prisma, PrismaPoolAprType, PrismaUserStakedBalance, PrismaUserWa
 import { isWeightedPoolV2 } from './pool-utils';
 import { networkContext } from '../../network/network-context.service';
 import { fixedNumber } from '../../view-helpers/fixed-number';
-import { BeethovenChainIds, chainToIdMap } from '../../network/network-config';
+import { BeethovenChainIds } from '../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../network/chain-id-to-chain';
 import { GithubContentService } from '../../content/github-content.service';
 import { SanityContentService } from '../../content/sanity-content.service';
 import { ElementData, FxData, GyroData, StableData } from '../subgraph-mapper';

@@ -20,7 +20,7 @@ describe('upsert pools debug', () => {
             throw new Error(`Chain not configured: ${chain}`);
         }
 
-        const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+        const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
         const allPools = await client.getAllInitializedPools();
         const pools = allPools.filter(
             (pool) =>

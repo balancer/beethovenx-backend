@@ -10,7 +10,7 @@ import {
 } from './content-types';
 import SanityClient from '@sanity/client';
 import { env } from '../../apps/env';
-import { chainToIdMap } from '../network/network-config';
+import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 
 interface SanityToken {
     name: string;

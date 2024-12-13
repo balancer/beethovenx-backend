@@ -1,7 +1,6 @@
 import { prisma } from '../../prisma/prisma-client';
 import { Chain } from '@prisma/client';
 import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
-import { chainToIdMap } from '../network/network-config';
 
 /**
  * 'Latest FX Price' is relevant only to FX pools. It is sourced from offchain platforms, like Chainlink.

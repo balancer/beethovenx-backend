@@ -5,7 +5,7 @@ import { MathSol, WAD } from '../../utils/math';
 import { MathGyro, SWAP_LIMIT_FACTOR } from '../../utils/gyroHelpers/math';
 import { _calcInGivenOut, _calcOutGivenIn, _calculateInvariant } from './gyro3Math';
 import { PoolType, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { GyroData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';

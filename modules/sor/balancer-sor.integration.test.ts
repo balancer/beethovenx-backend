@@ -5,7 +5,7 @@ import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path } from '@balan
 import { PathWithAmount } from './sorV2/lib/path';
 import { sorGetPathsWithPools } from './sorV2/lib/static';
 import { getOutputAmount } from './sorV2/lib/utils/helpers';
-import { chainToIdMap } from '../network/network-config';
+import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 
 import { ANVIL_NETWORKS, startFork, stopAnvilForks } from '../../test/anvil/anvil-global-setup';
 import { prismaPoolDynamicDataFactory, prismaPoolFactory, prismaPoolTokenFactory } from '../../test/factories';

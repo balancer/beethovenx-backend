@@ -15,7 +15,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['100', '200'],
                 totalVolumes: ['50', '100'],
-                totalProtocolSwapFees: ['5', '10'],
+                totalSwapFees: ['5', '10'],
                 totalSharesNum: 500,
                 chain,
             },
@@ -25,7 +25,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['300'],
                 totalVolumes: ['200'],
-                totalProtocolSwapFees: ['20'],
+                totalSwapFees: ['20'],
                 totalSharesNum: 300,
                 chain,
             },
@@ -52,11 +52,11 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['100', '200'],
                 totalVolumes: ['50', '100'],
-                totalProtocolSwapFees: ['5', '10'],
+                totalSwapFees: ['5', '10'],
                 totalSharesNum: 500,
                 chain,
                 totalLiquidity: 800, // (100 * 2 + 200 * 3)
-                totalSwapVolume: 400, // (50 * 2 + 100 * 3)
+                totalSwapVolume: 100, // (50 * 2)
                 totalSwapFee: 40, // (5 * 2 + 10 * 3)
                 sharePrice: 1.6, // totalLiquidity / totalSharesNum
             },
@@ -66,7 +66,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['300'],
                 totalVolumes: ['200'],
-                totalProtocolSwapFees: ['20'],
+                totalSwapFees: ['20'],
                 totalSharesNum: 300,
                 chain,
                 totalLiquidity: 1500, // (300 * 5)
@@ -99,7 +99,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['300'],
                 totalVolumes: ['200'],
-                totalProtocolSwapFees: ['20'],
+                totalSwapFees: ['20'],
                 totalSharesNum: 300,
                 chain,
             },
@@ -126,7 +126,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['300'],
                 totalVolumes: ['200'],
-                totalProtocolSwapFees: ['20'],
+                totalSwapFees: ['20'],
                 totalSharesNum: 300,
                 chain,
                 totalLiquidity: 1500, // (300 * 5)

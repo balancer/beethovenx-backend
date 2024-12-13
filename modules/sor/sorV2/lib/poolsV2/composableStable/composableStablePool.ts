@@ -12,7 +12,7 @@ import {
     _calculateInvariant,
 } from './stableMath';
 import { BigintIsh, PoolType, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { StableData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';

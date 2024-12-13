@@ -14,7 +14,8 @@ import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../.
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
 import { poolsToIgnore } from '../constants';
-import { AllNetworkConfigsKeyedOnChain, chainToIdMap } from '../../network/network-config';
+import { AllNetworkConfigsKeyedOnChain } from '../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../network/chain-id-to-chain';
 import * as Sentry from '@sentry/node';
 import { Address, formatUnits } from 'viem';
 import { sorGetPathsWithPools } from './lib/static';

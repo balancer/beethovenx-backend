@@ -2,8 +2,7 @@ import { isSameAddress } from '@balancer-labs/sdk';
 import axios from 'axios';
 import { prisma } from '../../prisma/prisma-client';
 import { ContentService, FeaturedPool, HomeScreenFeaturedPoolGroup, HomeScreenNewsItem } from './content-types';
-import { chainIdToChain } from '../network/chain-id-to-chain';
-import { chainToIdMap } from '../network/network-config';
+import { chainIdToChain, chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 import { Chain, Prisma } from '@prisma/client';
 
 const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/balancer/metadata/main/pools/featured.json';

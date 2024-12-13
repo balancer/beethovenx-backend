@@ -14,3 +14,18 @@ export const chainIdToChain: { [id: string]: Chain } = {
     '252': Chain.FRAXTAL,
     '34443': Chain.MODE,
 };
+
+export const chainToChainId: { [chain: string]: string } = {
+    MAINNET: '1',
+    OPTIMISM: '10',
+    GNOSIS: '100',
+    POLYGON: '137',
+    FANTOM: '250',
+    ZKEVM: '1101',
+    BASE: '8453',
+    ARBITRUM: '42161',
+    AVALANCHE: '43114',
+    SEPOLIA: '11155111',
+    FRAXTAL: '252',
+    MODE: '34443',
+};

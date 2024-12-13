@@ -7,7 +7,6 @@ import mainnet from '../../config/mainnet';
 import { prisma } from '../../prisma/prisma-client';
 import { CowAmmController } from '../controllers/cow-amm-controller';
 import { ContentController } from '../controllers/content-controller';
-import { chainToIdMap } from '../network/network-config';
 import { PoolController } from '../controllers';
 import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
 import { Prisma } from '@prisma/client';

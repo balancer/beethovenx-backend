@@ -4,7 +4,7 @@ import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
 import { Address, Hex, parseEther } from 'viem';
 import { BigintIsh, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';
 import { WeightedBasePoolToken as WeightedPoolToken } from './weightedBasePoolToken';

@@ -1,6 +1,7 @@
 import { tokenService } from '../token/token.service';
 import { Chain } from '@prisma/client';
-import { AllNetworkConfigsKeyedOnChain, chainToIdMap } from '../network/network-config';
+import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
+import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 import { GqlSorGetSwapPaths, GqlSorGetSwapsResponse, GqlSorSwapType } from '../../schema';
 import { replaceZeroAddressWithEth } from '../web3/addresses';
 import { Address } from 'viem';

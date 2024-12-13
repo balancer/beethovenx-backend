@@ -74,7 +74,7 @@ describe('pool controller debugging', () => {
             throw new Error(`Chain not configured: ${chain}`);
         }
 
-        const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+        const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
         const allPools = (await client.getAllInitializedPools()).filter(
             (pool) => pool.id.toLowerCase() === '0x3ddd1e7adc6a3c1a6cbcf2dc74c6f71b9b347713',
         );
@@ -84,13 +84,18 @@ describe('pool controller debugging', () => {
         const latestBlock = await viemClient.getBlockNumber();
 
         const pools = await upsertPoolsV3(allPools, vaultClient, chain, latestBlock);
-        await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
+        const dbPools = await prisma.prismaPool.findMany({
+            where: {
+                id: { in: pools },
+            },
+        });
+        await syncPoolsV3(dbPools, viemClient, vaultAddress, chain, latestBlock);
 
         // await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
     }, 5000000);
 
     it('erc4626 data', async () => {
-        const boostedPool = await poolService.getGqlPool('0x6dbdd7a36d900083a5b86a55583d90021e9f33e8', 'SEPOLIA');
+        const boostedPool = await poolService.getGqlPool('0x59fa488dda749cdd41772bb068bb23ee955a6d7a', 'SEPOLIA');
 
         expect(boostedPool).toBeDefined();
         for (const token of boostedPool.poolTokens) {
