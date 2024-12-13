@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.14
+
+### Patch Changes
+
+-   6872789: fix: ERC4626 tagging
+
 ## 1.26.13
 
 ### Patch Changes
