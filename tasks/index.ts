@@ -79,7 +79,7 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return UserBalancesController().syncUserBalancesFromV3Subgraph(chain);
     } else if (job === 'load-onchain-data-v3') {
         return PoolMutationController().loadOnchainDataForAllPoolsV3(chain);
-    } else if (job === 'add-new-cow-amm-pools') {
+    } else if (job === 'add-cow-amm-pools') {
         return CowAmmController().addPools(chain);
     } else if (job === 'sync-cow-amm-pools') {
         return CowAmmController().syncPools(chain);

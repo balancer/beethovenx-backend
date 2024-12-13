@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import { Chain, PrismaPoolSnapshot, PrismaToken } from '@prisma/client';
-import { weiToFloat } from '../../common/numbers';
+import { Chain, PrismaPoolSnapshot } from '@prisma/client';
 import { CowAmmSnapshotFragment } from '../subgraphs/cow-amm/generated/types';
 
 /**
@@ -27,9 +26,6 @@ export const snapshotsCowAmmTransformer = (
     // Use when the pool is new and there are no snapshots yet
     const defaultZeros = Array.from({ length: poolTokens.length }, () => '0');
 
-    // Order pool tokens by ID
-    const orderedTokens = snapshot?.pool.tokens.sort((a, b) => a.index - b.index) || [];
-
     // `poolId-epoch` is used as the ID
     const base = {
         id: `${poolId}-${epoch}`,
@@ -41,35 +37,15 @@ export const snapshotsCowAmmTransformer = (
 
     const values = {
         totalShares: snapshot?.totalShares || previousDaySnapshot?.totalShares || '0',
-        totalSharesNum: weiToFloat(snapshot?.totalShares || previousDaySnapshot?.totalShares || '0', 18),
+        totalSharesNum: parseFloat(snapshot?.totalShares || previousDaySnapshot?.totalShares || '0'),
         swapsCount: Number(snapshot?.swapsCount) || previousDaySnapshot?.swapsCount || 0,
         holdersCount: Number(snapshot?.holdersCount) || previousDaySnapshot?.holdersCount || 0,
-        totalVolumes:
-            snapshot?.totalSwapVolumes.map((balance, index) => {
-                return String(weiToFloat(balance, orderedTokens[index].decimals || 18));
-            }) ||
-            previousDaySnapshot?.totalVolumes ||
-            defaultZeros,
-        totalSwapFees:
-            snapshot?.totalSwapFees.map((balance, index) => {
-                return String(weiToFloat(balance, orderedTokens[index].decimals || 18));
-            }) ||
-            previousDaySnapshot?.totalSwapFees ||
-            defaultZeros,
-        totalSurpluses:
-            snapshot?.totalSurpluses.map((balance, index) => {
-                return String(weiToFloat(balance, orderedTokens[index].decimals || 18));
-            }) ||
-            previousDaySnapshot?.totalSurpluses ||
-            defaultZeros,
+        totalVolumes: snapshot?.totalSwapVolumes || previousDaySnapshot?.totalVolumes || defaultZeros,
+        totalSwapFees: snapshot?.totalSwapFees || previousDaySnapshot?.totalSwapFees || defaultZeros,
+        totalSurpluses: snapshot?.totalSurpluses || previousDaySnapshot?.totalSurpluses || defaultZeros,
         totalProtocolSwapFees: defaultZeros,
         totalProtocolYieldFees: defaultZeros,
-        amounts:
-            snapshot?.balances.map((balance, index) => {
-                return String(weiToFloat(balance, orderedTokens[index].decimals || 18));
-            }) ||
-            previousDaySnapshot?.amounts ||
-            defaultZeros,
+        amounts: snapshot?.balances || previousDaySnapshot?.amounts || defaultZeros,
     };
 
     const tvl = values.amounts.reduce((acc, amount, index) => {
@@ -87,7 +63,7 @@ export const snapshotsCowAmmTransformer = (
         snapshot?.totalSwapVolumes.reduce((acc, volume, index) => {
             const address = poolTokens[index];
             const previousVolume = previousDaySnapshot?.totalVolumes[index] || '0';
-            const diff = weiToFloat(volume, orderedTokens[index].decimals || 18) - parseFloat(previousVolume);
+            const diff = parseFloat(volume) - parseFloat(previousVolume);
             if (!prices[address]) {
                 return acc;
             }
@@ -100,7 +76,7 @@ export const snapshotsCowAmmTransformer = (
         snapshot?.totalSurpluses.reduce((acc, surplus, index) => {
             const address = poolTokens[index];
             const previousSurplus = previousDaySnapshot?.totalSurpluses[index] || '0';
-            const diff = weiToFloat(surplus, orderedTokens[index].decimals || 18) - parseFloat(previousSurplus);
+            const diff = parseFloat(surplus) - parseFloat(previousSurplus);
             if (!prices[address]) {
                 return acc;
             }
