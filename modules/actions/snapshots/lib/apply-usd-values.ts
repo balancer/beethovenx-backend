@@ -21,12 +21,13 @@ export const applyUSDValues = async (
 
     const groupedByPoolId = _.groupBy(rawSnapshots, 'poolId');
 
+    let snapshotCount = 0;
     for (const [, poolSnapshots] of Object.entries(groupedByPoolId)) {
         console.log('Processing snapshots for pool', poolSnapshots[0].poolId, poolSnapshots[0].chain);
         const sortedSnapshots = _.sortBy(poolSnapshots, 'timestamp');
         for (let index = 0; index < sortedSnapshots.length; index++) {
             const snapshot = sortedSnapshots[index];
-            const previousSnapshot = sortedSnapshots[index - 1];
+            const previousSnapshot = index > 0 && snapshots[snapshotCount - 1];
             const tokens = poolTokens[snapshot.poolId];
 
             if (!tokens) {
@@ -49,9 +50,9 @@ export const applyUSDValues = async (
             const totalLiquidity = calculateValue(snapshot.amounts as string[], tokens, prices);
             const sharePrice = snapshot.totalSharesNum === 0 ? 0 : totalLiquidity / snapshot.totalSharesNum;
 
-            let totalSwapVolume = snapshot.totalSwapVolume;
-            let totalSwapFee = snapshot.totalSwapFee;
-            let totalSurplus = snapshot.totalSurplus;
+            let totalSwapVolume = snapshot.totalSwapVolume || volume24h;
+            let totalSwapFee = snapshot.totalSwapFee || fees24h;
+            let totalSurplus = snapshot.totalSurplus || surplus24h;
 
             // Calculate daily values as the difference from the previous snapshot
             if (previousSnapshot) {
@@ -71,6 +72,8 @@ export const applyUSDValues = async (
                 totalSwapFee,
                 totalSurplus,
             });
+
+            snapshotCount++;
         }
     }
 
