@@ -1,0 +1,9 @@
+query Metadata {
+    meta: _meta {
+        block {
+            number
+        }
+        deployment
+        hasIndexingErrors
+    }
+}

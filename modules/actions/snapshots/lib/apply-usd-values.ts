@@ -46,7 +46,7 @@ export const applyUSDValues = async (
             // With token do we have the price for?
             let swapTokenIndex = Object.values(tokens).findIndex(({ address }) => prices[address]);
             if (swapTokenIndex < 0) swapTokenIndex = 0;
-            const swapVolume = (snapshot.totalVolumes as string[])[swapTokenIndex];
+            const swapVolume = (snapshot.totalVolumes as string[])[swapTokenIndex] || '0'; // Some snapshots have empty arrays
 
             // Swap volume is only for the tokenIn
             const totalSwapVolume = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
@@ -54,12 +54,15 @@ export const applyUSDValues = async (
             const totalSwapFee = calculateValue(snapshot.totalSwapFees as string[], tokens, prices);
             const sharePrice = snapshot.totalSharesNum === 0 ? 0 : totalLiquidity / snapshot.totalSharesNum;
 
+            const totalSurplus = calculateValue(snapshot.totalSurpluses as string[], tokens, prices);
+
             // Calculate USD values
             const usdValues = {
                 totalLiquidity,
                 totalSwapVolume,
                 totalSwapFee,
                 sharePrice,
+                totalSurplus,
             };
 
             snapshots.push({ ...snapshot, ...usdValues });
@@ -70,6 +73,8 @@ export const applyUSDValues = async (
 };
 
 const calculateValue = (amounts: string[], tokens: Record<number, any>, prices: Record<string, number>) => {
+    if (!amounts || !tokens || !prices) return 0;
+
     return amounts.reduce((acc, amount, index) => {
         const token = tokens[index];
         return token && prices[token.address] ? acc + parseFloat(amount) * prices[token.address] : acc;

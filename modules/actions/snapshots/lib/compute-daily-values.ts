@@ -19,6 +19,7 @@ export const computeDailyValues = (
                     ...sortedSnapshots[0],
                     volume24h: sortedSnapshots[0].totalSwapVolume || 0,
                     fees24h: sortedSnapshots[0].totalSwapFee || 0,
+                    surplus24h: sortedSnapshots[0].totalSurplus || 0,
                 },
             ];
         }
@@ -29,17 +30,20 @@ export const computeDailyValues = (
             // Initialize daily values with the snapshot values
             let volume24h = snapshot.volume24h || 0;
             let fees24h = snapshot.fees24h || 0;
+            let surplus24h = snapshot.surplus24h || 0;
 
             // Calculate daily values as the difference from the previous snapshot
             if (previousSnapshot) {
                 volume24h = Math.max((snapshot.totalSwapVolume || 0) - (previousSnapshot.totalSwapVolume || 0), 0);
                 fees24h = Math.max((snapshot.totalSwapFee || 0) - (previousSnapshot.totalSwapFee || 0), 0);
+                surplus24h = Math.max((snapshot.totalSurplus || 0) - (previousSnapshot.totalSurplus || 0), 0);
             }
 
             return {
                 ...snapshot,
                 volume24h,
                 fees24h,
+                surplus24h,
             };
         });
     });

@@ -1,17 +1,16 @@
 import config from '../../config';
 import { prisma } from '../../prisma/prisma-client';
-import { chainIdToChain } from '../network/chain-id-to-chain';
 import { getViemClient } from '../sources/viem-client';
 import { getCowAmmSubgraphClient } from '../sources/subgraphs';
 import {
     fetchChangedPools,
     fetchNewPools,
     upsertPools,
-    syncSnapshots,
     syncSwaps,
     syncJoinExits,
     updateSurplusAPRs,
 } from '../actions/cow-amm';
+import { syncSnapshots } from '../actions/snapshots/sync-snapshots';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { updateVolumeAndFees } from '../actions/pool/update-volume-and-fees';
 import moment from 'moment';
@@ -30,7 +29,7 @@ export function CowAmmController(tracer?: any) {
             throw new Error(`Chain not configured: ${chain}`);
         }
 
-        const client = getCowAmmSubgraphClient(cowAmm);
+        const client = getCowAmmSubgraphClient(cowAmm, chain);
 
         return client;
     };
@@ -125,20 +124,18 @@ export function CowAmmController(tracer?: any) {
         },
         async syncSnapshots(chain: Chain) {
             const subgraphClient = getSubgraphClient(chain);
-            const timestamp = await syncSnapshots(subgraphClient, chain);
+            const ids = await syncSnapshots(subgraphClient, 'SNAPSHOTS_COW_AMM', chain);
             // update lifetime values based on snapshots
             await updateLifetimeValues(chain, undefined, 'COW_AMM');
-            return timestamp;
+            return ids;
         },
         async syncAllSnapshots(chain: Chain) {
             // Run in loop until we end up at todays snapshot (also sync todays)
-            let allSnapshotsSynced = false;
-            let timestamp = 0;
-            while (!allSnapshotsSynced) {
-                timestamp = await CowAmmController().syncSnapshots(chain);
-                allSnapshotsSynced = timestamp === moment().utc().startOf('day').unix();
-            }
-            return timestamp;
+            const subgraphClient = getSubgraphClient(chain);
+            const ids = await syncSnapshots(subgraphClient, 'SNAPSHOTS_COW_AMM', chain, {
+                startFromLastSyncedBlock: false,
+            });
+            return ids;
         },
         async syncJoinExits(chain: Chain) {
             const subgraphClient = getSubgraphClient(chain);

@@ -58,6 +58,7 @@ describe('applyUSDValues', () => {
                 totalLiquidity: 800, // (100 * 2 + 200 * 3)
                 totalSwapVolume: 100, // (50 * 2)
                 totalSwapFee: 40, // (5 * 2 + 10 * 3)
+                totalSurplus: 0,
                 sharePrice: 1.6, // totalLiquidity / totalSharesNum
             },
             {
@@ -72,6 +73,7 @@ describe('applyUSDValues', () => {
                 totalLiquidity: 1500, // (300 * 5)
                 totalSwapVolume: 1000, // (200 * 5)
                 totalSwapFee: 100, // (20 * 5)
+                totalSurplus: 0,
                 sharePrice: 5, // totalLiquidity / totalSharesNum
             },
         ];
@@ -99,6 +101,7 @@ describe('applyUSDValues', () => {
                 timestamp: 86400,
                 amounts: ['300'],
                 totalVolumes: ['200'],
+                totalSurpluses: ['20'],
                 totalSwapFees: ['20'],
                 totalSharesNum: 300,
                 chain,
@@ -127,11 +130,13 @@ describe('applyUSDValues', () => {
                 amounts: ['300'],
                 totalVolumes: ['200'],
                 totalSwapFees: ['20'],
+                totalSurpluses: ['20'],
                 totalSharesNum: 300,
                 chain,
                 totalLiquidity: 1500, // (300 * 5)
                 totalSwapVolume: 1000, // (200 * 5)
                 totalSwapFee: 100, // (20 * 5)
+                totalSurplus: 100,
                 sharePrice: 5, // totalLiquidity / totalSharesNum
             },
         ];

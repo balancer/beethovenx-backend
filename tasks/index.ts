@@ -88,13 +88,7 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-cow-amm-snapshots') {
         return CowAmmController().syncSnapshots(chain);
     } else if (job === 'sync-all-cow-amm-snapshots') {
-        // Run in loop until we end up at todays snapshot (also sync todays)
-        let allSnapshotsSynced = false;
-        while (!allSnapshotsSynced) {
-            allSnapshotsSynced =
-                (await CowAmmController().syncSnapshots(chain)) === moment().utc().startOf('day').unix();
-        }
-        return allSnapshotsSynced;
+        return CowAmmController().syncAllSnapshots(chain);
     } else if (job === 'sync-cow-amm-swaps') {
         return CowAmmController().syncSwaps(chain);
     } else if (job === 'sync-cow-amm-join-exits') {
