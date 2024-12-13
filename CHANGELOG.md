@@ -1,5 +1,13 @@
 # backend
 
+## 1.26.15
+
+### Patch Changes
+
+-   4c6418b: fix: handle SG values as floats in cow amm snapshots
+-   6347252: refactor cow-amm snapshot fetching
+-   913c906: refactor snapshot daily and total values
+
 ## 1.26.14
 
 ### Patch Changes
