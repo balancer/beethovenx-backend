@@ -48,9 +48,9 @@ export const upsertPools = async (
                         !!token.underlyingTokenAddress,
                 )
                 .map((token) => ({
-                    id: `${token.underlyingTokenAddress}-erc4626`,
+                    id: `${token.address}-erc4626`,
                     chain,
-                    tokenAddress: token.underlyingTokenAddress,
+                    tokenAddress: token.address,
                     type: PrismaTokenTypeOption.ERC4626,
                 }))
                 .map((typeData) =>
