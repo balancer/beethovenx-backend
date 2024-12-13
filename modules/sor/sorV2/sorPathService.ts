@@ -568,6 +568,11 @@ class SorPathService implements SwapService {
         const isBatchSwap = paths.length > 1 || paths[0].pools.length > 1;
 
         if (!isBatchSwap) {
+            if (pools.length === 0) {
+                // this scenario happens when swapping through a single buffer (wrap/unwrap erc4626)
+                // TODO: check with the team who's consuming `route` and if it's ok to return an empty array
+                return [];
+            }
             const pool = pools.find((p) => p.id === paths[0].pools[0].id);
             if (!pool) throw new Error('Pool not found while mapping route');
             return [this.mapSingleSwap(paths[0], pool)];

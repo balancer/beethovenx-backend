@@ -36,23 +36,24 @@ describe('sor debugging', () => {
         expect(parseFloat(swaps.returnAmount)).toBeGreaterThan(0);
     }, 5000000);
 
-    it('sor v3 sepolia usdc->usdt', async () => {
-        const chain = Chain.SEPOLIA;
+    it.only('sor v3 mainnet wusdl -> csusdl', async () => {
+        const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', chainId);
         //only do once before starting to debug
         await PoolController().reloadPoolsV3(chain);
+        await PoolController().updateLiquidityValuesForActivePools(chain);
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0x94a9d9ac8a22534e3faca9f4e7f2e2cf85d5e4c8', // usdc-aave
-            tokenOut: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0', // usdt-aave
+            tokenIn: '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559', // wusdl
+            tokenOut: '0xbeefc01767ed5086f35decb6c00e6c12bc7476c1', // csusdl
             swapType: 'EXACT_IN',
-            swapAmount: '1',
+            swapAmount: '10',
             useProtocolVersion: 3,
-            poolIds: ['0x1017d7b181ab63ceeb36d96c52a8056e02b7edd0'], // boosted pool stataUSDC/stataUSDT
+            // poolIds: ['0xbeefc01767ed5086f35decb6c00e6c12bc7476c1'], // buffer
         });
 
         console.log(swaps.returnAmount);
