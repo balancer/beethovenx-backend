@@ -571,6 +571,7 @@ class SorPathService implements SwapService {
             if (pools.length === 0) {
                 // this scenario happens when swapping through a single buffer (wrap/unwrap erc4626)
                 // TODO: check with the team who's consuming `route` and if it's ok to return an empty array
+                // or if we should try to build a GqlSorSwapRoute from the buffer data
                 return [];
             }
             const pool = pools.find((p) => p.id === paths[0].pools[0].id);
