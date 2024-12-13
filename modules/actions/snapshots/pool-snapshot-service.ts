@@ -341,6 +341,11 @@ export class PoolSnapshotService {
             totalVolumes: [],
             totalSwapFees: [],
             totalSurpluses: [],
+            dailyProtocolSwapFees: [],
+            dailyProtocolYieldFees: [],
+            dailyVolumes: [],
+            dailySwapFees: [],
+            dailySurpluses: [],
         };
     }
 

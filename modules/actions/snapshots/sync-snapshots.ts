@@ -119,5 +119,5 @@ export async function syncSnapshots(
 }
 
 export const processSnapshots = async (snapshots: Promise<Prisma.PrismaPoolSnapshotUncheckedCreateInput[]>) => {
-    return snapshots.then(fillMissingTimestamps).then(applyUSDValues).then(computeDailyValues);
+    return snapshots.then(fillMissingTimestamps).then(computeDailyValues).then(applyUSDValues);
 };

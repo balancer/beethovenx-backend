@@ -51,6 +51,11 @@ export const snapshotsV2Transformer = (
         totalProtocolSwapFees: [], // V3 field only, it's a split in fees per token
         totalProtocolYieldFees: [], // V3 field only, it's a split in fees per token
         totalSurpluses: [], // V3 field only, it's a split in token surpluses
+        dailyVolumes: [], // V3 field only, it's a split in token volumes
+        dailySwapFees: [], // V3 field only, it's a split in token volumes
+        dailyProtocolSwapFees: [], // V3 field only, it's a split in fees per token
+        dailyProtocolYieldFees: [], // V3 field only, it's a split in fees per token
+        dailySurpluses: [], // V3 field only, it's a split in token surpluses
     };
 
     // Calculate USD values

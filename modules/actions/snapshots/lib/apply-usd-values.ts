@@ -16,56 +16,61 @@ export const applyUSDValues = async (
 
     const poolIds = [...new Set(rawSnapshots.map((snapshot) => snapshot.poolId))];
 
-    // Pool tokens are needed, because SG returns raw token amounts
+    // Pool tokens are needed, because SG returns raw token amounts and we need token addresses
     const poolTokens = await fetchPoolTokens(poolIds);
 
-    // For each timestamp, fetch the prices and calculate USD values
-    const groupedTimestamps = _.groupBy(rawSnapshots, 'timestamp');
+    const groupedByPoolId = _.groupBy(rawSnapshots, 'poolId');
 
-    for (const [timestamp, group] of Object.entries(groupedTimestamps)) {
-        // For each poolId, calculate USD values
-        const prices = await fetchPrices(
-            group[0].chain,
-            parseInt(timestamp) < lastMidnight ? parseInt(timestamp) : undefined,
-        );
+    for (const [, poolSnapshots] of Object.entries(groupedByPoolId)) {
+        console.log('Processing snapshots for pool', poolSnapshots[0].poolId, poolSnapshots[0].chain);
+        const sortedSnapshots = _.sortBy(poolSnapshots, 'timestamp');
+        for (let index = 0; index < sortedSnapshots.length; index++) {
+            const snapshot = sortedSnapshots[index];
+            const previousSnapshot = sortedSnapshots[index - 1];
+            const tokens = poolTokens[snapshot.poolId];
 
-        for (const snapshot of group) {
-            if (
-                !poolTokens[snapshot.poolId] ||
-                poolTokens[snapshot.poolId].length === 0 ||
-                !snapshot.amounts ||
-                !snapshot.totalVolumes ||
-                !snapshot.totalSwapFees
-            ) {
-                snapshots.push(snapshot);
-                continue;
+            if (!tokens) {
+                throw new Error(`Pool tokens not found for pool ${snapshot.poolId} on chain ${snapshot.chain}`);
             }
 
-            const tokens = _.keyBy(poolTokens[snapshot.poolId], 'index');
+            const prices = await fetchPrices(
+                snapshot.chain,
+                snapshot.timestamp < lastMidnight ? snapshot.timestamp : undefined,
+            );
 
-            // With token do we have the price for?
             let swapTokenIndex = Object.values(tokens).findIndex(({ address }) => prices[address]);
             if (swapTokenIndex < 0) swapTokenIndex = 0;
-            const swapVolume = (snapshot.totalVolumes as string[])[swapTokenIndex] || '0'; // Some snapshots have empty arrays
 
-            // Swap volume is only for the tokenIn
-            const totalSwapVolume = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
+            const swapVolume = (snapshot.dailyVolumes as string[])[swapTokenIndex] || '0'; // Some snapshots have empty arrays
+            const volume24h = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
+
+            const fees24h = calculateValue(snapshot.dailySwapFees as string[], tokens, prices);
+            const surplus24h = calculateValue(snapshot.dailySurpluses as string[], tokens, prices);
             const totalLiquidity = calculateValue(snapshot.amounts as string[], tokens, prices);
-            const totalSwapFee = calculateValue(snapshot.totalSwapFees as string[], tokens, prices);
             const sharePrice = snapshot.totalSharesNum === 0 ? 0 : totalLiquidity / snapshot.totalSharesNum;
 
-            const totalSurplus = calculateValue(snapshot.totalSurpluses as string[], tokens, prices);
+            let totalSwapVolume = snapshot.totalSwapVolume;
+            let totalSwapFee = snapshot.totalSwapFee;
+            let totalSurplus = snapshot.totalSurplus;
 
-            // Calculate USD values
-            const usdValues = {
+            // Calculate daily values as the difference from the previous snapshot
+            if (previousSnapshot) {
+                totalSwapVolume = previousSnapshot.totalSwapVolume + volume24h;
+                totalSwapFee = previousSnapshot.totalSwapFee + fees24h;
+                totalSurplus = (previousSnapshot.totalSurplus || 0) + surplus24h;
+            }
+
+            snapshots.push({
+                ...snapshot,
+                volume24h,
+                fees24h,
+                surplus24h,
                 totalLiquidity,
+                sharePrice,
                 totalSwapVolume,
                 totalSwapFee,
-                sharePrice,
                 totalSurplus,
-            };
-
-            snapshots.push({ ...snapshot, ...usdValues });
+            });
         }
     }
 
@@ -92,6 +97,7 @@ const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Reco
     const cacheKey = `prices-${chain}-${timestamp || 'current'}`;
     const cachedPrices = cache.get(cacheKey);
     if (cachedPrices) {
+        console.log('Using cached prices', cacheKey);
         return cachedPrices;
     }
 

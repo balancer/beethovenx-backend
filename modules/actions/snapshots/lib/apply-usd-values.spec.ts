@@ -1,199 +1,136 @@
-import { applyUSDValues } from './apply-usd-values';
-import { Chain, Prisma } from '@prisma/client';
+import { applyUSDValues } from './apply-usd-values'; // Adjust the import path
+import { Prisma } from '@prisma/client';
 
 describe('applyUSDValues', () => {
     const mockFetchPrices = jest.fn();
     const mockFetchPoolTokens = jest.fn();
 
-    const chain: Chain = 'MAINNET';
-
-    it('should calculate USD values for snapshots correctly', async () => {
-        const inputSnapshots = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                amounts: ['100', '200'],
-                totalVolumes: ['50', '100'],
-                totalSwapFees: ['5', '10'],
-                totalSharesNum: 500,
-                chain,
-            },
-            {
-                id: '2',
-                poolId: 'poolB',
-                timestamp: 86400,
-                amounts: ['300'],
-                totalVolumes: ['200'],
-                totalSwapFees: ['20'],
-                totalSharesNum: 300,
-                chain,
-            },
-        ];
-
-        mockFetchPrices.mockResolvedValueOnce({
-            token1: 2,
-            token2: 3,
-            token3: 5,
-        });
-
-        mockFetchPoolTokens.mockResolvedValueOnce({
-            poolA: [
-                { index: 0, address: 'token1' },
-                { index: 1, address: 'token2' },
-            ],
-            poolB: [{ index: 0, address: 'token3' }],
-        });
-
-        const expectedOutput = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                amounts: ['100', '200'],
-                totalVolumes: ['50', '100'],
-                totalSwapFees: ['5', '10'],
-                totalSharesNum: 500,
-                chain,
-                totalLiquidity: 800, // (100 * 2 + 200 * 3)
-                totalSwapVolume: 100, // (50 * 2)
-                totalSwapFee: 40, // (5 * 2 + 10 * 3)
-                totalSurplus: 0,
-                sharePrice: 1.6, // totalLiquidity / totalSharesNum
-            },
-            {
-                id: '2',
-                poolId: 'poolB',
-                timestamp: 86400,
-                amounts: ['300'],
-                totalVolumes: ['200'],
-                totalSwapFees: ['20'],
-                totalSharesNum: 300,
-                chain,
-                totalLiquidity: 1500, // (300 * 5)
-                totalSwapVolume: 1000, // (200 * 5)
-                totalSwapFee: 100, // (20 * 5)
-                totalSurplus: 0,
-                sharePrice: 5, // totalLiquidity / totalSharesNum
-            },
-        ];
-
-        const result = await applyUSDValues(
-            inputSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
-            mockFetchPrices,
-            mockFetchPoolTokens,
-        );
-
-        expect(result).toEqual(expectedOutput);
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should skip snapshots without amounts, volumes, or fees', async () => {
-        const inputSnapshots = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                chain,
-            },
-            {
-                id: '2',
-                poolId: 'poolB',
-                timestamp: 86400,
-                amounts: ['300'],
-                totalVolumes: ['200'],
-                totalSurpluses: ['20'],
-                totalSwapFees: ['20'],
-                totalSharesNum: 300,
-                chain,
-            },
-        ];
+    describe('value updates', () => {
+        it('should correctly calculate and update snapshot values', async () => {
+            const rawSnapshots = [
+                {
+                    poolId: 'pool1',
+                    chain: 'chain1',
+                    timestamp: 1 * 86400,
+                    dailyVolumes: ['100', '200'],
+                    dailySwapFees: ['1', '2'],
+                    dailySurpluses: ['3', '4'],
+                    amounts: ['10', '20'],
+                    totalSharesNum: 100,
+                    totalSwapVolume: 500,
+                    totalSwapFee: 10,
+                    totalSurplus: 50,
+                },
+                {
+                    poolId: 'pool1',
+                    chain: 'chain1',
+                    timestamp: 2 * 86400,
+                    dailyVolumes: ['100', '200'],
+                    dailySwapFees: ['1', '2'],
+                    dailySurpluses: ['3', '4'],
+                    amounts: ['10', '20'],
+                    totalSharesNum: 100,
+                    totalSwapVolume: 500,
+                    totalSwapFee: 10,
+                    totalSurplus: 50,
+                },
+            ];
 
-        mockFetchPrices.mockResolvedValueOnce({
-            token3: 5,
+            const mockPoolTokens = {
+                pool1: [
+                    { address: 'token1', index: 0 },
+                    { address: 'token2', index: 1 },
+                ],
+            };
+
+            const mockPrices = {
+                token1: 2,
+                token2: 3,
+            };
+
+            mockFetchPoolTokens.mockResolvedValue(mockPoolTokens);
+            mockFetchPrices.mockResolvedValue(mockPrices);
+
+            const result = await applyUSDValues(
+                rawSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
+                mockFetchPrices,
+                mockFetchPoolTokens,
+            );
+
+            expect(result).toEqual([
+                {
+                    ...rawSnapshots[0],
+                    volume24h: 200, // 100 * 2 (token1 price)
+                    fees24h: 8, // 2 * 3 + 1 * 2
+                    surplus24h: 18, // 4 * 3 + 3 * 2
+                    totalLiquidity: 80, // 20 * 3 + 10 * 2
+                    sharePrice: 0.8, // totalLiquidity / totalSharesNum
+                },
+                {
+                    ...rawSnapshots[1],
+                    volume24h: 200, // 100 * 2 (token2 price)
+                    fees24h: 8, // 2 * 3 + 1 * 2
+                    surplus24h: 18, // 4 * 3 + 3 * 2
+                    totalLiquidity: 80, // 20 * 3 + 10 * 2
+                    sharePrice: 0.8, // totalLiquidity / totalSharesNum
+                    totalSwapVolume: rawSnapshots[0].totalSwapVolume + 200, // 500 + volume24h
+                    totalSwapFee: 18, // 10 + fees24h
+                    totalSurplus: 68, // 50 + surplus24h
+                },
+            ]);
         });
 
-        mockFetchPoolTokens.mockResolvedValueOnce({
-            poolB: [{ index: 0, address: 'token3' }],
+        it('should handle snapshots with missing token prices', async () => {
+            const rawSnapshots = [
+                {
+                    poolId: 'pool2',
+                    chain: 'chain2',
+                    timestamp: 1633024800,
+                    dailyVolumes: ['50', '100'],
+                    dailySwapFees: ['0.5', '1'],
+                    dailySurpluses: ['1.5', '2'],
+                    amounts: ['5', '10'],
+                    totalSharesNum: 50,
+                    totalSwapVolume: 300,
+                    totalSwapFee: 5,
+                    totalSurplus: 20,
+                },
+            ]; // Explicit casting
+
+            const mockPoolTokens = {
+                pool2: [
+                    { address: 'token3', index: 0 },
+                    { address: 'token4', index: 1 },
+                ],
+            };
+
+            const mockPrices = {
+                token4: 1, // Missing token3 price
+            };
+
+            mockFetchPoolTokens.mockResolvedValue(mockPoolTokens);
+            mockFetchPrices.mockResolvedValue(mockPrices);
+
+            const result = await applyUSDValues(
+                rawSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
+                mockFetchPrices,
+                mockFetchPoolTokens,
+            );
+
+            expect(result).toEqual([
+                {
+                    ...rawSnapshots[0],
+                    volume24h: Number(rawSnapshots[0].dailyVolumes[1]),
+                    fees24h: Number(rawSnapshots[0].dailySwapFees[1]),
+                    surplus24h: Number(rawSnapshots[0].dailySurpluses[1]),
+                    totalLiquidity: Number(rawSnapshots[0].amounts[1]), // 5 * 1
+                    sharePrice: Number(rawSnapshots[0].amounts[1]) / rawSnapshots[0].totalSharesNum,
+                },
+            ]);
         });
-
-        const expectedOutput = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                chain,
-            }, // Unchanged
-            {
-                id: '2',
-                poolId: 'poolB',
-                timestamp: 86400,
-                amounts: ['300'],
-                totalVolumes: ['200'],
-                totalSwapFees: ['20'],
-                totalSurpluses: ['20'],
-                totalSharesNum: 300,
-                chain,
-                totalLiquidity: 1500, // (300 * 5)
-                totalSwapVolume: 1000, // (200 * 5)
-                totalSwapFee: 100, // (20 * 5)
-                totalSurplus: 100,
-                sharePrice: 5, // totalLiquidity / totalSharesNum
-            },
-        ];
-
-        const result = await applyUSDValues(
-            inputSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
-            mockFetchPrices,
-            mockFetchPoolTokens,
-        );
-
-        expect(result).toEqual(expectedOutput);
-    });
-
-    it('should handle missing pool tokens gracefully', async () => {
-        const inputSnapshots = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                amounts: ['100', '200'],
-                totalVolumes: ['50', '100'],
-                totalProtocolSwapFees: ['5', '10'],
-                totalSharesNum: 500,
-                chain,
-            },
-        ];
-
-        mockFetchPrices.mockResolvedValueOnce({});
-        mockFetchPoolTokens.mockResolvedValueOnce({});
-
-        const expectedOutput = [
-            {
-                id: '1',
-                poolId: 'poolA',
-                timestamp: 86400,
-                amounts: ['100', '200'],
-                totalVolumes: ['50', '100'],
-                totalProtocolSwapFees: ['5', '10'],
-                totalSharesNum: 500,
-                chain,
-            }, // Unchanged
-        ];
-
-        const result = await applyUSDValues(
-            inputSnapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[],
-            mockFetchPrices,
-            mockFetchPoolTokens,
-        );
-
-        expect(result).toEqual(expectedOutput);
-    });
-
-    it('should return an empty array if no snapshots are provided', async () => {
-        const inputSnapshots = [];
-
-        const result = await applyUSDValues(inputSnapshots, mockFetchPrices, mockFetchPoolTokens);
-
-        expect(result).toEqual([]);
     });
 });
