@@ -24,26 +24,30 @@ export const applyUSDValues = async (
     let snapshotCount = 0;
     for (const [, poolSnapshots] of Object.entries(groupedByPoolId)) {
         console.log('Processing snapshots for pool', poolSnapshots[0].poolId, poolSnapshots[0].chain);
+        const tokens = _.sortBy(poolTokens[poolSnapshots[0].poolId], 'index');
+
+        if (!tokens) {
+            throw new Error(
+                `Pool tokens not found for pool ${poolSnapshots[0].poolId} on chain ${poolSnapshots[0].chain}`,
+            );
+        }
+
         const sortedSnapshots = _.sortBy(poolSnapshots, 'timestamp');
         for (let index = 0; index < sortedSnapshots.length; index++) {
             const snapshot = sortedSnapshots[index];
             const previousSnapshot = index > 0 && snapshots[snapshotCount - 1];
-            const tokens = poolTokens[snapshot.poolId];
-
-            if (!tokens) {
-                throw new Error(`Pool tokens not found for pool ${snapshot.poolId} on chain ${snapshot.chain}`);
-            }
 
             const prices = await fetchPrices(
                 snapshot.chain,
                 snapshot.timestamp < lastMidnight ? snapshot.timestamp : undefined,
             );
 
-            let swapTokenIndex = Object.values(tokens).findIndex(({ address }) => prices[address]);
-            if (swapTokenIndex < 0) swapTokenIndex = 0;
-
-            const swapVolume = (snapshot.dailyVolumes as string[])[swapTokenIndex] || '0'; // Some snapshots have empty arrays
-            const volume24h = parseFloat(swapVolume) * (prices[tokens[swapTokenIndex].address] || 0);
+            let volume24h = 0;
+            const swapTokenWithPrice = Object.values(tokens).find(({ address }) => prices[address]);
+            if (swapTokenWithPrice) {
+                const swapVolume = (snapshot.dailyVolumes as string[])[swapTokenWithPrice.index] || '0'; // Some snapshots have empty arrays
+                volume24h = parseFloat(swapVolume) * prices[swapTokenWithPrice.address];
+            }
 
             const fees24h = calculateValue(snapshot.dailySwapFees as string[], tokens, prices);
             const surplus24h = calculateValue(snapshot.dailySurpluses as string[], tokens, prices);
@@ -99,10 +103,7 @@ const fetchPricesHelper = async (chain: Chain, timestamp?: number): Promise<Reco
     // Check cache
     const cacheKey = `prices-${chain}-${timestamp || 'current'}`;
     const cachedPrices = cache.get(cacheKey);
-    if (cachedPrices) {
-        console.log('Using cached prices', cacheKey);
-        return cachedPrices;
-    }
+    if (cachedPrices) return cachedPrices;
 
     const selector = {
         where: { chain, ...(timestamp ? { timestamp } : {}) }, // No timestamp for current prices
