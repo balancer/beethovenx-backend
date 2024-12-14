@@ -1,13 +1,14 @@
 import { retryOnFailureWithRotation } from './retry-on-failure';
+import { vi } from 'vitest';
 
 describe('retryOnFailureWithRotation', () => {
     it('should retry with the next SDK client when the first one fails', async () => {
         // Mock SDK clients
         const sdkClient1 = {
-            fetchData: jest.fn().mockRejectedValueOnce(new Error('First client error')),
+            fetchData: vi.fn().mockRejectedValueOnce(new Error('First client error')),
         };
         const sdkClient2 = {
-            fetchData: jest.fn().mockResolvedValueOnce('Second client success'),
+            fetchData: vi.fn().mockResolvedValueOnce('Second client success'),
         };
 
         const sdkClients = [sdkClient1, sdkClient2];
@@ -29,10 +30,10 @@ describe('retryOnFailureWithRotation', () => {
     it('should throw an error after exhausting retries', async () => {
         // Mock SDK clients
         const sdkClient1 = {
-            fetchData: jest.fn().mockRejectedValue(new Error('First client error')),
+            fetchData: vi.fn().mockRejectedValue(new Error('First client error')),
         };
         const sdkClient2 = {
-            fetchData: jest.fn().mockRejectedValue(new Error('Second client error')),
+            fetchData: vi.fn().mockRejectedValue(new Error('Second client error')),
         };
 
         const sdkClients = [sdkClient1, sdkClient2];

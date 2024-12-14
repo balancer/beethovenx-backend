@@ -1,15 +1,17 @@
 import { getEvents } from './events';
+import { vi, MockedFunction } from 'vitest';
 
-global.fetch = jest.fn();
+// Mock `fetch` globally
+global.fetch = vi.fn();
 
 describe('getEvents', () => {
     beforeEach(() => {
-        // Clear all instances and calls to constructor and all methods:
-        (global.fetch as jest.MockedFunction<typeof fetch>).mockClear();
+        // Clear all instances and calls to constructor and all methods
+        (global.fetch as MockedFunction<typeof fetch>).mockClear();
     });
 
     it('fetches successfully', async () => {
-        (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+        (global.fetch as MockedFunction<typeof fetch>).mockImplementation(() =>
             Promise.resolve(new Response(JSON.stringify({ result: [] }))),
         );
 
@@ -19,7 +21,7 @@ describe('getEvents', () => {
     });
 
     it('handles fetch error', async () => {
-        (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementationOnce(() => Promise.reject('Fetch error'));
+        (global.fetch as MockedFunction<typeof fetch>).mockImplementationOnce(() => Promise.reject('Fetch error'));
 
         try {
             await getEvents(0, 100, ['0x123'], ['0x456'], 'http://localhost', 50);
@@ -34,7 +36,7 @@ describe('getEvents', () => {
         const errorMessage = 'block range is too wide';
         const log = { address: 'address' };
 
-        (global.fetch as jest.MockedFunction<typeof fetch>)
+        (global.fetch as MockedFunction<typeof fetch>)
             .mockImplementationOnce(() =>
                 Promise.resolve(new Response(JSON.stringify({ error: { message: errorMessage } }))),
             )

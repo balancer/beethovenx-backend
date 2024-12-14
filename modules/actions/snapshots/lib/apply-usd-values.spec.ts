@@ -1,12 +1,13 @@
 import { applyUSDValues } from './apply-usd-values'; // Adjust the import path
 import { Prisma } from '@prisma/client';
+import { vi } from 'vitest';
 
 describe('applyUSDValues', () => {
-    const mockFetchPrices = jest.fn();
-    const mockFetchPoolTokens = jest.fn();
+    const mockFetchPrices = vi.fn();
+    const mockFetchPoolTokens = vi.fn();
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('value updates', () => {
