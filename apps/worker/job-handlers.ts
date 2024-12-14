@@ -390,8 +390,8 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
         case 'sync-hook-reviews':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncHookReviews(), res, next);
             break;
-        case 'sync-erc4626-reviews':
-            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Reviews(), res, next);
+        case 'sync-erc4626-data':
+            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Data(), res, next);
             break;
         default:
             res.sendStatus(400);

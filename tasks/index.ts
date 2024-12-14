@@ -123,8 +123,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return ContentController().syncRateProviderReviews();
     } else if (job === 'sync-hook-reviews') {
         return ContentController().syncHookReviews();
-    } else if (job === 'sync-erc4626-reviews') {
-        return ContentController().syncErc4626Reviews();
+    } else if (job === 'sync-erc4626-data') {
+        return ContentController().syncErc4626Data();
     } else if (job === 'sync-tags') {
         return ContentController().syncCategories();
     } else if (job === 'sync-hook-data') {

@@ -155,7 +155,7 @@ export const mainnetNetworkConfig: NetworkConfig = {
             interval: every(1, 'hours'),
         },
         {
-            name: 'sync-erc4626-reviews',
+            name: 'sync-erc4626-data',
             interval: every(1, 'hours'),
         },
         // APRs
