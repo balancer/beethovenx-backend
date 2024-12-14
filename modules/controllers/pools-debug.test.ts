@@ -95,7 +95,7 @@ describe('pool controller debugging', () => {
     }, 5000000);
 
     it('erc4626 data', async () => {
-        const boostedPool = await poolService.getGqlPool('0x59fa488dda749cdd41772bb068bb23ee955a6d7a', 'SEPOLIA');
+        const boostedPool = await poolService.getGqlPool('0x6649a010cbcf5742e7a13a657df358556b3e55cf', 'MAINNET');
 
         expect(boostedPool).toBeDefined();
         for (const token of boostedPool.poolTokens) {
