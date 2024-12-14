@@ -11,6 +11,7 @@ export const syncErc4626Tokens = async (viemClient: ViemClient, chain: Chain) =>
     const allTokens = await prisma.prismaToken.findMany({
         where: {
             chain,
+            address: { not: '0x0000000000000000000000000000000000000000' },
         },
     });
 

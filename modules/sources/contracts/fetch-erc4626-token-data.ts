@@ -106,7 +106,8 @@ export async function fetchErc4626AndUnderlyingTokenData(
             result.previewDeposit !== undefined &&
             result.previewMint !== undefined &&
             result.previewRedeem !== undefined &&
-            result.previewWithdraw !== undefined
+            result.previewWithdraw !== undefined &&
+            result.asset !== '0x0000000000000000000000000000000000000000'
         ) {
             underlyingTokenAddress = result.asset?.toLowerCase();
         }
