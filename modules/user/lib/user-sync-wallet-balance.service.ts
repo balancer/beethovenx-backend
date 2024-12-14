@@ -1,6 +1,6 @@
 import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';

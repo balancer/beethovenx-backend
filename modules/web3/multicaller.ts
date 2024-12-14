@@ -4,7 +4,6 @@ import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import _ from 'lodash';
 import ERC20Abi from './abi/ERC20.json';
-import { Zero } from '@ethersproject/constants';
 import { BigNumber } from 'ethers';
 
 export interface MulticallUserBalance {

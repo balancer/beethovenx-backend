@@ -1,6 +1,6 @@
 import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants';
+import { zeroAddress as ZERO_ADDRESS } from 'viem';
 import { PrismaPoolStakingType } from '@prisma/client';
 import { BigNumber, Event } from 'ethers';
 import _ from 'lodash';

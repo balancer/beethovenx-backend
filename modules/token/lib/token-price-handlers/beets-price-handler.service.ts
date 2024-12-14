@@ -5,7 +5,7 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { SwapKind, BatchSwapStep } from '@balancer/sdk';
 import { fp } from '../../../big-number/big-number';
 import { Contract } from '@ethersproject/contracts';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import VaultAbi from '../../../pool/abi/Vault.json';
 import { ethers } from 'ethers';
 import { formatFixed } from '@ethersproject/bignumber';

@@ -1,5 +1,4 @@
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
-import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { PrismaClient } from '@prisma/client';
 import { commandSync } from 'execa';
@@ -58,7 +57,7 @@ export async function createIndividualDatabaseSchemaForTest(
     prismaConfig: TestDatabasePrismaConfig = defaultTestDatabasePrismaConfig,
     dbConfig: TestDatabaseConfig = defaultTestDatabaseConfig,
 ) {
-    const schema = `test_${uuidv4()}`;
+    const schema = `test_${Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000}`;
     const connectionString = `postgresql://${dbConfig.user}:${
         dbConfig.password
     }@${postgres.getHost()}:${postgres.getMappedPort(5432)}/${dbConfig.dbName}?schema=${schema}`;

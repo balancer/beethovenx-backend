@@ -1,6 +1,6 @@
 import { Chain, Prisma, PrismaPoolType } from '@prisma/client';
 import { BalancerPoolFragment } from '../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import { fx, gyro, element, stable } from './pool-data';
 
 export const subgraphToPrismaCreate = (
