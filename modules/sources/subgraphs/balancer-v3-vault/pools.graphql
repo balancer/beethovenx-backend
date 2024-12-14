@@ -33,14 +33,6 @@ fragment VaultPool on Pool {
             }
         }
         scalingFactor
-        buffer {
-            underlyingToken {
-                address
-                decimals
-                symbol
-                name
-            }
-        }
     }
     rateProviders {
         address

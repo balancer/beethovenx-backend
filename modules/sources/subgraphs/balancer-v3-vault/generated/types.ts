@@ -3175,19 +3175,6 @@ export type VaultPoolFragment = {
               }
             | null
             | undefined;
-        buffer?:
-            | {
-                  __typename?: 'Buffer';
-                  underlyingToken: {
-                      __typename?: 'Token';
-                      address: string;
-                      decimals: number;
-                      symbol: string;
-                      name: string;
-                  };
-              }
-            | null
-            | undefined;
     }>;
     rateProviders: Array<{
         __typename?: 'RateProvider';
@@ -3265,19 +3252,6 @@ export type PoolsQuery = {
                           address: string;
                           nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
                       }>;
-                  }
-                | null
-                | undefined;
-            buffer?:
-                | {
-                      __typename?: 'Buffer';
-                      underlyingToken: {
-                          __typename?: 'Token';
-                          address: string;
-                          decimals: number;
-                          symbol: string;
-                          name: string;
-                      };
                   }
                 | null
                 | undefined;
@@ -3527,14 +3501,6 @@ export const VaultPoolFragmentDoc = gql`
                 }
             }
             scalingFactor
-            buffer {
-                underlyingToken {
-                    address
-                    decimals
-                    symbol
-                    name
-                }
-            }
         }
         rateProviders {
             address
