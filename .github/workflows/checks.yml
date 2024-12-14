@@ -13,7 +13,7 @@ jobs:
               with:
                   bun-version: latest
             - name: Install deps
-              run: bun install
+              run: bun install --frozen-lockfile
             - name: Prisma Generate
               run: bun prisma generate
             - name: Run build

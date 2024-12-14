@@ -5,7 +5,7 @@ phases:
             nodejs: 18
         commands:
             - curl -fsSL https://bun.sh/install | bash
-            - ~/.bun/bin/bun install
+            - ~/.bun/bin/bun install --frozen-lockfile
     build:
         commands:
             - ~/.bun/bin/bun prisma generate
@@ -15,7 +15,7 @@ phases:
     post_build:
         commands:
             - rm -rf node_modules
-            - ~/.bun/bin/bun install -p
+            - ~/.bun/bin/bun install -p --frozen-lockfile
             - echo Build completed on `date`
 artifacts:
     files:
