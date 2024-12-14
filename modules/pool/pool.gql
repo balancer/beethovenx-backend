@@ -147,6 +147,10 @@ type GqlPoolMinimal {
     """
     hasNestedErc4626: Boolean!
     """
+    Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
+    """
+    hasAnyAllowedBuffer: Boolean!
+    """
     The name of the pool as per contract
     """
     name: String!
@@ -606,6 +610,10 @@ interface GqlPoolBase {
     """
     hasNestedErc4626: Boolean!
     """
+    Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
+    """
+    hasAnyAllowedBuffer: Boolean!
+    """
     Hook assigned to a pool
     """
     hook: GqlHook
@@ -758,6 +766,7 @@ type GqlPoolWeighted implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     """
@@ -811,6 +820,7 @@ type GqlPoolGyro implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     alpha: String!
@@ -888,6 +898,7 @@ type GqlPoolFx implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     dynamicData: GqlPoolDynamicData!
@@ -937,6 +948,7 @@ type GqlPoolLiquidityBootstrapping implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     """
@@ -989,6 +1001,7 @@ type GqlPoolStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1039,6 +1052,7 @@ type GqlPoolMetaStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1088,6 +1102,7 @@ type GqlPoolComposableStable implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     """
@@ -1143,6 +1158,7 @@ type GqlPoolElement implements GqlPoolBase {
     liquidityManagement: LiquidityManagement
     hasErc4626: Boolean!
     hasNestedErc4626: Boolean!
+    hasAnyAllowedBuffer: Boolean!
     hook: GqlHook
 
     #element specific fields

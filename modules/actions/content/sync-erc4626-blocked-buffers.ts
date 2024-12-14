@@ -13,14 +13,14 @@ export const syncBlockedBuffers = async (): Promise<void> => {
                 where: {
                     chain: chain,
                 },
-                data: { bufferAllowed: true },
+                data: { isBufferAllowed: true },
             }),
             prisma.prismaToken.updateMany({
                 where: {
                     chain: chain,
                     address: { in: blockedBuffersForErc4626Addresses },
                 },
-                data: { bufferAllowed: false },
+                data: { isBufferAllowed: false },
             }),
         ]);
     }
