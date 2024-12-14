@@ -1,4 +1,4 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../../web3/addresses';
 import { Chain, PrismaPoolStakingType } from '@prisma/client';
 import _ from 'lodash';
 import { prisma } from '../../../../prisma/prisma-client';
@@ -29,7 +29,7 @@ export const syncReliquaryStakingForPools = async (
     const operations: any[] = [];
 
     for (const farm of filteredFarms) {
-        const pool = pools.find((pool) => isSameAddress(pool.address, farm.poolTokenAddress));
+        const pool = pools.find((pool) => addressesMatch(pool.address, farm.poolTokenAddress));
 
         if (!pool) {
             console.warn(

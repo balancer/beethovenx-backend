@@ -1,5 +1,5 @@
 import { Chain, PrismaPoolType, PrismaTokenCurrentPrice } from '@prisma/client';
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import { prisma } from '../../../prisma/prisma-client';
 import { isStablePool } from './pool-utils';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
@@ -179,7 +179,7 @@ export class PoolOnChainDataService {
                 let bptPriceRate = '1.0';
                 for (let i = 0; i < poolTokens.tokens.length; i++) {
                     const tokenAddress = poolTokens.tokens[i];
-                    const poolToken = pool.tokens.find((token) => isSameAddress(token.address, tokenAddress));
+                    const poolToken = pool.tokens.find((token) => addressesMatch(token.address, tokenAddress));
 
                     if (!poolToken) {
                         throw `Pool Missing Expected Token: ${pool.id} ${tokenAddress}`;
@@ -198,7 +198,7 @@ export class PoolOnChainDataService {
                     let priceRate = poolTokens.rates[i] ?? '1.0';
 
                     // bpt price rate
-                    if (onchainData.rate && isSameAddress(poolToken.address, pool.address)) {
+                    if (onchainData.rate && addressesMatch(poolToken.address, pool.address)) {
                         priceRate = onchainData.rate;
                         bptPriceRate = priceRate;
                     }

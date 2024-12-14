@@ -38,7 +38,7 @@ import {
     LiquidityManagement,
     GqlHook,
 } from '../../../schema';
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
 import { Chain, Prisma, PrismaPoolAprType, PrismaUserStakedBalance, PrismaUserWalletBalance } from '@prisma/client';
@@ -1399,7 +1399,7 @@ export class PoolGqlLoaderService {
                 });
             }
         } else {
-            const isWrappedNativeAsset = isSameAddress(poolToken.address, networkContext.data.weth.address);
+            const isWrappedNativeAsset = addressesMatch(poolToken.address, networkContext.data.weth.address);
 
             options.push({
                 poolTokenIndex: poolToken.index,

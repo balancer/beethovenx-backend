@@ -1,4 +1,4 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import _ from 'lodash';
@@ -238,7 +238,7 @@ export class UserSyncWalletBalanceService {
                 ...balances
                     .filter(({ userAddress }) => userAddress !== AddressZero)
                     .map((userBalance) => {
-                        if (this.isFantomNetwork && isSameAddress(userBalance.erc20Address, this.fbeetsAddress)) {
+                        if (this.isFantomNetwork && addressesMatch(userBalance.erc20Address, this.fbeetsAddress)) {
                             return this.getUserWalletBalanceUpsertForFbeets(
                                 userBalance.userAddress,
                                 formatFixed(userBalance.balance, 18),
@@ -292,7 +292,7 @@ export class UserSyncWalletBalanceService {
     public async syncUserBalance(userAddress: string, poolId: string, poolAddresses: string) {
         const balancesToFetch = [{ erc20Address: poolAddresses, userAddress }];
 
-        if (this.isFantomNetwork && isSameAddress(this.fbeetsAddress, poolAddresses)) {
+        if (this.isFantomNetwork && addressesMatch(this.fbeetsAddress, poolAddresses)) {
             balancesToFetch.push({ erc20Address: this.fbeetsAddress, userAddress });
         }
 
