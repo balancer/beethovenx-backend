@@ -127,4 +127,29 @@ describe('computeDailyValues', () => {
             },
         ]);
     });
+
+    it('should never overwrite the first snapshot daily values', () => {
+        const snapshots = [
+            {
+                ...defaultSnapshot,
+                dailyVolumes: ['100', '200'],
+                dailySwapFees: ['10', '20'],
+                dailySurpluses: ['5', '15'],
+            },
+            {
+                ...defaultSnapshot,
+                timestamp: 2 * 86400,
+                totalVolumes: ['150', '250'],
+                totalSwapFees: ['15', '25'],
+                totalSurpluses: ['10', '20'],
+                dailyVolumes: ['200', '400'],
+                dailySwapFees: ['20', '40'],
+                dailySurpluses: ['10', '30'],
+            },
+        ];
+        const result = computeDailyValues(snapshots as Prisma.PrismaPoolSnapshotUncheckedCreateInput[]);
+        expect(result[0].dailyVolumes).toBe(snapshots[0].dailyVolumes);
+        expect(result[0].dailySwapFees).toBe(snapshots[0].dailySwapFees);
+        expect(result[0].dailySurpluses).toBe(snapshots[0].dailySurpluses);
+    });
 });

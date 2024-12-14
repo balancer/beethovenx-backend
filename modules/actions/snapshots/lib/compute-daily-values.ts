@@ -29,10 +29,10 @@ export const computeDailyValues = (
         return _.map(sortedSnapshots, (snapshot, index) => {
             const previousSnapshot = sortedSnapshots[index - 1];
 
-            // Initialize daily values with the snapshot values
-            let dailyVolumes = sortedSnapshots[0].totalVolumes || [];
-            let dailySwapFees = sortedSnapshots[0].totalSwapFees || [];
-            let dailySurpluses = sortedSnapshots[0].totalSurpluses || [];
+            // Initialize daily values with the current snapshot values
+            let dailyVolumes = sortedSnapshots[0].dailyVolumes || [];
+            let dailySwapFees = sortedSnapshots[0].dailySwapFees || [];
+            let dailySurpluses = sortedSnapshots[0].dailySurpluses || [];
 
             // Calculate daily values as the difference from the previous snapshot
             if (previousSnapshot) {
