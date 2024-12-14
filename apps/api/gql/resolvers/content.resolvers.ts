@@ -1,7 +1,6 @@
-import { Resolvers } from '../../schema';
-import { headerChain } from '../context/header-chain';
-import { networkContext } from '../network/network-context.service';
-import { SanityContentService } from './sanity-content.service';
+import { Resolvers } from '../../../../schema';
+import { headerChain } from '../../../../modules/context/header-chain';
+import { SanityContentService } from '../../../../modules/content/sanity-content.service';
 
 const contentResolvers: Resolvers = {
     Query: {

@@ -1,12 +1,12 @@
-import { GqlChain, GqlHistoricalTokenPrice, Resolvers } from '../../schema';
+import { GqlChain, GqlHistoricalTokenPrice, Resolvers } from '../../../../schema';
 import _ from 'lodash';
-import { isAdminRoute } from '../auth/auth-context';
-import { tokenService } from './token.service';
-import { headerChain } from '../context/header-chain';
-import { syncLatestFXPrices } from './latest-fx-price';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
+import { isAdminRoute } from '../../../../modules/auth/auth-context';
+import { tokenService } from '../../../../modules/token/token.service';
+import { headerChain } from '../../../../modules/context/header-chain';
+import { syncLatestFXPrices } from '../../../../modules/token/latest-fx-price';
+import { AllNetworkConfigsKeyedOnChain } from '../../../../modules/network/network-config';
 import moment from 'moment';
-import { TokenController } from '../controllers/token-controller';
+import { TokenController } from '../../../../modules/controllers/token-controller';
 
 const resolvers: Resolvers = {
     Query: {

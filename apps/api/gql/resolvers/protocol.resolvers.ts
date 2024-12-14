@@ -1,7 +1,7 @@
-import { GqlLatestSyncedBlocks, Resolvers } from '../../schema';
-import { protocolService } from './protocol.service';
-import { networkContext } from '../network/network-context.service';
-import { headerChain } from '../context/header-chain';
+import { GqlLatestSyncedBlocks, Resolvers } from '../../../../schema';
+import { protocolService } from '../../../../modules/protocol/protocol.service';
+import { networkContext } from '../../../../modules/network/network-context.service';
+import { headerChain } from '../../../../modules/context/header-chain';
 
 const protocolResolvers: Resolvers = {
     Query: {

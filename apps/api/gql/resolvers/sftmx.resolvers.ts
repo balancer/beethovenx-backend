@@ -1,5 +1,5 @@
-import { Resolvers } from '../../../schema';
-import { SftmxController } from '../../controllers';
+import { Resolvers } from '../../../../schema';
+import { SftmxController } from '../../../../modules/controllers';
 
 const resolvers: Resolvers = {
     Query: {

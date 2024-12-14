@@ -1,6 +1,6 @@
-import { Resolvers } from '../../schema';
-import { sorService } from './sor.service';
-import { headerChain } from '../context/header-chain';
+import { Resolvers } from '../../../../schema';
+import { sorService } from '../../../../modules/sor/sor.service';
+import { headerChain } from '../../../../modules/context/header-chain';
 
 const balancerSdkResolvers: Resolvers = {
     Query: {

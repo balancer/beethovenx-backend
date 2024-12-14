@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../schema';
+import { Resolvers } from '../../../../schema';
 import { GraphQLScalarType, Kind } from 'graphql';
 
 const dateScalar = new GraphQLScalarType<Date | null, string | null>({

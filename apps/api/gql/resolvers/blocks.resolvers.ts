@@ -1,6 +1,6 @@
-import { Resolvers } from '../../../schema';
-import { isAdminRoute } from '../../auth/auth-context';
-import { blocksSubgraphService } from './blocks-subgraph.service';
+import { Resolvers } from '../../../../schema';
+import { isAdminRoute } from '../../../../modules/auth/auth-context';
+import { blocksSubgraphService } from '../../../../modules/subgraphs/blocks-subgraph/blocks-subgraph.service';
 
 const balancerResolvers: Resolvers = {
     Query: {

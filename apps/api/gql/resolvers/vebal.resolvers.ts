@@ -1,8 +1,8 @@
-import { Resolvers } from '../../schema';
-import { getRequiredAccountAddress, isAdminRoute } from '../auth/auth-context';
-import { veBalService } from './vebal.service';
-import { veBalVotingListService } from './vebal-voting-list.service';
-import { headerChain } from '../context/header-chain';
+import { Resolvers } from '../../../../schema';
+import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
+import { veBalService } from '../../../../modules/vebal/vebal.service';
+import { veBalVotingListService } from '../../../../modules/vebal/vebal-voting-list.service';
+import { headerChain } from '../../../../modules/context/header-chain';
 
 const resolvers: Resolvers = {
     Query: {

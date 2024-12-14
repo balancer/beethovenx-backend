@@ -13,7 +13,6 @@ import {
     ApolloServerPluginUsageReporting,
 } from 'apollo-server-core';
 import { schema } from '../../graphql_schema_generated';
-import GraphQLJSON from 'graphql-type-json';
 import { resolvers } from './gql/resolvers';
 import { resolverContext } from './gql/resolver-context';
 import { apolloSentryPlugin } from './sentry';
@@ -57,10 +56,7 @@ const configureApolloServer = async (httpServer: http.Server) => {
     }
 
     const server = new ApolloServer({
-        resolvers: {
-            JSON: GraphQLJSON,
-            ...resolvers,
-        },
+        resolvers,
         typeDefs: schema,
         introspection: true,
         plugins,

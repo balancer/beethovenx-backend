@@ -1,8 +1,8 @@
-import { Resolvers } from '../../schema';
-import { userService } from './user.service';
-import { getRequiredAccountAddress, isAdminRoute } from '../auth/auth-context';
-import { tokenService } from '../token/token.service';
-import { headerChain } from '../context/header-chain';
+import { Resolvers } from '../../../../schema';
+import { userService } from '../../../../modules/user/user.service';
+import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
+import { tokenService } from '../../../../modules/token/token.service';
+import { headerChain } from '../../../../modules/context/header-chain';
 
 const resolvers: Resolvers = {
     Query: {

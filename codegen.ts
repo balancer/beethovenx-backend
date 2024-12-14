@@ -111,7 +111,7 @@ const files = {
         },
     },
     ['graphql_schema_generated.ts']: {
-        schema: './modules/**/*.gql',
+        schema: './apps/api/gql/schema/*.gql',
         plugins: [
             {
                 add: {
@@ -124,7 +124,7 @@ const files = {
         ],
     },
     ['schema.ts']: {
-        schema: './modules/**/*.gql',
+        schema: './apps/api/gql/schema/*.gql',
         plugins: [
             {
                 add: {

@@ -1,8 +1,8 @@
-import { Resolvers } from '../../schema';
-import { beetsService } from '../beets/beets.service';
-import { getRequiredAccountAddress, isAdminRoute } from '../auth/auth-context';
-import { userService } from '../user/user.service';
-import { poolService } from '../pool/pool.service';
+import { Resolvers } from '../../../../schema';
+import { beetsService } from '../../../../modules/beets/beets.service';
+import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
+import { userService } from '../../../../modules/user/user.service';
+import { poolService } from '../../../../modules/pool/pool.service';
 
 const beetsResolvers: Resolvers = {
     Query: {

@@ -1,10 +1,15 @@
-import { poolService } from './pool.service';
-import { GqlChain, Resolvers } from '../../schema';
-import { isAdminRoute } from '../auth/auth-context';
-import { networkContext } from '../network/network-context.service';
-import { headerChain } from '../context/header-chain';
-import { CowAmmController, EventsQueryController, SnapshotsController, PoolController } from '../controllers';
-import { chainIdToChain } from '../network/chain-id-to-chain';
+import { poolService } from '../../../../modules/pool/pool.service';
+import { GqlChain, Resolvers } from '../../../../schema';
+import { isAdminRoute } from '../../../../modules/auth/auth-context';
+import { networkContext } from '../../../../modules/network/network-context.service';
+import { headerChain } from '../../../../modules/context/header-chain';
+import {
+    CowAmmController,
+    EventsQueryController,
+    SnapshotsController,
+    PoolController,
+} from '../../../../modules/controllers';
+import { chainIdToChain } from '../../../../modules/network/chain-id-to-chain';
 
 const balancerResolvers: Resolvers = {
     Query: {
