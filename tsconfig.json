@@ -3,7 +3,7 @@
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "lib": ["es2018"],
+        "lib": ["ES2020"],
         "module": "commonjs",
         "strict": true,
         "target": "ES2020",
