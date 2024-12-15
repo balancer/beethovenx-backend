@@ -13,6 +13,7 @@ export const chainIdToChain: { [id: string]: Chain } = {
     '11155111': Chain.SEPOLIA,
     '252': Chain.FRAXTAL,
     '34443': Chain.MODE,
+    '146': Chain.SONIC,
 };
 
 export const chainToChainId: { [chain: string]: string } = {
@@ -28,4 +29,5 @@ export const chainToChainId: { [chain: string]: string } = {
     SEPOLIA: '11155111',
     FRAXTAL: '252',
     MODE: '34443',
+    SONIC: '146',
 };
