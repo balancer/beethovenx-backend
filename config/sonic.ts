@@ -12,9 +12,7 @@ export default <NetworkData>{
     },
     subgraphs: {
         startDate: '2024-12-12',
-        balancer: [
-            `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/deployments/id/QmWUgkiUM5c3BW1Z51DUkZfnyQfyfesE8p3BRnEtA9vyPL`,
-        ],
+        balancer: [`https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/balancer-v2-sonic/api`],
         beetsBar: 'https://',
         blocks: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/sonic-blocks/api`,
         gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/balancer/gauges-sonic/api`,
