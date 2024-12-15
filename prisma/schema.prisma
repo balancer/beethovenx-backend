@@ -28,6 +28,7 @@ enum Chain {
     ZKEVM
     FRAXTAL
     MODE
+    SONIC
 }
 
 model PrismaLastBlockSynced {

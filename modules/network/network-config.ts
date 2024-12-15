@@ -12,6 +12,7 @@ import { fraxtalNetworkConfig } from './fraxtal';
 import { Chain } from '@prisma/client';
 import { sepoliaNetworkConfig } from './sepolia';
 import { modeNetworkConfig } from './mode';
+import { sonicNetworkConfig } from './sonic';
 
 export const AllNetworkConfigs: { [chainId: string]: NetworkConfig } = {
     '250': fantomNetworkConfig,
@@ -26,6 +27,7 @@ export const AllNetworkConfigs: { [chainId: string]: NetworkConfig } = {
     '11155111': sepoliaNetworkConfig,
     '252': fraxtalNetworkConfig,
     '34443': modeNetworkConfig,
+    '146': sonicNetworkConfig,
 };
 
 export const AllNetworkConfigsKeyedOnChain: { [chain in Chain]: NetworkConfig } = {
@@ -41,7 +43,8 @@ export const AllNetworkConfigsKeyedOnChain: { [chain in Chain]: NetworkConfig } 
     SEPOLIA: sepoliaNetworkConfig,
     FRAXTAL: fraxtalNetworkConfig,
     MODE: modeNetworkConfig,
+    SONIC: sonicNetworkConfig,
 };
 
 export const BalancerChainIds = ['1', '137', '42161', '100', '1101', '43114', '8453', '11155111', '252', '34443'];
-export const BeethovenChainIds = ['250', '10'];
+export const BeethovenChainIds = ['250', '10', '146'];

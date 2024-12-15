@@ -95,6 +95,8 @@ describe('pool controller debugging', () => {
     }, 5000000);
 
     it('erc4626 data', async () => {
+
+        TokenController().ync
         const boostedPool = await poolService.getGqlPool('0x6649a010cbcf5742e7a13a657df358556b3e55cf', 'MAINNET');
 
         expect(boostedPool).toBeDefined();

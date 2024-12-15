@@ -11,6 +11,7 @@ import sepoliaConfig from './sepolia';
 import zkevmConfig from './zkevm';
 import fraxtalConfig from './fraxtal';
 import modeConfig from './mode';
+import sonicConfig from './sonic';
 
 export const DAYS_OF_HOURLY_PRICES = 100;
 export const BALANCES_SYNC_BLOCKS_MARGIN = 200;
@@ -28,4 +29,5 @@ export default {
     [Chain.ZKEVM]: zkevmConfig,
     [Chain.FRAXTAL]: fraxtalConfig,
     [Chain.MODE]: modeConfig,
+    [Chain.SONIC]: sonicConfig,
 };

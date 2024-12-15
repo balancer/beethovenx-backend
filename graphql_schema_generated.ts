@@ -61,6 +61,7 @@ export const schema = gql`
         OPTIMISM
         POLYGON
         SEPOLIA
+        SONIC
         ZKEVM
     }
 
