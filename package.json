@@ -62,7 +62,7 @@
         "stellate": "2.7.1",
         "ts-dotenv": "^0.8.1",
         "uuid": "^8.3.2",
-        "viem": "^2.12.1",
+        "viem": "^2.21.55",
         "yarn": "^1.22.19"
     },
     "devDependencies": {
