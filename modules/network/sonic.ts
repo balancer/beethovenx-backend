@@ -11,6 +11,8 @@ import { env } from '../../apps/env';
 import { BalancerSubgraphService } from '../subgraphs/balancer-subgraph/balancer-subgraph.service';
 import config from '../../config';
 import { GithubContentService } from '../content/github-content.service';
+import { ReliquaryFarmAprService } from '../pool/lib/apr-data-sources/fantom/reliquary-farm-apr.service';
+import { UserSyncReliquaryFarmBalanceService } from '../user/lib/user-sync-reliquary-farm-balance.service';
 
 const sonicNetworkData: NetworkData = config.SONIC;
 
@@ -23,10 +25,13 @@ export const sonicNetworkConfig: NetworkConfig = {
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
         new GaugeAprService(tokenService, [sonicNetworkData.beets!.address, sonicNetworkData.bal!.address]),
-        // new ReliquaryFarmAprService(fantomNetworkData.beets!.address),
+        new ReliquaryFarmAprService(sonicNetworkData.beets!.address),
         // new BeetswarsGaugeVotingAprService(),
     ],
-    userStakedBalanceServices: [new UserSyncGaugeBalanceService()],
+    userStakedBalanceServices: [
+        new UserSyncGaugeBalanceService(),
+        new UserSyncReliquaryFarmBalanceService(sonicNetworkData.reliquary!.address),
+    ],
     services: {
         balancerSubgraphService: new BalancerSubgraphService(
             sonicNetworkData.subgraphs.balancer,
@@ -108,6 +113,10 @@ export const sonicNetworkConfig: NetworkConfig = {
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(5, 'minutes') : every(20, 'seconds'),
             alarmEvaluationPeriod: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? 3 : 1,
             alarmDatapointsToAlarm: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? 3 : 1,
+        },
+        {
+            name: 'sync-latest-reliquary-snapshots',
+            interval: every(1, 'hours'),
         },
         {
             name: 'update-fee-volume-yield-all-pools',

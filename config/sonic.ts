@@ -13,12 +13,12 @@ export default <NetworkData>{
     subgraphs: {
         startDate: '2024-12-12',
         balancer: [
-            `https://subgraph.satsuma-prod.com/${env.ALCHEMY_SUBGRAPH_KEY}/deployments/id/QmWUgkiUM5c3BW1Z51DUkZfnyQfyfesE8p3BRnEtA9vyPL`,
+            `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/deployments/id/QmWUgkiUM5c3BW1Z51DUkZfnyQfyfesE8p3BRnEtA9vyPL`,
         ],
         beetsBar: 'https://',
-        blocks: `https://subgraph.satsuma-prod.com/${env.ALCHEMY_SUBGRAPH_KEY}/beets--990439/sonic-blocks/api`,
-        gauge: `https://subgraph.satsuma-prod.com/${env.ALCHEMY_SUBGRAPH_KEY}/balancer/gauges-sonic/api`,
-        reliquary: ``,
+        blocks: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/sonic-blocks/api`,
+        gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/balancer/gauges-sonic/api`,
+        reliquary: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/mabeets-sonic/api`,
     },
     eth: {
         address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -39,14 +39,14 @@ export default <NetworkData>{
     rpcMaxBlockRange: 2000,
     protocolToken: 'beets',
     beets: {
-        address: '0x2D0E0814E62D80056181F5cd932274405966e4f0',
+        address: '0x2d0e0814e62d80056181f5cd932274405966e4f0',
     },
     balancer: {
         v2: {
             vaultAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
             defaultSwapFeePercentage: '0.25',
             defaultYieldFeePercentage: '0.25',
-            balancerQueriesAddress: '0x4B29DB997Ec0efDFEF13bAeE2a2D7783bCf67f17',
+            balancerQueriesAddress: '0x4b29db997ec0efdfef13baee2a2d7783bcf67f17',
         },
         v3: {
             vaultAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
@@ -57,6 +57,10 @@ export default <NetworkData>{
     },
     multicall: '0xca11bde05977b3631167028862be2a173976ca11',
     multicall3: '0xca11bde05977b3631167028862be2a173976ca11',
+    reliquary: {
+        address: '0x973670ce19594f857a7cd85ee834c7a74a941684',
+        excludedFarmIds: [],
+    },
     avgBlockSpeed: 1,
     ybAprConfig: {},
     datastudio: {
