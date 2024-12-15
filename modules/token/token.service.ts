@@ -22,9 +22,8 @@ import {
 } from '../../schema';
 import { networkContext } from '../network/network-context.service';
 import { Dictionary } from 'lodash';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
-import { chainIdToChain } from '../network/chain-id-to-chain';
 import { GithubContentService } from '../content/github-content.service';
+import config from '../../config';
 
 const TOKEN_PRICES_CACHE_KEY = `token:prices:current`;
 const TOKEN_PRICES_24H_AGO_CACHE_KEY = `token:prices:24h-ago`;
@@ -79,7 +78,7 @@ export class TokenService {
             const rateProviderData = await this.getPriceRateProviderData([token]);
             return {
                 ...token,
-                chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
+                chainId: config[token.chain].chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
                 rateProviderData: rateProviderData[token.address],
                 coingeckoId: token.coingeckoTokenId,
@@ -103,18 +102,15 @@ export class TokenService {
         });
 
         for (const chain of chains) {
-            const weth = tokens.find(
-                (token) =>
-                    token.chain === chain && token.address === AllNetworkConfigsKeyedOnChain[chain].data.weth.address,
-            );
+            const weth = tokens.find((token) => token.chain === chain && token.address === config[chain].weth.address);
 
             if (weth) {
                 tokens.push({
                     ...weth,
-                    name: AllNetworkConfigsKeyedOnChain[chain].data.eth.name,
-                    address: AllNetworkConfigsKeyedOnChain[chain].data.eth.address,
-                    symbol: AllNetworkConfigsKeyedOnChain[chain].data.eth.symbol,
-                    chain: AllNetworkConfigsKeyedOnChain[chain].data.chain.prismaId,
+                    name: config[chain].eth.name,
+                    address: config[chain].eth.address,
+                    symbol: config[chain].eth.symbol,
+                    chain: config[chain].chain.prismaId,
                 });
             }
         }
@@ -141,7 +137,7 @@ export class TokenService {
 
         return tokens.map((token) => ({
             ...token,
-            chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
+            chainId: config[token.chain].chain.id,
             tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
             rateProviderData: rateProviderData[token.address],
             priceRateProviderData: rateProviderData[token.address],

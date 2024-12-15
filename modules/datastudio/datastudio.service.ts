@@ -10,9 +10,9 @@ import { tokenService } from '../token/token.service';
 import { beetsService } from '../beets/beets.service';
 import { oneDayInSeconds, secondsPerDay } from '../common/time';
 import { isComposableStablePool, isWeightedPoolV2 } from '../pool/lib/pool-utils';
-import { networkContext } from '../network/network-context.service';
 import { DeploymentEnv } from '../network/network-config-types';
 import { Chain } from '@prisma/client';
+import config from '../../config';
 
 export class DatastudioService {
     constructor(private readonly secretsManager: SecretsManager, private readonly jwtClientHelper: GoogleJwtClient) {}
@@ -22,15 +22,13 @@ export class DatastudioService {
             return;
         }
         const privateKey = await this.secretsManager.getSecret('backend-v3-datafeed-privatekey');
-        const jwtClient = await this.jwtClientHelper.getAuthorizedSheetsClient(privateKey);
+        const jwtClient = await this.jwtClientHelper.getAuthorizedSheetsClient(privateKey, chain);
 
-        const databaseTabName = networkContext.data.datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].databaseTabName;
-        const sheetId = networkContext.data.datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].sheetId;
-        const compositionTabName =
-            networkContext.data.datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].compositionTabName;
-        const emissionDataTabName =
-            networkContext.data.datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].emissionDataTabName;
-        const chainSlug = networkContext.data.chain.slug;
+        const databaseTabName = config[chain].datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].databaseTabName;
+        const sheetId = config[chain].datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].sheetId;
+        const compositionTabName = config[chain].datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].compositionTabName;
+        const emissionDataTabName = config[chain].datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].emissionDataTabName;
+        const chainSlug = config[chain].chain.slug;
 
         const timestampRange = `${databaseTabName}!B:B`;
         const poolAddressRange = `${databaseTabName}!D:D`;
@@ -252,7 +250,7 @@ export class DatastudioService {
                             pool.address,
                             "'" + pool.name,
                             'BEETS',
-                            networkContext.data.beets!.address,
+                            config[Chain.FANTOM].beets!.address,
                             `${beetsPerDay}`,
                             `${beetsValuePerDay}`,
                             chainSlug,
@@ -296,7 +294,7 @@ export class DatastudioService {
                             pool.address,
                             "'" + pool.name,
                             'BEETS',
-                            networkContext.data.beets!.address,
+                            config[Chain.FANTOM].beets!.address,
                             `${beetsPerDay}`,
                             `${beetsValuePerDay}`,
                             chainSlug,

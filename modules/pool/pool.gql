@@ -85,7 +85,7 @@ extend type Mutation {
     poolUpdateLiquidityValuesForAllPools: String!
     poolReloadAllPoolAprs(chain: GqlChain!): String!
     poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
-    poolLoadSnapshotsForPools(poolIds: [String!]!, reload: Boolean): String!
+    poolLoadSnapshotsForPools(poolIds: [String!]!, chain: GqlChain!, reload: Boolean): String!
     poolUpdateLifetimeValuesForAllPools: String!
     poolLoadOnChainDataForAllPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
     poolReloadPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!

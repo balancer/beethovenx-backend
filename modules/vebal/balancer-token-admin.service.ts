@@ -1,14 +1,20 @@
-import { Contract } from '@ethersproject/contracts';
-import { BigNumber } from '@ethersproject/bignumber';
-import abi from './abi/balancerTokenAdmin.json';
-import { networkContext } from '../network/network-context.service';
+import { Chain } from '@prisma/client';
+import mainnet from '../../config/mainnet';
+import { getViemClient } from '../sources/viem-client';
+import { parseAbi } from 'viem';
 
-export async function getInflationRate(): Promise<BigNumber> {
-    if (networkContext.isMainnet) {
-        const tokenAdmin = new Contract(networkContext.data.balancer.v2.tokenAdmin!, abi, networkContext.provider);
-        const inflationRate = await tokenAdmin.getInflationRate();
+const abi = parseAbi(['function getInflationRate() view returns (uint256)']);
+
+export async function getInflationRate(chain: Chain) {
+    if (chain === Chain.MAINNET) {
+        const client = getViemClient(chain);
+        const inflationRate = await client.readContract({
+            address: mainnet.balancer.v2.tokenAdmin! as `0x${string}`,
+            abi,
+            functionName: 'getInflationRate',
+        });
         return inflationRate;
     } else {
-        return BigNumber.from(0);
+        return 0n;
     }
 }

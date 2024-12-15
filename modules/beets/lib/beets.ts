@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import beetsAbi from '../abi/BeethovenxToken.json';
 import { getContractAt } from '../../web3/contract';
-import { networkContext } from '../../network/network-context.service';
+import fantom from '../../../config/fantom';
 
 const NON_CIRCULATING_ADDRESSES = [
     '0xa2503804ec837d1e4699932d58a3bdb767dea505', //team linear vesting
@@ -14,7 +14,7 @@ const NON_CIRCULATING_ADDRESSES = [
 ];
 
 export async function beetsGetCirculatingSupply() {
-    const beetsContract = getContractAt(networkContext.data.beets!.address, beetsAbi);
+    const beetsContract = getContractAt(fantom.beets!.address, beetsAbi);
 
     let totalSupply = await beetsContract.totalSupply();
 

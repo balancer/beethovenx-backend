@@ -8,10 +8,11 @@ import {
 import { env } from '../env';
 import { AllNetworkConfigs } from '../../modules/network/network-config';
 import { DeploymentEnv, WorkerJob } from '../../modules/network/network-config-types';
-import { networkContext } from '../../modules/network/network-context.service';
 import { secondsPerDay } from '../../modules/common/time';
 import { sleep } from '../../modules/common/promise';
 import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
+import config from '../../config';
+import { chainIdToChain } from '../../modules/network/chain-id-to-chain';
 
 export async function createAlerts(chainId: string): Promise<void> {
     await createAlertsIfNotExist(chainId, AllNetworkConfigs[chainId].workerJobs);
@@ -84,8 +85,10 @@ async function createAlertsIfNotExist(chainId: string, jobs: WorkerJob[]): Promi
                 periodInSeconds * evaluationPeriods
             } seconds.`,
             ActionsEnabled: true,
-            AlarmActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
-            OKActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
+            AlarmActions: [
+                config[chainIdToChain[chainId]].monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn,
+            ],
+            OKActions: [config[chainIdToChain[chainId]].monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
             MetricName: `${cronJob.name}-${chainId}-done`,
             Statistic: 'Sum',
             Dimensions: [{ Name: 'Environment', Value: env.DEPLOYMENT_ENV }],

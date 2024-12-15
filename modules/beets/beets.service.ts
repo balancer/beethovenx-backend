@@ -1,6 +1,6 @@
 import { FbeetsService } from './lib/fbeets.service';
 import { tokenService } from '../token/token.service';
-import { networkContext } from '../network/network-context.service';
+import fantom from '../../config/fantom';
 
 export class BeetsService {
     constructor(private readonly fBeetsService: FbeetsService) {}
@@ -15,7 +15,7 @@ export class BeetsService {
 
     public async getBeetsPrice(): Promise<string> {
         const tokenPrices = await tokenService.getTokenPrices();
-        return tokenService.getPriceForToken(tokenPrices, networkContext.data.beets!.address, 'FANTOM').toString();
+        return tokenService.getPriceForToken(tokenPrices, fantom.beets!.address, 'FANTOM').toString();
     }
 }
 

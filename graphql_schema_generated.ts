@@ -3592,7 +3592,7 @@ export const schema = gql`
         beetsSyncFbeetsRatio: String!
         cacheAverageBlockTime: String!
         poolLoadOnChainDataForAllPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
-        poolLoadSnapshotsForPools(poolIds: [String!]!, reload: Boolean): String!
+        poolLoadSnapshotsForPools(chain: GqlChain!, poolIds: [String!]!, reload: Boolean): String!
         poolReloadAllPoolAprs(chain: GqlChain!): String!
         poolReloadPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!

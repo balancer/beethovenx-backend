@@ -1,13 +1,14 @@
 import * as google from 'googleapis-common';
 import { env } from '../../apps/env';
 import { JWT } from 'google-auth-library';
-import { networkContext } from '../network/network-context.service';
 import { DeploymentEnv } from '../network/network-config-types';
+import config from '../../config';
+import { Chain } from '@prisma/client';
 
 export class GoogleJwtClient {
-    public async getAuthorizedSheetsClient(privateKey: string): Promise<JWT> {
+    public async getAuthorizedSheetsClient(privateKey: string, chain: Chain): Promise<JWT> {
         const jwtClient = new google.JWT(
-            networkContext.data.datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].user,
+            config[chain].datastudio![env.DEPLOYMENT_ENV as DeploymentEnv].user,
             undefined,
             privateKey,
             'https://www.googleapis.com/auth/spreadsheets',

@@ -29,3 +29,6 @@ export const chainToChainId: { [chain: string]: string } = {
     FRAXTAL: '252',
     MODE: '34443',
 };
+
+export const BalancerChainIds = ['1', '137', '42161', '100', '1101', '43114', '8453', '11155111', '252', '34443'];
+export const BeethovenChainIds = ['250', '10'];
