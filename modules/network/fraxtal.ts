@@ -23,7 +23,7 @@ export const fraxtalNetworkConfig: NetworkConfig = {
         new YbTokensAprService(fraxtalNetworkData.ybAprConfig, fraxtalNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [fraxtalNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

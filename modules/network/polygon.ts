@@ -23,7 +23,7 @@ export const polygonNetworkConfig: NetworkConfig = {
         new YbTokensAprService(polygonNetworkData.ybAprConfig, polygonNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [polygonNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

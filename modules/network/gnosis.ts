@@ -23,7 +23,7 @@ export const gnosisNetworkConfig: NetworkConfig = {
         new YbTokensAprService(gnosisNetworkData.ybAprConfig, gnosisNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [gnosisNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

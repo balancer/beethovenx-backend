@@ -5,19 +5,18 @@
  * The “working supply” of the gauge - the effective total LP token amount after all deposits have been boosted.
  * "Working balance" is 40% of a user balance in a gauge - used only for BAL rewards on v2 gauges on child gauges or on mainnet
  */
-import { PrismaPoolWithTokens } from '../../../../prisma/prisma-types';
 import { PoolAprService } from '../../pool-types';
-import { TokenService } from '../../../token/token.service';
 import { secondsPerYear } from '../../../common/time';
 import { PrismaPoolAprItem, PrismaPoolAprRange, PrismaPoolAprType } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 import { networkContext } from '../../../network/network-context.service';
+import { tokenService } from '../../../token/token.service';
 
 export class GaugeAprService implements PoolAprService {
     private readonly MAX_VEBAL_BOOST = 2.5;
 
-    constructor(private readonly tokenService: TokenService, private readonly primaryTokens: string[]) {}
+    constructor() {}
 
     public getAprServiceName(): string {
         return 'GaugeAprService';
@@ -28,7 +27,7 @@ export class GaugeAprService implements PoolAprService {
         const rangeOperations: any[] = [];
 
         // Get the data
-        const tokenPrices = await this.tokenService.getTokenPrices();
+        const tokenPrices = await tokenService.getTokenPrices();
         const stakings = await prisma.prismaPoolStaking.findMany({
             where: {
                 poolId: { in: pools.map((pool) => pool.id) },
@@ -59,7 +58,7 @@ export class GaugeAprService implements PoolAprService {
             // Get token rewards per year with data needed for the DB
             const rewards = await Promise.allSettled(
                 gauge.rewards.map(async ({ id, tokenAddress, rewardPerSecond, isVeBalemissions }) => {
-                    const price = this.tokenService.getPriceForToken(tokenPrices, tokenAddress, networkContext.chain);
+                    const price = tokenService.getPriceForToken(tokenPrices, tokenAddress, networkContext.chain);
                     if (!price) {
                         return Promise.reject(`Price not found for ${tokenAddress}`);
                     }

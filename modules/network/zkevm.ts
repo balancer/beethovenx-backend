@@ -23,7 +23,7 @@ export const zkevmNetworkConfig: NetworkConfig = {
         new YbTokensAprService(zkevmNetworkData.ybAprConfig, zkevmNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [zkevmNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

@@ -24,7 +24,7 @@ export const sonicNetworkConfig: NetworkConfig = {
         // new YbTokensAprService(sonicNetworkData.ybAprConfig, sonicNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [sonicNetworkData.beets!.address]),
+        new GaugeAprService(),
         new ReliquaryFarmAprService(sonicNetworkData.beets!.address),
         // new BeetswarsGaugeVotingAprService(),
     ],

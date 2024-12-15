@@ -22,7 +22,7 @@ export const modeNetworkConfig: NetworkConfig = {
         new YbTokensAprService(modeNetworkData.ybAprConfig, modeNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [modeNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService()],
     services: {

@@ -28,7 +28,7 @@ export const mainnetNetworkConfig: NetworkConfig = {
         new YbTokensAprService(data.ybAprConfig, data.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [data.bal!.address]),
+        new GaugeAprService(),
         new VeBalProtocolAprService(data.rpcUrl),
         new VeBalVotingAprService(),
     ],

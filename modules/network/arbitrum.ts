@@ -23,7 +23,7 @@ export const arbitrumNetworkConfig: NetworkConfig = {
         new YbTokensAprService(arbitrumNetworkData.ybAprConfig, arbitrumNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [arbitrumNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

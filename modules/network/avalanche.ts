@@ -23,7 +23,7 @@ export const avalancheNetworkConfig: NetworkConfig = {
         new YbTokensAprService(avalancheNetworkData.ybAprConfig, avalancheNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [avalancheNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {

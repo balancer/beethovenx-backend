@@ -23,7 +23,7 @@ export const baseNetworkConfig: NetworkConfig = {
         new YbTokensAprService(baseNetworkData.ybAprConfig, baseNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
-        new GaugeAprService(tokenService, [baseNetworkData.bal!.address]),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {
