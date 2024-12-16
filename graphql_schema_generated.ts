@@ -2261,6 +2261,11 @@ export const schema = gql`
         isAllowed: Boolean!
 
         """
+        If it is an ERC4626 token, this defines whether we allow it to use the buffer for pool operations.
+        """
+        isBufferAllowed: Boolean!
+
+        """
         Whether the token is considered an ERC4626 token.
         """
         isErc4626: Boolean!

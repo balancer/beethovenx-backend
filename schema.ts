@@ -1575,6 +1575,8 @@ export interface GqlPoolTokenDetail {
     index: Scalars['Int'];
     /** Whether the token is in the allow list. */
     isAllowed: Scalars['Boolean'];
+    /** If it is an ERC4626 token, this defines whether we allow it to use the buffer for pool operations. */
+    isBufferAllowed: Scalars['Boolean'];
     /** Whether the token is considered an ERC4626 token. */
     isErc4626: Scalars['Boolean'];
     /** Token logo */
@@ -4509,6 +4511,7 @@ export type GqlPoolTokenDetailResolvers<
     id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
     index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     isAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    isBufferAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     isErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     logoURI?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
