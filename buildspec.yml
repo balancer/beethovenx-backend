@@ -10,7 +10,7 @@ phases:
         commands:
             - ~/.bun/bin/bun prisma generate
             - ~/.bun/bin/bun prisma migrate deploy
-            - ~/.bun/bin/bun build
+            - ~/.bun/bin/bun run build
             - ~/.bun/bin/bun cleanup-console
     post_build:
         commands:
