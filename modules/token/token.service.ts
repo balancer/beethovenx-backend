@@ -79,6 +79,7 @@ export class TokenService {
             const rateProviderData = await this.getPriceRateProviderData([token]);
             return {
                 ...token,
+                isBufferAllowed: token.isBufferAllowed,
                 chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
                 rateProviderData: rateProviderData[token.address],
