@@ -36,7 +36,7 @@ describe('sor debugging', () => {
         expect(parseFloat(swaps.returnAmount)).toBeGreaterThan(0);
     }, 5000000);
 
-    it.only('sor v3 mainnet wusdl -> csusdl', async () => {
+    it('sor v3 mainnet wusdl -> csusdl', async () => {
         const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
