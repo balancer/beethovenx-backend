@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.17
+
+### Patch Changes
+
+-   35ee2fe: add isBufferAllowed to pooltoken
+-   4a9fe0c: always pass multicall3 address in viem
+
 ## 1.26.16
 
 ### Patch Changes
