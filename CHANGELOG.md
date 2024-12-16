@@ -1,5 +1,14 @@
 # backend
 
+## 1.26.16
+
+### Patch Changes
+
+-   bc501c8: add staking to sonic
+-   863a840: Fix SOR routes when swapping through a single buffer only
+-   cacabb2: add isAllowedBuffer flag
+-   910eedc: add sonic chain
+
 ## 1.26.15
 
 ### Patch Changes
