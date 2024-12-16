@@ -18,7 +18,12 @@ export async function multicallViem<T extends Record<string, any>>(
     blockNumber?: bigint,
     batchSize?: number,
 ): Promise<T> {
-    const results = await client.multicall({ contracts: calls, blockNumber, batchSize });
+    const results = await client.multicall({
+        contracts: calls,
+        blockNumber,
+        batchSize,
+        multicallAddress: '0xca11bde05977b3631167028862be2a173976ca11',
+    });
 
     const returnObject = {};
     let i = 0;
