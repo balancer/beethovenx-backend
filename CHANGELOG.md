@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.18
+
+### Patch Changes
+
+-   cf338a6: dependencies cleanup
+-   8b462a2: Prevent disallowed buffers on SOR paths
+
 ## 1.26.17
 
 ### Patch Changes
