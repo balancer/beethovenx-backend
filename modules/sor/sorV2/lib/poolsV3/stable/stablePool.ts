@@ -50,7 +50,7 @@ export class StablePool implements BasePoolV3 {
             const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
-            if (poolToken.token.underlyingTokenAddress) {
+            if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
                 poolTokens.push(
                     new Erc4626PoolToken(
                         token,

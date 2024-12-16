@@ -53,7 +53,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
             );
             const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
-            if (poolToken.token.underlyingTokenAddress) {
+            if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
                 // erc4626 token
                 poolTokens.push(
                     new WeightedErc4626PoolToken(
