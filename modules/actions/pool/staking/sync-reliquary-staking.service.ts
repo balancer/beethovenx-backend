@@ -12,7 +12,7 @@ export const syncReliquaryStakingForPools = async (
     reliquaryAddress: string,
     excludedFarmIds: string[],
 ): Promise<void> => {
-    if (chain !== 'FANTOM') {
+    if (chain !== 'FANTOM' && chain !== 'SONIC') {
         return;
     }
 

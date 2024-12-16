@@ -15,7 +15,7 @@ export default <NetworkData>{
         balancer: [`https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/balancer-v2-sonic/api`],
         beetsBar: 'https://',
         blocks: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/sonic-blocks/api`,
-        gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/balancer/gauges-sonic/api`,
+        gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/gauges-sonic/api`,
         reliquary: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/mabeets-sonic/api`,
     },
     eth: {
@@ -38,6 +38,9 @@ export default <NetworkData>{
     protocolToken: 'beets',
     beets: {
         address: '0x2d0e0814e62d80056181f5cd932274405966e4f0',
+    },
+    bal: {
+        address: '0x0000000000000000000000000000000000000000',
     },
     balancer: {
         v2: {
