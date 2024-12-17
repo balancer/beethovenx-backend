@@ -13,13 +13,13 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@v3
 
-            - name: Setup Node.js 20
-              uses: actions/setup-node@v3
+            - name: Use Bun
+              uses: oven-sh/setup-bun@v2
               with:
-                  node-version: 20
+                  bun-version: latest
 
-            - name: Install Changesets
-              run: yarn
+            - name: Install deps
+              run: bun install --frozen-lockfile
 
             - name: Create Release Pull Request
               uses: changesets/action@v1
