@@ -7,7 +7,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "start": "bun run apps/main.ts",
+        "start": "node dist/apps/main.js",
         "dev": "bun --hot run apps/main.ts",
         "build": "tsc -p tsconfig.build.json",
         "cleanup-console": "find dist -type f -name \"*.js\" -exec sed -i '/console\\.time(\\(.*\\))\\;/d;/console\\.timeEnd(\\(.*\\))\\;/d' {} \\;",
