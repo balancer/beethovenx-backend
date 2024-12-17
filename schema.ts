@@ -1601,6 +1601,8 @@ export interface GqlPoolTokenDetail {
     tradable?: Maybe<Scalars['Boolean']>;
     /** If it is an ERC4626, this will be the underlying token if present in the API. */
     underlyingToken?: Maybe<GqlToken>;
+    /** If it is an ERC4626 token, it represents the rate between wrapped/underlying. */
+    unwrapRate: Scalars['BigDecimal'];
     /** The weight of the token in the pool if it is a weighted pool, null otherwise */
     weight?: Maybe<Scalars['BigDecimal']>;
 }
@@ -4524,6 +4526,7 @@ export type GqlPoolTokenDetailResolvers<
     symbol?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     tradable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
     underlyingToken?: Resolver<Maybe<ResolversTypes['GqlToken']>, ParentType, ContextType>;
+    unwrapRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     weight?: Resolver<Maybe<ResolversTypes['BigDecimal']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

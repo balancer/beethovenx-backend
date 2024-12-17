@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "PrismaPoolToken" ADD COLUMN     "unwrapRate" TEXT NOT NULL DEFAULT '1000000000000000000';

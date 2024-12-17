@@ -20,7 +20,7 @@ const syncVaultData = async (vaultClient: VaultClient, chain: Chain, ids: string
 
     // Get the data for the tables about pools
     const dbUpdates = Object.keys(onchainData).map((id) =>
-        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, chain, id, blockNumber),
+        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, [], chain, id, blockNumber),
     );
 
     // Get the prices

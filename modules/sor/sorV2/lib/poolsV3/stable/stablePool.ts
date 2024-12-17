@@ -57,6 +57,7 @@ export class StablePool implements BasePoolV3 {
                         tokenAmount.amount,
                         poolToken.index,
                         parseEther(poolToken.priceRate),
+                        parseEther(poolToken.unwrapRate),
                         poolToken.token.underlyingTokenAddress,
                     ),
                 );

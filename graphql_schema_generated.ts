@@ -2326,6 +2326,11 @@ export const schema = gql`
         underlyingToken: GqlToken
 
         """
+        If it is an ERC4626 token, it represents the rate between wrapped/underlying.
+        """
+        unwrapRate: BigDecimal!
+
+        """
         The weight of the token in the pool if it is a weighted pool, null otherwise
         """
         weight: BigDecimal

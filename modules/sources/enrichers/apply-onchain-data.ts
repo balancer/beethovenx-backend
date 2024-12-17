@@ -1,4 +1,4 @@
-import { formatEther, formatUnits } from 'viem';
+import { formatEther, formatUnits, parseEther } from 'viem';
 import { OnchainDataCowAmm, OnchainDataV3 } from '../contracts';
 import { Chain } from '@prisma/client';
 import { PoolDynamicUpsertData, PoolUpsertData } from '../../../prisma/prisma-types';
@@ -7,11 +7,16 @@ export const applyOnchainDataUpdateV3 = (
     data: Partial<PoolUpsertData> = {},
     onchainPoolData: OnchainDataV3,
     allTokens: { address: string; decimals: number }[],
+    enrichedTokensWithErc4626Data: { address: string; unwrapRate: bigint }[],
     chain: Chain,
     poolId: string,
     blockNumber: bigint,
 ): PoolDynamicUpsertData => {
     const decimals = Object.fromEntries(allTokens.map((token) => [token.address, token.decimals]));
+    const unwrapRates = Object.fromEntries(
+        enrichedTokensWithErc4626Data.map((token) => [token.address.toLowerCase, token.unwrapRate]),
+    );
+
     return {
         poolDynamicData: {
             ...data.poolDynamicData,
@@ -47,6 +52,7 @@ export const applyOnchainDataUpdateV3 = (
                     ...token,
                     balance: formatUnits(tokenData.balance ?? 0n, decimals[tokenData.address.toLocaleLowerCase()]),
                     priceRate: tokenData.rate ? formatEther(tokenData.rate) : '1',
+                    unwrapRate: formatEther(unwrapRates[tokenData.address.toLowerCase()] || parseEther('1')),
                     balanceUSD: 0,
                 };
             }) ||

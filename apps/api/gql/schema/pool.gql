@@ -1306,6 +1306,10 @@ type GqlPoolTokenDetail {
     """
     isBufferAllowed: Boolean!
     """
+    If it is an ERC4626 token, it represents the rate between wrapped/underlying.
+    """
+    unwrapRate: BigDecimal!
+    """
     The ERC4626 review data for the token
     """
     erc4626ReviewData: Erc4626ReviewData

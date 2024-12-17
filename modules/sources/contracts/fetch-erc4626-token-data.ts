@@ -3,6 +3,8 @@ import MinimalErc4626Abi from './abis/MinimalERC4626';
 import { fetchErc20Headers } from '.';
 import { multicallViem, ViemMulticallCall } from '../../web3/multicaller-viem';
 import { Chain } from '@prisma/client';
+import { Address, parseEther } from 'viem';
+import { isSameAddress } from '@balancer/sdk';
 
 interface Erc4626Data {
     asset?: string;
@@ -17,16 +19,17 @@ interface Erc4626Data {
 export async function fetchErc4626AndUnderlyingTokenData(
     tokens: { address: string; decimals: number; name: string; symbol: string; chain: Chain }[],
     viemClient: ViemClient,
-): Promise<
-    {
+): Promise<{
+    enrichedTokensWithErc4626Data: {
         address: string;
         decimals: number;
         name: string;
         symbol: string;
         chain: Chain;
         underlyingTokenAddress?: string;
-    }[]
-> {
+    }[];
+    unwrapRateData: { [id: string]: bigint };
+}> {
     const tokenData: {
         [id: string]: {
             address: string;
@@ -37,6 +40,8 @@ export async function fetchErc4626AndUnderlyingTokenData(
             underlyingTokenAddress?: string;
         };
     } = {};
+
+    const unwrapRateData: { [id: string]: bigint } = {};
 
     const calls: ViemMulticallCall[] = [];
 
@@ -53,7 +58,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
                 address: token.address as `0x${string}`,
                 abi: MinimalErc4626Abi,
                 functionName: 'convertToAssets',
-                args: [1n],
+                args: [parseEther('1')],
             },
             {
                 path: `${token.address}.convertToShares`,
@@ -121,6 +126,8 @@ export async function fetchErc4626AndUnderlyingTokenData(
             underlyingTokenAddress: underlyingTokenAddress,
         };
 
+        unwrapRateData[token.address] = result.convertToAssets ? BigInt(result.convertToAssets) : parseEther('1');
+
         if (underlyingTokenAddress && !tokenData[underlyingTokenAddress]) {
             const underlyingTokenDetail = await fetchErc20Headers(
                 [underlyingTokenAddress as `0x${string}`],
@@ -135,8 +142,10 @@ export async function fetchErc4626AndUnderlyingTokenData(
                 chain: token.chain,
                 underlyingTokenAddress: undefined,
             };
+
+            unwrapRateData[underlyingTokenAddress] = parseEther('1');
         }
     }
 
-    return [...Object.values(tokenData)];
+    return { enrichedTokensWithErc4626Data: [...Object.values(tokenData)], unwrapRateData };
 }

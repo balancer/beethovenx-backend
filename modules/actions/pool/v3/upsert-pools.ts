@@ -34,7 +34,10 @@ export const upsertPools = async (
     // Store pool tokens and BPT in the tokens table before creating the pools
     const allTokens = tokensTransformer(subgraphPools, chain);
 
-    const enrichedTokensWithErc4626Data = await fetchErc4626AndUnderlyingTokenData(allTokens, getViemClient(chain));
+    const { enrichedTokensWithErc4626Data, unwrapRateData } = await fetchErc4626AndUnderlyingTokenData(
+        allTokens,
+        getViemClient(chain),
+    );
 
     try {
         await prisma.prismaToken.createMany({
@@ -89,6 +92,9 @@ export const upsertPools = async (
                 upsert,
                 onchainData[upsert.pool.id],
                 upsert.tokens,
+                upsert.tokens.map((token) => {
+                    return { address: token.address, unwrapRate: unwrapRateData[token.address] };
+                }),
                 chain,
                 upsert.pool.id,
                 blockNumber,
