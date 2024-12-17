@@ -3,7 +3,7 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { tokensTransformer } from '../../../sources/transformers/tokens-transformer';
 import { V3JoinedSubgraphPool } from '../../../sources/subgraphs';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
-import type { VaultClient } from '../../../sources/contracts';
+import { fetchCombinedData, type VaultClient } from '../../../sources/contracts';
 import { poolUpsertTransformerV3 } from '../../../sources/transformers/pool-upsert-transformer-v3';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
 import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/fetch-erc4626-token-data';
@@ -26,18 +26,17 @@ export const upsertPools = async (
     blockNumber: bigint,
 ) => {
     // Enrich with onchain data for all the pools
-    const onchainData = await vaultClient.fetchPoolData(
+    const onchainData = await fetchCombinedData(
         subgraphPools.map((pool) => pool.id),
+        chain,
+        vaultClient,
         blockNumber,
     );
 
     // Store pool tokens and BPT in the tokens table before creating the pools
     const allTokens = tokensTransformer(subgraphPools, chain);
 
-    const { enrichedTokensWithErc4626Data, unwrapRateData } = await fetchErc4626AndUnderlyingTokenData(
-        allTokens,
-        getViemClient(chain),
-    );
+    const { enrichedTokensWithErc4626Data } = await fetchErc4626AndUnderlyingTokenData(allTokens, getViemClient(chain));
 
     try {
         await prisma.prismaToken.createMany({
@@ -92,9 +91,6 @@ export const upsertPools = async (
                 upsert,
                 onchainData[upsert.pool.id],
                 upsert.tokens,
-                upsert.tokens.map((token) => {
-                    return { address: token.address, unwrapRate: unwrapRateData[token.address] };
-                }),
                 chain,
                 upsert.pool.id,
                 blockNumber,

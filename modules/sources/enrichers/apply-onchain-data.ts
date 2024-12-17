@@ -7,15 +7,11 @@ export const applyOnchainDataUpdateV3 = (
     data: Partial<PoolUpsertData> = {},
     onchainPoolData: OnchainDataV3,
     allTokens: { address: string; decimals: number }[],
-    enrichedTokensWithErc4626Data: { address: string; unwrapRate: bigint }[],
     chain: Chain,
     poolId: string,
     blockNumber: bigint,
 ): PoolDynamicUpsertData => {
     const decimals = Object.fromEntries(allTokens.map((token) => [token.address, token.decimals]));
-    const unwrapRates = Object.fromEntries(
-        enrichedTokensWithErc4626Data.map((token) => [token.address.toLowerCase, token.unwrapRate]),
-    );
 
     return {
         poolDynamicData: {
@@ -52,7 +48,7 @@ export const applyOnchainDataUpdateV3 = (
                     ...token,
                     balance: formatUnits(tokenData.balance ?? 0n, decimals[tokenData.address.toLocaleLowerCase()]),
                     priceRate: tokenData.rate ? formatEther(tokenData.rate) : '1',
-                    unwrapRate: formatEther(unwrapRates[tokenData.address.toLowerCase()] || parseEther('1')),
+                    unwrapRate: tokenData.unwrapRate ? tokenData.unwrapRate : 1,
                     balanceUSD: 0,
                 };
             }) ||

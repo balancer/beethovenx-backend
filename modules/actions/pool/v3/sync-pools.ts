@@ -5,10 +5,11 @@ import { VaultClient, getVaultClient, getPoolsClient } from '../../../sources/co
 import { syncDynamicTypeDataForPools } from './type-data/sync-dynamic-type-data-for-pools';
 import { ViemClient } from '../../../sources/viem-client';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
+import { fetchCombinedData } from '../../../sources/contracts/v3/fetch-combined-data';
 
 const syncVaultData = async (vaultClient: VaultClient, chain: Chain, ids: string[], blockNumber: bigint) => {
     // Enrich with onchain data for all the pools
-    const onchainData = await vaultClient.fetchPoolData(ids, blockNumber);
+    const onchainData = await fetchCombinedData(ids, chain, vaultClient, blockNumber);
 
     // Needed to get the token decimals for the USD calculations,
     // Keeping it external, because we fetch these tokens in the upsert pools function
@@ -20,7 +21,7 @@ const syncVaultData = async (vaultClient: VaultClient, chain: Chain, ids: string
 
     // Get the data for the tables about pools
     const dbUpdates = Object.keys(onchainData).map((id) =>
-        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, [], chain, id, blockNumber),
+        applyOnchainDataUpdateV3({}, onchainData[id], allTokens, chain, id, blockNumber),
     );
 
     // Get the prices
