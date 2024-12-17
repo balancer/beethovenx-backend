@@ -127,5 +127,26 @@ export const baseNetworkConfig: NetworkConfig = {
             name: 'sync-swaps-v2',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
         },
+        // COW AMM
+        { name: 'add-new-cow-amm-pools', interval: every(5, 'minutes') },
+        {
+            name: 'sync-cow-amm-pools',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(2, 'minutes') : every(30, 'seconds'),
+            alarmEvaluationPeriod: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? 3 : 1,
+            alarmDatapointsToAlarm: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? 3 : 1,
+        },
+        {
+            name: 'sync-cow-amm-swaps',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
+        },
+        {
+            name: 'sync-cow-amm-join-exits',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
+        },
+        { name: 'sync-cow-amm-snapshots', interval: every(10, 'minutes') },
+        {
+            name: 'update-cow-amm-volume-and-fees',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
+        },
     ],
 };
