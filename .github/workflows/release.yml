@@ -19,7 +19,7 @@ jobs:
                   node-version: 20
 
             - name: Install Changesets
-              run: npm install --no-save @changesets/cli
+              run: yarn
 
             - name: Create Release Pull Request
               uses: changesets/action@v1
