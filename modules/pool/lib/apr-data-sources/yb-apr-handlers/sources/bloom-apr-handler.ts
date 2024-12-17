@@ -20,7 +20,7 @@ export class BloomAprHandler implements AprHandler {
         const contracts = addresses.map((address) => ({
             address,
             abi: bloomBpsFeed,
-            functionName: 'borrowRatePerTimestamp',
+            functionName: 'currentRate',
         }));
         const rates = await client.multicall({ contracts, allowFailure: false });
 

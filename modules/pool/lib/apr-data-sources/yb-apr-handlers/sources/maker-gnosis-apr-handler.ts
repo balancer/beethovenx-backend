@@ -1,8 +1,9 @@
 import { AprHandler } from '..';
 import { Chain } from '@prisma/client';
 import { getViemClient } from '../../../../../sources/viem-client';
+import { parseAbi } from 'viem';
 
-const helperAbi = ['function vaultAPY() view returns (uint256)'];
+const helperAbi = parseAbi(['function vaultAPY() view returns (uint256)']);
 
 /** Sets the config data used internally */
 const config = {
