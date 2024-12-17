@@ -133,11 +133,11 @@ export const fantomNetworkConfig: NetworkConfig = {
         },
         {
             name: 'sync-sftmx-staking-data',
-            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(30, 'minutes'),
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(15, 'minutes'),
         },
         {
             name: 'sync-sftmx-withdrawal-requests',
-            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(30, 'minutes') : every(5, 'minutes'),
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(30, 'minutes') : every(30, 'seconds'),
         },
         {
             name: 'sync-sftmx-staking-snapshots',
