@@ -15,6 +15,8 @@ export default <NetworkData>{
         balancer: [
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmXXSKeLh14DnJgR1ncHhAHciqacfRshcHKXasAGy7LP4Y`,
         ],
+        balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmUTdPdBNQZpPWEZgHFHwK56337BLzKV4kJjGa2LPZzpRZ`,
+        balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmQpKVgaEhrPygATrgpCTLSMqqmHCLuC3vpdonSC1Z9iqo`,
         beetsBar: 'https://',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/FxV6YUix58SpYmLBwc9gEHkwjfkqwe1X5FJQjn8nKPyA`,
         gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/Qme9hQY1NZ8ReVDSSQb893s2fGpeLkgfwXd3YU5rndACaP`,
@@ -57,10 +59,11 @@ export default <NetworkData>{
             balancerQueriesAddress: '0x0f3e0c4218b7b0108a3643cfe9d3ec0d4f57c54e',
         },
         v3: {
-            vaultAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
-            routerAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
+            vaultAddress: '0xba1333333333a1ba1108e8412f11850a5c319ba9',
+            protocolFeeController: '0xa731c23d7c95436baaae9d52782f966e1ed07cc8',
+            routerAddress: '0x84813aa3e079a665c0b80f944427ee83cba63617',
             defaultSwapFeePercentage: '0.5',
-            defaultYieldFeePercentage: '0.5',
+            defaultYieldFeePercentage: '0.1',
         },
     },
     multicall: '0xbb6fab6b627947dae0a75808250d8b2652952cb5',
@@ -101,6 +104,28 @@ export default <NetworkData>{
                         aTokenAddress: '0xc0333cb85b59a788d8c7cae5e1fd6e229a3e5a65',
                         wrappedTokens: {
                             stataGnoUSDCe: '0xf0e7ec247b918311afa054e0aedb99d74c31b809',
+                            waGnoUSDCe: '0x51350d88c1bd32cc6a79368c9fb70373fb71f375',
+                        },
+                    },
+                    WETH: {
+                        underlyingAssetAddress: '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1',
+                        aTokenAddress: '0xa818f1b57c201e092c4a2017a91815034326efd1',
+                        wrappedTokens: {
+                            waGnoWETH: '0x57f664882f762fa37903fc864e2b633d384b411a',
+                        },
+                    },
+                    GNO: {
+                        underlyingAssetAddress: '0x9c58bacc331c9aa871afd802db6379a98e80cedb',
+                        aTokenAddress: '0xa1fa064a85266e2ca82dee5c5ccec84df445760e',
+                        wrappedTokens: {
+                            waGnoGNO: '0x7c16f0185a26db0ae7a9377f23bc18ea7ce5d644',
+                        },
+                    },
+                    wstETH: {
+                        underlyingAssetAddress: '0x6c76971f98945ae98dd7d4dfca8711ebea946ea6',
+                        aTokenAddress: '0x23e4e76d01b2002be436ce8d6044b0aa2f68b68a',
+                        wrappedTokens: {
+                            waGnowstETH: '0x773cda0cade2a3d86e6d4e30699d40bb95174ff2',
                         },
                     },
                 },

@@ -1,18 +1,18 @@
-import { Chain } from '@prisma/client';
+import { Chain, PrismaTokenTypeOption } from '@prisma/client';
 import { prisma } from '../../../../prisma/prisma-client';
 import { tokensTransformer } from '../../../sources/transformers/tokens-transformer';
 import { V3JoinedSubgraphPool } from '../../../sources/subgraphs';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
 import type { VaultClient } from '../../../sources/contracts';
-import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/fetch-erc4626-token-data';
-import { getViemClient } from '../../../sources/viem-client';
 import { poolUpsertTransformerV3 } from '../../../sources/transformers/pool-upsert-transformer-v3';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
+import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/fetch-erc4626-token-data';
+import { getViemClient } from '../../../sources/viem-client';
 
 /**
  * Gets and syncs all the pools state with the database
  *
- * TODO: simplify the schema by merging the pool and poolDynamicData tables and the poolToken, poolTokenDynamicData, expandedToken tables
+ * TODO: simplify the schema by merging the pool and poolDynamicData tables and the poolToken, expandedToken tables
  *
  * @param subgraphPools
  * @param vaultClient
@@ -71,6 +71,7 @@ export const upsertPools = async (
         }
     }
 
+    // There won't be pricing for new tokens
     // Get the prices
     const prices = await prisma.prismaTokenCurrentPrice
         .findMany({
@@ -94,24 +95,27 @@ export const upsertPools = async (
             );
             return {
                 ...upsert,
+                poolToken: update.poolToken,
                 poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
             };
         })
         .map((upsert) => {
             const update = enrichPoolUpsertsUsd(
-                { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
+                {
+                    poolDynamicData: upsert.poolDynamicData,
+                    poolToken: upsert.poolToken,
+                },
                 prices,
             );
             return {
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
+                poolToken: update.poolToken,
             };
         });
 
     // Upsert pools to the database
-    for (const { pool, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {
+    for (const { pool, poolToken, poolDynamicData, poolExpandedTokens } of pools) {
         try {
             await prisma.$transaction([
                 prisma.prismaPool.upsert({
@@ -128,16 +132,10 @@ export const upsertPools = async (
 
                 // First nullify the pool tokens and then insert them again
                 prisma.prismaPoolToken.deleteMany({ where: { poolId: pool.id } }),
-                prisma.prismaPoolTokenDynamicData.deleteMany({ where: { poolTokenId: { startsWith: pool.id } } }),
                 prisma.prismaPoolExpandedTokens.deleteMany({ where: { poolId: pool.id } }),
 
                 prisma.prismaPoolToken.createMany({
                     data: poolToken,
-                    skipDuplicates: true,
-                }),
-
-                prisma.prismaPoolTokenDynamicData.createMany({
-                    data: poolTokenDynamicData,
                     skipDuplicates: true,
                 }),
 

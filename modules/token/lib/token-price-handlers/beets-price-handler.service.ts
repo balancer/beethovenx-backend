@@ -2,15 +2,22 @@ import { TokenPriceHandler } from '../../token-types';
 import { PrismaTokenWithTypes } from '../../../../prisma/prisma-types';
 import { timestampRoundedUpToNearestHour } from '../../../common/time';
 import { prisma } from '../../../../prisma/prisma-client';
-import { FundManagement, SwapTypes, SwapV2 } from '@balancer-labs/sdk';
+import { SwapKind, BatchSwapStep } from '@balancer/sdk';
 import { fp } from '../../../big-number/big-number';
 import { Contract } from '@ethersproject/contracts';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import VaultAbi from '../../../pool/abi/Vault.json';
 import { ethers } from 'ethers';
 import { formatFixed } from '@ethersproject/bignumber';
 import { tokenAndPrice, updatePrices } from './price-handler-helper';
 import { Chain } from '@prisma/client';
+
+type FundManagement = {
+    sender: string;
+    recipient: string;
+    fromInternalBalance: boolean;
+    toInternalBalance: boolean;
+};
 
 export class BeetsPriceHandlerService implements TokenPriceHandler {
     public readonly exitIfFails = false;
@@ -41,12 +48,12 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
         const timestamp = timestampRoundedUpToNearestHour();
 
         const assets: string[] = [this.beetsFtmAddress, this.wftmFtmAddress];
-        const swaps: SwapV2[] = [
+        const swaps: BatchSwapStep[] = [
             {
                 poolId: this.freshBeetsPoolId,
-                assetInIndex: 0,
-                assetOutIndex: 1,
-                amount: fp(1).toString(),
+                assetInIndex: 0n,
+                assetOutIndex: 1n,
+                amount: fp(1).toBigInt(),
                 userData: '0x',
             },
         ];
@@ -65,7 +72,7 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
 
         let tokenOutAmountScaled = '0';
         try {
-            const deltas = await vaultContract.queryBatchSwap(SwapTypes.SwapExactIn, swaps, assets, funds);
+            const deltas = await vaultContract.queryBatchSwap(SwapKind.GivenIn, swaps, assets, funds);
             tokenOutAmountScaled = deltas[assets.indexOf(this.wftmFtmAddress)] ?? '0';
         } catch (err) {
             console.log(`queryBatchSwapTokensIn error: `, err);

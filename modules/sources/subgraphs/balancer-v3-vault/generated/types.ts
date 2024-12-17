@@ -1128,6 +1128,8 @@ export type PoolToken = {
     totalProtocolSwapFee: Scalars['BigDecimal'];
     /** Total protocol yield fees collected for this token */
     totalProtocolYieldFee: Scalars['BigDecimal'];
+    /** Total swap fees collected for this token */
+    totalSwapFee: Scalars['BigDecimal'];
     /** Total volume of this token traded in the Pool */
     volume: Scalars['BigDecimal'];
 };
@@ -1320,6 +1322,14 @@ export type PoolToken_Filter = {
     totalProtocolYieldFee_lte?: InputMaybe<Scalars['BigDecimal']>;
     totalProtocolYieldFee_not?: InputMaybe<Scalars['BigDecimal']>;
     totalProtocolYieldFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     volume?: InputMaybe<Scalars['BigDecimal']>;
     volume_gt?: InputMaybe<Scalars['BigDecimal']>;
     volume_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1392,6 +1402,7 @@ export enum PoolToken_OrderBy {
     Symbol = 'symbol',
     TotalProtocolSwapFee = 'totalProtocolSwapFee',
     TotalProtocolYieldFee = 'totalProtocolYieldFee',
+    TotalSwapFee = 'totalSwapFee',
     Volume = 'volume',
 }
 
@@ -2145,6 +2156,7 @@ export enum RateProvider_OrderBy {
     TokenSymbol = 'token__symbol',
     TokenTotalProtocolSwapFee = 'token__totalProtocolSwapFee',
     TokenTotalProtocolYieldFee = 'token__totalProtocolYieldFee',
+    TokenTotalSwapFee = 'token__totalSwapFee',
     TokenVolume = 'token__volume',
 }
 
@@ -3040,6 +3052,21 @@ export type PoolBalancesQuery = {
     }>;
 };
 
+export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MetadataQuery = {
+    __typename?: 'Query';
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
+};
+
 export type PoolShareFragment = { __typename?: 'PoolShare'; id: string; balance: string };
 
 export type PoolSharesQueryVariables = Exact<{
@@ -3065,6 +3092,7 @@ export type PoolSnapshotFragment = {
     swapsCount: string;
     holdersCount: string;
     totalSwapVolumes: Array<string>;
+    totalSwapFees: Array<string>;
     totalProtocolSwapFees: Array<string>;
     totalProtocolYieldFees: Array<string>;
     pool: {
@@ -3095,6 +3123,7 @@ export type PoolSnapshotsQuery = {
         swapsCount: string;
         holdersCount: string;
         totalSwapVolumes: Array<string>;
+        totalSwapFees: Array<string>;
         totalProtocolSwapFees: Array<string>;
         totalProtocolYieldFees: Array<string>;
         pool: {
@@ -3267,6 +3296,7 @@ export type SwapFragment = {
     tokenAmountIn: string;
     tokenAmountOut: string;
     swapFeeAmount: string;
+    swapFeeToken: string;
     blockNumber: string;
     logIndex: string;
     blockTimestamp: string;
@@ -3296,6 +3326,7 @@ export type SwapsQuery = {
         tokenAmountIn: string;
         tokenAmountOut: string;
         swapFeeAmount: string;
+        swapFeeToken: string;
         blockNumber: string;
         logIndex: string;
         blockTimestamp: string;
@@ -3429,6 +3460,7 @@ export const PoolSnapshotFragmentDoc = gql`
         swapsCount
         holdersCount
         totalSwapVolumes
+        totalSwapFees
         totalProtocolSwapFees
         totalProtocolYieldFees
     }
@@ -3510,6 +3542,7 @@ export const SwapFragmentDoc = gql`
         tokenAmountIn
         tokenAmountOut
         swapFeeAmount
+        swapFeeToken
         user {
             id
         }
@@ -3586,6 +3619,17 @@ export const PoolBalancesDocument = gql`
         }
     }
     ${PoolBalancesFragmentDoc}
+`;
+export const MetadataDocument = gql`
+    query Metadata {
+        meta: _meta {
+            block {
+                number
+            }
+            deployment
+            hasIndexingErrors
+        }
+    }
 `;
 export const PoolSharesDocument = gql`
     query PoolShares(
@@ -3731,6 +3775,19 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolBalances',
+            );
+        },
+        Metadata(
+            variables?: MetadataQueryVariables,
+            requestHeaders?: Dom.RequestInit['headers'],
+        ): Promise<MetadataQuery> {
+            return withWrapper(
+                (wrappedRequestHeaders) =>
+                    client.request<MetadataQuery>(MetadataDocument, variables, {
+                        ...requestHeaders,
+                        ...wrappedRequestHeaders,
+                    }),
+                'Metadata',
             );
         },
         PoolShares(

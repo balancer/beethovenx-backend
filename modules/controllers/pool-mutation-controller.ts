@@ -29,7 +29,7 @@ export function PoolMutationController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
 
             const poolsWithNewSwaps = await syncSwaps(vaultSubgraphClient, chain);
             await updateVolumeAndFees(chain, poolsWithNewSwaps);

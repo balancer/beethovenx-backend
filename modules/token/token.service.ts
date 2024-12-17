@@ -79,6 +79,7 @@ export class TokenService {
             const rateProviderData = await this.getPriceRateProviderData([token]);
             return {
                 ...token,
+                isBufferAllowed: token.isBufferAllowed,
                 chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
                 rateProviderData: rateProviderData[token.address],
@@ -144,6 +145,7 @@ export class TokenService {
             chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
             tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
             rateProviderData: rateProviderData[token.address],
+            priceRateProviderData: rateProviderData[token.address],
             coingeckoId: token.coingeckoTokenId,
             isErc4626: token.types.some((type) => type.type === 'ERC4626'),
             underlyingTokenAddress: token.underlyingTokenAddress,

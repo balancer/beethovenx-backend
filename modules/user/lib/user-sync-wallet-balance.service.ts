@@ -1,6 +1,6 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
@@ -238,7 +238,7 @@ export class UserSyncWalletBalanceService {
                 ...balances
                     .filter(({ userAddress }) => userAddress !== AddressZero)
                     .map((userBalance) => {
-                        if (this.isFantomNetwork && isSameAddress(userBalance.erc20Address, this.fbeetsAddress)) {
+                        if (this.isFantomNetwork && addressesMatch(userBalance.erc20Address, this.fbeetsAddress)) {
                             return this.getUserWalletBalanceUpsertForFbeets(
                                 userBalance.userAddress,
                                 formatFixed(userBalance.balance, 18),
@@ -292,7 +292,7 @@ export class UserSyncWalletBalanceService {
     public async syncUserBalance(userAddress: string, poolId: string, poolAddresses: string) {
         const balancesToFetch = [{ erc20Address: poolAddresses, userAddress }];
 
-        if (this.isFantomNetwork && isSameAddress(this.fbeetsAddress, poolAddresses)) {
+        if (this.isFantomNetwork && addressesMatch(this.fbeetsAddress, poolAddresses)) {
             balancesToFetch.push({ erc20Address: this.fbeetsAddress, userAddress });
         }
 
@@ -309,10 +309,10 @@ export class UserSyncWalletBalanceService {
 
     private getPrismaUpsertForPoolShare(share: Prisma.PrismaUserWalletBalanceCreateManyInput) {
         return prisma.prismaUserWalletBalance.upsert({
-            where: { id_chain: { id: `${share.poolId}-${share.userAddress}`, chain: this.chain } },
+            where: { id_chain: { id: `${share.tokenAddress}-${share.userAddress}`, chain: this.chain } },
             create: {
                 ...share,
-                id: `${share.poolId}-${share.userAddress}`,
+                id: `${share.tokenAddress}-${share.userAddress}`,
                 chain: this.chain,
             },
             update: { balance: share.balance, balanceNum: share.balanceNum },
@@ -341,13 +341,13 @@ export class UserSyncWalletBalanceService {
         if (balance.eq(0)) {
             // Using deleteMany, because delete throws when the record does not exist
             return prisma.prismaUserWalletBalance.deleteMany({
-                where: { id: `${poolId}-${userAddress}`, chain: this.chain },
+                where: { id: `${erc20Address}-${userAddress}`, chain: this.chain },
             });
         } else {
             return prisma.prismaUserWalletBalance.upsert({
-                where: { id_chain: { id: `${poolId}-${userAddress}`, chain: this.chain } },
+                where: { id_chain: { id: `${erc20Address}-${userAddress}`, chain: this.chain } },
                 create: {
-                    id: `${poolId}-${userAddress}`,
+                    id: `${erc20Address}-${userAddress}`,
                     chain: this.chain,
                     userAddress,
                     poolId,

@@ -2,7 +2,7 @@
 
 import { parseEther } from 'viem';
 
-import { PrismaPoolWithDynamic } from '../../../../../../prisma/prisma-types';
+import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { WAD } from '../../utils/math';
 import { WeightedPoolV3 } from './weightedPool';
 
@@ -11,7 +11,6 @@ import {
     poolTokenFactory,
     prismaPoolDynamicDataFactory,
     prismaPoolFactory,
-    prismaPoolTokenDynamicDataFactory,
     prismaPoolTokenFactory,
 } from '../../../../../../test/factories';
 
@@ -24,7 +23,7 @@ describe('SOR V3 Weighted Pool Tests', () => {
     let tokenWeights: string[];
     let totalShares: string;
     let weightedPool: WeightedPoolV3;
-    let weightedPrismaPool: PrismaPoolWithDynamic;
+    let weightedPrismaPool: PrismaPoolAndHookWithDynamic;
 
     beforeAll(() => {
         swapFee = '0.01';
@@ -36,17 +35,13 @@ describe('SOR V3 Weighted Pool Tests', () => {
 
         const poolToken1 = prismaPoolTokenFactory.build({
             token: poolTokenFactory.build({ decimals: tokenDecimals[0] }),
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                balance: tokenBalances[0],
-                weight: tokenWeights[0],
-            }),
+            balance: tokenBalances[0],
+            weight: tokenWeights[0],
         });
         const poolToken2 = prismaPoolTokenFactory.build({
             token: poolTokenFactory.build({ decimals: tokenDecimals[1] }),
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({
-                balance: tokenBalances[1],
-                weight: tokenWeights[1],
-            }),
+            balance: tokenBalances[1],
+            weight: tokenWeights[1],
         });
 
         tokenAddresses = [poolToken1.address, poolToken2.address];

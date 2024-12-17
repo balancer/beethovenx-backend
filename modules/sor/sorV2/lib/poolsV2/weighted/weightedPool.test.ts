@@ -7,7 +7,6 @@ import { WeightedPool } from './weightedPool';
 
 // keep factories imports at the end - moving up will break the test
 import {
-    prismaPoolTokenDynamicDataFactory,
     prismaPoolTokenFactory,
     prismaPoolDynamicDataFactory,
     prismaPoolFactory,
@@ -17,13 +16,9 @@ describe('SOR V3 Weighted Pool Tests', () => {
     let weightedPool: WeightedPool;
     beforeAll(() => {
         const token1Balance = '169';
-        const token1 = prismaPoolTokenFactory.build({
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({ balance: token1Balance }),
-        });
+        const token1 = prismaPoolTokenFactory.build({ balance: token1Balance });
         const token2Balance = '144';
-        const token2 = prismaPoolTokenFactory.build({
-            dynamicData: prismaPoolTokenDynamicDataFactory.build({ balance: token2Balance }),
-        });
+        const token2 = prismaPoolTokenFactory.build({ balance: token2Balance });
 
         const prismaWeightedPool = prismaPoolFactory.build({
             type: 'WEIGHTED',

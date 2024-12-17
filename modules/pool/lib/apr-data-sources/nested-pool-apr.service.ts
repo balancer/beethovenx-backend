@@ -22,7 +22,6 @@ export class BoostedPoolAprService implements PoolAprService {
                 tokens: {
                     orderBy: { index: 'asc' },
                     include: {
-                        dynamicData: true,
                         nestedPool: true,
                         token: true,
                     },
@@ -54,10 +53,9 @@ export class BoostedPoolAprService implements PoolAprService {
 
                 if (
                     !pool.dynamicData ||
-                    !token.dynamicData ||
                     !token.nestedPool ||
                     !token.nestedPool.type ||
-                    token.dynamicData.balanceUSD === 0 ||
+                    token.balanceUSD === 0 ||
                     pool.dynamicData.totalLiquidity === 0
                 ) {
                     continue;
@@ -67,13 +65,13 @@ export class BoostedPoolAprService implements PoolAprService {
                     const itemId = `${pool.id}-${aprItem.id}`;
                     //scale the apr as a % of total liquidity
 
-                    const apr = aprItem.apr * (token.dynamicData.balanceUSD / pool.dynamicData.totalLiquidity);
+                    const apr = aprItem.apr * (token.balanceUSD / pool.dynamicData.totalLiquidity);
                     let userApr = apr;
 
                     if (
                         collectsYieldFee(pool) &&
                         // nested tokens/bpts that dont have a rate provider, we don't take any fees
-                        token.dynamicData.priceRate !== '1.0'
+                        token.priceRate !== '1.0'
                     ) {
                         userApr = userApr * (1 - protocolYieldFeePercentage);
                     }

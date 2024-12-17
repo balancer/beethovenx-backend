@@ -8,7 +8,6 @@ import { formatFixed } from '@ethersproject/bignumber';
 import { Prisma, PrismaPoolStakingType } from '@prisma/client';
 import { networkContext } from '../../network/network-context.service';
 import ERC20Abi from '../../web3/abi/ERC20.json';
-import { AddressZero } from '@ethersproject/constants';
 import { getEvents } from '../../web3/events';
 import { AuraSubgraphService } from '../../sources/subgraphs/aura/aura.service';
 import { formatEther, hexToBigInt } from 'viem';

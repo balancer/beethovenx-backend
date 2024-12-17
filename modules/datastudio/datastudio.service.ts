@@ -95,11 +95,7 @@ export class DatastudioService {
             },
             include: {
                 dynamicData: true,
-                tokens: {
-                    include: {
-                        dynamicData: true,
-                    },
-                },
+                tokens: true,
                 allTokens: {
                     include: {
                         token: true,
@@ -217,8 +213,8 @@ export class DatastudioService {
 
                 return {
                     ...token.token,
-                    weight: poolToken?.dynamicData?.weight,
-                    balance: poolToken?.dynamicData?.balance ? poolToken?.dynamicData?.balance : 'not available',
+                    weight: poolToken?.weight,
+                    balance: poolToken?.balance ? poolToken?.balance : 'not available',
                 };
             });
 

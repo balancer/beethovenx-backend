@@ -61,6 +61,7 @@ export const schema = gql`
         OPTIMISM
         POLYGON
         SEPOLIA
+        SONIC
         ZKEVM
     }
 
@@ -262,14 +263,29 @@ export const schema = gql`
         nestedShares: BigDecimal!
 
         """
-        Address of the pool's owner.
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes!
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Fee charged for swapping tokens in the pool as %. 0.01 -> 0.01%
         """
         swapFee: BigDecimal!
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         Symbol of the pool.
@@ -466,7 +482,17 @@ export const schema = gql`
         """
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Returns all pool tokens, including BPTs and nested pools if there are any. Only one nested level deep.
@@ -497,6 +523,11 @@ export const schema = gql`
         Data specific to gyro pools
         """
         sqrtBeta: String
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         The token symbol of the pool as per contract
@@ -754,6 +785,11 @@ export const schema = gql`
         factory: Bytes
 
         """
+        Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
+        """
+        hasAnyAllowedBuffer: Boolean!
+
+        """
         Whether at least one token in this pool is considered an ERC4626 token.
         """
         hasErc4626: Boolean!
@@ -791,7 +827,17 @@ export const schema = gql`
         """
         The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
         """
-        owner: Bytes
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
 
         """
         Returns pool tokens, including BPTs and nested pools and their pool tokens if there are any. Only one nested level deep.
@@ -807,6 +853,11 @@ export const schema = gql`
         Staking options of this pool which emit additional rewards
         """
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
 
         """
         The token symbol of the pool as per contract
@@ -890,6 +941,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -898,10 +950,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -926,8 +997,27 @@ export const schema = gql`
         id: ID!
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         swapFee: BigDecimal!
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolTokenComposableStableNestedUnion!]! @deprecated(reason: "Use poolTokens instead")
@@ -1016,6 +1106,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1023,11 +1114,30 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         principalToken: Bytes!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1215,6 +1325,7 @@ export const schema = gql`
         dynamicData: GqlPoolDynamicData!
         epsilon: String!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1223,10 +1334,29 @@ export const schema = gql`
         lambda: String!
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -1255,6 +1385,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1264,7 +1395,21 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         root3Alpha: String!
@@ -1272,6 +1417,11 @@ export const schema = gql`
         sqrtAlpha: String!
         sqrtBeta: String!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tauAlphaX: String!
@@ -1343,6 +1493,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1351,10 +1502,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -1380,6 +1550,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1387,10 +1558,29 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -1449,6 +1639,11 @@ export const schema = gql`
         The factory contract address from which the pool was created.
         """
         factory: Bytes
+
+        """
+        Whether at least one token in this pool is considered an ERC4626 token and the buffer is allowed.
+        """
+        hasAnyAllowedBuffer: Boolean!
 
         """
         Whether at least one token in this pool is considered an ERC4626 token.
@@ -1637,6 +1832,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -1644,10 +1840,29 @@ export const schema = gql`
         investConfig: GqlPoolInvestConfig! @deprecated(reason: "Removed without replacement")
         liquidityManagement: LiquidityManagement
         name: String!
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
         tokens: [GqlPoolToken!]! @deprecated(reason: "Use poolTokens instead")
@@ -2007,6 +2222,13 @@ export const schema = gql`
         USD Balance of the pool token.
         """
         balanceUSD: BigDecimal!
+        chain: GqlChain
+        chainId: Int
+
+        """
+        Coingecko ID
+        """
+        coingeckoId: String
 
         """
         Decimals of the pool token.
@@ -2039,9 +2261,19 @@ export const schema = gql`
         isAllowed: Boolean!
 
         """
+        If it is an ERC4626 token, this defines whether we allow it to use the buffer for pool operations.
+        """
+        isBufferAllowed: Boolean!
+
+        """
         Whether the token is considered an ERC4626 token.
         """
         isErc4626: Boolean!
+
+        """
+        Token logo
+        """
+        logoURI: String
 
         """
         Name of the pool token.
@@ -2069,6 +2301,11 @@ export const schema = gql`
         priceRateProviderData: GqlPriceRateProviderData
 
         """
+        The priority of the token, can be used for sorting.
+        """
+        priority: Int
+
+        """
         Conversion factor used to adjust for token decimals for uniform precision in calculations. V3 only.
         """
         scalingFactor: BigDecimal
@@ -2077,6 +2314,11 @@ export const schema = gql`
         Symbol of the pool token.
         """
         symbol: String!
+
+        """
+        Is the token tradable
+        """
+        tradable: Boolean
 
         """
         If it is an ERC4626, this will be the underlying token if present in the API.
@@ -2188,6 +2430,7 @@ export const schema = gql`
         displayTokens: [GqlPoolTokenDisplay!]! @deprecated(reason: "Use poolTokens instead")
         dynamicData: GqlPoolDynamicData!
         factory: Bytes
+        hasAnyAllowedBuffer: Boolean!
         hasErc4626: Boolean!
         hasNestedErc4626: Boolean!
         hook: GqlHook
@@ -2196,10 +2439,29 @@ export const schema = gql`
         liquidityManagement: LiquidityManagement
         name: String!
         nestingType: GqlPoolNestingType! @deprecated(reason: "Removed without replacement")
-        owner: Bytes!
+
+        """
+        The wallet address of the owner of the pool. Pool owners can set certain properties like swapFees or AMP.
+        """
+        owner: Bytes @deprecated(reason: "Use swapFeeManager instead")
+
+        """
+        Account empowered to pause/unpause the pool (or 0 to delegate to governance)
+        """
+        pauseManager: Bytes
+
+        """
+        Account empowered to set the pool creator fee percentage
+        """
+        poolCreator: Bytes
         poolTokens: [GqlPoolTokenDetail!]!
         protocolVersion: Int!
         staking: GqlPoolStaking
+
+        """
+        Account empowered to set static swap fees for a pool (when 0 on V2 swap fees are immutable, on V3 delegate to governance)
+        """
+        swapFeeManager: Bytes
         symbol: String!
         tags: [String]
 
@@ -2898,6 +3160,11 @@ export const schema = gql`
         The ERC4626 review data for the token
         """
         erc4626ReviewData: Erc4626ReviewData
+
+        """
+        If it is an ERC4626 token, this defines whether we allow it to use the buffer for pool operations.
+        """
+        isBufferAllowed: Boolean!
 
         """
         Whether the token is considered an ERC4626 token.

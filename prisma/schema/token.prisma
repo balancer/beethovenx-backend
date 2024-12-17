@@ -30,6 +30,7 @@ model PrismaToken {
     poolTokens          PrismaPoolToken[]
 
     underlyingTokenAddress   String?
+    isBufferAllowed          Boolean        @default(true)
 
     walletBalances  PrismaUserWalletBalance[]
     stakedBalances  PrismaUserStakedBalance[]

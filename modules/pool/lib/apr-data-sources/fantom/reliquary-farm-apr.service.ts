@@ -1,4 +1,4 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../../../web3/addresses';
 import { PrismaPoolAprType } from '@prisma/client';
 import { prisma } from '../../../../../prisma/prisma-client';
 import { PrismaPoolWithTokens } from '../../../../../prisma/prisma-types';
@@ -46,7 +46,7 @@ export class ReliquaryFarmAprService implements PoolAprService {
         const operations: any[] = [];
 
         for (const pool of expandedReliquaryPools) {
-            const subgraphFarm = filteredFarms.find((farm) => isSameAddress(pool.address, farm.poolTokenAddress));
+            const subgraphFarm = filteredFarms.find((farm) => addressesMatch(pool.address, farm.poolTokenAddress));
             let farm;
             for (const stake of pool.staking) {
                 farm = stake.reliquary;

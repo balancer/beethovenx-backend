@@ -5,7 +5,7 @@ import { AddKind, RemoveKind, StableState, Vault, HookState } from '@balancer-la
 import { Chain } from '@prisma/client';
 
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { StableData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
 
@@ -47,7 +47,7 @@ export class StablePool implements BasePoolV3 {
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.priceRate) throw new Error('Stable pool token does not have a price rate');
+            if (!poolToken.priceRate) throw new Error('Stable pool token does not have a price rate');
             const token = new Token(
                 parseFloat(chainToIdMap[pool.chain]),
                 poolToken.address as Address,
@@ -55,16 +55,16 @@ export class StablePool implements BasePoolV3 {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
-            if (poolToken.token.underlyingTokenAddress) {
+            if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
                 poolTokens.push(
                     new Erc4626PoolToken(
                         token,
                         tokenAmount.amount,
                         poolToken.index,
-                        parseEther(poolToken.dynamicData.priceRate),
+                        parseEther(poolToken.priceRate),
                         poolToken.token.underlyingTokenAddress,
                     ),
                 );
@@ -74,7 +74,7 @@ export class StablePool implements BasePoolV3 {
                         token,
                         tokenAmount.amount,
                         poolToken.index,
-                        parseEther(poolToken.dynamicData.priceRate),
+                        parseEther(poolToken.priceRate),
                     ),
                 );
             }

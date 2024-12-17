@@ -1,5 +1,187 @@
 # backend
 
+## 1.26.18
+
+### Patch Changes
+
+-   cf338a6: dependencies cleanup
+-   8b462a2: Prevent disallowed buffers on SOR paths
+
+## 1.26.17
+
+### Patch Changes
+
+-   35ee2fe: add isBufferAllowed to pooltoken
+-   4a9fe0c: always pass multicall3 address in viem
+
+## 1.26.16
+
+### Patch Changes
+
+-   bc501c8: add staking to sonic
+-   863a840: Fix SOR routes when swapping through a single buffer only
+-   cacabb2: add isAllowedBuffer flag
+-   910eedc: add sonic chain
+
+## 1.26.15
+
+### Patch Changes
+
+-   4c6418b: fix: handle SG values as floats in cow amm snapshots
+-   6347252: refactor cow-amm snapshot fetching
+-   913c906: refactor snapshot daily and total values
+
+## 1.26.14
+
+### Patch Changes
+
+-   6872789: fix: ERC4626 tagging
+
+## 1.26.13
+
+### Patch Changes
+
+-   958fd86: fix: changed pools syncing
+
+## 1.26.12
+
+### Patch Changes
+
+-   b96a671: fix: swap fee token
+
+## 1.26.11
+
+### Patch Changes
+
+-   e2c788f: fix: handle swap fees in V3 snapshots
+
+## 1.26.10
+
+### Patch Changes
+
+-   f02c667: fixed V3 snapshot fees
+
+## 1.26.9
+
+### Patch Changes
+
+-   dbbe6a9: refactored v3 snapshots syncing
+
+## 1.26.8
+
+### Patch Changes
+
+-   0b6d99e: remove rpc dependency on pool upserts
+-   4a6e3c7: replace USDL APR source
+
+## 1.26.7
+
+### Patch Changes
+
+-   26e0aca: fix balance scaling
+
+## 1.26.6
+
+### Patch Changes
+
+-   0887858: fix onchain balances for v3
+
+## 1.26.5
+
+### Patch Changes
+
+-   e81774e: fix syncing v3 changed pools
+-   8768e95: handle custom morpho rewards
+
+## 1.26.4
+
+### Patch Changes
+
+-   63a4492: waGnowstETH APR and price
+
+## 1.26.3
+
+### Patch Changes
+
+-   cdf0cb6: aave pricing
+-   d497a71: fix: handle checksum addresses in tags assignment
+-   1a0f088: Morpho APRs and pricing
+-   75cb205: handle all aave prices from aprs config
+
+## 1.26.2
+
+### Patch Changes
+
+-   7f6df7f: boosted tag only on v3
+
+## 1.26.1
+
+### Patch Changes
+
+-   caa0e6c: updated usdL apr source
+-   ddd87af: protocol stats alignment with pools list
+-   c5e9911: more aave prices, but still missing rates for new tokens
+
+## 1.26.0
+
+### Minor Changes
+
+-   c507c33: V3 mainnet and gnosis
+
+### Patch Changes
+
+-   d7706da: expose additional fields in the poolTokenDetails schema
+-   0c9901a: sepolia v12
+-   6d4c98e: Update SDK and Balancer Maths dependencies
+
+## 1.25.0
+
+### Minor Changes
+
+-   7a93ab8: removing poolTokenDynamicData dependency
+
+### Patch Changes
+
+-   3f22a3d: apply v3 protocol swap fees
+
+## 1.24.0
+
+### Minor Changes
+
+-   751e1e8: new aave aprs and default yield fee
+
+### Patch Changes
+
+-   40937e2: move op blocks to builders dao
+
+## 1.23.10
+
+### Patch Changes
+
+-   fe549d3: updating holderCount stat for v3 pools
+-   2046d6f: change 7 and 30 days swap apr to use snapshots
+-   c92ac36: filter out balances for missing pools
+
+## 1.23.9
+
+### Patch Changes
+
+-   77ceae7: dont remove user balances unless 0
+
+## 1.23.8
+
+### Patch Changes
+
+-   8f09f97: no casesensitive compare for hook metadata
+-   28f4778: V3 deployment 11
+-   16aebc3: Adding V3 pool roles to the db model
+-   f17f276: fix wallet balance ID to follow subgraph use of poolAddress instead of poolId
+-   a44f00f: Deprecate callData related inputs and outputs from SOR
+-   2fca2d8: fix tokens query resultset to include missing rate provider data
+-   4b5454a: fix V3 BPT balance syncing
+-   094b17f: fix adding missing role accounts to pools
+-   e2f315b: skip token name in the pool textSearch
+
 ## 1.23.7
 
 ### Patch Changes

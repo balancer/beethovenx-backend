@@ -7,7 +7,7 @@ import { DerivedGyroEParams, GyroEParams, Vector2 } from './types';
 import { balancesFromTokenInOut, virtualOffset0, virtualOffset1 } from './gyroEMathHelpers';
 import { calculateInvariantWithError, calcOutGivenIn, calcInGivenOut } from './gyroEMath';
 import { BigintIsh, PoolType, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { GyroData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';
@@ -57,7 +57,7 @@ export class GyroEPool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData) {
+            if (!poolToken.balance || !poolToken.priceRate) {
                 throw new Error('Gyro pool as no dynamic pool token data');
             }
 
@@ -68,9 +68,9 @@ export class GyroEPool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
-            const tokenRate = poolToken.dynamicData.priceRate;
+            const tokenRate = poolToken.priceRate;
 
             poolTokens.push(new GyroEPoolToken(token, tokenAmount.amount, poolToken.index, parseEther(tokenRate)));
         }

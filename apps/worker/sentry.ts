@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '../env';
 
 // Ensure to call this before importing any other modules!
@@ -9,7 +8,6 @@ export const initWorkerSentry = () => {
         environment: `worker-${env.DEPLOYMENT_ENV}`,
         enabled: env.NODE_ENV === 'production',
         integrations: [
-            nodeProfilingIntegration(),
             Sentry.captureConsoleIntegration({
                 levels: ['error', 'warn'],
             }),

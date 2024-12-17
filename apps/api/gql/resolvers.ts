@@ -1,6 +1,38 @@
-import { loadFilesSync } from '@graphql-tools/load-files';
-import path from 'path';
-import { mergeResolvers } from '@graphql-tools/merge';
+import beetsResolver from './resolvers/beets.resolvers';
+import blocksResolver from './resolvers/blocks.resolvers';
+import contentResolver from './resolvers/content.resolvers';
+import poolResolver from './resolvers/pool.resolvers';
+import protocolResolver from './resolvers/protocol.resolvers';
+import scalarResolver from './resolvers/scalar.resolvers';
+import sftmxResolver from './resolvers/sftmx.resolvers';
+import sorResolver from './resolvers/sor.resolvers';
+import tokenResolver from './resolvers/token.resolvers';
+import userResolver from './resolvers/user.resolvers';
+import vebalResolver from './resolvers/vebal.resolvers';
 
-const resolversArray = loadFilesSync(path.join(__dirname, '../../../modules/**/*.resolvers.*'));
-export const resolvers = mergeResolvers(resolversArray);
+export const resolvers = {
+    Query: {
+        ...beetsResolver.Query,
+        ...blocksResolver.Query,
+        ...contentResolver.Query,
+        ...poolResolver.Query,
+        ...protocolResolver.Query,
+        ...scalarResolver.Query,
+        ...sftmxResolver.Query,
+        ...sorResolver.Query,
+        ...tokenResolver.Query,
+        ...userResolver.Query,
+        ...vebalResolver.Query,
+    },
+    Mutation: {
+        ...blocksResolver.Mutation,
+        ...contentResolver.Mutation,
+        ...poolResolver.Mutation,
+        ...protocolResolver.Mutation,
+        ...sftmxResolver.Mutation,
+        ...sorResolver.Mutation,
+        ...tokenResolver.Mutation,
+        ...userResolver.Mutation,
+        ...vebalResolver.Mutation,
+    },
+};

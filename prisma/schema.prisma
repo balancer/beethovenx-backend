@@ -28,6 +28,7 @@ enum Chain {
     ZKEVM
     FRAXTAL
     MODE
+    SONIC
 }
 
 model PrismaLastBlockSynced {
@@ -46,6 +47,9 @@ enum PrismaLastBlockSyncedCategory {
     COW_AMM_JOIN_EXITS
     COW_AMM_SWAPS
     COW_AMM_SNAPSHOTS
+    SNAPSHOTS_COW_AMM
+    SNAPSHOTS_V2
+    SNAPSHOTS_V3
 }
 
 
@@ -205,31 +209,17 @@ model PrismaPoolToken {
     priceRateProvider           String?
     exemptFromProtocolYieldFee  Boolean             @default(false)
 
-    dynamicData         PrismaPoolTokenDynamicData?
-
     scalingFactor               String?
-
-    @@index([poolId, chain])
-    @@index([address, chain])
-    @@index([nestedPoolId, chain])
-}
-
-model PrismaPoolTokenDynamicData {
-    @@id([id, chain])
-    @@unique([poolTokenId, chain])
-
-    id                  String
-    poolTokenId         String
-    poolToken           PrismaPoolToken     @relation(fields:[poolTokenId, chain], references: [id, chain], onDelete: Cascade)
-    chain               Chain
-    blockNumber         Int
-    updatedAt           DateTime            @updatedAt
 
     balance             String
     balanceUSD          Float
     weight              String?
     priceRate           String
     latestFxPrice       Float?
+
+    @@index([poolId, chain])
+    @@index([address, chain])
+    @@index([nestedPoolId, chain])
 }
 
 model PrismaPoolSwap {
@@ -338,6 +328,7 @@ enum PrismaPoolAprItemGroup {
     EULER
     MAKER
     DEFAULT
+    MORPHO
 }
 
 model PrismaPoolExpandedTokens {
@@ -552,9 +543,15 @@ model PrismaPoolSnapshot {
     holdersCount        Int
     amounts             String[]
     totalVolumes        String[] @default([]) // Used for V3 snapshots
+    dailyVolumes        String[] @default([]) // Used for V3 snapshots
+    totalSwapFees       String[] @default([]) // Used for V3 snapshots
+    dailySwapFees       String[] @default([]) // Used for V3 snapshots
     totalSurpluses      String[] @default([]) // Used for cow amm snapshots
+    dailySurpluses      String[] @default([]) // Used for cow amm snapshots
     totalProtocolSwapFees String[] @default([]) // Used for V3 snapshots
+    dailyProtocolSwapFees String[] @default([]) // Used for V3 snapshots
     totalProtocolYieldFees String[] @default([]) // Used for V3 snapshots
+    dailyProtocolYieldFees String[] @default([]) // Used for V3 snapshots
 
     @@index([protocolVersion])
     @@index([timestamp(sort: Desc)])
@@ -727,6 +724,7 @@ model PrismaToken {
     poolTokens          PrismaPoolToken[]
 
     underlyingTokenAddress   String?
+    isBufferAllowed          Boolean        @default(true)
 
     walletBalances  PrismaUserWalletBalance[]
     stakedBalances  PrismaUserStakedBalance[]

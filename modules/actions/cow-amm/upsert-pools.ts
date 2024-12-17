@@ -54,24 +54,27 @@ export const upsertPools = async (
             return {
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
+                poolToken: update.poolToken,
             };
         })
         .map((upsert) => {
             const update = enrichPoolUpsertsUsd(
-                { poolDynamicData: upsert.poolDynamicData, poolTokenDynamicData: upsert.poolTokenDynamicData },
+                {
+                    poolDynamicData: upsert.poolDynamicData,
+                    poolToken: upsert.poolToken,
+                },
                 prices,
             );
             return {
                 ...upsert,
                 poolDynamicData: update.poolDynamicData,
-                poolTokenDynamicData: update.poolTokenDynamicData,
+                poolToken: update.poolToken,
             };
         });
 
     // Upserts pools to the database
     // TODO: extract to a DB helper
-    for (const { pool, tokens, poolToken, poolDynamicData, poolTokenDynamicData, poolExpandedTokens } of pools) {
+    for (const { pool, tokens, poolToken, poolDynamicData, poolExpandedTokens } of pools) {
         try {
             await prisma.$transaction([
                 prisma.prismaToken.createMany({
@@ -93,16 +96,10 @@ export const upsertPools = async (
 
                 // First nullify the pool tokens and then insert them again
                 prisma.prismaPoolToken.deleteMany({ where: { poolId: pool.id } }),
-                prisma.prismaPoolTokenDynamicData.deleteMany({ where: { poolTokenId: { startsWith: pool.id } } }),
                 prisma.prismaPoolExpandedTokens.deleteMany({ where: { poolId: pool.id } }),
 
                 prisma.prismaPoolToken.createMany({
                     data: poolToken,
-                    skipDuplicates: true,
-                }),
-
-                prisma.prismaPoolTokenDynamicData.createMany({
-                    data: poolTokenDynamicData,
                     skipDuplicates: true,
                 }),
 

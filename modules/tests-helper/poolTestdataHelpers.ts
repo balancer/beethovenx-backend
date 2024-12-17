@@ -147,6 +147,9 @@ export async function createWeightedPoolFromDefault(
             id: `${pool.id}-${token.address}`,
             address: token.address,
             index: counter,
+            balance: '0',
+            balanceUSD: 0,
+            priceRate: '1',
         });
         counter += 1;
     }

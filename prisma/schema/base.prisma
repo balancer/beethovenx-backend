@@ -24,6 +24,7 @@ enum Chain {
     ZKEVM
     FRAXTAL
     MODE
+    SONIC
 }
 
 model PrismaLastBlockSynced {
@@ -42,4 +43,7 @@ enum PrismaLastBlockSyncedCategory {
     COW_AMM_JOIN_EXITS
     COW_AMM_SWAPS
     COW_AMM_SNAPSHOTS
+    SNAPSHOTS_COW_AMM
+    SNAPSHOTS_V2
+    SNAPSHOTS_V3
 }

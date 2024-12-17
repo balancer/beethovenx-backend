@@ -45,6 +45,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return PoolController().reloadPoolsV3(chain);
     } else if (job === 'sync-pools-v3') {
         return PoolController().syncChangedPoolsV3(chain);
+    } else if (job === 'update-liquidity-for-active-pools') {
+        return PoolController().updateLiquidityValuesForActivePools(chain);
     } else if (job === 'sync-staking') {
         return StakingController().syncStaking(chain);
     } else if (job === 'sync-join-exits-v3') {
@@ -59,8 +61,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return snapshotsController.fillMissingSnapshotsV2(chain);
     } else if (job === 'sync-snapshots-v3') {
         return snapshotsController.syncSnapshotsV3(chain);
-    } else if (job === 'fill-missing-snapshots-v3') {
-        return snapshotsController.fillMissingSnapshotsV3(chain);
+    } else if (job === 'sync-all-snapshots-v3') {
+        return snapshotsController.syncAllSnapshotsV3(chain);
     } else if (job === 'sync-swaps-v3') {
         return EventController().syncSwapsV3(chain);
     } else if (job === 'update-liquidity-24h-ago-v3') {
@@ -77,7 +79,7 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return UserBalancesController().syncUserBalancesFromV3Subgraph(chain);
     } else if (job === 'load-onchain-data-v3') {
         return PoolMutationController().loadOnchainDataForAllPoolsV3(chain);
-    } else if (job === 'add-new-cow-amm-pools') {
+    } else if (job === 'add-cow-amm-pools') {
         return CowAmmController().addPools(chain);
     } else if (job === 'sync-cow-amm-pools') {
         return CowAmmController().syncPools(chain);
@@ -86,17 +88,9 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-cow-amm-snapshots') {
         return CowAmmController().syncSnapshots(chain);
     } else if (job === 'sync-all-cow-amm-snapshots') {
-        // Run in loop until we end up at todays snapshot (also sync todays)
-        let allSnapshotsSynced = false;
-        while (!allSnapshotsSynced) {
-            allSnapshotsSynced =
-                (await CowAmmController().syncSnapshots(chain)) === moment().utc().startOf('day').unix();
-        }
-        return allSnapshotsSynced;
+        return CowAmmController().syncAllSnapshots(chain);
     } else if (job === 'sync-cow-amm-swaps') {
         return CowAmmController().syncSwaps(chain);
-    } else if (job === 'update-com-amm-volume-and-fees') {
-        return CowAmmController().updateVolumeAndFees(chain);
     } else if (job === 'sync-cow-amm-join-exits') {
         return CowAmmController().syncJoinExits(chain);
     } else if (job === 'update-surplus-aprs') {
@@ -123,12 +117,14 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return 'OK';
     } else if (job === 'sync-merkl') {
         return AprsController().syncMerkl();
+    } else if (job === 'update-7-30-days-swap-apr') {
+        return AprsController().update7And30DaysSwapAprs(chain);
     } else if (job === 'sync-rate-provider-reviews') {
         return ContentController().syncRateProviderReviews();
     } else if (job === 'sync-hook-reviews') {
         return ContentController().syncHookReviews();
-    } else if (job === 'sync-erc4626-reviews') {
-        return ContentController().syncErc4626Reviews();
+    } else if (job === 'sync-erc4626-data') {
+        return ContentController().syncErc4626Data();
     } else if (job === 'sync-tags') {
         return ContentController().syncCategories();
     } else if (job === 'sync-hook-data') {

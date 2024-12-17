@@ -1,9 +1,8 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../web3/addresses';
 import axios from 'axios';
 import { prisma } from '../../prisma/prisma-client';
 import { ContentService, FeaturedPool, HomeScreenFeaturedPoolGroup, HomeScreenNewsItem } from './content-types';
-import { chainIdToChain } from '../network/chain-id-to-chain';
-import { chainToIdMap } from '../network/network-config';
+import { chainIdToChain, chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 import { Chain, Prisma } from '@prisma/client';
 
 const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/balancer/metadata/main/pools/featured.json';
@@ -121,12 +120,12 @@ export class GithubContentService implements ContentService {
             });
 
             const addToWhitelist = filteredTokenList.filter((githubToken) => {
-                return !whiteListedTokens.some((dbToken) => isSameAddress(githubToken.address, dbToken.tokenAddress));
+                return !whiteListedTokens.some((dbToken) => addressesMatch(githubToken.address, dbToken.tokenAddress));
             });
 
             const removeFromWhitelist = whiteListedTokens.filter((dbToken) => {
                 return !filteredTokenList.some((githubToken) =>
-                    isSameAddress(dbToken.tokenAddress, githubToken.address),
+                    addressesMatch(dbToken.tokenAddress, githubToken.address),
                 );
             });
 

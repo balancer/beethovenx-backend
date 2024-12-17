@@ -1,5 +1,5 @@
 import { Chain, PrismaPoolType, PrismaTokenCurrentPrice } from '@prisma/client';
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import { prisma } from '../../../prisma/prisma-client';
 import { isStablePool } from './pool-utils';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
@@ -92,7 +92,7 @@ export class PoolOnChainDataService {
                 type: { in: SUPPORTED_POOL_TYPES },
             },
             include: {
-                tokens: { orderBy: { index: 'asc' }, include: { dynamicData: true, token: true } },
+                tokens: { orderBy: { index: 'asc' }, include: { token: true } },
                 dynamicData: true,
             },
         });
@@ -179,7 +179,7 @@ export class PoolOnChainDataService {
                 let bptPriceRate = '1.0';
                 for (let i = 0; i < poolTokens.tokens.length; i++) {
                     const tokenAddress = poolTokens.tokens[i];
-                    const poolToken = pool.tokens.find((token) => isSameAddress(token.address, tokenAddress));
+                    const poolToken = pool.tokens.find((token) => addressesMatch(token.address, tokenAddress));
 
                     if (!poolToken) {
                         throw `Pool Missing Expected Token: ${pool.id} ${tokenAddress}`;
@@ -198,43 +198,23 @@ export class PoolOnChainDataService {
                     let priceRate = poolTokens.rates[i] ?? '1.0';
 
                     // bpt price rate
-                    if (onchainData.rate && isSameAddress(poolToken.address, pool.address)) {
+                    if (onchainData.rate && addressesMatch(poolToken.address, pool.address)) {
                         priceRate = onchainData.rate;
                         bptPriceRate = priceRate;
                     }
 
                     if (
-                        !poolToken.dynamicData ||
-                        poolToken.dynamicData.balance !== balance ||
-                        poolToken.dynamicData.priceRate !== priceRate ||
-                        poolToken.dynamicData.weight !== weight
+                        poolToken.balance !== balance ||
+                        poolToken.priceRate !== priceRate ||
+                        poolToken.weight !== weight
                     ) {
                         operations.push(
-                            prisma.prismaPoolTokenDynamicData.upsert({
+                            prisma.prismaPoolToken.update({
                                 where: { id_chain: { id: poolToken.id, chain: poolToken.chain } },
-                                create: {
-                                    id: poolToken.id,
-                                    chain: poolToken.chain,
-                                    poolTokenId: poolToken.id,
-                                    blockNumber,
+                                data: {
+                                    balance,
                                     priceRate,
                                     weight,
-                                    balance,
-                                    balanceUSD:
-                                        poolToken.address === pool.address
-                                            ? 0
-                                            : (tokenPrices.find(
-                                                  (tokenPrice) =>
-                                                      tokenPrice.tokenAddress.toLowerCase() ===
-                                                          poolToken.address.toLowerCase() &&
-                                                      tokenPrice.chain === poolToken.chain,
-                                              )?.price || 0) * parseFloat(balance),
-                                },
-                                update: {
-                                    blockNumber,
-                                    priceRate,
-                                    weight,
-                                    balance,
                                     balanceUSD:
                                         poolToken.address === pool.address
                                             ? 0

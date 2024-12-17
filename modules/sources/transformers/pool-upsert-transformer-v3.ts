@@ -107,12 +107,6 @@ export const poolUpsertTransformerV3 = (
             priceRateProvider: poolData.rateProviders![i].address.toLowerCase(),
             exemptFromProtocolYieldFee: !token.paysYieldFees,
             scalingFactor: token.scalingFactor,
-        })),
-        poolTokenDynamicData: poolData.tokens.map((token) => ({
-            id: `${poolData.id}-${token.address}`.toLowerCase(),
-            poolTokenId: `${poolData.id}-${token.address}`.toLowerCase(),
-            chain,
-            blockNumber: Number(blockNumber),
             balance: token.balance,
             weight: poolData.weightedParams ? poolData.weightedParams.weights[token.index] ?? null : null,
             balanceUSD: 0, // enriched later

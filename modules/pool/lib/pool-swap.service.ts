@@ -187,7 +187,6 @@ export class PoolSwapService {
                                 tokens: {
                                     include: {
                                         token: true,
-                                        dynamicData: true,
                                     },
                                 },
                             },

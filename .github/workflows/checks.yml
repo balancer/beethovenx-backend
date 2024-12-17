@@ -8,13 +8,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Use Node.js
-              uses: actions/setup-node@v3
+            - name: Use Bun
+              uses: oven-sh/setup-bun@v2
               with:
-                  node-version: '18.x'
+                  bun-version: latest
             - name: Install deps
-              run: yarn
+              run: bun install --frozen-lockfile
             - name: Prisma Generate
-              run: yarn prisma generate
+              run: bun prisma generate
             - name: Run build
-              run: yarn build
+              run: bun run build

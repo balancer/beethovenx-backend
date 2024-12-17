@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '../env';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { ApolloError } from 'apollo-server-express';
@@ -13,7 +12,6 @@ export const initApiSentry = () => {
         enabled: env.NODE_ENV === 'production',
         ignoreErrors: [/.*error: Provide.*chain.*param/],
         integrations: [
-            nodeProfilingIntegration(),
             Sentry.captureConsoleIntegration({
                 levels: ['error', 'warn'],
             }),

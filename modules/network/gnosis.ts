@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { DeploymentEnv, NetworkConfig, NetworkData } from './network-config-types';
 import { tokenService } from '../token/token.service';
 import { BoostedPoolAprService } from '../pool/lib/apr-data-sources/nested-pool-apr.service';
-import { SwapFeeFromEventsAprService } from '../pool/lib/apr-data-sources/';
+import { SwapFeeAprService } from '../pool/lib/apr-data-sources/';
 import { GaugeAprService } from '../pool/lib/apr-data-sources/ve-bal-gauge-apr.service';
 import { UserSyncGaugeBalanceService } from '../user/lib/user-sync-gauge-balance.service';
 import { every } from '../../apps/scheduler/intervals';
@@ -22,8 +22,8 @@ export const gnosisNetworkConfig: NetworkConfig = {
     poolAprServices: [
         new YbTokensAprService(gnosisNetworkData.ybAprConfig, gnosisNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
-        new SwapFeeFromEventsAprService(),
-        new GaugeAprService(tokenService, [gnosisNetworkData.bal!.address]),
+        new SwapFeeAprService(),
+        new GaugeAprService(),
     ],
     userStakedBalanceServices: [new UserSyncGaugeBalanceService(), new UserSyncAuraBalanceService()],
     services: {
@@ -53,6 +53,10 @@ export const gnosisNetworkConfig: NetworkConfig = {
         {
             name: 'update-pool-apr',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
+        },
+        {
+            name: 'update-7-30-days-swap-apr',
+            interval: every(8, 'hours'),
         },
         {
             name: 'load-on-chain-data-for-pools-with-active-updates',
@@ -144,6 +148,31 @@ export const gnosisNetworkConfig: NetworkConfig = {
         {
             name: 'update-cow-amm-volume-and-fees',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
+        },
+        // V3 jobs
+        {
+            name: 'add-pools-v3',
+            interval: every(2, 'minutes'),
+        },
+        {
+            name: 'sync-pools-v3',
+            interval: every(30, 'seconds'),
+        },
+        {
+            name: 'sync-join-exits-v3',
+            interval: every(1, 'minutes'),
+        },
+        {
+            name: 'sync-swaps-v3',
+            interval: every(1, 'minutes'),
+        },
+        {
+            name: 'sync-snapshots-v3',
+            interval: every(10, 'minutes'),
+        },
+        {
+            name: 'sync-hook-data',
+            interval: every(1, 'hours'),
         },
     ],
 };

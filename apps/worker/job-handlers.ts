@@ -153,18 +153,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 next,
             );
             break;
-        case 'update-pool-apr':
-            await runIfNotAlreadyRunning(
-                name,
-                chainId,
-                () => {
-                    const chain = chainIdToChain[chainId];
-                    return poolService.updatePoolAprs(chain);
-                },
-                res,
-                next,
-            );
-            break;
         case 'load-on-chain-data-for-pools-with-active-updates':
             await runIfNotAlreadyRunning(
                 name,
@@ -296,6 +284,34 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 next,
             );
             break;
+        // APRs
+        case 'sync-merkl':
+            await runIfNotAlreadyRunning(name, chainId, () => AprsController().syncMerkl(), res, next);
+            break;
+        case 'update-7-30-days-swap-apr':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => AprsController().update7And30DaysSwapAprs(chain),
+                res,
+                next,
+            );
+            break;
+        case 'update-surplus-aprs':
+            await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().updateSurplusAprs(), res, next);
+            break;
+        case 'update-pool-apr':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => {
+                    const chain = chainIdToChain[chainId];
+                    return poolService.updatePoolAprs(chain);
+                },
+                res,
+                next,
+            );
+            break;
         // V3 Jobs
         case 'add-pools-v3':
             await runIfNotAlreadyRunning(name, chainId, () => PoolController().addPoolsV3(chain), res, next);
@@ -365,12 +381,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
         case 'update-cow-amm-volume-and-fees':
             await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().updateVolumeAndFees(chain), res, next);
             break;
-        case 'update-surplus-aprs':
-            await runIfNotAlreadyRunning(name, chainId, () => CowAmmController().updateSurplusAprs(), res, next);
-            break;
-        case 'sync-merkl':
-            await runIfNotAlreadyRunning(name, chainId, () => AprsController().syncMerkl(), res, next);
-            break;
         case 'sync-categories':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncCategories(), res, next);
             break;
@@ -380,8 +390,8 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
         case 'sync-hook-reviews':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncHookReviews(), res, next);
             break;
-        case 'sync-erc4626-reviews':
-            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Reviews(), res, next);
+        case 'sync-erc4626-data':
+            await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Data(), res, next);
             break;
         default:
             res.sendStatus(400);

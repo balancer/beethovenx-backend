@@ -7,7 +7,6 @@ import mainnet from '../../config/mainnet';
 import { prisma } from '../../prisma/prisma-client';
 import { CowAmmController } from '../controllers/cow-amm-controller';
 import { ContentController } from '../controllers/content-controller';
-import { chainToIdMap } from '../network/network-config';
 import { PoolController } from '../controllers';
 import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
 import { Prisma } from '@prisma/client';
@@ -172,14 +171,14 @@ describe('pool debugging', () => {
 
     it('sync gauge staking on l2', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '10');
+        setRequestScopedContextValue('chainId', '146');
         //only do once before starting to debug
         // await poolService.syncAllPoolsFromSubgraph();
         // await poolService.loadOnChainDataForAllPools();
-        await poolService.reloadStakingForAllPools(['GAUGE'], 'OPTIMISM');
+        await poolService.reloadStakingForAllPools(['GAUGE', 'RELIQUARY'], 'SONIC');
         const pool = await poolService.getGqlPool(
-            '0x39965c9dab5448482cf7e002f583c812ceb53046000100000000000000000003',
-            'OPTIMISM',
+            '0x374641076b68371e69d03c417dac3e5f236c32fa000000000000000000000006',
+            'SONIC',
         );
         expect(pool.staking).toBeDefined();
     }, 5000000);

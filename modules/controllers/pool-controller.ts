@@ -169,11 +169,11 @@ export function PoolController(tracer?: any) {
             }
 
             const pools = await prisma.prismaPool.findMany({
-                where: { chain },
+                where: { chain, protocolVersion: 3 },
             });
             const ids = pools.map((pool) => pool.id);
             if (ids.length === 0) ids.push('');
-            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
 
             // TODO this might break once we have a lot of pools because the filter gets too big
             const newPools = await client.getAllInitializedPools({ id_not_in: ids });
@@ -209,7 +209,7 @@ export function PoolController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3);
+            const client = getV3JoinedSubgraphClient(balancerV3, balancerPoolsV3, chain);
             const allPools = await client.getAllInitializedPools();
 
             const viemClient = getViemClient(chain);
@@ -220,7 +220,7 @@ export function PoolController(tracer?: any) {
             const pools = await prisma.prismaPool.findMany({ where: { chain, id: { in: poolsIds } } });
             await syncPoolsV3(pools, viemClient, vaultAddress, chain, latestBlock);
 
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, Number(latestBlock));
 
             return poolsIds;
         },
@@ -231,21 +231,23 @@ export function PoolController(tracer?: any) {
          */
         async syncChangedPoolsV3(chain: Chain) {
             const {
+                subgraphs: { balancerV3 },
                 balancer: {
                     v3: { vaultAddress, routerAddress },
                 },
             } = config[chain];
 
             // Guard against unconfigured chains
-            if (!vaultAddress) {
+            if (!vaultAddress || !balancerV3) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
             const viemClient = getViemClient(chain);
+            const subgraphClient = getVaultSubgraphClient(balancerV3, chain);
 
             const lastSyncBlock = await getLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3);
-            const fromBlock = lastSyncBlock + 1;
-            const toBlock = await viemClient.getBlockNumber();
+            const fromBlock = lastSyncBlock;
+            const toBlock = await subgraphClient.getMetadata().then((metadata) => metadata.block.number);
 
             // Sepolia vault deployment block, uncomment to test from the beginning
             // const fromBlock = 5274748n;
@@ -259,24 +261,27 @@ export function PoolController(tracer?: any) {
                 where: { chain, protocolVersion: 3 },
             });
 
-            const changedPools = await getChangedPoolsV3(vaultAddress, viemClient, BigInt(fromBlock), BigInt(toBlock));
+            // RPC for some reason isn't working, maybe event signatures are wrong?
+            // const changedPools = await getChangedPoolsV3(vaultAddress, viemClient, BigInt(fromBlock), BigInt(toBlock));
+            const changedPoolsIds = await subgraphClient
+                .getAllInitializedPools({
+                    _change_block: { number_gte: fromBlock },
+                })
+                .then((pools) => pools.map((pool) => pool.id.toLowerCase()));
 
-            const changedPoolsIds = changedPools.map((id) => id.toLowerCase());
             const poolsToSync = pools.filter((pool) => changedPoolsIds.includes(pool.id.toLowerCase())); // only sync pools that are in the database
             if (poolsToSync.length === 0) {
                 return [];
             }
-            await syncPoolsV3(poolsToSync, viemClient, vaultAddress, chain, toBlock);
-            await syncTokenPairs(
-                poolsToSync.map(({ id }) => id),
-                viemClient,
-                routerAddress,
-                chain,
-            );
+            const poolsToSyncIds = poolsToSync.map(({ id }) => id);
 
-            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock);
+            await syncPoolsV3(poolsToSync, viemClient, vaultAddress, chain, BigInt(toBlock));
+            await syncTokenPairs(poolsToSyncIds, viemClient, routerAddress, chain);
 
-            return poolsToSync.map(({ id }) => id);
+            // Leaving safety margin for reorgs
+            await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, toBlock - 10);
+
+            return poolsToSyncIds;
         },
         async updateLiquidity24hAgoV3(chain: Chain) {
             const {
@@ -284,7 +289,7 @@ export function PoolController(tracer?: any) {
             } = config[chain];
 
             // Guard against unconfigured chains
-            const subgraph = balancerV3 && getVaultSubgraphClient(balancerV3);
+            const subgraph = balancerV3 && getVaultSubgraphClient(balancerV3, chain);
 
             if (!subgraph) {
                 throw new Error(`Chain not configured: ${chain}`);

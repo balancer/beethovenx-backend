@@ -4,7 +4,7 @@ import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
 import { Address, Hex, parseEther } from 'viem';
 import { BigintIsh, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';
 import { WeightedBasePoolToken as WeightedPoolToken } from './weightedBasePoolToken';
@@ -31,7 +31,7 @@ export class WeightedPool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.weight) {
+            if (!poolToken.weight) {
                 throw new Error('Weighted pool token does not have a weight');
             }
 
@@ -42,15 +42,10 @@ export class WeightedPool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
             poolTokens.push(
-                new WeightedPoolToken(
-                    token,
-                    tokenAmount.amount,
-                    poolToken.index,
-                    parseEther(poolToken.dynamicData.weight),
-                ),
+                new WeightedPoolToken(token, tokenAmount.amount, poolToken.index, parseEther(poolToken.weight)),
             );
         }
 

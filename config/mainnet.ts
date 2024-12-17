@@ -26,6 +26,8 @@ export default <NetworkData>{
         balancer: [
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmQ5TT2yYBZgoUxsat3bKmNe5Fr9LW9YAtDs8aeuc1BRhj`,
         ],
+        balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmZpnxr5Qz2tc6EKgGuvBG3xSbXN3LbCLhqpawLWvndPH6`,
+        balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmVGssjwfVAP8b2buqVVKz5sdb69ryyvxED5qQPGeW8Yk2`,
         beetsBar: 'https://',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/9A6bkprqEG2XsZUYJ5B2XXp6ymz9fNcn4tVPxMWDztYC`,
         gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmdmQBHbBtwD6wNypHbuGKB1uKHpHNVuSHbo9FsvrMhXSn`,
@@ -76,11 +78,11 @@ export default <NetworkData>{
             balancerQueriesAddress: '0xe39b5e3b6d74016b2f6a9673d7d7493b6df549d5',
         },
         v3: {
-            vaultAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
-            routerAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
+            vaultAddress: '0xba1333333333a1ba1108e8412f11850a5c319ba9',
+            protocolFeeController: '0xa731c23d7c95436baaae9d52782f966e1ed07cc8',
+            routerAddress: '0x5c6fb490bdfd3246eb0bb062c168decaf4bd9fdd',
             defaultSwapFeePercentage: '0.5',
-            defaultYieldFeePercentage: '0.5',
-            tokenAdmin: '0xf302f9f50958c5593770fdf4d4812309ff77414f',
+            defaultYieldFeePercentage: '0.1',
         },
     },
     multicall: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
@@ -111,6 +113,15 @@ export default <NetworkData>{
         },
     },
     ybAprConfig: {
+        usdl: true,
+        morpho: {
+            tokens: {
+                // Morpho Steakhouse USDC
+                '0xbeef01735c132ada46aa9aa4c54623caa92a64cb': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                // Morpho Coinshift USDL - used to calculate the APR in the YB Tokens APR service
+                '0xbeefc01767ed5086f35decb6c00e6c12bc7476c1': '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559',
+            },
+        },
         aave: {
             v2: {
                 subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/8wR23o1zkS4gpLqLNU4kG3JHYVucqGyopL5utGxP2q1N`,
@@ -147,6 +158,7 @@ export default <NetworkData>{
                         wrappedTokens: {
                             waUSDC: '0x57d20c946a7a3812a7225b881cdcd8431d23431c',
                             stataEthUSDC: '0x02c2d189b45ce213a40097b62d311cf0dd16ec92',
+                            stataV2USDC: '0xd4fa2d31b7968e448877f69a96de69f5de8cd23e',
                         },
                     },
                     USDT: {
@@ -156,6 +168,7 @@ export default <NetworkData>{
                             waUSDT: '0xa7e0e66f38b8ad8343cff67118c1f33e827d1455',
                             stataEthUSDT: '0x65799b9fd4206cdaa4a1db79254fcbc2fd2ffee6',
                             stataEthUSDT2: '0x862c57d48becb45583aeba3f489696d22466ca1b',
+                            stataV2USDT: '0x7bc3485026ac48b6cf9baf0a377477fff5703af8',
                         },
                     },
                     DAI: {
@@ -172,6 +185,7 @@ export default <NetworkData>{
                         wrappedTokens: {
                             waWETH: '0x59463bb67ddd04fe58ed291ba36c26d99a39fbc6',
                             stataEthWETH: '0x03928473f25bb2da6bc880b07ecbadc636822264',
+                            stataV2WETH: '0x0bfc9d54fc184518a81162f8fb99c2eaca081202',
                         },
                     },
                     crvUSD: {
@@ -186,6 +200,25 @@ export default <NetworkData>{
                         aTokenAddress: '0x3fe6a295459fae07df8a0cecc36f37160fe86aa9',
                         wrappedTokens: {
                             stataEthLUSD: '0xdbf5e36569798d1e39ee9d7b1c61a7409a74f23a',
+                        },
+                    },
+                },
+            },
+            lido: {
+                subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/5vxMbXRhG1oQr55MWC5j6qg78waWujx1wjeuEWDA6j3`,
+                tokens: {
+                    LidoWETH: {
+                        underlyingAssetAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                        aTokenAddress: '0xfa1fdbbd71b0aa16162d76914d69cd8cb3ef92da',
+                        wrappedTokens: {
+                            waEthLido: '0x0fe906e030a44ef24ca8c7dc7b7c53a6c4f00ce9',
+                        },
+                    },
+                    LidoWSTETH: {
+                        underlyingAssetAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+                        aTokenAddress: '0xc035a7cf15375ce2706766804551791ad035e0c2',
+                        wrappedTokens: {
+                            waEthLidowstETH: '0x775f661b0bd1739349b9a2a3ef60be277c5d2d29',
                         },
                     },
                 },

@@ -75,7 +75,7 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
     });
 
     const pdts = await prisma.prismaPoolDynamicData.findMany({
-        include: { pool: { include: { tokens: { include: { dynamicData: true } } } } },
+        include: { pool: { include: { tokens: true } } },
         where: poolIds ? { poolId: { in: poolIds }, chain } : { chain },
     });
 
@@ -88,15 +88,14 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
             balanceUSD:
                 token.address === pool.address
                     ? 0
-                    : parseFloat(token.dynamicData?.balance || '0') *
-                      getPriceForToken(tokenPrices, token.address, chain),
+                    : parseFloat(token.balance || '0') * getPriceForToken(tokenPrices, token.address, chain),
         }));
         const totalLiquidity = _.sumBy(balanceUSDs, (item) => item.balanceUSD);
 
         for (const item of balanceUSDs) {
             if (!isSupportedInt(item.balanceUSD)) {
                 Sentry.captureException(
-                    `Skipping unsupported int size for prismaPoolTokenDynamicData.balanceUSD: ${item.balanceUSD}`,
+                    `Skipping unsupported int size for prismaPoolToken.balanceUSD: ${item.balanceUSD}`,
                     {
                         tags: {
                             tokenId: item.id,
@@ -109,7 +108,7 @@ export const updateLiquidityValuesForPools = async (chain: Chain, poolIds?: stri
                 continue;
             }
             updates.push(
-                prisma.prismaPoolTokenDynamicData.update({
+                prisma.prismaPoolToken.update({
                     where: { id_chain: { id: item.id, chain: pool.chain } },
                     data: { balanceUSD: item.balanceUSD },
                 }),

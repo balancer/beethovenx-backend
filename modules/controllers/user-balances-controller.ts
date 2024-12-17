@@ -39,7 +39,7 @@ export function UserBalancesController(tracer?: any) {
                 return [];
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3);
+            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
             const entries = await upsertBptBalancesV3(vaultSubgraphClient, chain);
             return entries;
         },

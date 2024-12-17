@@ -5,7 +5,7 @@ import { _calcInGivenOut, _calcOutGivenIn, _calculateInvariant, _findVirtualPara
 import { MathSol, WAD } from '../../utils/math';
 import { SWAP_LIMIT_FACTOR } from '../../utils/gyroHelpers/math';
 import { PoolType, SwapKind, Token, TokenAmount, BigintIsh } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { GyroData } from '../../../../../pool/subgraph-mapper';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';
@@ -42,7 +42,7 @@ export class Gyro2Pool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData) {
+            if (!poolToken.balance) {
                 throw new Error('Gyro pool as no dynamic pool token data');
             }
             const token = new Token(
@@ -52,16 +52,11 @@ export class Gyro2Pool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
             poolTokens.push(
-                new Gyro2PoolToken(
-                    token,
-                    tokenAmount.amount,
-                    poolToken.index,
-                    parseEther(poolToken.dynamicData.priceRate),
-                ),
+                new Gyro2PoolToken(token, tokenAmount.amount, poolToken.index, parseEther(poolToken.priceRate)),
             );
         }
 

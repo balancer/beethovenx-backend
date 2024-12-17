@@ -1,4 +1,4 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../web3/addresses';
 import { Chain, Prisma } from '@prisma/client';
 import { prisma } from '../../prisma/prisma-client';
 import {
@@ -10,7 +10,7 @@ import {
 } from './content-types';
 import SanityClient from '@sanity/client';
 import { env } from '../../apps/env';
-import { chainToIdMap } from '../network/network-config';
+import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 
 interface SanityToken {
     name: string;
@@ -122,11 +122,11 @@ export class SanityContentService implements ContentService {
             });
 
             const addToWhitelist = sanityTokens.filter((sanityToken) => {
-                return !whiteListedTokens.some((dbToken) => isSameAddress(sanityToken.address, dbToken.tokenAddress));
+                return !whiteListedTokens.some((dbToken) => addressesMatch(sanityToken.address, dbToken.tokenAddress));
             });
 
             const removeFromWhitelist = whiteListedTokens.filter((dbToken) => {
-                return !sanityTokens.some((sanityToken) => isSameAddress(dbToken.tokenAddress, sanityToken.address));
+                return !sanityTokens.some((sanityToken) => addressesMatch(dbToken.tokenAddress, sanityToken.address));
             });
 
             await prisma.prismaTokenType.createMany({

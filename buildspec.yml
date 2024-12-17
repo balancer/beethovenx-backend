@@ -4,24 +4,19 @@ phases:
         runtime-versions:
             nodejs: 18
         commands:
-            - yarn install
-            - rm -rf node_modules/@balancer-labs/sor/test
-            - rm -rf node_modules/@balancer-labs/sor/src
+            - curl -fsSL https://bun.sh/install | bash
+            - ~/.bun/bin/bun install --frozen-lockfile
     build:
         commands:
-            - yarn prisma generate
-            - yarn prisma migrate deploy
-            - yarn build
-            - yarn cleanup-console
+            - ~/.bun/bin/bun prisma generate
+            - ~/.bun/bin/bun prisma migrate deploy
+            - ~/.bun/bin/bun run build
+            - ~/.bun/bin/bun cleanup-console
     post_build:
         commands:
-            - yarn install --prod
+            - rm -rf node_modules
+            - ~/.bun/bin/bun install -p --frozen-lockfile
             - echo Build completed on `date`
-#      - echo Pushing to graph cdn
-#      - npx graphcdn push
-cache:
-    paths:
-        - 'node_modules/**/*'
 artifacts:
     files:
         - node_modules/**/*

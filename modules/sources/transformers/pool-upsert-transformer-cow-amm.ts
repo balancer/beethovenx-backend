@@ -71,12 +71,6 @@ export const poolUpsertTransformerCowAmm = (
         nestedPoolId: null,
         priceRateProvider: undefined,
         exemptFromProtocolYieldFee: false,
-    })),
-    poolTokenDynamicData: poolFragment.tokens.map((token) => ({
-        id: `${poolFragment.id}-${token.address}`.toLowerCase(),
-        poolTokenId: `${poolFragment.id}-${token.address}`.toLowerCase(),
-        chain,
-        blockNumber: Number(blockNumber),
         balance: token.balance,
         weight: token.weight,
         balanceUSD: 0,

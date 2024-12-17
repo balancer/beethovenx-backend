@@ -1,0 +1,18 @@
+type Query
+type Mutation
+
+enum GqlChain {
+    ARBITRUM
+    AVALANCHE
+    BASE
+    FANTOM
+    GNOSIS
+    MAINNET
+    OPTIMISM
+    POLYGON
+    ZKEVM
+    SEPOLIA
+    FRAXTAL
+    MODE
+    SONIC
+}

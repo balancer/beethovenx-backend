@@ -24,7 +24,7 @@ export const syncTokenPairs = async (
             chain: chain,
         },
         include: {
-            tokens: { orderBy: { index: 'asc' }, include: { dynamicData: true, token: true } },
+            tokens: { orderBy: { index: 'asc' }, include: { token: true } },
             dynamicData: true,
         },
     });

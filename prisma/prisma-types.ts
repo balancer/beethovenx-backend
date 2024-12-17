@@ -5,13 +5,12 @@ export type PoolUpsertData = {
     tokens: Prisma.PrismaTokenCreateInput[];
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
     poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
-    poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
     poolExpandedTokens: Prisma.PrismaPoolExpandedTokensCreateManyInput[];
 };
 
 export type PoolDynamicUpsertData = {
     poolDynamicData: Prisma.PrismaPoolDynamicDataCreateInput;
-    poolTokenDynamicData: Prisma.PrismaPoolTokenDynamicDataCreateManyInput[];
+    poolToken: Prisma.PrismaPoolTokenCreateManyInput[];
 };
 
 export type SwapEvent = PrismaPoolEvent & {
@@ -56,7 +55,7 @@ export const poolWithTokens = Prisma.validator<Prisma.PrismaPoolArgs>()({
 export type PrismaPoolWithTokens = Prisma.PrismaPoolGetPayload<typeof poolWithTokens>;
 
 const poolTokenWithDynamicData = Prisma.validator<Prisma.PrismaPoolTokenArgs>()({
-    include: { dynamicData: true, token: true },
+    include: { token: true },
 });
 
 export type PrismaPoolTokenWithDynamicData = Prisma.PrismaPoolTokenGetPayload<typeof poolTokenWithDynamicData>;
@@ -117,7 +116,6 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
         tokens: {
             orderBy: { index: 'asc' },
             include: {
-                dynamicData: true,
                 token: {
                     include: { types: true },
                 },
@@ -130,7 +128,6 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
                                 token: {
                                     include: { types: true },
                                 },
-                                dynamicData: true,
                                 nestedPool: {
                                     include: {
                                         dynamicData: true,
@@ -138,7 +135,6 @@ export const prismaPoolWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolA
                                             orderBy: { index: 'asc' },
                                             include: {
                                                 token: true,
-                                                dynamicData: true,
                                             },
                                         },
                                     },
@@ -163,7 +159,6 @@ export const nestedPoolWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPo
                 token: {
                     include: { types: true },
                 },
-                dynamicData: true,
                 nestedPool: {
                     include: {
                         dynamicData: true,
@@ -171,7 +166,6 @@ export const nestedPoolWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPo
                             orderBy: { index: 'asc' },
                             include: {
                                 token: true,
-                                dynamicData: true,
                             },
                         },
                     },
@@ -192,7 +186,6 @@ const nestedPoolWithNoNesting = Prisma.validator<Prisma.PrismaPoolArgs>()({
             orderBy: { index: 'asc' },
             include: {
                 token: true,
-                dynamicData: true,
             },
         },
     },
@@ -207,7 +200,6 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                 types: true,
             },
         },
-        dynamicData: true,
         nestedPool: {
             include: {
                 dynamicData: true,
@@ -219,7 +211,6 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                                 types: true,
                             },
                         },
-                        dynamicData: true,
                         nestedPool: {
                             include: {
                                 dynamicData: true,
@@ -227,7 +218,6 @@ const prismaPoolTokenWithExpandedNesting = Prisma.validator<Prisma.PrismaPoolTok
                                     orderBy: { index: 'asc' },
                                     include: {
                                         token: true,
-                                        dynamicData: true,
                                     },
                                 },
                             },
@@ -246,7 +236,6 @@ export type PrismaPoolTokenWithExpandedNesting = Prisma.PrismaPoolTokenGetPayloa
 const prismaPoolTokenWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPoolTokenArgs>()({
     include: {
         token: true,
-        dynamicData: true,
         nestedPool: {
             include: {
                 dynamicData: true,
@@ -254,7 +243,6 @@ const prismaPoolTokenWithSingleLayerNesting = Prisma.validator<Prisma.PrismaPool
                     orderBy: { index: 'asc' },
                     include: {
                         token: true,
-                        dynamicData: true,
                     },
                 },
             },
@@ -303,7 +291,6 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
         tokens: {
             orderBy: { index: 'asc' },
             include: {
-                dynamicData: true,
                 token: {
                     include: { types: true },
                 },
@@ -316,7 +303,6 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
                                 token: {
                                     include: { types: true },
                                 },
-                                dynamicData: true,
                                 nestedPool: {
                                     include: {
                                         dynamicData: true,
@@ -324,7 +310,6 @@ export const prismaPoolMinimal = Prisma.validator<Prisma.PrismaPoolArgs>()({
                                             orderBy: { index: 'asc' },
                                             include: {
                                                 token: true,
-                                                dynamicData: true,
                                             },
                                         },
                                     },
@@ -372,7 +357,6 @@ export const prismaPoolBatchSwapWithSwaps = Prisma.validator<Prisma.PrismaPoolBa
                         tokens: {
                             include: {
                                 token: true,
-                                dynamicData: true,
                             },
                         },
                     },
@@ -391,7 +375,6 @@ export const prismaPoolAndHookWithDynamic = Prisma.validator<Prisma.PrismaPoolAr
             orderBy: { index: 'asc' },
             include: {
                 token: true,
-                dynamicData: true,
             },
         },
     },

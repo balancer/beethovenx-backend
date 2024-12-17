@@ -1,7 +1,7 @@
 import { Chain } from '@prisma/client';
 import { GraphQLClient } from 'graphql-request';
 import { AccountSchemaFragment, PoolSchema, PoolSchemaFragment, getSdk } from './generated/aura-subgraph-types';
-import { chainToIdMap } from '../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../network/chain-id-to-chain';
 
 export class AuraSubgraphService {
     private sdk: ReturnType<typeof getSdk>;

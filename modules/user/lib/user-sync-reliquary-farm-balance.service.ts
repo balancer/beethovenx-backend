@@ -1,6 +1,6 @@
-import { isSameAddress } from '@balancer-labs/sdk';
+import { addressesMatch } from '../../web3/addresses';
 import { formatFixed } from '@ethersproject/bignumber';
-import { ZERO_ADDRESS } from '@gnosis.pm/safe-core-sdk/dist/src/utils/constants';
+import { zeroAddress as ZERO_ADDRESS } from 'viem';
 import { PrismaPoolStakingType } from '@prisma/client';
 import { BigNumber, Event } from 'ethers';
 import _ from 'lodash';
@@ -202,7 +202,7 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                         // there has to be at least 1 relic in there
                         const relic = relics[0];
                         const userAddress = relic.userAddress.toLowerCase();
-                        const pool = pools.find((pool) => isSameAddress(pool.address, relic.pool.poolTokenAddress));
+                        const pool = pools.find((pool) => addressesMatch(pool.address, relic.pool.poolTokenAddress));
 
                         return {
                             id: `reliquary-${relic.pid}-${userAddress}`,
@@ -324,7 +324,7 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
             }
         }
         affectedUsers = _.uniq([...affectedUsers, ...relicOwners]).filter(
-            (address) => !isSameAddress(ZERO_ADDRESS, address),
+            (address) => !addressesMatch(ZERO_ADDRESS, address),
         );
 
         affectedUsers.forEach((userAddress) => {

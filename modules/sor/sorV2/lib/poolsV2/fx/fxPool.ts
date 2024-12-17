@@ -8,7 +8,7 @@ import { _calcInGivenOut, _calcOutGivenIn } from './fxMath';
 import { RAY } from '../../utils/math';
 import { FxPoolPairData } from './types';
 import { PoolType, SwapKind, Token, TokenAmount } from '@balancer/sdk';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 import { TokenPairData } from '../../../../../pool/lib/pool-on-chain-tokenpair-data';
 import { BasePool } from '../basePool';
 
@@ -44,7 +44,7 @@ export class FxPool implements BasePool {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.latestFxPrice) {
+            if (!poolToken.latestFxPrice) {
                 throw new Error('FX pool token does not have latestFXPrice');
             }
 
@@ -55,7 +55,7 @@ export class FxPool implements BasePool {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
             poolTokens.push(
@@ -63,7 +63,7 @@ export class FxPool implements BasePool {
                     token,
                     tokenAmount.amount,
                     poolToken.index,
-                    `${poolToken.dynamicData.latestFxPrice}`,
+                    `${poolToken.latestFxPrice}`,
                     // TODO query fxOracleDecimals
                     // poolToken.token.fxOracleDecimals || 8,
                     8,

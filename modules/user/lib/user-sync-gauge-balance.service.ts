@@ -9,7 +9,7 @@ import { formatFixed } from '@ethersproject/bignumber';
 import { PrismaPoolStakingType } from '@prisma/client';
 import { networkContext } from '../../network/network-context.service';
 import ERC20Abi from '../../web3/abi/ERC20.json';
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress as AddressZero } from 'viem';
 import { getEvents } from '../../web3/events';
 import { GaugeSubgraphService } from '../../subgraphs/gauge-subgraph/gauge-subgraph.service';
 import { BALANCES_SYNC_BLOCKS_MARGIN } from '../../../config';

@@ -6,7 +6,7 @@ import { Chain } from '@prisma/client';
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { GqlPoolType } from '../../../../../../schema';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
-import { chainToIdMap } from '../../../../../network/network-config';
+import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 
 import { BasePoolV3 } from '../../poolsV2/basePool';
 import { WeightedBasePoolToken } from '../../poolsV2/weighted/weightedBasePoolToken';
@@ -47,7 +47,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
         }
 
         for (const poolToken of pool.tokens) {
-            if (!poolToken.dynamicData?.weight) {
+            if (!poolToken.weight) {
                 throw new Error('Weighted pool token does not have a weight');
             }
 
@@ -58,28 +58,23 @@ export class WeightedPoolV3 implements BasePoolV3 {
                 poolToken.token.symbol,
                 poolToken.token.name,
             );
-            const scale18 = parseEther(poolToken.dynamicData.balance);
+            const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
-            if (poolToken.token.underlyingTokenAddress) {
+            if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
                 // erc4626 token
                 poolTokens.push(
                     new WeightedErc4626PoolToken(
                         token,
                         tokenAmount.amount,
                         poolToken.index,
-                        parseEther(poolToken.dynamicData.priceRate),
+                        parseEther(poolToken.priceRate),
                         poolToken.token.underlyingTokenAddress,
-                        parseEther(poolToken.dynamicData.weight),
+                        parseEther(poolToken.weight),
                     ),
                 );
             } else {
                 poolTokens.push(
-                    new WeightedBasePoolToken(
-                        token,
-                        tokenAmount.amount,
-                        poolToken.index,
-                        parseEther(poolToken.dynamicData.weight),
-                    ),
+                    new WeightedBasePoolToken(token, tokenAmount.amount, poolToken.index, parseEther(poolToken.weight)),
                 );
             }
         }
