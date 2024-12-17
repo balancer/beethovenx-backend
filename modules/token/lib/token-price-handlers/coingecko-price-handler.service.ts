@@ -2,12 +2,12 @@ import { TokenPriceHandler } from '../../token-types';
 import { PrismaTokenWithTypes } from '../../../../prisma/prisma-types';
 import { prisma } from '../../../../prisma/prisma-client';
 import { timestampRoundedUpToNearestHour } from '../../../common/time';
-import { AllNetworkConfigs } from '../../../network/network-config';
 import { Chain } from '@prisma/client';
 import _ from 'lodash';
 import { coingeckoDataService } from '../coingecko-data.service';
 import { tokenAndPrice, updatePrices } from './price-handler-helper';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
+import config from '../../../../config';
 
 export class CoingeckoPriceHandlerService implements TokenPriceHandler {
     public readonly exitIfFails = true;
@@ -16,10 +16,9 @@ export class CoingeckoPriceHandlerService implements TokenPriceHandler {
     private getAcceptedTokens(tokens: PrismaTokenWithTypes[]): PrismaTokenWithTypes[] {
         // excluded via network config
         const excludedFromCoingecko: { address: string; chain: Chain }[] = [];
-        for (const chain in AllNetworkConfigs) {
-            const config = AllNetworkConfigs[chain];
-            config.data.coingecko.excludedTokenAddresses.forEach((address) =>
-                excludedFromCoingecko.push({ address: address, chain: config.data.chain.prismaId }),
+        for (const data of Object.values(config)) {
+            data.coingecko.excludedTokenAddresses.forEach((address) =>
+                excludedFromCoingecko.push({ address: address, chain: data.chain.prismaId }),
             );
         }
         return tokens.filter(

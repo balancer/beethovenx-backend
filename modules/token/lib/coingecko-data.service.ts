@@ -1,9 +1,10 @@
 import { prisma } from '../../../prisma/prisma-client';
 import _ from 'lodash';
-import { networkContext } from '../../network/network-context.service';
 import { env } from '../../../apps/env';
 import { RateLimiter } from 'limiter';
 import axios, { AxiosError } from 'axios';
+import config from '../../../config';
+import { Chain } from '@prisma/client';
 
 type Price = { usd: number };
 interface HistoricalPriceResponse {
@@ -81,25 +82,25 @@ export class CoingeckoDataService {
         this.apiKeyParam = env.COINGECKO_API_KEY ? `&x_cg_pro_api_key=${env.COINGECKO_API_KEY}` : '';
     }
 
-    public async syncCoingeckoIds() {
-        const allTokens = await prisma.prismaToken.findMany({ where: { chain: networkContext.chain } });
+    public async syncCoingeckoIds(chain: Chain) {
+        const allTokens = await prisma.prismaToken.findMany({ where: { chain } });
 
         const coinIds = await this.getCoinIdList();
 
         for (const token of allTokens) {
             const coinId = coinIds.find((coinId) => {
-                if (coinId.platforms[networkContext.data.coingecko.platformId]) {
-                    return coinId.platforms[networkContext.data.coingecko.platformId].toLowerCase() === token.address;
+                if (coinId.platforms[config[chain].coingecko.platformId]) {
+                    return coinId.platforms[config[chain].coingecko.platformId].toLowerCase() === token.address;
                 }
             });
 
             await prisma.prismaToken.update({
                 where: {
-                    address_chain: { address: token.address, chain: networkContext.chain },
+                    address_chain: { address: token.address, chain },
                 },
                 data: {
                     coingeckoTokenId: coinId ? coinId.id : null,
-                    coingeckoPlatformId: networkContext.data.coingecko.platformId,
+                    coingeckoPlatformId: config[chain].coingecko.platformId,
                 },
             });
         }

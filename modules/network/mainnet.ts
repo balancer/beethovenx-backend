@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { DeploymentEnv, NetworkConfig, NetworkData } from './network-config-types';
-import { tokenService } from '../token/token.service';
 import {
     BoostedPoolAprService,
     SwapFeeAprService,

@@ -3,16 +3,16 @@ import { PrismaTokenWithTypes } from '../../../../prisma/prisma-types';
 import { timestampRoundedUpToNearestHour } from '../../../common/time';
 import { prisma } from '../../../../prisma/prisma-client';
 import _ from 'lodash';
-import { AllNetworkConfigs } from '../../../network/network-config';
 import { tokenAndPrice, updatePrices } from './price-handler-helper';
 import { Chain } from '@prisma/client';
+import fantom from '../../../../config/fantom';
 
 export class FbeetsPriceHandlerService implements TokenPriceHandler {
     public readonly exitIfFails = false;
     public readonly id = 'FbeetsPriceHandlerService';
 
     private getAcceptedTokens(tokens: PrismaTokenWithTypes[]): PrismaTokenWithTypes[] {
-        const fbeetsAddress = AllNetworkConfigs['250'].data.fbeets!.address;
+        const fbeetsAddress = fantom.fbeets!.address;
         return tokens.filter((token) => token.chain === 'FANTOM' && token.address === fbeetsAddress);
     }
 
@@ -20,8 +20,8 @@ export class FbeetsPriceHandlerService implements TokenPriceHandler {
         tokens: PrismaTokenWithTypes[],
         chains: Chain[],
     ): Promise<PrismaTokenWithTypes[]> {
-        const fbeetsAddress = AllNetworkConfigs['250'].data.fbeets!.address;
-        const fbeetsPoolId = AllNetworkConfigs['250'].data.fbeets!.poolId;
+        const fbeetsAddress = fantom.fbeets!.address;
+        const fbeetsPoolId = fantom.fbeets!.poolId;
         const acceptedTokens = this.getAcceptedTokens(tokens);
         const tokenAndPrices: tokenAndPrice[] = [];
 

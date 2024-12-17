@@ -18,13 +18,10 @@ import {
     GqlTokenChartDataRange,
     MutationTokenDeleteTokenTypeArgs,
     QueryTokenGetTokensArgs,
-    QueryTokenGetTokensDataArgs,
 } from '../../schema';
-import { networkContext } from '../network/network-context.service';
 import { Dictionary } from 'lodash';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
-import { chainIdToChain } from '../network/chain-id-to-chain';
 import { GithubContentService } from '../content/github-content.service';
+import config from '../../config';
 
 const TOKEN_PRICES_CACHE_KEY = `token:prices:current`;
 const TOKEN_PRICES_24H_AGO_CACHE_KEY = `token:prices:24h-ago`;
@@ -39,14 +36,13 @@ export class TokenService {
         this.cache = new Cache<string, any>();
     }
 
-    public async syncTokenContentData() {
+    public async syncTokenContentData(chain: Chain) {
         //sync coingecko Ids first, then override Ids from the content service
-        await this.coingeckoDataService.syncCoingeckoIds();
-        const githubContentService = new GithubContentService();
-        await githubContentService.syncTokenContentData([networkContext.chain]);
+        await this.coingeckoDataService.syncCoingeckoIds(chain);
+        await new GithubContentService().syncTokenContentData([chain]);
     }
 
-    public async getToken(address: string, chain = networkContext.chain): Promise<PrismaToken | null> {
+    public async getToken(address: string, chain: Chain): Promise<PrismaToken | null> {
         return prisma.prismaToken.findUnique({
             where: {
                 address_chain: {
@@ -57,7 +53,7 @@ export class TokenService {
         });
     }
 
-    public async getTokens(addresses?: string[], chain = networkContext.chain): Promise<PrismaToken[]> {
+    public async getTokens(chain: Chain, addresses?: string[]): Promise<PrismaToken[]> {
         let tokens: PrismaToken[] | null = this.cache.get(`${ALL_TOKENS_CACHE_KEY}:${chain}`);
         if (!tokens) {
             tokens = await prisma.prismaToken.findMany({ where: { chain: chain } });
@@ -80,7 +76,7 @@ export class TokenService {
             return {
                 ...token,
                 isBufferAllowed: token.isBufferAllowed,
-                chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
+                chainId: config[chain].chain.id,
                 tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
                 rateProviderData: rateProviderData[token.address],
                 coingeckoId: token.coingeckoTokenId,
@@ -104,18 +100,15 @@ export class TokenService {
         });
 
         for (const chain of chains) {
-            const weth = tokens.find(
-                (token) =>
-                    token.chain === chain && token.address === AllNetworkConfigsKeyedOnChain[chain].data.weth.address,
-            );
+            const weth = tokens.find((token) => token.chain === chain && token.address === config[chain].weth.address);
 
             if (weth) {
                 tokens.push({
                     ...weth,
-                    name: AllNetworkConfigsKeyedOnChain[chain].data.eth.name,
-                    address: AllNetworkConfigsKeyedOnChain[chain].data.eth.address,
-                    symbol: AllNetworkConfigsKeyedOnChain[chain].data.eth.symbol,
-                    chain: AllNetworkConfigsKeyedOnChain[chain].data.chain.prismaId,
+                    name: config[chain].eth.name,
+                    address: config[chain].eth.address,
+                    symbol: config[chain].eth.symbol,
+                    chain: config[chain].chain.prismaId,
                 });
             }
         }
@@ -142,7 +135,7 @@ export class TokenService {
 
         return tokens.map((token) => ({
             ...token,
-            chainId: AllNetworkConfigsKeyedOnChain[token.chain].data.chain.id,
+            chainId: config[token.chain].chain.id,
             tradable: !token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
             rateProviderData: rateProviderData[token.address],
             priceRateProviderData: rateProviderData[token.address],
@@ -225,7 +218,7 @@ export class TokenService {
         return this.tokenPriceService.updateAllTokenPrices(chains);
     }
 
-    public async getTokenPrices(chain = networkContext.chain): Promise<PrismaTokenCurrentPrice[]> {
+    public async getTokenPrices(chain: Chain): Promise<PrismaTokenCurrentPrice[]> {
         let tokenPrices = this.cache.get(`${TOKEN_PRICES_CACHE_KEY}:${chain}`);
         if (!tokenPrices) {
             tokenPrices = await this.tokenPriceService.getCurrentTokenPrices([chain]);
@@ -249,12 +242,12 @@ export class TokenService {
     }
 
     public async getProtocolTokenPrice(chain: Chain): Promise<string> {
-        const tokenPrices = await tokenService.getTokenPrices();
+        const tokenPrices = await tokenService.getTokenPrices(chain);
 
-        if (networkContext.data.protocolToken === 'bal') {
-            return tokenService.getPriceForToken(tokenPrices, networkContext.data.bal!.address, chain).toString();
+        if (config[chain].protocolToken === 'bal') {
+            return tokenService.getPriceForToken(tokenPrices, config[chain].bal!.address, chain).toString();
         } else {
-            return tokenService.getPriceForToken(tokenPrices, networkContext.data.beets!.address, chain).toString();
+            return tokenService.getPriceForToken(tokenPrices, config[chain].beets!.address, chain).toString();
         }
     }
 
@@ -342,24 +335,24 @@ export class TokenService {
         return this.tokenPriceService.purgeOldTokenPricesForAllChains();
     }
 
-    public async deleteTokenType({ tokenAddress, type }: MutationTokenDeleteTokenTypeArgs) {
+    public async deleteTokenType({ tokenAddress, type }: MutationTokenDeleteTokenTypeArgs, chain: Chain) {
         await prisma.prismaTokenType.delete({
             where: {
                 tokenAddress_type_chain: {
                     tokenAddress,
                     type,
-                    chain: networkContext.chain,
+                    chain,
                 },
             },
         });
     }
-    public async reloadAllTokenTypes() {
+    public async reloadAllTokenTypes(chain: Chain) {
         await prisma.prismaTokenType.deleteMany({
-            where: { chain: networkContext.chain },
+            where: { chain },
         });
 
         const githubContentService = new GithubContentService();
-        await githubContentService.syncTokenContentData([networkContext.chain]);
+        await githubContentService.syncTokenContentData([chain]);
     }
 }
 

@@ -3,8 +3,8 @@ import { Chain, PrismaPoolStaking, PrismaPoolStakingType } from '@prisma/client'
 import { Relic } from '../subgraphs/reliquary-subgraph/generated/reliquary-subgraph-types';
 
 export interface UserStakedBalanceService {
-    syncChangedStakedBalances(): Promise<void>;
-    initStakedBalances(stakingTypes: PrismaPoolStakingType[]): Promise<void>;
+    syncChangedStakedBalances(chain: Chain): Promise<void>;
+    initStakedBalances(stakingTypes: PrismaPoolStakingType[], chain: Chain): Promise<void>;
     syncUserBalance(input: UserSyncUserBalanceInput): Promise<void>;
 }
 
@@ -20,6 +20,7 @@ export interface UserPoolBalance {
 export interface UserSyncUserBalanceInput {
     userAddress: string;
     poolId: string;
+    chain: Chain;
     poolAddress: string;
     staking: PrismaPoolStaking;
 }

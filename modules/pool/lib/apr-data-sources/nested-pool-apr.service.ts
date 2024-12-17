@@ -2,7 +2,6 @@ import { PoolAprService } from '../../pool-types';
 import { PrismaPoolWithTokens, prismaPoolWithExpandedNesting } from '../../../../prisma/prisma-types';
 import { prisma } from '../../../../prisma/prisma-client';
 import { collectsYieldFee } from '../pool-utils';
-import { networkContext } from '../../../network/network-context.service';
 
 export class BoostedPoolAprService implements PoolAprService {
     public getAprServiceName(): string {
@@ -10,10 +9,12 @@ export class BoostedPoolAprService implements PoolAprService {
     }
 
     public async updateAprForPools(pools: PrismaPoolWithTokens[]): Promise<void> {
+        const chain = pools[0].chain;
+
         // need to do multiple queries otherwise the nesting is too deep for many pools. Error: stack depth limit exceeded
         const poolsWithNestedPool = await prisma.prismaPool.findMany({
             where: {
-                chain: networkContext.chain,
+                chain,
                 id: { in: pools.map((pool) => pool.id) },
                 tokens: { some: { nestedPoolId: { not: null } } },
             },
@@ -44,7 +45,7 @@ export class BoostedPoolAprService implements PoolAprService {
                 where: {
                     poolId: { in: poolIds },
                     type: { in: ['IB_YIELD', 'SWAP_FEE'] },
-                    chain: networkContext.chain,
+                    chain: pool.chain,
                 },
             });
 
@@ -79,10 +80,10 @@ export class BoostedPoolAprService implements PoolAprService {
                     const title = aprItem.type === 'SWAP_FEE' ? `${token.token.symbol} APR` : aprItem.title;
 
                     await prisma.prismaPoolAprItem.upsert({
-                        where: { id_chain: { id: itemId, chain: networkContext.chain } },
+                        where: { id_chain: { id: itemId, chain: pool.chain } },
                         create: {
                             id: itemId,
-                            chain: networkContext.chain,
+                            chain: pool.chain,
                             poolId: pool.id,
                             apr: userApr,
                             title: title,

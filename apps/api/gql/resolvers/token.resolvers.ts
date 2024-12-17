@@ -158,7 +158,8 @@ const resolvers: Resolvers = {
             return null;
         },
         tokenGetTokensData: async (parent, { addresses }, context) => {
-            const tokens = await tokenService.getTokens(addresses);
+            const chain = headerChain() || 'MAINNET';
+            const tokens = await tokenService.getTokens(chain, addresses);
             return tokens.map((token) => ({ ...token, id: token.address, tokenAddress: token.address }));
         },
         tokenGetProtocolTokenPrice: async (parent, { chain }, context) => {
@@ -181,8 +182,9 @@ const resolvers: Resolvers = {
         },
         tokenSyncTokenDefinitions: async (parent, {}, context) => {
             isAdminRoute(context);
+            const chain = headerChain() || 'MAINNET';
 
-            await tokenService.syncTokenContentData();
+            await tokenService.syncTokenContentData(chain);
 
             return 'success';
         },
@@ -196,15 +198,17 @@ const resolvers: Resolvers = {
         },
         tokenDeleteTokenType: async (parent, args, context) => {
             isAdminRoute(context);
+            const chain = headerChain() || 'MAINNET';
 
-            await tokenService.deleteTokenType(args);
+            await tokenService.deleteTokenType(args, chain);
 
             return 'success';
         },
         tokenReloadAllTokenTypes: async (parent, {}, context) => {
             isAdminRoute(context);
+            const chain = headerChain() || 'MAINNET';
 
-            await tokenService.reloadAllTokenTypes();
+            await tokenService.reloadAllTokenTypes(chain);
 
             return 'success';
         },

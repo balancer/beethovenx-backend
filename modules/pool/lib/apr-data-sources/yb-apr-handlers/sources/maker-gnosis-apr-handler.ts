@@ -1,6 +1,6 @@
 import { AprHandler } from '..';
-import { getContractAt } from '../../../../../web3/contract';
 import { Chain } from '@prisma/client';
+import { getViemClient } from '../../../../../sources/viem-client';
 
 const helperAbi = ['function vaultAPY() view returns (uint256)'];
 
@@ -21,8 +21,12 @@ export class Handler implements AprHandler {
             throw `Handler supports GNOSIS only, but called for ${chain}`;
         }
 
-        const helper = getContractAt(config[chain].helperAddress, helperAbi);
-        const vaultAPY = await helper.vaultAPY();
+        const client = getViemClient(chain);
+        const vaultAPY = await client.readContract({
+            address: config[chain].helperAddress as `0x${string}`,
+            abi: helperAbi,
+            functionName: 'vaultAPY',
+        });
         const apr = Number(vaultAPY) * 10 ** -18;
 
         return {

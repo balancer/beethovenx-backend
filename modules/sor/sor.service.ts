@@ -15,7 +15,7 @@ export class SorService {
         const tokenIn = args.tokenIn.toLowerCase();
         const tokenOut = args.tokenOut.toLowerCase();
         const amountToken = args.swapType === 'EXACT_IN' ? tokenIn : tokenOut;
-        const emptyResponse = swapPathsZeroResponse(args.tokenIn, args.tokenOut);
+        const emptyResponse = swapPathsZeroResponse(args.tokenIn, args.tokenOut, args.chain);
 
         if (parseFloat(args.swapAmount) <= 0) {
             return emptyResponse;
@@ -85,7 +85,13 @@ export class SorService {
         const tokenIn = args.tokenIn.toLowerCase();
         const tokenOut = args.tokenOut.toLowerCase();
         const amountToken = args.swapType === 'EXACT_IN' ? tokenIn : tokenOut;
-        const emptyResponse = zeroResponse(args.swapType, args.tokenIn, args.tokenOut, args.swapAmount);
+        const emptyResponse = zeroResponse(
+            args.swapType,
+            args.tokenIn,
+            args.tokenOut,
+            args.swapAmount,
+            args.chain || 'MAINNET', // doesn't matter, because it's a zero response
+        );
 
         if (parseFloat(args.swapAmount) <= 0) {
             return emptyResponse;

@@ -37,7 +37,7 @@ export const getToken = async (tokenAddr: string, chain: Chain): Promise<Token> 
     }
 };
 
-export const swapPathsZeroResponse = (tokenIn: string, tokenOut: string): GqlSorGetSwapPaths => {
+export const swapPathsZeroResponse = (tokenIn: string, tokenOut: string, chain: Chain): GqlSorGetSwapPaths => {
     return {
         swaps: [],
         paths: [],
@@ -45,8 +45,8 @@ export const swapPathsZeroResponse = (tokenIn: string, tokenOut: string): GqlSor
         swapType: 'EXACT_IN',
         vaultVersion: 2,
         protocolVersion: 2,
-        tokenIn: replaceZeroAddressWithEth(tokenIn),
-        tokenOut: replaceZeroAddressWithEth(tokenOut),
+        tokenIn: replaceZeroAddressWithEth(tokenIn, chain),
+        tokenOut: replaceZeroAddressWithEth(tokenOut, chain),
         tokenInAmount: '0',
         tokenOutAmount: '0',
         swapAmount: '0',
@@ -67,13 +67,14 @@ export const zeroResponse = (
     tokenIn: string,
     tokenOut: string,
     swapAmount: string,
+    chain: Chain,
 ): GqlSorGetSwapsResponse => {
     return {
         marketSp: '0',
         tokenAddresses: [],
         swaps: [],
-        tokenIn: replaceZeroAddressWithEth(tokenIn),
-        tokenOut: replaceZeroAddressWithEth(tokenOut),
+        tokenIn: replaceZeroAddressWithEth(tokenIn, chain),
+        tokenOut: replaceZeroAddressWithEth(tokenOut, chain),
         swapType,
         tokenInAmount: swapType === 'EXACT_IN' ? swapAmount : '0',
         tokenOutAmount: swapType === 'EXACT_IN' ? '0' : swapAmount,

@@ -63,12 +63,12 @@ export class UserService {
         await this.walletSyncService.syncChangedBalancesForAllPools();
     }
 
-    public async initStakedBalances(stakingTypes: PrismaPoolStakingType[]) {
-        await Promise.all(this.stakedSyncServices.map((service) => service.initStakedBalances(stakingTypes)));
+    public async initStakedBalances(stakingTypes: PrismaPoolStakingType[], chain: Chain) {
+        await Promise.all(this.stakedSyncServices.map((service) => service.initStakedBalances(stakingTypes, chain)));
     }
 
-    public async syncChangedStakedBalances() {
-        await Promise.all(this.stakedSyncServices.map((service) => service.syncChangedStakedBalances()));
+    public async syncChangedStakedBalances(chain: Chain) {
+        await Promise.all(this.stakedSyncServices.map((service) => service.syncChangedStakedBalances(chain)));
     }
 
     public async syncUserBalanceAllPools(userAddress: string) {
@@ -99,6 +99,7 @@ export class UserService {
                     service.syncUserBalance({
                         userAddress,
                         poolId: pool.id,
+                        chain: pool.chain,
                         poolAddress: pool.address,
                         staking: stake,
                     }),
