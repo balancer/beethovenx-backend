@@ -69,7 +69,11 @@ export default <NetworkData>{
         excludedFarmIds: [],
     },
     avgBlockSpeed: 1,
-    ybAprConfig: {},
+    ybAprConfig: {
+        sts: {
+            token: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
+        },
+    },
     datastudio: {
         main: {
             user: 'datafeed-service@datastudio-366113.iam.gserviceaccount.com',

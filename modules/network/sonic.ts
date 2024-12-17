@@ -20,7 +20,7 @@ export const sonicNetworkConfig: NetworkConfig = {
     contentService: new GithubContentService(),
     provider: new ethers.providers.JsonRpcProvider({ url: sonicNetworkData.rpcUrl, timeout: 60000 }),
     poolAprServices: [
-        // new YbTokensAprService(sonicNetworkData.ybAprConfig, sonicNetworkData.chain.prismaId),
+        new YbTokensAprService(sonicNetworkData.ybAprConfig, sonicNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
         new GaugeAprService(),
