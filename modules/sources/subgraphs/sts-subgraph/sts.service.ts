@@ -12,7 +12,7 @@ export class StsSubgraphService {
         const limit = 1000;
         let hasMore = true;
         let validators: ValidatorFragment[] = [];
-        let id = '1';
+        let id = '0';
 
         while (hasMore) {
             const response = await this.sdk.Validators({
