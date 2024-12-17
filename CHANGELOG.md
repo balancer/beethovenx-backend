@@ -1,5 +1,13 @@
 # backend
 
+## 1.26.19
+
+### Patch Changes
+
+-   4b118b5: use bun as package manager
+-   31da359: cow amm base config
+-   7f3e36c: partially removing network context
+
 ## 1.26.18
 
 ### Patch Changes
