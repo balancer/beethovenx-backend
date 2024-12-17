@@ -68,6 +68,7 @@ export interface NetworkData {
         masterchef?: string;
         reliquary?: string;
         sftmx?: string;
+        sts?: string;
         beetsBar?: string;
         gauge?: string;
         aura?: string;
@@ -86,6 +87,11 @@ export interface NetworkData {
     sftmx?: {
         stakingContractAddress: string;
         sftmxAddress: string;
+    };
+    sts?: {
+        address: string;
+        baseApr: number;
+        validatorFee: number;
     };
     bal?: {
         address: string;

@@ -1,0 +1,45 @@
+extend type Query {
+    """
+    Get the staking data and status for stS
+    """
+    stsGetGqlStakedSonicData: GqlStakedSonicData!
+}
+
+type GqlStakedSonicData {
+    """
+    Total amount of S in custody of stS. Delegated S plus pool S.
+    """
+    totalAssets: AmountHumanReadable!
+
+    """
+    Total amount of S elegated to validators.
+    """
+    totalAssetsDelegated: AmountHumanReadable!
+    """
+    Total amount of S in the pool to be delegated.
+    """
+    totalAssetsPool: AmountHumanReadable!
+    """
+    The current rebasing APR for stS.
+    """
+    stakingApr: String!
+    """
+    Current exchange rate for stS -> S
+    """
+    exchangeRate: String!
+    """
+    A list of all the delegated validators.
+    """
+    delegatedValidators: [GqlStakedSonicDelegatedValidator!]!
+}
+
+type GqlStakedSonicDelegatedValidator {
+    """
+    The id of the validator.
+    """
+    validatorId: String!
+    """
+    The amount of S that has been delegated to this validator.
+    """
+    assetsDelegated: AmountHumanReadable!
+}

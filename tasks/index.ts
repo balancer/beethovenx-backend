@@ -11,6 +11,7 @@ import {
     EventController,
     PoolMutationController,
     StakingController,
+    StakedSonicController,
 } from '../modules/controllers';
 import { chainIdToChain } from '../modules/network/chain-id-to-chain';
 
@@ -129,6 +130,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return ContentController().syncCategories();
     } else if (job === 'sync-hook-data') {
         return PoolController().syncHookData(chain);
+    } else if (job === 'sync-sts-data') {
+        return StakedSonicController().syncSonicStakingData();
     }
     return Promise.reject(new Error(`Unknown job: ${job}`));
 }

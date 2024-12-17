@@ -5,6 +5,7 @@ import poolResolver from './resolvers/pool.resolvers';
 import protocolResolver from './resolvers/protocol.resolvers';
 import scalarResolver from './resolvers/scalar.resolvers';
 import sftmxResolver from './resolvers/sftmx.resolvers';
+import stsResolver from './resolvers/sts.resolvers';
 import sorResolver from './resolvers/sor.resolvers';
 import tokenResolver from './resolvers/token.resolvers';
 import userResolver from './resolvers/user.resolvers';
@@ -19,6 +20,7 @@ export const resolvers = {
         ...protocolResolver.Query,
         ...scalarResolver.Query,
         ...sftmxResolver.Query,
+        ...stsResolver.Query,
         ...sorResolver.Query,
         ...tokenResolver.Query,
         ...userResolver.Query,

@@ -2103,6 +2103,30 @@ export interface GqlSorSwapRouteHop {
 
 export type GqlSorSwapType = 'EXACT_IN' | 'EXACT_OUT';
 
+export interface GqlStakedSonicData {
+    __typename?: 'GqlStakedSonicData';
+    /** A list of all the delegated validators. */
+    delegatedValidators: Array<GqlStakedSonicDelegatedValidator>;
+    /** Current exchange rate for stS -> S */
+    exchangeRate: Scalars['String'];
+    /** The current rebasing APR for stS. */
+    stakingApr: Scalars['String'];
+    /** Total amount of S in custody of stS. Delegated S plus pool S. */
+    totalAssets: Scalars['AmountHumanReadable'];
+    /** Total amount of S elegated to validators. */
+    totalAssetsDelegated: Scalars['AmountHumanReadable'];
+    /** Total amount of S in the pool to be delegated. */
+    totalAssetsPool: Scalars['AmountHumanReadable'];
+}
+
+export interface GqlStakedSonicDelegatedValidator {
+    __typename?: 'GqlStakedSonicDelegatedValidator';
+    /** The amount of S that has been delegated to this validator. */
+    assetsDelegated: Scalars['AmountHumanReadable'];
+    /** The id of the validator. */
+    validatorId: Scalars['String'];
+}
+
 /** Inputs for the call data to create the swap transaction. If this input is given, call data is added to the response. */
 export interface GqlSwapCallDataInput {
     /** How long the swap should be valid, provide a timestamp. "999999999999999999" for infinite. Default: infinite */
@@ -2545,6 +2569,8 @@ export interface Query {
     sorGetSwapPaths: GqlSorGetSwapPaths;
     /** Get swap quote from the SOR, queries both the old and new SOR */
     sorGetSwaps: GqlSorGetSwapsResponse;
+    /** Get the staking data and status for stS */
+    stsGetGqlStakedSonicData: GqlStakedSonicData;
     /**
      * Returns the candlestick chart data for a token for a given range.
      * @deprecated Use tokenGetHistoricalPrices instead
@@ -3081,6 +3107,8 @@ export type ResolversTypes = ResolversObject<{
     GqlSorSwapRoute: ResolverTypeWrapper<GqlSorSwapRoute>;
     GqlSorSwapRouteHop: ResolverTypeWrapper<GqlSorSwapRouteHop>;
     GqlSorSwapType: GqlSorSwapType;
+    GqlStakedSonicData: ResolverTypeWrapper<GqlStakedSonicData>;
+    GqlStakedSonicDelegatedValidator: ResolverTypeWrapper<GqlStakedSonicDelegatedValidator>;
     GqlSwapCallDataInput: GqlSwapCallDataInput;
     GqlToken: ResolverTypeWrapper<GqlToken>;
     GqlTokenAmountHumanReadable: GqlTokenAmountHumanReadable;
@@ -3257,6 +3285,8 @@ export type ResolversParentTypes = ResolversObject<{
     GqlSorSwapOptionsInput: GqlSorSwapOptionsInput;
     GqlSorSwapRoute: GqlSorSwapRoute;
     GqlSorSwapRouteHop: GqlSorSwapRouteHop;
+    GqlStakedSonicData: GqlStakedSonicData;
+    GqlStakedSonicDelegatedValidator: GqlStakedSonicDelegatedValidator;
     GqlSwapCallDataInput: GqlSwapCallDataInput;
     GqlToken: GqlToken;
     GqlTokenAmountHumanReadable: GqlTokenAmountHumanReadable;
@@ -4961,6 +4991,28 @@ export type GqlSorSwapRouteHopResolvers<
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type GqlStakedSonicDataResolvers<
+    ContextType = ResolverContext,
+    ParentType extends ResolversParentTypes['GqlStakedSonicData'] = ResolversParentTypes['GqlStakedSonicData'],
+> = ResolversObject<{
+    delegatedValidators?: Resolver<Array<ResolversTypes['GqlStakedSonicDelegatedValidator']>, ParentType, ContextType>;
+    exchangeRate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    stakingApr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    totalAssets?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
+    totalAssetsDelegated?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
+    totalAssetsPool?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type GqlStakedSonicDelegatedValidatorResolvers<
+    ContextType = ResolverContext,
+    ParentType extends ResolversParentTypes['GqlStakedSonicDelegatedValidator'] = ResolversParentTypes['GqlStakedSonicDelegatedValidator'],
+> = ResolversObject<{
+    assetsDelegated?: Resolver<ResolversTypes['AmountHumanReadable'], ParentType, ContextType>;
+    validatorId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type GqlTokenResolvers<
     ContextType = ResolverContext,
     ParentType extends ResolversParentTypes['GqlToken'] = ResolversParentTypes['GqlToken'],
@@ -5437,6 +5489,7 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QuerySorGetSwapsArgs, 'swapAmount' | 'swapOptions' | 'swapType' | 'tokenIn' | 'tokenOut'>
     >;
+    stsGetGqlStakedSonicData?: Resolver<ResolversTypes['GqlStakedSonicData'], ParentType, ContextType>;
     tokenGetCandlestickChartData?: Resolver<
         Array<ResolversTypes['GqlTokenCandlestickChartDataItem']>,
         ParentType,
@@ -5674,6 +5727,8 @@ export type Resolvers<ContextType = ResolverContext> = ResolversObject<{
     GqlSorSwap?: GqlSorSwapResolvers<ContextType>;
     GqlSorSwapRoute?: GqlSorSwapRouteResolvers<ContextType>;
     GqlSorSwapRouteHop?: GqlSorSwapRouteHopResolvers<ContextType>;
+    GqlStakedSonicData?: GqlStakedSonicDataResolvers<ContextType>;
+    GqlStakedSonicDelegatedValidator?: GqlStakedSonicDelegatedValidatorResolvers<ContextType>;
     GqlToken?: GqlTokenResolvers<ContextType>;
     GqlTokenCandlestickChartDataItem?: GqlTokenCandlestickChartDataItemResolvers<ContextType>;
     GqlTokenData?: GqlTokenDataResolvers<ContextType>;

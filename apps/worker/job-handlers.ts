@@ -26,6 +26,7 @@ import {
     PoolController,
     EventController,
     StakingController,
+    StakedSonicController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 
@@ -259,6 +260,15 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                     const chain = config.chain.prismaId;
                     return syncLatestFXPrices(subgraphUrl, chain);
                 },
+                res,
+                next,
+            );
+            break;
+        case 'sync-sts-staking-data':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => StakedSonicController().syncSonicStakingData(),
                 res,
                 next,
             );
