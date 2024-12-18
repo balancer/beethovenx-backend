@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.21
+
+### Patch Changes
+
+-   a0bcaf7: add sts tvl to protocol stats
+
 ## 1.26.20
 
 ### Patch Changes
