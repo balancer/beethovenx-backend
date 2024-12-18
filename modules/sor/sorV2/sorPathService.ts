@@ -110,7 +110,7 @@ class SorPathService implements SwapService {
     // The new SOR service
     public async getSorSwapPaths(input: GetSwapPathsInput, maxNonBoostedPathDepth = 4): Promise<GqlSorGetSwapPaths> {
         const paths = await this.getSwapPathsFromSor(input, maxNonBoostedPathDepth);
-        const emptyResponse = swapPathsZeroResponse(input.tokenIn, input.tokenOut);
+        const emptyResponse = swapPathsZeroResponse(input.tokenIn, input.tokenOut, input.chain);
 
         if (!paths) {
             return emptyResponse;
@@ -358,8 +358,8 @@ class SorPathService implements SwapService {
             swapType,
             swaps: this.mapSwaps(paths, swapKind),
             tokenAddresses: [...new Set(paths.flatMap((p) => p.tokens).map((t) => t.address))],
-            tokenIn: replaceZeroAddressWithEth(inputAmount.token.address),
-            tokenOut: replaceZeroAddressWithEth(outputAmount.token.address),
+            tokenIn: replaceZeroAddressWithEth(inputAmount.token.address, chain),
+            tokenOut: replaceZeroAddressWithEth(outputAmount.token.address, chain),
             tokenInAmount: inputAmount.amount.toString(),
             tokenOutAmount: outputAmount.amount.toString(),
             swapAmount: formatUnits(swapAmount.amount, swapAmount.token.decimals),

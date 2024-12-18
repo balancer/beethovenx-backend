@@ -6,6 +6,9 @@ export interface YbAprConfig {
     bloom?: BloomAprConfig;
     beefy?: BeefyAprConfig;
     sftmx?: SftmxAprConfig;
+    sts?: {
+        token: string;
+    };
     euler?: EulerAprConfig;
     gearbox?: GearBoxAprConfig;
     idle?: IdleAprConfig;

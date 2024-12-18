@@ -26,6 +26,7 @@ import {
     PoolController,
     EventController,
     StakingController,
+    StakedSonicController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 
@@ -124,7 +125,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             );
             break;
         case 'user-sync-staked-balances':
-            await runIfNotAlreadyRunning(name, chainId, () => userService.syncChangedStakedBalances(), res, next);
+            await runIfNotAlreadyRunning(name, chainId, () => userService.syncChangedStakedBalances(chain), res, next);
             break;
         case 'update-token-prices':
             await runIfNotAlreadyRunning(
@@ -169,7 +170,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             await runIfNotAlreadyRunning(name, chainId, () => EventController().syncJoinExitsV2(chain), res, next);
             break;
         case 'sync-tokens-from-pool-tokens':
-            await runIfNotAlreadyRunning(name, chainId, () => tokenService.syncTokenContentData(), res, next);
+            await runIfNotAlreadyRunning(name, chainId, () => tokenService.syncTokenContentData(chain), res, next);
             break;
         case 'update-liquidity-24h-ago-v2':
             await runIfNotAlreadyRunning(
@@ -259,6 +260,15 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                     const chain = config.chain.prismaId;
                     return syncLatestFXPrices(subgraphUrl, chain);
                 },
+                res,
+                next,
+            );
+            break;
+        case 'sync-sts-staking-data':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => StakedSonicController().syncSonicStakingData(),
                 res,
                 next,
             );

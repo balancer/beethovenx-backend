@@ -3092,6 +3092,50 @@ export const schema = gql`
         EXACT_OUT
     }
 
+    type GqlStakedSonicData {
+        """
+        A list of all the delegated validators.
+        """
+        delegatedValidators: [GqlStakedSonicDelegatedValidator!]!
+
+        """
+        Current exchange rate for stS -> S
+        """
+        exchangeRate: String!
+
+        """
+        The current rebasing APR for stS.
+        """
+        stakingApr: String!
+
+        """
+        Total amount of S in custody of stS. Delegated S plus pool S.
+        """
+        totalAssets: AmountHumanReadable!
+
+        """
+        Total amount of S elegated to validators.
+        """
+        totalAssetsDelegated: AmountHumanReadable!
+
+        """
+        Total amount of S in the pool to be delegated.
+        """
+        totalAssetsPool: AmountHumanReadable!
+    }
+
+    type GqlStakedSonicDelegatedValidator {
+        """
+        The amount of S that has been delegated to this validator.
+        """
+        assetsDelegated: AmountHumanReadable!
+
+        """
+        The id of the validator.
+        """
+        validatorId: String!
+    }
+
     """
     Inputs for the call data to create the swap transaction. If this input is given, call data is added to the response.
     """
@@ -3841,6 +3885,11 @@ export const schema = gql`
             """
             tokenOut: String!
         ): GqlSorGetSwapsResponse!
+
+        """
+        Get the staking data and status for stS
+        """
+        stsGetGqlStakedSonicData: GqlStakedSonicData!
 
         """
         Returns the candlestick chart data for a token for a given range.

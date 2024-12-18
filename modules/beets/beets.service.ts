@@ -14,7 +14,7 @@ export class BeetsService {
     }
 
     public async getBeetsPrice(): Promise<string> {
-        const tokenPrices = await tokenService.getTokenPrices();
+        const tokenPrices = await tokenService.getTokenPrices('FANTOM');
         return tokenService.getPriceForToken(tokenPrices, networkContext.data.beets!.address, 'FANTOM').toString();
     }
 }

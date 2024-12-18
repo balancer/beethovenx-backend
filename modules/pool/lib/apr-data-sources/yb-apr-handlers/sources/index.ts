@@ -21,6 +21,7 @@ export * from './morpho-apr-handler';
 export * from './usdl-apr-handler';
 // These need a refactor, because they depend on the network context
 export * from './sftmx-apr-handler';
+export * from './sts-apr-handler';
 export * from './ovix-apr-handler';
 export * from './bloom-apr-handler';
 export * as MakerGnosis from './maker-gnosis-apr-handler'; // Not used, not sure why it's not referenced anywhere ???

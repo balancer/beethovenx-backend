@@ -1,0 +1,24 @@
+query Validators(
+    $skip: Int
+    $first: Int
+    $orderBy: Validator_orderBy
+    $orderDirection: OrderDirection
+    $where: Validator_filter
+    $block: Block_height
+) {
+    validators(
+        skip: $skip
+        first: $first
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        where: $where
+        block: $block
+    ) {
+        ...Validator
+    }
+}
+
+fragment Validator on Validator {
+    id
+    amountAssetsDelegated
+}

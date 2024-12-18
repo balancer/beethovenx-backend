@@ -78,6 +78,17 @@ const files = {
             },
         },
     },
+    ['modules/sources/subgraphs/sts-subgraph/generated/sts-subgraph-types.ts']: {
+        schema: config.SONIC.subgraphs.sts,
+        documents: 'modules/sources/subgraphs/sts-subgraph/sts-subgraph-queries.graphql',
+        ...defaults.types,
+        config: {
+            ...defaults.types.config,
+            namingConvention: {
+                enumValues: 'keep',
+            },
+        },
+    },
     ['modules/subgraphs/blocks-subgraph/generated/blocks-subgraph-types.ts']: {
         schema: config.MAINNET.subgraphs.blocks,
         documents: 'modules/subgraphs/blocks-subgraph/block-subgraph-queries.graphql',

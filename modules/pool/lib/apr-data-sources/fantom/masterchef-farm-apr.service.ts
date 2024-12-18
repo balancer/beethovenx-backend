@@ -20,12 +20,13 @@ export class MasterchefFarmAprService implements PoolAprService {
     }
 
     public async updateAprForPools(pools: PrismaPoolWithTokens[]): Promise<void> {
+        const chain = pools[0].chain;
         const masterchefService = new MasterchefSubgraphService(networkContext.data.subgraphs.masterchef!);
         const farms = await masterchefService.getAllFarms({});
 
         const blocksPerDay = await blocksSubgraphService.getBlocksPerDay();
         const blocksPerYear = blocksPerDay * 365;
-        const tokenPrices = await tokenService.getTokenPrices();
+        const tokenPrices = await tokenService.getTokenPrices(chain);
         const operations: any[] = [];
 
         const expandedMasterchefPools = await prisma.prismaPool.findMany({

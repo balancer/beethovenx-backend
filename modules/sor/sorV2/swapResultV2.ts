@@ -17,6 +17,7 @@ import { replaceZeroAddressWithEth } from '../../web3/addresses';
 import { BatchSwapStep, SingleSwap, SwapKind, TokenAmount, ZERO_ADDRESS } from '@balancer/sdk';
 import { SwapLocal } from './lib/swapLocal';
 import { calculatePriceImpact } from './lib/utils/helpers';
+import { chainIdToChain } from '../../network/chain-id-to-chain';
 
 export class SwapResultV2 implements SwapResult {
     private swap: SwapLocal | null;
@@ -118,12 +119,13 @@ export class SwapResultV2 implements SwapResult {
                 .toString();
         }
 
+        const chain = chainIdToChain[swap.chainId];
         return {
             swaps: this.mapSwaps(swap.swaps, swap.assets),
             marketSp: '0', // Daniel confirmed returning 0 should be fine here
             tokenAddresses: swap.assets,
-            tokenIn: replaceZeroAddressWithEth(inputAmount.token.address),
-            tokenOut: replaceZeroAddressWithEth(outputAmount.token.address),
+            tokenIn: replaceZeroAddressWithEth(inputAmount.token.address, chain),
+            tokenOut: replaceZeroAddressWithEth(outputAmount.token.address, chain),
             swapType: this.mapSwapKind(swap.swapKind),
             tokenInAmount: tokenInAmountFixed,
             tokenOutAmount: tokenOutAmountFixed,

@@ -239,7 +239,7 @@ export class DatastudioService {
             // add emission data
             for (const stake of pool.staking) {
                 const blocksPerDay = await blocksSubgraphService.getBlocksPerDay();
-                const tokenPrices = await tokenService.getTokenPrices();
+                const tokenPrices = await tokenService.getTokenPrices(stake.chain);
                 const beetsPrice = stake.farm || stake.reliquary ? await beetsService.getBeetsPrice() : '0';
                 if (stake.farm) {
                     const beetsPerDay = parseFloat(stake.farm.beetsPerBlock) * blocksPerDay;
@@ -260,7 +260,7 @@ export class DatastudioService {
                     }
                     if (stake.farm.rewarders) {
                         for (const rewarder of stake.farm.rewarders) {
-                            const rewardToken = await tokenService.getToken(rewarder.tokenAddress);
+                            const rewardToken = await tokenService.getToken(rewarder.tokenAddress, chain);
                             if (!rewardToken) {
                                 continue;
                             }
@@ -305,7 +305,7 @@ export class DatastudioService {
                 }
                 if (stake.gauge) {
                     for (const reward of stake.gauge.rewards) {
-                        const rewardToken = await tokenService.getToken(reward.tokenAddress);
+                        const rewardToken = await tokenService.getToken(reward.tokenAddress, chain);
                         if (!rewardToken) {
                             continue;
                         }

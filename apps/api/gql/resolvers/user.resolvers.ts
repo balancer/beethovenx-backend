@@ -85,15 +85,17 @@ const resolvers: Resolvers = {
         },
         userInitStakedBalances: async (parent, { stakingTypes }, context) => {
             isAdminRoute(context);
+            const chain = headerChain() || 'MAINNET';
 
-            await userService.initStakedBalances(stakingTypes);
+            await userService.initStakedBalances(stakingTypes, chain);
 
             return 'success';
         },
         userSyncChangedStakedBalances: async (parent, {}, context) => {
             isAdminRoute(context);
+            const chain = headerChain() || 'MAINNET';
 
-            await userService.syncChangedStakedBalances();
+            await userService.syncChangedStakedBalances(chain);
 
             return 'success';
         },

@@ -1,8 +1,8 @@
-import { BigNumber, Contract } from 'ethers';
 import { abi } from './abis/oErc20';
 import { AprHandler } from '..';
-import { networkContext } from '../../../../../network/network-context.service';
 import { OvixAprConfig } from '../../../../../network/apr-config-types';
+import { getViemClient } from '../../../../../sources/viem-client';
+import { Chain } from '@prisma/client';
 
 export class OvixAprHandler implements AprHandler {
     tokens: {
@@ -18,20 +18,26 @@ export class OvixAprHandler implements AprHandler {
         this.tokens = aprHandlerConfig.tokens;
     }
 
-    async getAprs() {
+    async getAprs(chain: Chain) {
+        const client = getViemClient(chain);
+
         try {
-            const aprEntries = Object.values(this.tokens).map(async ({ yieldAddress, wrappedAddress, isIbYield }) => {
-                const contract = new Contract(yieldAddress, abi, networkContext.provider);
-                const borrowRate = await contract.borrowRatePerTimestamp();
-                return [
-                    wrappedAddress,
-                    {
-                        apr: Math.pow(1 + (borrowRate as BigNumber).toNumber() / 1e18, 365 * 24 * 60 * 60) - 1,
-                        isIbYield: isIbYield ?? false,
-                        group: this.group,
-                    },
-                ];
-            });
+            const addresses = Object.values(this.tokens).map(({ yieldAddress }) => yieldAddress as `0x${string}`);
+            const contracts = addresses.map((address) => ({
+                address,
+                abi,
+                functionName: 'borrowRatePerTimestamp',
+            }));
+            const rates = await client.multicall({ contracts, allowFailure: false });
+
+            const aprEntries = Object.values(this.tokens).map(({ wrappedAddress, isIbYield }, index) => [
+                wrappedAddress,
+                {
+                    apr: Math.pow(1 + Number(rates[index]) / 1e18, 365 * 24 * 60 * 60) - 1,
+                    isIbYield: isIbYield ?? false,
+                    group: this.group,
+                },
+            ]);
 
             return Object.fromEntries(await Promise.all(aprEntries));
         } catch (error) {

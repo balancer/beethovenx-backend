@@ -17,6 +17,7 @@ export default <NetworkData>{
         blocks: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/sonic-blocks/api`,
         gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/gauges-sonic/api`,
         reliquary: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/mabeets-sonic/api`,
+        sts: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/staked-sonic/api`,
     },
     eth: {
         address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -42,6 +43,11 @@ export default <NetworkData>{
     bal: {
         address: '0x0000000000000000000000000000000000000000',
     },
+    sts: {
+        address: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
+        baseApr: 0.06,
+        validatorFee: 0.15,
+    },
     balancer: {
         v2: {
             vaultAddress: '0xba12222222228d8ba445958a75a0704d566bf2c8',
@@ -63,7 +69,11 @@ export default <NetworkData>{
         excludedFarmIds: [],
     },
     avgBlockSpeed: 1,
-    ybAprConfig: {},
+    ybAprConfig: {
+        sts: {
+            token: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
+        },
+    },
     datastudio: {
         main: {
             user: 'datafeed-service@datastudio-366113.iam.gserviceaccount.com',
