@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.20
+
+### Patch Changes
+
+-   f125013: removing few more unused deps
+-   61b9c66: add sonic staking data and apr
+
 ## 1.26.19
 
 ### Patch Changes
