@@ -127,6 +127,7 @@ export class ProtocolService {
 
         const balancerV1Tvl = await this.getBalancerV1Tvl(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
         const sftmxTvl = await this.getSftmXTVL(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
+        const stsTVL = await this.getStsTVL(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
 
         const protocolData = {
             chainId: `${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`,
@@ -182,6 +183,27 @@ export class ProtocolService {
                 where: { id: AllNetworkConfigs[chainId].data.sftmx!.stakingContractAddress },
             });
             return parseFloat(stakingData.totalFtm) * ftmPrice;
+        }
+        return 0;
+    }
+
+    private async getStsTVL(chainId: string): Promise<number> {
+        if (chainId !== '146') {
+            return 0;
+        }
+
+        const tokenprices = await tokenService.getTokenPrices(AllNetworkConfigs[chainId].data.chain.prismaId);
+        const sPrice = tokenService.getPriceForToken(
+            tokenprices,
+            AllNetworkConfigs[chainId].data.weth.address,
+            AllNetworkConfigs[chainId].data.chain.prismaId,
+        );
+
+        if (AllNetworkConfigs[chainId].data.sts) {
+            const stakingData = await prisma.prismaStakedSonicData.findUniqueOrThrow({
+                where: { id: AllNetworkConfigs[chainId].data.sts!.address },
+            });
+            return parseFloat(stakingData.totalAssets) * sPrice;
         }
         return 0;
     }
