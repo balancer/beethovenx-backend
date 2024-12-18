@@ -131,7 +131,7 @@ export class ProtocolService {
 
         const protocolData = {
             chainId: `${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`,
-            totalLiquidity: `${totalLiquidity + balancerV1Tvl + sftmxTvl}`,
+            totalLiquidity: `${totalLiquidity + balancerV1Tvl + sftmxTvl + stsTVL}`,
             totalSwapFee,
             totalSwapVolume,
             poolCount: `${poolCount}`,
