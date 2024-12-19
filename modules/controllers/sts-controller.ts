@@ -56,9 +56,9 @@ export function StakedSonicController(tracer?: any) {
                 throw new Error(`Chain not configured for job syncSonicStakingSnapshots`);
             }
 
-            const sftmxSubgraphClient = new StsSubgraphService(stsSubgraphUrl);
+            const stsSubgraphClient = new StsSubgraphService(stsSubgraphUrl);
 
-            await syncSonicStakingSnapshots(stakingContractAddress as Address, sftmxSubgraphClient);
+            await syncSonicStakingSnapshots(stakingContractAddress as Address, stsSubgraphClient);
         },
         async getStakingData(): Promise<GqlStakedSonicData> {
             const stakingData = await prisma.prismaStakedSonicData.findFirstOrThrow({

@@ -7,7 +7,7 @@ export async function syncSonicStakingSnapshots(
     stakingContractAddress: Address,
     stsSubgraphClient: StsSubgraphService,
 ) {
-    const latestSyncedRequest = await prisma.prismaSftmxStakingDataSnapshot.findFirst({
+    const latestSyncedRequest = await prisma.prismaSonicStakingDataSnapshot.findFirst({
         orderBy: {
             timestamp: 'desc',
         },
