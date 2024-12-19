@@ -21,7 +21,6 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
         balanceUSD: 10,
         weight: '0.5',
         priceRate: '1',
-        unwrapRate: '1',
         latestFxPrice: null,
         scalingFactor: null,
     };
@@ -47,5 +46,6 @@ export const prismaTokenFactory = Factory.define<PrismaToken>(() => {
         excludedFromCoingecko: false,
         underlyingTokenAddress: null,
         isBufferAllowed: true,
+        unwrapRate: '1',
     };
 });

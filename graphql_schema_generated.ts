@@ -2326,11 +2326,6 @@ export const schema = gql`
         underlyingToken: GqlToken
 
         """
-        If it is an ERC4626 token, it represents the rate between wrapped/underlying.
-        """
-        unwrapRate: BigDecimal!
-
-        """
         The weight of the token in the pool if it is a weighted pool, null otherwise
         """
         weight: BigDecimal
@@ -3225,6 +3220,11 @@ export const schema = gql`
         The ERC4626 underlying token address, if applicable.
         """
         underlyingTokenAddress: String
+
+        """
+        If it is an ERC4626 token, it represents the rate between wrapped/underlying.
+        """
+        unwrapRate: BigDecimal!
 
         """
         The website URL of the token

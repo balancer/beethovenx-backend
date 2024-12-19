@@ -857,7 +857,6 @@ export class PoolGqlLoaderService {
             tradable: !poolToken.token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
             chain: poolToken.chain,
             chainId: Number(chainToIdMap[poolToken.chain]),
-            unwrapRate: poolToken.unwrapRate,
         };
     }
 

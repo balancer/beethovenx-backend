@@ -15,7 +15,7 @@ export const syncErc4626Tokens = async (viemClient: ViemClient, chain: Chain) =>
         },
     });
 
-    const { enrichedTokensWithErc4626Data } = await fetchErc4626AndUnderlyingTokenData(allTokens, viemClient);
+    const enrichedTokensWithErc4626Data = await fetchErc4626AndUnderlyingTokenData(allTokens, viemClient);
 
     for (const token of enrichedTokensWithErc4626Data) {
         await prisma.prismaToken.upsert({

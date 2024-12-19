@@ -215,7 +215,6 @@ model PrismaPoolToken {
     balanceUSD          Float
     weight              String?
     priceRate           String
-    unwrapRate          String                      @default("1000000000000000000")
     latestFxPrice       Float?
 
     @@index([poolId, chain])
@@ -726,6 +725,7 @@ model PrismaToken {
 
     underlyingTokenAddress   String?
     isBufferAllowed          Boolean        @default(true)
+    unwrapRate          String              @default("1")
 
     walletBalances  PrismaUserWalletBalance[]
     stakedBalances  PrismaUserStakedBalance[]

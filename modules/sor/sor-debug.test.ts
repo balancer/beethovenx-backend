@@ -37,7 +37,7 @@ describe('sor debugging', () => {
     }, 5000000);
 
     it.only('sor v3 mainnet wstETH -> waGnowstETH', async () => {
-        const chain = Chain.GNOSIS;
+        const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
         initRequestScopedContext();
@@ -47,12 +47,12 @@ describe('sor debugging', () => {
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0x773cda0cade2a3d86e6d4e30699d40bb95174ff2', // wstETH
-            tokenOut: '0x6c76971f98945ae98dd7d4dfca8711ebea946ea6', // waGnowstETH
+            tokenIn: '0xbeef01735c132ada46aa9aa4c54623caa92a64cb', // steakUSDC 18 decimals
+            tokenOut: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC 6 decimals
             swapType: 'EXACT_IN',
             swapAmount: '1',
             useProtocolVersion: 3,
-            poolIds: ['0x272d6be442e30d7c87390edeb9b96f1e84cecd8d'], // buffer
+            poolIds: ['0x5dd88b3aa3143173eb26552923922bdf33f50949'], // boosted
         });
 
         console.log(swaps.returnAmount);
