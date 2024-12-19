@@ -114,7 +114,7 @@ export class GithubContentService implements ContentService {
             where: { type: PrismaTokenTypeOption.WHITE_LISTED },
         });
 
-        // Remove tokens that are no longer whitelisted used to find tokens removed from github
+        // Find tokens removed from github
         const githubWhitelistMap = upsertTokens.reduce((acc, token) => {
             acc[`${token.address}-${token.chain}`] = true;
             return acc;
@@ -138,12 +138,10 @@ export class GithubContentService implements ContentService {
         }
 
         // TODO: This should be removed and moved to pool creation, it doesn't ever change
-        for (const chain of chains) {
-            await this.syncBPTTypes(chain);
-        }
+        await this.syncBPTTypes();
     }
 
-    private async syncBPTTypes(chain: Chain) {
+    private async syncBPTTypes() {
         const pools = await prisma.prismaPool.findMany({
             select: { address: true, type: true, chain: true },
         });
