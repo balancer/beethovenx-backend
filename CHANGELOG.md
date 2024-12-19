@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.23
+
+### Patch Changes
+
+-   033f8f6: add sonic staking snapshots
+
 ## 1.26.22
 
 ### Patch Changes
