@@ -1,18 +1,12 @@
-import { addressesMatch } from '../web3/addresses';
 import axios from 'axios';
 import { prisma } from '../../prisma/prisma-client';
 import { ContentService, FeaturedPool, HomeScreenFeaturedPoolGroup, HomeScreenNewsItem } from './content-types';
 import { chainIdToChain, chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
-import { Chain, Prisma, PrismaTokenType, PrismaTokenTypeOption } from '@prisma/client';
+import { Chain, PrismaTokenTypeOption } from '@prisma/client';
 
 const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/balancer/metadata/main/pools/featured.json';
 
 const TOKEN_LIST_URL = 'https://raw.githubusercontent.com/balancer/tokenlists/main/generated/balancer.tokenlist.json';
-
-const RATEPROVIDER_REVIEW_URL =
-    'https://raw.githubusercontent.com/balancer/code-review/main/rate-providers/registry.json';
-
-const RATEPROVIDER_BASE_URL = 'https://raw.githubusercontent.com/balancer/code-review/main/rate-providers/';
 
 interface FeaturedPoolMetadata {
     id: string;
@@ -36,23 +30,6 @@ interface WhitelistedToken {
     logoURI: string;
     extensions?: {
         coingeckoId?: string;
-    };
-}
-
-interface RateProviderReview {
-    [chain: string]: {
-        [rateproviderAddress: string]: {
-            name: string;
-            asset: string;
-            summary: string;
-            review: string;
-            warnings: string[];
-            factory: string;
-            upgradeableComponents: {
-                entrypoint: string;
-                implementationReviewed: string;
-            }[];
-        };
     };
 }
 
