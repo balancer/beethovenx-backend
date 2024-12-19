@@ -139,57 +139,32 @@ export class GithubContentService implements ContentService {
 
         // TODO: This should be removed and moved to pool creation, it doesn't ever change
         for (const chain of chains) {
-            await this.syncTokenTypes(chain);
+            await this.syncBPTTypes(chain);
         }
     }
 
-    private async syncTokenTypes(chain: Chain) {
+    private async syncBPTTypes(chain: Chain) {
         const pools = await prisma.prismaPool.findMany({
-            where: { chain: chain },
-            select: {
-                address: true,
-                symbol: true,
-                name: true,
-                type: true,
-                typeData: true,
-                tokens: { orderBy: { index: 'asc' } },
-            },
+            select: { address: true, type: true, chain: true },
         });
-        const tokens = await prisma.prismaToken.findMany({
-            include: { types: true },
-            where: {
-                chain: chain,
-                address: {
-                    in: pools.map((pool) => pool.address),
-                },
-            },
-        });
-        const types: Prisma.PrismaTokenTypeCreateManyInput[] = [];
 
-        for (const token of tokens) {
-            const tokenTypes = token.types.map((tokenType) => tokenType.type);
-            const pool = pools.find((pool) => pool.address === token.address);
+        const bptTypes = pools.map((pool) => ({
+            id: `${pool.address}-bpt`,
+            chain: pool.chain,
+            type: PrismaTokenTypeOption.BPT,
+            tokenAddress: pool.address,
+        }));
 
-            if (pool && !tokenTypes.includes('BPT')) {
-                types.push({
-                    id: `${token.address}-bpt`,
-                    chain: chain,
-                    type: 'BPT',
-                    tokenAddress: token.address,
-                });
-            }
+        const phantomBptTypes = pools
+            .filter((pool) => pool.type === 'COMPOSABLE_STABLE')
+            .map((pool) => ({
+                id: `${pool.address}-phantom-bpt`,
+                chain: pool.chain,
+                type: PrismaTokenTypeOption.PHANTOM_BPT,
+                tokenAddress: pool.address,
+            }));
 
-            if (pool?.type === 'COMPOSABLE_STABLE' && !tokenTypes.includes('PHANTOM_BPT')) {
-                types.push({
-                    id: `${token.address}-phantom-bpt`,
-                    chain: chain,
-                    type: 'PHANTOM_BPT',
-                    tokenAddress: token.address,
-                });
-            }
-        }
-
-        await prisma.prismaTokenType.createMany({ skipDuplicates: true, data: types });
+        await prisma.prismaTokenType.createMany({ skipDuplicates: true, data: [...bptTypes, ...phantomBptTypes] });
     }
 
     async syncPoolContentData(chain: Chain): Promise<void> {}
