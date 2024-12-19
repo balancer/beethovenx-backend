@@ -75,7 +75,7 @@ export class StsSubgraphService {
 
         while (hasMore) {
             const response = await this.sdk.SonicStakingSnapshots({
-                where: { snapshotTimestamp_gt: queryTimestamp },
+                where: { snapshotTimestamp_gte: queryTimestamp },
                 orderBy: SonicStakingSnapshot_OrderBy.snapshotTimestamp,
                 orderDirection: OrderDirection.asc,
                 first: limit,
