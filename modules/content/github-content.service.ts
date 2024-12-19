@@ -3,7 +3,7 @@ import axios from 'axios';
 import { prisma } from '../../prisma/prisma-client';
 import { ContentService, FeaturedPool, HomeScreenFeaturedPoolGroup, HomeScreenNewsItem } from './content-types';
 import { chainIdToChain, chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
-import { Chain, Prisma } from '@prisma/client';
+import { Chain, Prisma, PrismaTokenType, PrismaTokenTypeOption } from '@prisma/client';
 
 const POOLS_METADATA_URL = 'https://raw.githubusercontent.com/balancer/metadata/main/pools/featured.json';
 
@@ -58,91 +58,87 @@ interface RateProviderReview {
 
 export class GithubContentService implements ContentService {
     async syncTokenContentData(chains: Chain[]): Promise<void> {
-        const { data: githubAllTokenList } = await axios.get<WhitelistedTokenList>(TOKEN_LIST_URL);
+        const {
+            data: { tokens },
+        } = await axios.get<WhitelistedTokenList>(TOKEN_LIST_URL);
 
-        for (const chain of chains) {
-            const filteredTokenList = githubAllTokenList.tokens.filter((token) => {
-                if (`${token.chainId}` !== chainToIdMap[chain]) {
-                    return false;
-                }
-
-                const requiredKeys = ['chainId', 'address', 'name', 'symbol', 'decimals'];
-                return requiredKeys.every((key) => token?.[key as keyof WhitelistedToken] != null);
-            });
-
-            for (const githubToken of filteredTokenList) {
-                const tokenAddress = githubToken.address.toLowerCase();
-
-                await prisma.prismaToken.upsert({
-                    where: {
-                        address_chain: { address: tokenAddress, chain: chain },
+        // Validate results
+        const requiredKeys = ['chainId', 'address', 'name', 'symbol', 'decimals'];
+        const chainIds = chains.map((chain) => Number(chainToIdMap[chain]));
+        const upsertTokens = tokens
+            .filter(
+                (token) =>
+                    requiredKeys.every((key) => token?.[key as keyof WhitelistedToken] != null) &&
+                    chainIds.includes(token.chainId),
+            )
+            .map((token) => ({
+                address: token.address.toLowerCase(),
+                chain: chainIdToChain[token.chainId],
+                name: token.name.replace(/[\x00]/g, ''),
+                symbol: token.symbol.replace(/[\x00]/g, ''),
+                decimals: token.decimals,
+                logoURI: token.logoURI,
+                coingeckoTokenId: token.extensions?.coingeckoId,
+                types: {
+                    connectOrCreate: {
+                        where: {
+                            tokenAddress_type_chain: {
+                                tokenAddress: token.address.toLowerCase(),
+                                type: PrismaTokenTypeOption.WHITE_LISTED,
+                                chain: chainIdToChain[token.chainId],
+                            },
+                        },
+                        create: {
+                            id: `${token.address.toLowerCase()}-white-listed`,
+                            type: PrismaTokenTypeOption.WHITE_LISTED,
+                        },
                     },
-                    create: {
-                        name: githubToken.name.replace(/[\x00]/g, ''),
-                        address: tokenAddress,
-                        chain: chainIdToChain[githubToken.chainId],
-                        symbol: githubToken.symbol.replace(/[\x00]/g, ''),
-                        decimals: githubToken.decimals,
-                        logoURI: githubToken.logoURI,
-                        coingeckoTokenId: githubToken.extensions?.coingeckoId,
-                        coingeckoPlatformId: null,
-                        coingeckoContractAddress: null,
-                        description: null,
-                        websiteUrl: null,
-                        discordUrl: null,
-                        telegramUrl: null,
-                        twitterUsername: null,
-                    },
-                    update: {
-                        name: githubToken.name.replace(/[\x00]/g, ''),
-                        address: tokenAddress,
-                        chain: chainIdToChain[githubToken.chainId],
-                        symbol: githubToken.symbol.replace(/[\x00]/g, ''),
-                        decimals: githubToken.decimals,
-                        logoURI: githubToken.logoURI,
-                        coingeckoTokenId: githubToken.extensions?.coingeckoId,
-                        // coingeckoPlatformId: null,
-                        // coingeckoContractAddress: null,
-                        // description: null,
-                        // websiteUrl: null,
-                        // discordUrl: null,
-                        // telegramUrl: null,
-                        // twitterUsername: null,
-                    },
-                });
-            }
-
-            const whiteListedTokens = await prisma.prismaTokenType.findMany({
-                where: {
-                    type: 'WHITE_LISTED',
-                    chain: chain,
                 },
-            });
+            }));
 
-            const addToWhitelist = filteredTokenList.filter((githubToken) => {
-                return !whiteListedTokens.some((dbToken) => addressesMatch(githubToken.address, dbToken.tokenAddress));
-            });
+        const upserts = upsertTokens.map((token) =>
+            prisma.prismaToken.upsert({
+                where: {
+                    address_chain: { address: token.address, chain: token.chain },
+                },
+                create: token,
+                update: token,
+            }),
+        );
 
-            const removeFromWhitelist = whiteListedTokens.filter((dbToken) => {
-                return !filteredTokenList.some((githubToken) =>
-                    addressesMatch(dbToken.tokenAddress, githubToken.address),
-                );
-            });
+        await prisma.$transaction(upserts);
 
-            await prisma.prismaTokenType.createMany({
-                data: addToWhitelist.map((token) => ({
-                    id: `${token.address}-white-listed`,
-                    chain: chain,
-                    tokenAddress: token.address.toLowerCase(),
-                    type: 'WHITE_LISTED' as const,
-                })),
-                skipDuplicates: true,
-            });
+        // Fetch whitelisted tokens
+        const whitelistedTokens = await prisma.prismaTokenType.findMany({
+            select: { id: true, tokenAddress: true, chain: true },
+            where: { type: PrismaTokenTypeOption.WHITE_LISTED },
+        });
 
+        // Remove tokens that are no longer whitelisted used to find tokens removed from github
+        const githubWhitelistMap = upsertTokens.reduce((acc, token) => {
+            acc[`${token.address}-${token.chain}`] = true;
+            return acc;
+        }, {} as Record<string, boolean>);
+
+        const removeFromWhitelist = whitelistedTokens
+            .filter((token) => githubWhitelistMap[`${token.tokenAddress}-${token.chain}`] == null)
+            .reduce((acc, token) => {
+                if (acc[token.chain]) {
+                    acc[token.chain].push(token);
+                } else {
+                    acc[token.chain] = [token];
+                }
+                return acc;
+            }, {} as Record<Chain, { id: string; chain: Chain }[]>);
+
+        for (const [chain, tokens] of Object.entries(removeFromWhitelist)) {
             await prisma.prismaTokenType.deleteMany({
-                where: { id: { in: removeFromWhitelist.map((token) => token.id) }, chain: chain },
+                where: { id: { in: tokens.map((token) => token.id) }, chain: chain as Chain },
             });
+        }
 
+        // TODO: This should be removed and moved to pool creation, it doesn't ever change
+        for (const chain of chains) {
             await this.syncTokenTypes(chain);
         }
     }
@@ -161,7 +157,12 @@ export class GithubContentService implements ContentService {
         });
         const tokens = await prisma.prismaToken.findMany({
             include: { types: true },
-            where: { chain: chain },
+            where: {
+                chain: chain,
+                address: {
+                    in: pools.map((pool) => pool.address),
+                },
+            },
         });
         const types: Prisma.PrismaTokenTypeCreateManyInput[] = [];
 
