@@ -171,18 +171,16 @@ export class ProtocolService {
             return 0;
         }
 
-        const tokenprices = await tokenService.getTokenPrices(AllNetworkConfigs[chainId].data.chain.prismaId);
-        const ftmPrice = tokenService.getPriceForToken(
-            tokenprices,
-            AllNetworkConfigs[chainId].data.weth.address,
-            AllNetworkConfigs[chainId].data.chain.prismaId,
-        );
+        const tokenAddress = AllNetworkConfigs[chainId].data.weth.address;
+        const ftmPrice = await prisma.prismaTokenCurrentPrice.findFirst({
+            where: { tokenAddress, chain: 'FANTOM' },
+        });
 
         if (AllNetworkConfigs[chainId].data.sftmx) {
             const stakingData = await prisma.prismaSftmxStakingData.findUniqueOrThrow({
                 where: { id: AllNetworkConfigs[chainId].data.sftmx!.stakingContractAddress },
             });
-            return parseFloat(stakingData.totalFtm) * ftmPrice;
+            return parseFloat(stakingData.totalFtm) * (ftmPrice?.price || 0);
         }
         return 0;
     }
@@ -192,18 +190,16 @@ export class ProtocolService {
             return 0;
         }
 
-        const tokenprices = await tokenService.getTokenPrices(AllNetworkConfigs[chainId].data.chain.prismaId);
-        const sPrice = tokenService.getPriceForToken(
-            tokenprices,
-            AllNetworkConfigs[chainId].data.weth.address,
-            AllNetworkConfigs[chainId].data.chain.prismaId,
-        );
+        const tokenAddress = AllNetworkConfigs[chainId].data.weth.address;
+        const sPrice = await prisma.prismaTokenCurrentPrice.findFirst({
+            where: { tokenAddress, chain: 'SONIC' },
+        });
 
         if (AllNetworkConfigs[chainId].data.sts) {
             const stakingData = await prisma.prismaStakedSonicData.findUniqueOrThrow({
                 where: { id: AllNetworkConfigs[chainId].data.sts!.address },
             });
-            return parseFloat(stakingData.totalAssets) * sPrice;
+            return parseFloat(stakingData.totalAssets) * (sPrice?.price || 0);
         }
         return 0;
     }
