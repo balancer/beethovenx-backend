@@ -703,6 +703,7 @@ model PrismaStakedSonicData {
 
 
     delegatedValidators     PrismaStakedSonicDelegatedValidator[]
+    snapshots               PrismaSonicStakingDataSnapshot[]
 
 }
 
@@ -715,6 +716,18 @@ model PrismaStakedSonicDelegatedValidator {
     assetsDelegated         String
 }
 
+
+model PrismaSonicStakingDataSnapshot {
+    id                      String                  @id
+    sonicStakingId            String
+    sonicStaking              PrismaStakedSonicData  @relation(fields:[sonicStakingId], references: [id])
+
+    timestamp               Int
+    totalAssetsPool         String
+    totalAssetsDelegated    String
+    totalAssets             String
+    exchangeRate            String
+}
 
 model PrismaToken {
     @@id([address, chain])

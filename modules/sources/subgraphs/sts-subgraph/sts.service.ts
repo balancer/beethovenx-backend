@@ -1,5 +1,12 @@
 import { GraphQLClient } from 'graphql-request';
-import { getSdk, OrderDirection, Validator_OrderBy, ValidatorFragment } from './generated/sts-subgraph-types';
+import {
+    getSdk,
+    OrderDirection,
+    SonicStakingSnapshot_OrderBy,
+    SonicStakingSnapshotFragment,
+    Validator_OrderBy,
+    ValidatorFragment,
+} from './generated/sts-subgraph-types';
 
 export class StsSubgraphService {
     private sdk: ReturnType<typeof getSdk>;
@@ -32,5 +39,58 @@ export class StsSubgraphService {
         }
 
         return validators;
+    }
+
+    public async getAllStakingSnapshots(): Promise<SonicStakingSnapshotFragment[]> {
+        const limit = 1000;
+        let hasMore = true;
+        let sonicStakingSnapshots: SonicStakingSnapshotFragment[] = [];
+        let id = '0x';
+
+        while (hasMore) {
+            const response = await this.sdk.SonicStakingSnapshots({
+                where: { id_gt: id },
+                orderBy: SonicStakingSnapshot_OrderBy.id,
+                orderDirection: OrderDirection.asc,
+                first: limit,
+            });
+
+            sonicStakingSnapshots = [...sonicStakingSnapshots, ...response.sonicStakingSnapshots];
+
+            if (response.sonicStakingSnapshots.length < limit) {
+                hasMore = false;
+            } else {
+                id = response.sonicStakingSnapshots[response.sonicStakingSnapshots.length - 1].id;
+            }
+        }
+
+        return sonicStakingSnapshots;
+    }
+
+    public async getStakingSnapshotsAfter(timestamp: number): Promise<SonicStakingSnapshotFragment[]> {
+        const limit = 1000;
+        let hasMore = true;
+        let sonicStakingSnapshots: SonicStakingSnapshotFragment[] = [];
+        let queryTimestamp = timestamp;
+
+        while (hasMore) {
+            const response = await this.sdk.SonicStakingSnapshots({
+                where: { snapshotTimestamp_gt: queryTimestamp },
+                orderBy: SonicStakingSnapshot_OrderBy.snapshotTimestamp,
+                orderDirection: OrderDirection.asc,
+                first: limit,
+            });
+
+            sonicStakingSnapshots = [...sonicStakingSnapshots, ...response.sonicStakingSnapshots];
+
+            if (response.sonicStakingSnapshots.length < limit) {
+                hasMore = false;
+            } else {
+                queryTimestamp =
+                    response.sonicStakingSnapshots[response.sonicStakingSnapshots.length - 1].snapshotTimestamp;
+            }
+        }
+
+        return sonicStakingSnapshots;
     }
 }

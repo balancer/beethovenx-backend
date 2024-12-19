@@ -137,5 +137,9 @@ export const sonicNetworkConfig: NetworkConfig = {
             name: 'sync-sts-staking-data',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
         },
+        {
+            name: 'sync-sts-staking-snapshots',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(20, 'minutes') : every(10, 'minutes'),
+        },
     ],
 };

@@ -11,6 +11,13 @@ describe('sts controller debugging', () => {
         console.log(staking.exchangeRate);
     }, 5000000);
 
+    it('sync and get sts snapshots', async () => {
+        await StakedSonicController().syncSonicStakingSnapshots();
+        const staking = await StakedSonicController().getStakingSnapshots('ALL_TIME');
+
+        console.log(staking.length);
+    }, 5000000);
+
     it('sync and get sts apr', async () => {
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', '146');
@@ -20,7 +27,6 @@ describe('sts controller debugging', () => {
         console.log(pools.length);
     }, 5000000);
 
-    
     it('include sts in protocol tvl', async () => {
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', '146');

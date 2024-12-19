@@ -46,6 +46,8 @@ export type Query = {
     /** Access to subgraph metadata */
     _meta?: Maybe<_Meta_>;
     sonicStaking?: Maybe<SonicStaking>;
+    sonicStakingSnapshot?: Maybe<SonicStakingSnapshot>;
+    sonicStakingSnapshots: Array<SonicStakingSnapshot>;
     sonicStakings: Array<SonicStaking>;
     validator?: Maybe<Validator>;
     validators: Array<Validator>;
@@ -59,6 +61,22 @@ export type QuerySonicStakingArgs = {
     block?: InputMaybe<Block_Height>;
     id: Scalars['ID'];
     subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QuerySonicStakingSnapshotArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QuerySonicStakingSnapshotsArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<SonicStakingSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<SonicStakingSnapshot_Filter>;
 };
 
 export type QuerySonicStakingsArgs = {
@@ -89,7 +107,11 @@ export type QueryValidatorsArgs = {
 
 export type SonicStaking = {
     __typename?: 'SonicStaking';
+    exchangeRate: Scalars['BigDecimal'];
     id: Scalars['Bytes'];
+    totalAssets: Scalars['BigDecimal'];
+    totalDelegated: Scalars['BigDecimal'];
+    totalPool: Scalars['BigDecimal'];
     validators?: Maybe<Array<Validator>>;
 };
 
@@ -101,10 +123,94 @@ export type SonicStakingValidatorsArgs = {
     where?: InputMaybe<Validator_Filter>;
 };
 
+export type SonicStakingSnapshot = {
+    __typename?: 'SonicStakingSnapshot';
+    exchangeRate: Scalars['BigDecimal'];
+    id: Scalars['Bytes'];
+    snapshotTimestamp: Scalars['Int'];
+    totalAssets: Scalars['BigDecimal'];
+    totalDelegated: Scalars['BigDecimal'];
+    totalPool: Scalars['BigDecimal'];
+};
+
+export type SonicStakingSnapshot_Filter = {
+    /** Filter for the block changed event. */
+    _change_block?: InputMaybe<BlockChangedFilter>;
+    and?: InputMaybe<Array<InputMaybe<SonicStakingSnapshot_Filter>>>;
+    exchangeRate?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_gt?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_gte?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    exchangeRate_lt?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_lte?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_not?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    id?: InputMaybe<Scalars['Bytes']>;
+    id_contains?: InputMaybe<Scalars['Bytes']>;
+    id_gt?: InputMaybe<Scalars['Bytes']>;
+    id_gte?: InputMaybe<Scalars['Bytes']>;
+    id_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    id_lt?: InputMaybe<Scalars['Bytes']>;
+    id_lte?: InputMaybe<Scalars['Bytes']>;
+    id_not?: InputMaybe<Scalars['Bytes']>;
+    id_not_contains?: InputMaybe<Scalars['Bytes']>;
+    id_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    or?: InputMaybe<Array<InputMaybe<SonicStakingSnapshot_Filter>>>;
+    snapshotTimestamp?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_gt?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_gte?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+    snapshotTimestamp_lt?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_lte?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_not?: InputMaybe<Scalars['Int']>;
+    snapshotTimestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+    totalAssets?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalAssets_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalDelegated?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalDelegated_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalPool?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalPool_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+};
+
+export enum SonicStakingSnapshot_OrderBy {
+    exchangeRate = 'exchangeRate',
+    id = 'id',
+    snapshotTimestamp = 'snapshotTimestamp',
+    totalAssets = 'totalAssets',
+    totalDelegated = 'totalDelegated',
+    totalPool = 'totalPool',
+}
+
 export type SonicStaking_Filter = {
     /** Filter for the block changed event. */
     _change_block?: InputMaybe<BlockChangedFilter>;
     and?: InputMaybe<Array<InputMaybe<SonicStaking_Filter>>>;
+    exchangeRate?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_gt?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_gte?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    exchangeRate_lt?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_lte?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_not?: InputMaybe<Scalars['BigDecimal']>;
+    exchangeRate_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     id?: InputMaybe<Scalars['Bytes']>;
     id_contains?: InputMaybe<Scalars['Bytes']>;
     id_gt?: InputMaybe<Scalars['Bytes']>;
@@ -116,11 +222,39 @@ export type SonicStaking_Filter = {
     id_not_contains?: InputMaybe<Scalars['Bytes']>;
     id_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
     or?: InputMaybe<Array<InputMaybe<SonicStaking_Filter>>>;
+    totalAssets?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalAssets_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalAssets_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalDelegated?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalDelegated_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalDelegated_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalPool?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_gt?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_gte?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    totalPool_lt?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_lte?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_not?: InputMaybe<Scalars['BigDecimal']>;
+    totalPool_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     validators_?: InputMaybe<Validator_Filter>;
 };
 
 export enum SonicStaking_OrderBy {
+    exchangeRate = 'exchangeRate',
     id = 'id',
+    totalAssets = 'totalAssets',
+    totalDelegated = 'totalDelegated',
+    totalPool = 'totalPool',
     validators = 'validators',
 }
 
@@ -129,6 +263,8 @@ export type Subscription = {
     /** Access to subgraph metadata */
     _meta?: Maybe<_Meta_>;
     sonicStaking?: Maybe<SonicStaking>;
+    sonicStakingSnapshot?: Maybe<SonicStakingSnapshot>;
+    sonicStakingSnapshots: Array<SonicStakingSnapshot>;
     sonicStakings: Array<SonicStaking>;
     validator?: Maybe<Validator>;
     validators: Array<Validator>;
@@ -142,6 +278,22 @@ export type SubscriptionSonicStakingArgs = {
     block?: InputMaybe<Block_Height>;
     id: Scalars['ID'];
     subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionSonicStakingSnapshotArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionSonicStakingSnapshotsArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<SonicStakingSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<SonicStakingSnapshot_Filter>;
 };
 
 export type SubscriptionSonicStakingsArgs = {
@@ -237,7 +389,11 @@ export enum Validator_OrderBy {
     amountAssetsDelegated = 'amountAssetsDelegated',
     id = 'id',
     sonicStaking = 'sonicStaking',
+    sonicStaking__exchangeRate = 'sonicStaking__exchangeRate',
     sonicStaking__id = 'sonicStaking__id',
+    sonicStaking__totalAssets = 'sonicStaking__totalAssets',
+    sonicStaking__totalDelegated = 'sonicStaking__totalDelegated',
+    sonicStaking__totalPool = 'sonicStaking__totalPool',
 }
 
 export type _Block_ = {
@@ -290,12 +446,54 @@ export type ValidatorsQuery = {
     validators: Array<{ __typename?: 'Validator'; id: string; amountAssetsDelegated: string }>;
 };
 
+export type SonicStakingSnapshotsQueryVariables = Exact<{
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<SonicStakingSnapshot_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<SonicStakingSnapshot_Filter>;
+    block?: Maybe<Block_Height>;
+}>;
+
+export type SonicStakingSnapshotsQuery = {
+    __typename?: 'Query';
+    sonicStakingSnapshots: Array<{
+        __typename?: 'SonicStakingSnapshot';
+        id: string;
+        snapshotTimestamp: number;
+        totalPool: string;
+        totalAssets: string;
+        totalDelegated: string;
+        exchangeRate: string;
+    }>;
+};
+
 export type ValidatorFragment = { __typename?: 'Validator'; id: string; amountAssetsDelegated: string };
+
+export type SonicStakingSnapshotFragment = {
+    __typename?: 'SonicStakingSnapshot';
+    id: string;
+    snapshotTimestamp: number;
+    totalPool: string;
+    totalAssets: string;
+    totalDelegated: string;
+    exchangeRate: string;
+};
 
 export const ValidatorFragmentDoc = gql`
     fragment Validator on Validator {
         id
         amountAssetsDelegated
+    }
+`;
+export const SonicStakingSnapshotFragmentDoc = gql`
+    fragment SonicStakingSnapshot on SonicStakingSnapshot {
+        id
+        snapshotTimestamp
+        totalPool
+        totalAssets
+        totalDelegated
+        exchangeRate
     }
 `;
 export const ValidatorsDocument = gql`
@@ -320,6 +518,28 @@ export const ValidatorsDocument = gql`
     }
     ${ValidatorFragmentDoc}
 `;
+export const SonicStakingSnapshotsDocument = gql`
+    query SonicStakingSnapshots(
+        $skip: Int
+        $first: Int
+        $orderBy: SonicStakingSnapshot_orderBy
+        $orderDirection: OrderDirection
+        $where: SonicStakingSnapshot_filter
+        $block: Block_height
+    ) {
+        sonicStakingSnapshots(
+            skip: $skip
+            first: $first
+            orderBy: $orderBy
+            orderDirection: $orderDirection
+            where: $where
+            block: $block
+        ) {
+            ...SonicStakingSnapshot
+        }
+    }
+    ${SonicStakingSnapshotFragmentDoc}
+`;
 
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
@@ -341,6 +561,19 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Validators',
+            );
+        },
+        SonicStakingSnapshots(
+            variables?: SonicStakingSnapshotsQueryVariables,
+            requestHeaders?: Dom.RequestInit['headers'],
+        ): Promise<SonicStakingSnapshotsQuery> {
+            return withWrapper(
+                (wrappedRequestHeaders) =>
+                    client.request<SonicStakingSnapshotsQuery>(SonicStakingSnapshotsDocument, variables, {
+                        ...requestHeaders,
+                        ...wrappedRequestHeaders,
+                    }),
+                'SonicStakingSnapshots',
             );
         },
     };

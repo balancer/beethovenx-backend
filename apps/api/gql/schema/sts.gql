@@ -3,6 +3,10 @@ extend type Query {
     Get the staking data and status for stS
     """
     stsGetGqlStakedSonicData: GqlStakedSonicData!
+    """
+    Get snapshots for sftmx staking for a specific range
+    """
+    stsGetStakedSonicSnapshots(range: GqlStakedSonicSnapshotDataRange!): [GqlStakedSonicSnapshot!]!
 }
 
 type GqlStakedSonicData {
@@ -42,4 +46,36 @@ type GqlStakedSonicDelegatedValidator {
     The amount of S that has been delegated to this validator.
     """
     assetsDelegated: AmountHumanReadable!
+}
+
+enum GqlStakedSonicSnapshotDataRange {
+    THIRTY_DAYS
+    NINETY_DAYS
+    ONE_HUNDRED_EIGHTY_DAYS
+    ONE_YEAR
+    ALL_TIME
+}
+
+type GqlStakedSonicSnapshot {
+    id: ID!
+    """
+    The timestamp of the snapshot. Timestamp is end of day midnight.
+    """
+    timestamp: Int!
+    """
+    Total amount of S in custody of stS. Delegated S plus pool S.
+    """
+    totalAssets: AmountHumanReadable!
+    """
+    Total amount of S delegated to validators.
+    """
+    totalAssetsDelegated: AmountHumanReadable!
+    """
+    Total amount of S in the pool.
+    """
+    totalAssetsPool: AmountHumanReadable!
+    """
+    Current exchange rate for stS -> S
+    """
+    exchangeRate: String!
 }
