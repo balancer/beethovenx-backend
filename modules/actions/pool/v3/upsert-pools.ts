@@ -68,20 +68,6 @@ export const upsertPools = async (
                     type: 'ERC4626',
                 },
             });
-            await prisma.prismaToken.upsert({
-                where: {
-                    address_chain: {
-                        address: token.address,
-                        chain,
-                    },
-                },
-                create: {
-                    ...token,
-                },
-                update: {
-                    ...token,
-                },
-            });
         }
     }
 

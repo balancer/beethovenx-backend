@@ -3,7 +3,6 @@ import MinimalErc4626Abi from './abis/MinimalERC4626';
 import { fetchErc20Headers } from '.';
 import { multicallViem, ViemMulticallCall } from '../../web3/multicaller-viem';
 import { Chain } from '@prisma/client';
-import { formatUnits, parseEther, parseUnits } from 'viem';
 
 interface Erc4626Data {
     asset?: string;
@@ -26,7 +25,6 @@ export async function fetchErc4626AndUnderlyingTokenData(
         symbol: string;
         chain: Chain;
         underlyingTokenAddress?: string;
-        unwrapRate?: string;
     }[]
 > {
     const tokenData: {
@@ -37,7 +35,6 @@ export async function fetchErc4626AndUnderlyingTokenData(
             symbol: string;
             chain: Chain;
             underlyingTokenAddress?: string;
-            unwrapRate?: string;
         };
     } = {};
 
@@ -56,7 +53,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
                 address: token.address as `0x${string}`,
                 abi: MinimalErc4626Abi,
                 functionName: 'convertToAssets',
-                args: [parseUnits('1', token.decimals)],
+                args: ['1'],
             },
             {
                 path: `${token.address}.convertToShares`,
@@ -140,14 +137,6 @@ export async function fetchErc4626AndUnderlyingTokenData(
                     underlyingTokenAddress: undefined,
                 };
             }
-
-            const unwrapRate = result.convertToAssets
-                ? formatUnits(BigInt(result.convertToAssets), tokenData[underlyingTokenAddress].decimals)
-                : '1';
-            tokenData[token.address] = {
-                ...tokenData[token.address],
-                unwrapRate,
-            };
         }
     }
 

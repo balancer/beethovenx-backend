@@ -1,4 +1,4 @@
-import { formatEther, formatUnits, parseEther } from 'viem';
+import { formatEther, formatUnits } from 'viem';
 import { OnchainDataCowAmm, PoolDataV3 } from '../contracts';
 import { Chain } from '@prisma/client';
 import { PoolDynamicUpsertData, PoolUpsertData } from '../../../prisma/prisma-types';

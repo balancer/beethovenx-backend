@@ -2,7 +2,8 @@
 import { Chain } from '@prisma/client';
 import { initRequestScopedContext, setRequestScopedContextValue } from '../context/request-scoped-context';
 import { chainIdToChain } from '../network/chain-id-to-chain';
-import { PoolController } from '../controllers/pool-controller'; // Add this import statement
+import { PoolController } from '../controllers/pool-controller';
+import { TokenController } from '../controllers/token-controller';
 import { sorService } from './sor.service';
 
 describe('sor debugging', () => {
@@ -37,22 +38,24 @@ describe('sor debugging', () => {
     }, 5000000);
 
     it.only('sor v3 mainnet wstETH -> waGnowstETH', async () => {
-        const chain = Chain.MAINNET;
+        const chain = Chain.GNOSIS;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', chainId);
         //only do once before starting to debug
         await PoolController().reloadPoolsV3(chain);
+        await TokenController().syncErc4626Tokens(chain);
+        await TokenController().syncErc4626UnwrapRates(chain);
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0xbeef01735c132ada46aa9aa4c54623caa92a64cb', // steakUSDC 18 decimals
-            tokenOut: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC 6 decimals
+            tokenIn: '0x773cda0cade2a3d86e6d4e30699d40bb95174ff2', // wagnowsteth
+            tokenOut: '0x6C76971f98945AE98dD7d4DFcA8711ebea946eA6', // wsteth
             swapType: 'EXACT_IN',
             swapAmount: '1',
             useProtocolVersion: 3,
-            poolIds: ['0x5dd88b3aa3143173eb26552923922bdf33f50949'], // boosted
+            poolIds: ['0x272d6be442e30d7c87390edeb9b96f1e84cecd8d'], // boosted
         });
 
         console.log(swaps.returnAmount);
