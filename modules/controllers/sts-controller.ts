@@ -28,11 +28,11 @@ export function StakedSonicController(tracer?: any) {
         async syncSonicStakingData() {
             const stakingContractAddress = config['SONIC'].sts!.address;
             const stsSubgraphUrl = config['SONIC'].subgraphs.sts!;
-            const baseApr = config['SONIC'].sts!.baseApr!;
+            const baseAprUrl = config['SONIC'].sts!.baseAprUrl!;
             const validatorFee = config['SONIC'].sts!.validatorFee;
 
             // Guard against unconfigured chains
-            if (!stakingContractAddress || !stsSubgraphUrl || !baseApr || !validatorFee) {
+            if (!stakingContractAddress || !stsSubgraphUrl || !baseAprUrl || !validatorFee) {
                 throw new Error(`Chain not configured for job sonic staking data`);
             }
 
@@ -43,7 +43,7 @@ export function StakedSonicController(tracer?: any) {
                 stakingContractAddress as Address,
                 viemClient,
                 stsSubgraphClient,
-                baseApr,
+                baseAprUrl,
                 validatorFee,
             );
         },
