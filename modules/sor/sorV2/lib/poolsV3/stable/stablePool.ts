@@ -32,7 +32,7 @@ export class StablePool implements BasePoolV3 {
 
     public totalShares: bigint;
     public tokens: StablePoolToken[];
-    public readonly hook: HookState | undefined;
+    public readonly hookState: HookState | undefined;
     public readonly liquidityManagement: LiquidityManagement;
 
 
@@ -84,7 +84,7 @@ export class StablePool implements BasePoolV3 {
         const amp = parseUnits((pool.typeData as StableData).amp, 3);
 
         //transform
-        const hook = getHookState(pool);
+        const hookState = getHookState(pool);
 
         // typeguard
         if (!isLiquidityManagement(pool.liquidityManagement)) {
@@ -101,7 +101,7 @@ export class StablePool implements BasePoolV3 {
             totalShares,
             pool.dynamicData.tokenPairsData as TokenPairData[],
             pool.liquidityManagement,
-            hook,
+            hookState,
         );
     }
 
@@ -115,7 +115,7 @@ export class StablePool implements BasePoolV3 {
         totalShares: bigint,
         tokenPairs: TokenPairData[],
         liquidityManagement: LiquidityManagement,
-        hook: HookState | undefined = undefined,
+        hookState: HookState | undefined = undefined,
     ) {
         this.chain = chain;
         this.id = id;
@@ -127,7 +127,7 @@ export class StablePool implements BasePoolV3 {
         this.tokens = tokens.sort((a, b) => a.index - b.index);
         this.tokenMap = new Map(this.tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
-        this.hook = hook;
+        this.hookState = hookState;
         this.liquidityManagement = liquidityManagement;
 
 
@@ -195,7 +195,7 @@ export class StablePool implements BasePoolV3 {
                     kind: RemoveKind.SINGLE_TOKEN_EXACT_IN,
                 },
                 this.poolState,
-                this.hook
+                this.hookState
             );
             calculatedAmount = amountsOutRaw[tOut.index];
         } else if (tOut.token.isSameAddress(this.id)) {
@@ -216,7 +216,7 @@ export class StablePool implements BasePoolV3 {
                     kind: AddKind.UNBALANCED,
                 },
                 this.poolState,
-                this.hook
+                this.hookState
             );
             calculatedAmount = bptAmountOutRaw;
         } else {
@@ -229,7 +229,7 @@ export class StablePool implements BasePoolV3 {
                     swapKind: SwapKind.GivenIn,
                 },
                 this.poolState,
-                this.hook
+                this.hookState
             );
         }
         return TokenAmount.fromRawAmount(tOut.token, calculatedAmount);

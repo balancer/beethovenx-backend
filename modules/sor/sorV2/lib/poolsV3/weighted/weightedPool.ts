@@ -31,7 +31,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
     public readonly tokenPairs: TokenPairData[];
     public readonly MAX_IN_RATIO = 300000000000000000n; // 0.3
     public readonly MAX_OUT_RATIO = 300000000000000000n; // 0.3
-    public readonly hook: HookState | undefined;
+    public readonly hookState: HookState | undefined;
     public readonly liquidityManagement: LiquidityManagement;
 
     private readonly tokenMap: Map<string, WeightedPoolToken>;
@@ -80,7 +80,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
         }
 
         //transform
-        const hook = getHookState(pool);
+        const hookState = getHookState(pool);
 
         // typeguard
         if (!isLiquidityManagement(pool.liquidityManagement)) {
@@ -97,7 +97,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
             poolTokens,
             pool.dynamicData.tokenPairsData as TokenPairData[],
             pool.liquidityManagement,
-            hook,
+            hookState,
         );
     }
 
@@ -111,7 +111,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
         tokens: WeightedPoolToken[],
         tokenPairs: TokenPairData[],
         liquidityManagement: LiquidityManagement,
-        hook: HookState | undefined = undefined,
+        hookState: HookState | undefined = undefined,
     ) {
         this.chain = chain;
         this.id = id;
@@ -123,7 +123,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
         this.tokenMap = new Map(tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
         this.liquidityManagement = liquidityManagement;
-        this.hook = hook
+        this.hookState = hookState
 
 
         // add BPT to tokenMap, so we can handle add/remove liquidity operations
@@ -206,7 +206,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
                     kind: RemoveKind.SINGLE_TOKEN_EXACT_IN,
                 },
                 this.poolState,
-                this.hook,
+                this.hookState,
             );
             calculatedAmount = amountsOutRaw[tOut.index];
         } else if (tOut.token.isSameAddress(this.id)) {
@@ -227,7 +227,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
                     kind: AddKind.UNBALANCED,
                 },
                 this.poolState,
-                this.hook
+                this.hookState
             );
             calculatedAmount = bptAmountOutRaw;
         } else {
@@ -240,7 +240,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
                     swapKind: SwapKind.GivenIn,
                 },
                 this.poolState,
-                this.hook,
+                this.hookState,
             );
         }
         return TokenAmount.fromRawAmount(tOut.token, calculatedAmount);
