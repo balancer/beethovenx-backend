@@ -79,7 +79,11 @@ async function runIfNotAlreadyRunning(
         console.log(`Error job ${jobId}-error`, error.message || error);
         next(error);
     } finally {
-        runningJobs.delete(jobId);
+        try {
+            runningJobs.delete(jobId);
+        } catch (error: any) {
+            console.error(`Error deleting job ${jobId}`, error.message || error);
+        }
         console.timeEnd(jobId);
         res.sendStatus(200);
     }
