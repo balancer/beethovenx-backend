@@ -271,6 +271,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 res,
                 next,
             );
+            break;
         case 'sync-sts-staking-snapshots':
             await runIfNotAlreadyRunning(
                 name,
