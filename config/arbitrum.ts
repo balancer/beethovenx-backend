@@ -252,6 +252,7 @@ export default <NetworkData>{
                 tokenAddress: '0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92',
                 sourceUrl: 'https://app.usdx.money/v1/base/apyInfo',
                 path: 'result.susdxApy',
+                scale: 1,
                 isIbYield: true,
             },
         },
