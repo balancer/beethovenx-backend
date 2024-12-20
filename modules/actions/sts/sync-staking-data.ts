@@ -29,7 +29,7 @@ export async function syncStakingData(
 
     const stakingApr =
         (parseFloat(stakingDataOnchain.totalDelegated) / parseFloat(stakingDataOnchain.totalAssets)) *
-        (data.data.apr * (1 - validatorFee)) *
+        ((data.data.apr / 100) * (1 - validatorFee)) *
         (1 - parseFloat(stakingDataOnchain.protocolFee));
 
     await prisma.prismaStakedSonicData.upsert({
