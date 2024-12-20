@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.25
+
+### Patch Changes
+
+-   615943c: fixed usdx apr
+-   8270969: refactor of sync-tokens-from-pool-tokens job
+
 ## 1.26.24
 
 ### Patch Changes
