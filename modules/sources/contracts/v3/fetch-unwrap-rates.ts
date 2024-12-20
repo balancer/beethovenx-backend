@@ -4,7 +4,7 @@ import MinimalErc4626Abi from '../abis/MinimalERC4626';
 import { formatUnits, parseUnits } from 'viem';
 
 /**
- * Fetches convertToAssets rates for a list of ERC4626 tokens and returns them as floats
+ * Fetches convertToAssets rates for a list of ERC4626 tokens and returns them as strings
  * @param erc4626Tokens
  * @returns
  */
