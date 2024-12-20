@@ -53,7 +53,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
                 address: token.address as `0x${string}`,
                 abi: MinimalErc4626Abi,
                 functionName: 'convertToAssets',
-                args: ['1'],
+                args: [1n],
             },
             {
                 path: `${token.address}.convertToShares`,
@@ -121,22 +121,20 @@ export async function fetchErc4626AndUnderlyingTokenData(
             underlyingTokenAddress,
         };
 
-        if (underlyingTokenAddress) {
-            if (!tokenData[underlyingTokenAddress]) {
-                const underlyingTokenDetail = await fetchErc20Headers(
-                    [underlyingTokenAddress as `0x${string}`],
-                    viemClient,
-                );
+        if (underlyingTokenAddress && !tokenData[underlyingTokenAddress]) {
+            const underlyingTokenDetail = await fetchErc20Headers(
+                [underlyingTokenAddress as `0x${string}`],
+                viemClient,
+            );
 
-                tokenData[underlyingTokenAddress] = {
-                    address: underlyingTokenAddress,
-                    decimals: underlyingTokenDetail[underlyingTokenAddress].decimals,
-                    name: underlyingTokenDetail[underlyingTokenAddress].name,
-                    symbol: underlyingTokenDetail[underlyingTokenAddress].symbol,
-                    chain: token.chain,
-                    underlyingTokenAddress: undefined,
-                };
-            }
+            tokenData[underlyingTokenAddress] = {
+                address: underlyingTokenAddress,
+                decimals: underlyingTokenDetail[underlyingTokenAddress].decimals,
+                name: underlyingTokenDetail[underlyingTokenAddress].name,
+                symbol: underlyingTokenDetail[underlyingTokenAddress].symbol,
+                chain: token.chain,
+                underlyingTokenAddress: undefined,
+            };
         }
     }
 
