@@ -59,7 +59,6 @@ async function runIfNotAlreadyRunning(
     try {
         runningJobs.add(jobId);
 
-        console.time(jobId);
         console.log(`Start job ${jobId}-start`);
 
         await fn();
@@ -69,22 +68,18 @@ async function runIfNotAlreadyRunning(
             await cronsMetricPublisher.publish(`${jobId}-done`);
             await cronsDurationMetricPublisher.publish(`${jobId}-done`, durationSuccess);
         }
-        console.log(`Successful job ${jobId}-done`);
+        console.log(`Successful job ${jobId}-done`, durationSuccess);
     } catch (error: any) {
         const durationError = moment.duration(moment().diff(startJobTime)).asSeconds();
         if (process.env.AWS_ALERTS === 'true') {
             await cronsMetricPublisher.publish(`${jobId}-error`);
             await cronsDurationMetricPublisher.publish(`${jobId}-error`, durationError);
         }
-        console.log(`Error job ${jobId}-error`, error.message || error);
+        const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
+        console.log(`Error job ${jobId}-error`, duration, error.message || error);
         next(error);
     } finally {
-        try {
-            runningJobs.delete(jobId);
-        } catch (error: any) {
-            console.error(`Error deleting job ${jobId}`, error.message || error);
-        }
-        console.timeEnd(jobId);
+        runningJobs.delete(jobId);
         res.sendStatus(200);
     }
 }
