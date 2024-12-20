@@ -46,5 +46,6 @@ export const prismaTokenFactory = Factory.define<PrismaToken>(() => {
         excludedFromCoingecko: false,
         underlyingTokenAddress: null,
         isBufferAllowed: true,
+        unwrapRate: '1',
     };
 });

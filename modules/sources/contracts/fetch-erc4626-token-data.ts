@@ -3,6 +3,7 @@ import MinimalErc4626Abi from './abis/MinimalERC4626';
 import { fetchErc20Headers } from '.';
 import { multicallViem, ViemMulticallCall } from '../../web3/multicaller-viem';
 import { Chain } from '@prisma/client';
+import { formatUnits, parseEther, parseUnits } from 'viem';
 
 interface Erc4626Data {
     asset?: string;
@@ -25,6 +26,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
         symbol: string;
         chain: Chain;
         underlyingTokenAddress?: string;
+        unwrapRate?: string;
     }[]
 > {
     const tokenData: {
@@ -35,6 +37,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
             symbol: string;
             chain: Chain;
             underlyingTokenAddress?: string;
+            unwrapRate?: string;
         };
     } = {};
 
@@ -53,7 +56,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
                 address: token.address as `0x${string}`,
                 abi: MinimalErc4626Abi,
                 functionName: 'convertToAssets',
-                args: [1n],
+                args: [parseUnits('1', token.decimals)],
             },
             {
                 path: `${token.address}.convertToShares`,
@@ -118,22 +121,32 @@ export async function fetchErc4626AndUnderlyingTokenData(
             name: token.name,
             symbol: token.symbol,
             chain: token.chain,
-            underlyingTokenAddress: underlyingTokenAddress,
+            underlyingTokenAddress,
         };
 
-        if (underlyingTokenAddress && !tokenData[underlyingTokenAddress]) {
-            const underlyingTokenDetail = await fetchErc20Headers(
-                [underlyingTokenAddress as `0x${string}`],
-                viemClient,
-            );
+        if (underlyingTokenAddress) {
+            if (!tokenData[underlyingTokenAddress]) {
+                const underlyingTokenDetail = await fetchErc20Headers(
+                    [underlyingTokenAddress as `0x${string}`],
+                    viemClient,
+                );
 
-            tokenData[underlyingTokenAddress] = {
-                address: underlyingTokenAddress,
-                decimals: underlyingTokenDetail[underlyingTokenAddress].decimals,
-                name: underlyingTokenDetail[underlyingTokenAddress].name,
-                symbol: underlyingTokenDetail[underlyingTokenAddress].symbol,
-                chain: token.chain,
-                underlyingTokenAddress: undefined,
+                tokenData[underlyingTokenAddress] = {
+                    address: underlyingTokenAddress,
+                    decimals: underlyingTokenDetail[underlyingTokenAddress].decimals,
+                    name: underlyingTokenDetail[underlyingTokenAddress].name,
+                    symbol: underlyingTokenDetail[underlyingTokenAddress].symbol,
+                    chain: token.chain,
+                    underlyingTokenAddress: undefined,
+                };
+            }
+
+            const unwrapRate = result.convertToAssets
+                ? formatUnits(BigInt(result.convertToAssets), tokenData[underlyingTokenAddress].decimals)
+                : '1';
+            tokenData[token.address] = {
+                ...tokenData[token.address],
+                unwrapRate,
             };
         }
     }

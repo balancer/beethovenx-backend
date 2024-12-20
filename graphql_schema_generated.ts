@@ -3222,6 +3222,11 @@ export const schema = gql`
         underlyingTokenAddress: String
 
         """
+        If it is an ERC4626 token, it represents the rate between wrapped/underlying.
+        """
+        unwrapRate: BigDecimal!
+
+        """
         The website URL of the token
         """
         websiteUrl: String

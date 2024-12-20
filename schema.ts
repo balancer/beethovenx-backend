@@ -2161,6 +2161,8 @@ export interface GqlToken {
     twitterUsername?: Maybe<Scalars['String']>;
     /** The ERC4626 underlying token address, if applicable. */
     underlyingTokenAddress?: Maybe<Scalars['String']>;
+    /** If it is an ERC4626 token, it represents the rate between wrapped/underlying. */
+    unwrapRate: Scalars['BigDecimal'];
     /** The website URL of the token */
     websiteUrl?: Maybe<Scalars['String']>;
 }
@@ -4985,6 +4987,7 @@ export type GqlTokenResolvers<
     tradable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     twitterUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     underlyingTokenAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+    unwrapRate?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     websiteUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

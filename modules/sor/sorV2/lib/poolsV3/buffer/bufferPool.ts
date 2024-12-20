@@ -44,7 +44,7 @@ export class BufferPool implements BasePoolV3 {
             erc4626Token.token.address,
             erc4626Token.token.address,
             erc4626Token.token.chainId,
-            erc4626Token.rate,
+            erc4626Token.unwrapRate,
             mainToken,
             underlyingToken,
         );

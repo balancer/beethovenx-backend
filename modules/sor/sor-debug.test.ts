@@ -36,7 +36,7 @@ describe('sor debugging', () => {
         expect(parseFloat(swaps.returnAmount)).toBeGreaterThan(0);
     }, 5000000);
 
-    it('sor v3 mainnet wusdl -> csusdl', async () => {
+    it.only('sor v3 mainnet wstETH -> waGnowstETH', async () => {
         const chain = Chain.MAINNET;
 
         const chainId = Object.keys(chainIdToChain).find((key) => chainIdToChain[key] === chain) as string;
@@ -44,16 +44,15 @@ describe('sor debugging', () => {
         setRequestScopedContextValue('chainId', chainId);
         //only do once before starting to debug
         await PoolController().reloadPoolsV3(chain);
-        await PoolController().updateLiquidityValuesForActivePools(chain);
 
         const swaps = await sorService.getSorSwapPaths({
             chain,
-            tokenIn: '0x7751e2f4b8ae93ef6b79d86419d42fe3295a4559', // wusdl
-            tokenOut: '0xbeefc01767ed5086f35decb6c00e6c12bc7476c1', // csusdl
+            tokenIn: '0xbeef01735c132ada46aa9aa4c54623caa92a64cb', // steakUSDC 18 decimals
+            tokenOut: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC 6 decimals
             swapType: 'EXACT_IN',
-            swapAmount: '10',
+            swapAmount: '1',
             useProtocolVersion: 3,
-            // poolIds: ['0xbeefc01767ed5086f35decb6c00e6c12bc7476c1'], // buffer
+            poolIds: ['0x5dd88b3aa3143173eb26552923922bdf33f50949'], // boosted
         });
 
         console.log(swaps.returnAmount);
