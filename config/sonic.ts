@@ -47,7 +47,7 @@ export default <NetworkData>{
     },
     sts: {
         address: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
-        baseApr: 0.18,
+        baseAprUrl: 'https://apr.soniclabs.com/current',
         validatorFee: 0.15,
     },
     balancer: {

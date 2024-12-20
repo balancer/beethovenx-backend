@@ -90,7 +90,7 @@ export interface NetworkData {
     };
     sts?: {
         address: string;
-        baseApr: number;
+        baseAprUrl: string;
         validatorFee: number;
     };
     bal?: {

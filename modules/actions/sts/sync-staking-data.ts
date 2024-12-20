@@ -4,19 +4,32 @@ import { StsSubgraphService } from '../../sources/subgraphs/sts-subgraph/sts.ser
 import { Address, formatEther } from 'viem';
 import { ViemClient } from '../../sources/viem-client';
 
+interface ApiResponse {
+    success: boolean;
+    data: {
+        apr: number;
+    };
+}
+
 export async function syncStakingData(
     stakingContractAddress: Address,
     viemClient: ViemClient,
     subgraphService: StsSubgraphService,
-    baseApr: number,
+    baseAprUrl: string,
     validatorFee: number,
 ) {
     const stakingDataOnchain = await fetchSonicStakingData(stakingContractAddress, viemClient);
     const validators = await subgraphService.getAllValidators();
 
+    const response = await fetch(baseAprUrl);
+    const data = (await response.json()) as ApiResponse;
+    if (!data.success) {
+        throw new Error('Failed to fetch sonic staking APR');
+    }
+
     const stakingApr =
         (parseFloat(stakingDataOnchain.totalDelegated) / parseFloat(stakingDataOnchain.totalAssets)) *
-        (baseApr * (1 - validatorFee)) *
+        (data.data.apr * (1 - validatorFee)) *
         (1 - parseFloat(stakingDataOnchain.protocolFee));
 
     await prisma.prismaStakedSonicData.upsert({
