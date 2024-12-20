@@ -1,5 +1,13 @@
 # backend
 
+## 1.26.26
+
+### Patch Changes
+
+-   4cfa9f8: debug erroring job
+-   c5f527d: fix: erroring job
+-   4006bb0: add index to snapshots
+
 ## 1.26.25
 
 ### Patch Changes
