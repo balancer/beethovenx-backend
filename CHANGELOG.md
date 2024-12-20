@@ -1,5 +1,11 @@
 # backend
 
+## 1.26.24
+
+### Patch Changes
+
+-   380173f: fetch staking apr from api
+
 ## 1.26.23
 
 ### Patch Changes
