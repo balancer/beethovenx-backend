@@ -23,12 +23,12 @@ import { sepolia } from 'viem/chains';
  *
  * In order to properly compare SOR quotes vs SDK queries, we need to setup test data from a specific blockNumber.
  * Although the API does not provide that functionality, we can use subgraph to achieve it.
- * These tests run against the 10th testnet deployment and these are their respective subgraphs:
- * - data common to all pools: [balancer subgraph](https://api.studio.thegraph.com/query/31386/balancer-v3-sepolia-11th/version/latest/graphql)
+ * These tests run against the 12th testnet deployment and these are their respective subgraphs:
+ * - data common to all pools: [balancer subgraph](https://api.studio.thegraph.com/query/75376/balancer-v3-sepolia/version/latest/graphql)
  *   - tokens (address, balance, decimals)
  *   - totalShares
  *   - swapFee
- * - data specific to each pool type: [pools subgraph](https://api.studio.thegraph.com/proxy/31386/balancer-pools-v3-sepolia-11th/version/latest/graphql)
+ * - data specific to each pool type: [pools subgraph](https://api.studio.thegraph.com/query/75376/balancer-pools-v3-sepolia/version/latest/graphql)
  *   - weight
  *   - amp
  * The only item missing from subgraph is priceRate, which can be fetched from a Tenderly simulation (getPoolTokenRates)
@@ -37,9 +37,6 @@ import { sepolia } from 'viem/chains';
  * TODO: improve test data setup by creating a script that fetches all necessary data automatically for a given blockNumber.
  */
 
-// this test works with 12th deployment.
-// Vault explorer is at 0xEB15EBBF9C1a4D7D243d57dE447Df0b97C40c324
-//
 
 const protocolVersion = 3;
 
