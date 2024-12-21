@@ -105,6 +105,7 @@ model PrismaPool {
 
     hook                Json?
 
+    @@index([id, chain])
     @@index([categories(ops: ArrayOps)], type: Gin)
 }
 
@@ -244,6 +245,8 @@ model PrismaPoolSwap {
     batchSwapId         String?
     batchSwap           PrismaPoolBatchSwap? @relation(fields:[batchSwapId, chain], references: [id, chain])
     batchSwapIdx        Int?
+
+    @@index([poolId, chain])
 }
 
 model PrismaPoolBatchSwap {
@@ -280,6 +283,8 @@ model PrismaPoolAprItem {
 
     type                PrismaPoolAprType?
     group               PrismaPoolAprItemGroup?
+
+    @@index([poolId, chain])
 }
 
 model PrismaPoolAprRange {
@@ -342,6 +347,8 @@ model PrismaPoolExpandedTokens {
 
     nestedPoolId        String?
     nestedPool          PrismaPool?         @relation(name: "NestedPoolForAllToken", fields:[nestedPoolId, chain], references: [id, chain], onDelete: Cascade)
+
+    @@index([tokenAddress, chain])
 }
 
 
@@ -382,6 +389,8 @@ model PrismaPoolStaking {
     vebal               PrismaPoolStakingVebal?
 
     userStakedBalances  PrismaUserStakedBalance[]
+
+    @@index([poolId, chain])
 }
 
 
@@ -417,6 +426,8 @@ model PrismaPoolStakingMasterChefFarmRewarder {
     address             String
     tokenAddress        String
     rewardPerSecond     String
+
+    @@index([farmId, chain])
 }
 
 model PrismaPoolStakingGauge {
@@ -482,6 +493,8 @@ model PrismaPoolStakingGaugeReward{
     tokenAddress        String
     rewardPerSecond     String
     isVeBalemissions    Boolean                 @default(false)
+
+    @@index([gaugeId, chain])
 }
 
 
@@ -516,6 +529,8 @@ model PrismaPoolStakingReliquaryFarmLevel {
     requiredMaturity    Int
     allocationPoints    Int
     apr                 Float
+
+    @@index([farmId, chain])
 }
 
 
@@ -575,6 +590,8 @@ model PrismaReliquaryFarmSnapshot {
     totalLiquidity      String                          @default("0")
     levelBalances       PrismaReliquaryLevelSnapshot[]
     tokenBalances       PrismaReliquaryTokenBalanceSnapshot[]
+
+    @@index([farmId, chain])
 }
 
 model PrismaReliquaryLevelSnapshot {
@@ -587,6 +604,8 @@ model PrismaReliquaryLevelSnapshot {
 
     level               String
     balance             String
+
+    @@index([farmSnapshotId, chain])
 }
 
 model PrismaReliquaryTokenBalanceSnapshot {
@@ -602,6 +621,8 @@ model PrismaReliquaryTokenBalanceSnapshot {
     name                String
     decimals            Int
     balance             String
+
+    @@index([farmSnapshotId, chain])
 }
 
 enum PoolEventType {
@@ -803,9 +824,8 @@ model PrismaTokenPrice {
     open                Float
     close               Float
 
-    @@index(timestamp)
-    @@index(chain)
-    @@index(tokenAddress)
+    @@index([timestamp, chain])
+    @@index([tokenAddress, chain])
 }
 
 model PrismaTokenDynamicData {

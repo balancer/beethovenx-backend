@@ -71,9 +71,8 @@ model PrismaTokenPrice {
     open                Float
     close               Float
 
-    @@index(timestamp)
-    @@index(chain)
-    @@index(tokenAddress)
+    @@index([timestamp, chain])
+    @@index([tokenAddress, chain])
 }
 
 model PrismaTokenDynamicData {
