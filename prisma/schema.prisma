@@ -942,6 +942,8 @@ model PrismaUserWalletBalance {
 
     tokenAddress            String
     token                   PrismaToken         @relation(fields:[tokenAddress, chain], references: [address, chain], onDelete: Cascade)
+
+    @@index([poolId, chain])
 }
 
 
@@ -966,6 +968,9 @@ model PrismaUserStakedBalance {
 
     stakingId               String
     staking                 PrismaPoolStaking   @relation(fields:[stakingId, chain], references: [id, chain], onDelete: Cascade)
+
+    @@index([poolId, chain])
+    @@index([stakingId, chain])
 }
 
 model PrismaUserBalanceSyncStatus {
