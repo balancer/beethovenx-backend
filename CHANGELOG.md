@@ -1,5 +1,14 @@
 # backend
 
+## 1.26.27
+
+### Patch Changes
+
+-   7a0ae59: adding dynamic swap fee to fx pools
+-   a16406b: balance tables indexes
+-   5011ef2: optimise multichain events query
+-   580c5e7: db indexes
+
 ## 1.26.26
 
 ### Patch Changes
