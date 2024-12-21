@@ -71,6 +71,48 @@ const rangeToTimestamp = (range: GqlPoolEventsDataRange): number => {
     }
 };
 
+const getMultichainEvents = async (chainIn: Chain[]) => {
+    const results = await Promise.all(
+        chainIn.map(async (chain) => {
+            return (
+                await prisma.prismaPoolEvent.findMany({
+                    where: {
+                        chain,
+                    },
+                    take: 100,
+                    orderBy: [
+                        {
+                            blockTimestamp: 'desc',
+                        },
+                        {
+                            blockNumber: 'desc',
+                        },
+                        {
+                            logIndex: 'desc',
+                        },
+                    ],
+                })
+            ).map((event) =>
+                event.type === 'SWAP' && (event as SwapEvent).payload?.surplus
+                    ? parseCowAmmSwap(event as SwapEvent)
+                    : event.type === 'SWAP'
+                    ? parseSwap(event as SwapEvent)
+                    : parseJoinExit(event as JoinExitEvent),
+            );
+        }),
+    );
+
+    return results.flat().sort((a, b) => {
+        if (a.blockTimestamp === b.blockTimestamp) {
+            if (a.blockNumber === b.blockNumber) {
+                return a.logIndex - b.logIndex;
+            }
+            return a.blockNumber - b.blockNumber;
+        }
+        return a.blockTimestamp - b.blockTimestamp;
+    });
+};
+
 export function EventsQueryController(tracer?: any) {
     return {
         /**
@@ -92,6 +134,11 @@ export function EventsQueryController(tracer?: any) {
             let { chainIn, poolIdIn, userAddress, typeIn, range, valueUSD_gt, valueUSD_gte } = where || {};
 
             const conditions: Prisma.PrismaPoolEventWhereInput = {};
+
+            // Table is partitioned by chain, so querying by many chains is extermenly inefficient.
+            if (chainIn && chainIn.length > 1) {
+                return getMultichainEvents(chainIn as Chain[]);
+            }
 
             if (chainIn && chainIn.length) {
                 conditions.chain = {

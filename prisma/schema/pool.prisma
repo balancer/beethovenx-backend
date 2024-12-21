@@ -508,9 +508,8 @@ model PrismaPoolSnapshot {
     totalProtocolYieldFees String[] @default([]) // Used for V3 snapshots
     dailyProtocolYieldFees String[] @default([]) // Used for V3 snapshots
 
-    @@index([protocolVersion])
-    @@index([timestamp(sort: Desc)])
     @@index([poolId, chain])
+    @@index([chain, timestamp(sort: Desc)])
 }
 
 model PrismaReliquaryFarmSnapshot {
