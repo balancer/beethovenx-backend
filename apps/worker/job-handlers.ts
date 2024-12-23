@@ -26,6 +26,7 @@ import {
     PoolController,
     EventController,
     StakingController,
+    StakedSonicController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 
@@ -58,7 +59,6 @@ async function runIfNotAlreadyRunning(
     try {
         runningJobs.add(jobId);
 
-        console.time(jobId);
         console.log(`Start job ${jobId}-start`);
 
         await fn();
@@ -68,18 +68,18 @@ async function runIfNotAlreadyRunning(
             await cronsMetricPublisher.publish(`${jobId}-done`);
             await cronsDurationMetricPublisher.publish(`${jobId}-done`, durationSuccess);
         }
-        console.log(`Successful job ${jobId}-done`);
+        console.log(`Successful job ${jobId}-done`, durationSuccess);
     } catch (error: any) {
         const durationError = moment.duration(moment().diff(startJobTime)).asSeconds();
         if (process.env.AWS_ALERTS === 'true') {
             await cronsMetricPublisher.publish(`${jobId}-error`);
             await cronsDurationMetricPublisher.publish(`${jobId}-error`, durationError);
         }
-        console.log(`Error job ${jobId}-error`, error.message || error);
+        const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
+        console.log(`Error job ${jobId}-error`, duration, error.message || error);
         next(error);
     } finally {
         runningJobs.delete(jobId);
-        console.timeEnd(jobId);
         res.sendStatus(200);
     }
 }
@@ -259,6 +259,24 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                     const chain = config.chain.prismaId;
                     return syncLatestFXPrices(subgraphUrl, chain);
                 },
+                res,
+                next,
+            );
+            break;
+        case 'sync-sts-staking-data':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => StakedSonicController().syncSonicStakingData(),
+                res,
+                next,
+            );
+            break;
+        case 'sync-sts-staking-snapshots':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => StakedSonicController().syncSonicStakingSnapshots(),
                 res,
                 next,
             );

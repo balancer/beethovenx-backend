@@ -65,10 +65,6 @@ export const sepoliaNetworkConfig: NetworkConfig = {
             interval: every(2, 'minutes'),
         },
         {
-            name: 'sync-tokens-from-pool-tokens',
-            interval: every(5, 'minutes'),
-        },
-        {
             name: 'update-liquidity-24h-ago-v2',
             interval: every(5, 'minutes'),
         },

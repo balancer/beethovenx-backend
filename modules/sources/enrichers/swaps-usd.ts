@@ -40,11 +40,12 @@ export async function swapsUsd(swaps: SwapEvent[], chain: Chain): Promise<SwapEv
             const tokenOut = tokenPrices.find((price) => price.tokenAddress === swap.payload.tokenOut.address);
             const feeToken = tokenPrices.find((price) => price.tokenAddress === swap.payload.fee.address);
             const surplusToken = tokenPrices.find((price) => price.tokenAddress === swap.payload.surplus?.address);
+            const feeValueUSD = parseFloat(swap.payload.fee.amount) * (feeToken?.price || 0);
 
             const payload = {
                 fee: {
                     ...swap.payload.fee,
-                    valueUSD: String((feeToken?.price || 0) * parseFloat(swap.payload.fee.amount)),
+                    valueUSD: String(feeValueUSD > 0 ? feeValueUSD : swap.payload.fee.valueUSD),
                 },
                 tokenIn: {
                     ...swap.payload.tokenIn,

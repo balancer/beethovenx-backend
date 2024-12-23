@@ -10,13 +10,52 @@ import { SwapEvent } from '../../../prisma/prisma-types';
  * @param chain
  * @returns
  */
-export function swapV2Transformer(swap: BalancerSwapFragment, chain: Chain): SwapEvent {
+export function swapV2Transformer(
+    swap: BalancerSwapFragment,
+    chain: Chain,
+    fxPools: { id: string; typeData: { quoteToken: string } }[] = [],
+): SwapEvent {
     // Avoiding scientific notation
     const feeFloat = parseFloat(swap.tokenAmountIn) * parseFloat(swap.poolId.swapFee ?? 0);
-    const fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
-    const feeFloatUSD = parseFloat(swap.valueUSD) * parseFloat(swap.poolId.swapFee ?? 0);
-    const feeUSD =
+    let fee = feeFloat < 1e6 ? feeFloat.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloat);
+    let feeFloatUSD = parseFloat(swap.valueUSD) * parseFloat(swap.poolId.swapFee ?? 0);
+    let feeUSD =
         feeFloatUSD < 1e6 ? feeFloatUSD.toFixed(18).replace(/0+$/, '').replace(/\.$/, '') : String(feeFloatUSD);
+
+    // FX pools have a different fee calculation
+    // Replica of the subgraph logic:
+    // https://github.com/balancer/balancer-subgraph-v2/blob/60453224453bd07a0a3a22a8ad6cc26e65fd809f/src/mappings/vault.ts#L551-L564
+    if (swap.poolId.poolType === 'FX') {
+        // Find the pool that has the quote token
+        const fxPool = fxPools.find((pool) => pool.id === swap.poolId.id);
+        if (fxPool && [swap.tokenOut, swap.tokenIn].includes(fxPool.typeData.quoteToken)) {
+            const quoteTokenAddress = fxPool.typeData.quoteToken;
+            const baseTokenAddress = swap.tokenIn === quoteTokenAddress ? swap.tokenOut : swap.tokenIn;
+            let isTokenInBase = swap.tokenOut === quoteTokenAddress;
+            let baseToken = swap.poolId.tokens?.find(({ token }) => token.address == baseTokenAddress);
+            let quoteToken = swap.poolId.tokens?.find(({ token }) => token.address == quoteTokenAddress);
+            let baseRate = baseToken != null ? baseToken.token.latestFXPrice : null;
+            let quoteRate = quoteToken != null ? quoteToken.token.latestFXPrice : null;
+
+            if (baseRate && quoteRate) {
+                if (isTokenInBase) {
+                    feeFloatUSD +=
+                        parseFloat(swap.tokenAmountIn) * parseFloat(baseRate) -
+                        parseFloat(swap.tokenAmountOut) * parseFloat(quoteRate);
+                    // Need to set the fee in the tokenIn price, because it's later recalculated based on the DB prices
+                    fee = String(feeFloatUSD / parseFloat(baseRate)); // fee / tokenIn price
+                } else {
+                    feeFloatUSD +=
+                        parseFloat(swap.tokenAmountIn) * parseFloat(quoteRate) -
+                        parseFloat(swap.tokenAmountOut) * parseFloat(baseRate);
+                    // Need to set the fee in the tokenIn price, because it's later recalculated based on the DB prices
+                    fee = String(feeFloatUSD / parseFloat(quoteRate)); // fee / tokenIn price
+                }
+            }
+
+            feeUSD = String(feeFloatUSD);
+        }
+    }
 
     return {
         id: swap.id, // tx + logIndex

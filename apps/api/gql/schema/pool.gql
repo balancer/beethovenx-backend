@@ -90,6 +90,7 @@ extend type Mutation {
     poolLoadOnChainDataForAllPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
     poolReloadPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
     poolSyncAllCowSnapshots(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
+    poolSyncFxQuoteTokens(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
 }
 
 """

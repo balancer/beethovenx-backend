@@ -3092,6 +3092,86 @@ export const schema = gql`
         EXACT_OUT
     }
 
+    type GqlStakedSonicData {
+        """
+        A list of all the delegated validators.
+        """
+        delegatedValidators: [GqlStakedSonicDelegatedValidator!]!
+
+        """
+        Current exchange rate for stS -> S
+        """
+        exchangeRate: String!
+
+        """
+        The current rebasing APR for stS.
+        """
+        stakingApr: String!
+
+        """
+        Total amount of S in custody of stS. Delegated S plus pool S.
+        """
+        totalAssets: AmountHumanReadable!
+
+        """
+        Total amount of S elegated to validators.
+        """
+        totalAssetsDelegated: AmountHumanReadable!
+
+        """
+        Total amount of S in the pool to be delegated.
+        """
+        totalAssetsPool: AmountHumanReadable!
+    }
+
+    type GqlStakedSonicDelegatedValidator {
+        """
+        The amount of S that has been delegated to this validator.
+        """
+        assetsDelegated: AmountHumanReadable!
+
+        """
+        The id of the validator.
+        """
+        validatorId: String!
+    }
+
+    type GqlStakedSonicSnapshot {
+        """
+        Current exchange rate for stS -> S
+        """
+        exchangeRate: String!
+        id: ID!
+
+        """
+        The timestamp of the snapshot. Timestamp is end of day midnight.
+        """
+        timestamp: Int!
+
+        """
+        Total amount of S in custody of stS. Delegated S plus pool S.
+        """
+        totalAssets: AmountHumanReadable!
+
+        """
+        Total amount of S delegated to validators.
+        """
+        totalAssetsDelegated: AmountHumanReadable!
+
+        """
+        Total amount of S in the pool.
+        """
+        totalAssetsPool: AmountHumanReadable!
+    }
+
+    enum GqlStakedSonicSnapshotDataRange {
+        ALL_TIME
+        NINETY_DAYS
+        ONE_HUNDRED_EIGHTY_DAYS
+        ONE_YEAR
+        THIRTY_DAYS
+    }
+
     """
     Inputs for the call data to create the swap transaction. If this input is given, call data is added to the response.
     """
@@ -3609,6 +3689,7 @@ export const schema = gql`
         poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
         poolSyncAllCowSnapshots(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolSyncAllPoolsFromSubgraph: [String!]!
+        poolSyncFxQuoteTokens(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolUpdateLifetimeValuesForAllPools: String!
         poolUpdateLiquidityValuesForAllPools: String!
         protocolCacheMetrics: String!
@@ -3846,6 +3927,16 @@ export const schema = gql`
             """
             tokenOut: String!
         ): GqlSorGetSwapsResponse!
+
+        """
+        Get the staking data and status for stS
+        """
+        stsGetGqlStakedSonicData: GqlStakedSonicData!
+
+        """
+        Get snapshots for sftmx staking for a specific range
+        """
+        stsGetStakedSonicSnapshots(range: GqlStakedSonicSnapshotDataRange!): [GqlStakedSonicSnapshot!]!
 
         """
         Returns the candlestick chart data for a token for a given range.

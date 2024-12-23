@@ -1,5 +1,60 @@
 # backend
 
+## 1.26.27
+
+### Patch Changes
+
+-   7a0ae59: adding dynamic swap fee to fx pools
+-   a16406b: balance tables indexes
+-   5011ef2: optimise multichain events query
+-   580c5e7: db indexes
+
+## 1.26.26
+
+### Patch Changes
+
+-   4cfa9f8: debug erroring job
+-   c5f527d: fix: erroring job
+-   4006bb0: add index to snapshots
+
+## 1.26.25
+
+### Patch Changes
+
+-   615943c: fixed usdx apr
+-   8270969: refactor of sync-tokens-from-pool-tokens job
+
+## 1.26.24
+
+### Patch Changes
+
+-   380173f: fetch staking apr from api
+
+## 1.26.23
+
+### Patch Changes
+
+-   033f8f6: add sonic staking snapshots
+
+## 1.26.22
+
+### Patch Changes
+
+-   e1087c7: susdx apr
+
+## 1.26.21
+
+### Patch Changes
+
+-   a0bcaf7: add sts tvl to protocol stats
+
+## 1.26.20
+
+### Patch Changes
+
+-   f125013: removing few more unused deps
+-   61b9c66: add sonic staking data and apr
+
 ## 1.26.19
 
 ### Patch Changes

@@ -127,10 +127,11 @@ export class ProtocolService {
 
         const balancerV1Tvl = await this.getBalancerV1Tvl(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
         const sftmxTvl = await this.getSftmXTVL(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
+        const stsTVL = await this.getStsTVL(`${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`);
 
         const protocolData = {
             chainId: `${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`,
-            totalLiquidity: `${totalLiquidity + balancerV1Tvl + sftmxTvl}`,
+            totalLiquidity: `${totalLiquidity + balancerV1Tvl + sftmxTvl + stsTVL}`,
             totalSwapFee,
             totalSwapVolume,
             poolCount: `${poolCount}`,
@@ -170,18 +171,35 @@ export class ProtocolService {
             return 0;
         }
 
-        const tokenprices = await tokenService.getTokenPrices(AllNetworkConfigs[chainId].data.chain.prismaId);
-        const ftmPrice = tokenService.getPriceForToken(
-            tokenprices,
-            AllNetworkConfigs[chainId].data.weth.address,
-            AllNetworkConfigs[chainId].data.chain.prismaId,
-        );
+        const tokenAddress = AllNetworkConfigs[chainId].data.weth.address;
+        const ftmPrice = await prisma.prismaTokenCurrentPrice.findFirst({
+            where: { tokenAddress, chain: 'FANTOM' },
+        });
 
         if (AllNetworkConfigs[chainId].data.sftmx) {
             const stakingData = await prisma.prismaSftmxStakingData.findUniqueOrThrow({
                 where: { id: AllNetworkConfigs[chainId].data.sftmx!.stakingContractAddress },
             });
-            return parseFloat(stakingData.totalFtm) * ftmPrice;
+            return parseFloat(stakingData.totalFtm) * (ftmPrice?.price || 0);
+        }
+        return 0;
+    }
+
+    private async getStsTVL(chainId: string): Promise<number> {
+        if (chainId !== '146') {
+            return 0;
+        }
+
+        const tokenAddress = AllNetworkConfigs[chainId].data.weth.address;
+        const sPrice = await prisma.prismaTokenCurrentPrice.findFirst({
+            where: { tokenAddress, chain: 'SONIC' },
+        });
+
+        if (AllNetworkConfigs[chainId].data.sts) {
+            const stakingData = await prisma.prismaStakedSonicData.findUniqueOrThrow({
+                where: { id: AllNetworkConfigs[chainId].data.sts!.address },
+            });
+            return parseFloat(stakingData.totalAssets) * (sPrice?.price || 0);
         }
         return 0;
     }

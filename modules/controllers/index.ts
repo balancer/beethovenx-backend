@@ -1,4 +1,5 @@
 export * from './sftmx-controller';
+export * from './sts-controller';
 export * from './snapshots-controller';
 export * from './pool-mutation-controller';
 export * from './user-balances-controller';

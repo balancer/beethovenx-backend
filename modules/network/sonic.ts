@@ -20,7 +20,7 @@ export const sonicNetworkConfig: NetworkConfig = {
     contentService: new GithubContentService(),
     provider: new ethers.providers.JsonRpcProvider({ url: sonicNetworkData.rpcUrl, timeout: 60000 }),
     poolAprServices: [
-        // new YbTokensAprService(sonicNetworkData.ybAprConfig, sonicNetworkData.chain.prismaId),
+        new YbTokensAprService(sonicNetworkData.ybAprConfig, sonicNetworkData.chain.prismaId),
         new BoostedPoolAprService(),
         new SwapFeeAprService(),
         new GaugeAprService(),
@@ -70,10 +70,6 @@ export const sonicNetworkConfig: NetworkConfig = {
         {
             name: 'sync-new-pools-from-subgraph',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(6, 'minutes') : every(2, 'minutes'),
-        },
-        {
-            name: 'sync-tokens-from-pool-tokens',
-            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(5, 'minutes'),
         },
         {
             name: 'update-liquidity-24h-ago-v2',
@@ -132,6 +128,14 @@ export const sonicNetworkConfig: NetworkConfig = {
         {
             name: 'sync-swaps-v2',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
+        },
+        {
+            name: 'sync-sts-staking-data',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
+        },
+        {
+            name: 'sync-sts-staking-snapshots',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(20, 'minutes') : every(10, 'minutes'),
         },
     ],
 };

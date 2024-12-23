@@ -1,5 +1,5 @@
 import { prisma } from '../../../prisma/prisma-client';
-import _ from 'lodash';
+import _, { add } from 'lodash';
 import { env } from '../../../apps/env';
 import { RateLimiter } from 'limiter';
 import axios, { AxiosError } from 'axios';
@@ -82,28 +82,55 @@ export class CoingeckoDataService {
         this.apiKeyParam = env.COINGECKO_API_KEY ? `&x_cg_pro_api_key=${env.COINGECKO_API_KEY}` : '';
     }
 
-    public async syncCoingeckoIds(chain: Chain) {
-        const allTokens = await prisma.prismaToken.findMany({ where: { chain } });
+    public async syncCoingeckoIds() {
+        // Q: Do coingecko IDs change?
+        const allTokens = await prisma.prismaToken.findMany({
+            where: {
+                OR: [{ coingeckoTokenId: null }, { coingeckoPlatformId: null }],
+                AND: {
+                    chain: {
+                        not: 'SEPOLIA',
+                    },
+                },
+            },
+        });
 
         const coinIds = await this.getCoinIdList();
-
-        for (const token of allTokens) {
-            const coinId = coinIds.find((coinId) => {
-                if (coinId.platforms[config[chain].coingecko.platformId]) {
-                    return coinId.platforms[config[chain].coingecko.platformId].toLowerCase() === token.address;
+        const platformToChain = Object.fromEntries(
+            Object.entries(config)
+                .filter(([chain, _]) => chain !== 'SEPOLIA') // Sepolia is not in CG
+                .map(([chain, chainConfig]) => [chainConfig.coingecko.platformId, chain]),
+        );
+        const coinMap = coinIds.reduce((acc, coin) => {
+            for (const [platform, address] of Object.entries(coin.platforms)) {
+                if (platformToChain[platform]) {
+                    // tokenAddress-chain
+                    acc[`${address.toLowerCase()}-${platformToChain[platform]}`] = coin.id;
                 }
-            });
+            }
+            return acc;
+        }, {} as Record<string, string>);
 
-            await prisma.prismaToken.update({
-                where: {
-                    address_chain: { address: token.address, chain },
-                },
-                data: {
-                    coingeckoTokenId: coinId ? coinId.id : null,
-                    coingeckoPlatformId: config[chain].coingecko.platformId,
-                },
-            });
-        }
+        const updates = allTokens
+            .map((token) => {
+                const coingeckoTokenId = coinMap[`${token.address}-${token.chain}`];
+                const coingeckoPlatformId = config[token.chain].coingecko.platformId;
+
+                if (token.coingeckoTokenId !== coingeckoTokenId || token.coingeckoPlatformId !== coingeckoPlatformId) {
+                    return prisma.prismaToken.update({
+                        where: {
+                            address_chain: { address: token.address, chain: token.chain },
+                        },
+                        data: {
+                            coingeckoTokenId,
+                            coingeckoPlatformId,
+                        },
+                    });
+                }
+            })
+            .filter((update): update is NonNullable<typeof update> => !!update);
+
+        await prisma.$transaction(updates);
     }
 
     // public async getTokenHistoricalPrices(address: string, days: number): Promise<HistoricalPrice[]> {

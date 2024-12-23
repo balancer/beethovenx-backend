@@ -29,6 +29,7 @@ const sourceToHandler = {
     ovix: sources.OvixAprHandler,
     bloom: sources.BloomAprHandler,
     sftmx: sources.SftmxAprHandler,
+    sts: sources.StsAprHandler,
 };
 
 export class YbAprHandlers {

@@ -1,0 +1,36 @@
+
+model PrismaStakedSonicData {
+    id                      String              @id
+    totalAssets             String
+    totalAssetsDelegated    String
+    totalAssetsPool         String
+    stakingApr              String
+    exchangeRate            String
+
+
+    delegatedValidators     PrismaStakedSonicDelegatedValidator[]
+    snapshots               PrismaSonicStakingDataSnapshot[]
+
+}
+
+model PrismaStakedSonicDelegatedValidator {
+    validatorId             String              @id
+
+    sonicStakingId          String
+    sonicStaking            PrismaStakedSonicData  @relation(fields:[sonicStakingId], references: [id])
+
+    assetsDelegated         String
+}
+
+
+model PrismaSonicStakingDataSnapshot {
+    id                      String                  @id
+    sonicStakingId            String
+    sonicStaking              PrismaStakedSonicData  @relation(fields:[sonicStakingId], references: [id])
+
+    timestamp               Int
+    totalAssetsPool         String
+    totalAssetsDelegated    String
+    totalAssets             String
+    exchangeRate            String
+}
