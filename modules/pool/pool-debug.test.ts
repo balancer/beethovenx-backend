@@ -10,6 +10,7 @@ import { ContentController } from '../controllers/content-controller';
 import { PoolController } from '../controllers';
 import { GqlPoolComposableStable, GqlPoolStable } from '../../schema';
 import { Prisma } from '@prisma/client';
+import { tokensTransformer } from '../sources/transformers';
 describe('pool debugging', () => {
     it('query pools', async () => {
         initRequestScopedContext();
@@ -74,29 +75,31 @@ describe('pool debugging', () => {
 
     it('sync aprs', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '42161');
+        setRequestScopedContextValue('chainId', '146');
         // //only do once before starting to debug
         // await poolService.syncAllPoolsFromSubgraph();
-        await PoolController().syncOnchainDataForAllPoolsV2('ARBITRUM');
+        // await PoolController().syncOnchainDataForAllPoolsV2('SONIC');
         // await userService.initWalletBalancesForAllPools();
         // await poolService.reloadStakingForAllPools(['GAUGE'], 'MAINNET');
         // await userService.initStakedBalances(['GAUGE']);
         // // await CowAmmController().reloadPools('MAINNET');
         // // await CowAmmController().syncSwaps('1');
-        // await tokenService.updateTokenPrices(['ARBITRUM']);
-        // await PoolController().updateLiquidityValuesForActivePools('ARBITRUM');
+        // await tokenService.syncTokenContentData('SONIC');
+        // await tokenService.updateTokenPrices(['SONIC']);
+        // await PoolController().updateLiquidityValuesForActivePools('SONIC');
 
-        // await poolService.syncStakingForPools(['ARBITRUM']);
-        await poolService.updatePoolAprs('ARBITRUM');
+        // await poolService.syncStakingForPools(['SONIC']);
+
+        // await poolService.updatePoolAprs('SONIC');
         // const aprs = await prisma.prismaPoolAprItem.findMany({
         //     where: { chain: 'FANTOM', poolId: '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760' },
         // });
         // console.log(aprs);
-        // const pool = await poolService.getGqlPool(
-        //     '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
-        //     'FANTOM',
-        // );
-        // expect(pool.dynamicData.aprItems).toBeDefined();
+        const pool = await poolService.getGqlPool(
+            '0x10ac2f9dae6539e77e372adb14b1bf8fbd16b3e8000200000000000000000005',
+            'SONIC',
+        );
+        expect(pool.dynamicData.aprItems).toBeDefined();
         // expect(pool.dynamicData.aprItems.length).toBeGreaterThan(0);
 
         // await poolService.updatePoolAprs('MAINNET');

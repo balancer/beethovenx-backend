@@ -1273,7 +1273,7 @@ export class PoolGqlLoaderService {
             let type: GqlPoolAprItemType;
             switch (aprItem.type) {
                 case PrismaPoolAprType.NATIVE_REWARD:
-                    if (pool.chain === 'FANTOM') {
+                    if (pool.chain === 'FANTOM' || pool.chain === 'SONIC') {
                         type = 'MABEETS_EMISSIONS';
                     } else {
                         type = 'VEBAL_EMISSIONS';
