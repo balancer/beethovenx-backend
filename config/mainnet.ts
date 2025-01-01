@@ -336,6 +336,30 @@ export default <NetworkData>{
                 path: 'data.smaApr',
                 isIbYield: true,
             },
+            amphrETH: {
+                tokenAddress: '0x5fd13359ba15a84b76f7f87568309040176167cd',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            rstETH: {
+                tokenAddress: '0x7a4effd87c2f3c55ca251080b1343b605f327e3a',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            Re7LRT: {
+                tokenAddress: '0x84631c0d0081fde56deb72f6de77abbbf6a9f93a',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            steakLRT: {
+                tokenAddress: '0xbeef69ac7870777598a04b2bd4771c71212e6abc',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
             pufETH: {
                 tokenAddress: '0xd9a442856c234a39a81a089c06451ebaa4306a72',
                 sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
