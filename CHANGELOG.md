@@ -1,5 +1,12 @@
 # backend
 
+## 1.26.28
+
+### Patch Changes
+
+-   7cc43be: add AaveUSDe LidoGHO APRs
+-   44411b3: new aprs
+
 ## 1.26.27
 
 ### Patch Changes
