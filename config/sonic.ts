@@ -17,7 +17,7 @@ export default <NetworkData>{
         ],
         beetsBar: 'https://',
         blocks: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmZYZcSMaGY2rrq8YFP9avicWf2GM8R2vpB2Xuap1WhipT`,
-        gauge: `https://subgraph.satsuma-prod.com/${env.SATSUMA_API_KEY}/beets--990439/gauges-sonic/api`,
+        gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmSRNzwTmLu55ZxxyxYULS5T1Kar7upz1jzL5FsMzLpB2e`,
         reliquary: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmUM8aU6H3gFx6JL65GQV5baPPjczU9hUb6VRiDQ1jEp3B`,
         sts: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/Qmf7YfRPHCaSf6jeNbu8HUAWQ9Wba5ovk4HEPNaA8NTbvW`,
     },

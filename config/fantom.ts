@@ -88,7 +88,7 @@ export default <NetworkData>{
     balancer: {
         v2: {
             vaultAddress: '0x20dd72ed959b6147912c2e529f0a0c651c33c9ce',
-            defaultSwapFeePercentage: '0.25',
+            defaultSwapFeePercentage: '0.5',
             defaultYieldFeePercentage: '0.25',
             balancerQueriesAddress: '0x1b0a42663df1edea171cd8732d288a81efff6d23',
         },
