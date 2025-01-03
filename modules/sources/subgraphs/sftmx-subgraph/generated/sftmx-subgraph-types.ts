@@ -860,12 +860,12 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type WithdrawalRequestsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<WithdrawalRequest_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<WithdrawalRequest_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<WithdrawalRequest_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<WithdrawalRequest_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type WithdrawalRequestsQuery = {
@@ -881,12 +881,12 @@ export type WithdrawalRequestsQuery = {
 };
 
 export type FtmStakingSnapshotsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<FtmStakingSnapshot_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<FtmStakingSnapshot_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<FtmStakingSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<FtmStakingSnapshot_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type FtmStakingSnapshotsQuery = {
@@ -990,9 +990,10 @@ export const FtmStakingSnapshotsDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -1007,6 +1008,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'WithdrawalRequests',
+                'query',
             );
         },
         ftmStakingSnapshots(
@@ -1020,6 +1022,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ftmStakingSnapshots',
+                'query',
             );
         },
     };

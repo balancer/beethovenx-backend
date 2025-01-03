@@ -2068,39 +2068,36 @@ export enum _SubgraphErrorPolicy_ {
 
 export type ReliquaryQueryVariables = Exact<{
     id: Scalars['ID'];
-    block?: Maybe<Block_Height>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryQuery = {
     __typename?: 'Query';
-    reliquary?:
-        | {
-              __typename?: 'Reliquary';
-              id: string;
-              totalAllocPoint: number;
-              poolCount: number;
-              relicCount: number;
-              emissionToken: {
-                  __typename?: 'Token';
-                  id: string;
-                  address: string;
-                  name: string;
-                  symbol: string;
-                  decimals: number;
-              };
-              emissionCurve: { __typename?: 'EmissionCurve'; id: string; address: string; rewardPerSecond: string };
-          }
-        | null
-        | undefined;
+    reliquary?: {
+        __typename?: 'Reliquary';
+        id: string;
+        totalAllocPoint: number;
+        poolCount: number;
+        relicCount: number;
+        emissionToken: {
+            __typename?: 'Token';
+            id: string;
+            address: string;
+            name: string;
+            symbol: string;
+            decimals: number;
+        };
+        emissionCurve: { __typename?: 'EmissionCurve'; id: string; address: string; rewardPerSecond: string };
+    } | null;
 };
 
 export type ReliquaryRelicsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Relic_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Relic_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Relic_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Relic_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryRelicsQuery = {
@@ -2119,12 +2116,12 @@ export type ReliquaryRelicsQuery = {
 };
 
 export type ReliquaryUsersQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<User_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<User_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<User_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<User_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryUsersQuery = {
@@ -2147,12 +2144,12 @@ export type ReliquaryUsersQuery = {
 };
 
 export type ReliquaryPoolsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Pool_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Pool_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Pool_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Pool_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryPoolsQuery = {
@@ -2166,25 +2163,22 @@ export type ReliquaryPoolsQuery = {
         totalBalance: string;
         relicCount: number;
         allocPoint: number;
-        rewarder?:
-            | {
-                  __typename?: 'Rewarder';
-                  id: string;
-                  emissions: Array<{
-                      __typename?: 'RewarderEmission';
-                      rewardPerSecond: string;
-                      rewardToken: {
-                          __typename?: 'Token';
-                          id: string;
-                          address: string;
-                          name: string;
-                          symbol: string;
-                          decimals: number;
-                      };
-                  }>;
-              }
-            | null
-            | undefined;
+        rewarder?: {
+            __typename?: 'Rewarder';
+            id: string;
+            emissions: Array<{
+                __typename?: 'RewarderEmission';
+                rewardPerSecond: string;
+                rewardToken: {
+                    __typename?: 'Token';
+                    id: string;
+                    address: string;
+                    name: string;
+                    symbol: string;
+                    decimals: number;
+                };
+            }>;
+        } | null;
         levels: Array<{
             __typename?: 'PoolLevel';
             level: number;
@@ -2196,12 +2190,12 @@ export type ReliquaryPoolsQuery = {
 };
 
 export type ReliquaryFarmSnapshotsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<DailyPoolSnapshot_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<DailyPoolSnapshot_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<DailyPoolSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<DailyPoolSnapshot_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryFarmSnapshotsQuery = {
@@ -2219,12 +2213,12 @@ export type ReliquaryFarmSnapshotsQuery = {
 };
 
 export type ReliquaryRelicSnapshotsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<DailyRelicSnapshot_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<DailyRelicSnapshot_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<DailyRelicSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<DailyRelicSnapshot_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryRelicSnapshotsQuery = {
@@ -2243,12 +2237,12 @@ export type ReliquaryRelicSnapshotsQuery = {
 };
 
 export type ReliquaryPoolLevelsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<PoolLevel_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<PoolLevel_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<PoolLevel_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<PoolLevel_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type ReliquaryPoolLevelsQuery = {
@@ -2300,25 +2294,22 @@ export type ReliquaryFarmFragment = {
     totalBalance: string;
     relicCount: number;
     allocPoint: number;
-    rewarder?:
-        | {
-              __typename?: 'Rewarder';
-              id: string;
-              emissions: Array<{
-                  __typename?: 'RewarderEmission';
-                  rewardPerSecond: string;
-                  rewardToken: {
-                      __typename?: 'Token';
-                      id: string;
-                      address: string;
-                      name: string;
-                      symbol: string;
-                      decimals: number;
-                  };
-              }>;
-          }
-        | null
-        | undefined;
+    rewarder?: {
+        __typename?: 'Rewarder';
+        id: string;
+        emissions: Array<{
+            __typename?: 'RewarderEmission';
+            rewardPerSecond: string;
+            rewardToken: {
+                __typename?: 'Token';
+                id: string;
+                address: string;
+                name: string;
+                symbol: string;
+                decimals: number;
+            };
+        }>;
+    } | null;
     levels: Array<{
         __typename?: 'PoolLevel';
         level: number;
@@ -2355,15 +2346,12 @@ export type ReliquaryGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ReliquaryGetMetaQuery = {
     __typename?: 'Query';
-    meta?:
-        | {
-              __typename?: '_Meta_';
-              deployment: string;
-              hasIndexingErrors: boolean;
-              block: { __typename?: '_Block_'; number: number };
-          }
-        | null
-        | undefined;
+    meta?: {
+        __typename?: '_Meta_';
+        deployment: string;
+        hasIndexingErrors: boolean;
+        block: { __typename?: '_Block_'; number: number };
+    } | null;
 };
 
 export const ReliquaryRelicFragmentDoc = gql`
@@ -2614,9 +2602,10 @@ export const ReliquaryGetMetaDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -2631,6 +2620,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Reliquary',
+                'query',
             );
         },
         ReliquaryRelics(
@@ -2644,6 +2634,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryRelics',
+                'query',
             );
         },
         ReliquaryUsers(
@@ -2657,6 +2648,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryUsers',
+                'query',
             );
         },
         ReliquaryPools(
@@ -2670,6 +2662,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryPools',
+                'query',
             );
         },
         ReliquaryFarmSnapshots(
@@ -2683,6 +2676,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryFarmSnapshots',
+                'query',
             );
         },
         ReliquaryRelicSnapshots(
@@ -2696,6 +2690,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryRelicSnapshots',
+                'query',
             );
         },
         ReliquaryPoolLevels(
@@ -2709,6 +2704,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryPoolLevels',
+                'query',
             );
         },
         ReliquaryGetMeta(
@@ -2722,6 +2718,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'ReliquaryGetMeta',
+                'query',
             );
         },
     };

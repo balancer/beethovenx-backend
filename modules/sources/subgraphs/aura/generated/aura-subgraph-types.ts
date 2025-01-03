@@ -400,7 +400,7 @@ export type VaultSchemaHistoricApRsArgs = {
 };
 
 export type AllPoolsQueryVariables = Exact<{
-    chainIds?: Maybe<Array<Scalars['Int']> | Scalars['Int']>;
+    chainIds?: InputMaybe<Array<Scalars['Int']> | Scalars['Int']>;
 }>;
 
 export type AllPoolsQuery = {
@@ -427,7 +427,7 @@ export type PoolSchemaFragment = {
 };
 
 export type AccountsQueryVariables = Exact<{
-    ids?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+    ids?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type AccountsQuery = {
@@ -515,9 +515,10 @@ export const AccountsDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -532,6 +533,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'allPools',
+                'query',
             );
         },
         accounts(
@@ -545,6 +547,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'accounts',
+                'query',
             );
         },
     };
