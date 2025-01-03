@@ -1,6 +1,6 @@
 import config from '../../config';
 import { prisma } from '../../prisma/prisma-client';
-import { poolService } from '../pool/pool.service';
+import { PoolService, poolService } from '../pool/pool.service';
 import { getVaultClient } from '../sources/contracts';
 import { getV3JoinedSubgraphClient } from '../sources/subgraphs';
 import { getViemClient } from '../sources/viem-client';
@@ -9,6 +9,7 @@ import { PoolController } from './pool-controller';
 import { upsertPools as upsertPoolsV3 } from '../actions/pool/v3/upsert-pools';
 import { syncPools as syncPoolsV3 } from '../actions/pool/v3/sync-pools';
 import exp from 'constants';
+import { StakingController } from './staking-controller';
 
 describe('pool controller debugging', () => {
     it('delete reload v3 pools', async () => {
@@ -94,14 +95,14 @@ describe('pool controller debugging', () => {
         // await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS_V3, latestBlock);
     }, 5000000);
 
-    it('erc4626 data', async () => {
+    it('sync staking', async () => {
+        await StakingController().syncStaking('MAINNET');
 
-        TokenController().ync
-        const boostedPool = await poolService.getGqlPool('0x6649a010cbcf5742e7a13a657df358556b3e55cf', 'MAINNET');
+        const pool = await poolService.getGqlPool(
+            '0x36be1e97ea98ab43b4debf92742517266f5731a3000200000000000000000466',
+            'MAINNET',
+        );
 
-        expect(boostedPool).toBeDefined();
-        for (const token of boostedPool.poolTokens) {
-            expect(token.isErc4626).toBe(true);
-        }
+        console.log(pool.staking?.gauge?.rewards);
     }, 5000000);
 });
