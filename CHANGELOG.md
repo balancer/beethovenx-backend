@@ -1,5 +1,13 @@
 # backend
 
+## 1.26.29
+
+### Patch Changes
+
+-   2b41540: need to consider gauge cap for mainnet gauges
+-   a437b87: add sonic beets circulating supply endpoint
+-   4b18c78: dont display phantom BPT as nested pool in pool tokens
+
 ## 1.26.28
 
 ### Patch Changes
