@@ -53,19 +53,15 @@ describe('pool debugging', () => {
         // await PoolController().reloadPoolsV3('SEPOLIA');
 
         // const allPools = await poolService.getGqlPools({ where: { chainIn: ['SEPOLIA'], protocolVersionIn: [3] } });
-        await PoolController().syncOnchainDataForPoolsV2('FANTOM', [
-            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
-        ]);
-        const stablev3 = (await poolService.getGqlPool(
-            '0x711fd80b36723bce3b42ad6622903e1e39d911dd',
-            'SEPOLIA',
-        )) as GqlPoolStable;
+        // await PoolController().syncOnchainDataForPoolsV2('FANTOM', [
+        //     '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
+        // ]);
         const stablev2 = (await poolService.getGqlPool(
-            '0x593000b762de3c465855336e95c8bb46080af064000000000000000000000760',
-            'FANTOM',
+            '0x5f8893506ddc4c271837187d14a9c87964a074dc000000000000000000000106',
+            'OPTIMISM',
         )) as GqlPoolComposableStable;
 
-        console.log(stablev3.bptPriceRate);
+        // console.log(stablev3.bptPriceRate);
         console.log(stablev2.bptPriceRate);
 
         // const poolAfterNewSync = await poolService.getGqlPool('0x8fc07bcf9b88ace84c7523248dc4a85f638c9536', 'SEPOLIA');

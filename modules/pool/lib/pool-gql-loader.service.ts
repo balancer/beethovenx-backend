@@ -326,7 +326,7 @@ export class PoolGqlLoaderService {
             dynamicData: this.getPoolDynamicData(pool),
             allTokens: this.mapAllTokens(pool),
             displayTokens: this.mapDisplayTokens(pool),
-            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
+            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token)),
             staking: this.getStakingData(pool),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
             categories: pool.categories as GqlPoolFilterCategory[],
@@ -623,7 +623,7 @@ export class PoolGqlLoaderService {
         const mappedData = {
             decimals: 18,
             dynamicData: this.getPoolDynamicData(pool),
-            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
+            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token)),
             vaultVersion: poolWithoutTypeData.protocolVersion,
             liquidityManagement: (pool.liquidityManagement as LiquidityManagement) || undefined,
             hook: pool.hook as HookData as GqlHook,
@@ -700,7 +700,7 @@ export class PoolGqlLoaderService {
             tokens: pool.tokens.map((token) => this.mapPoolTokenToGqlUnion(token)), // TODO DEPRECATE
             allTokens: this.mapAllTokens(pool),
             displayTokens: this.mapDisplayTokens(pool),
-            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token, token.nestedPool !== null)),
+            poolTokens: pool.tokens.map((token) => this.mapPoolToken(token)),
             userBalance: this.getUserBalance(pool, userWalletbalances, userStakedBalances),
             vaultVersion: poolWithoutTypeData.protocolVersion,
             categories: pool.categories as GqlPoolFilterCategory[],
@@ -831,12 +831,10 @@ export class PoolGqlLoaderService {
             });
     }
 
-    private mapPoolToken(
-        poolToken: PrismaPoolTokenWithExpandedNesting,
-        hasNestedPool: boolean,
-        nestedPercentage = 1,
-    ): GqlPoolTokenDetail {
+    private mapPoolToken(poolToken: PrismaPoolTokenWithExpandedNesting, nestedPercentage = 1): GqlPoolTokenDetail {
         const { nestedPool } = poolToken;
+
+        const hasNestedPool = nestedPool !== null && nestedPool.id !== poolToken.poolId;
 
         return {
             id: `${poolToken.poolId}-${poolToken.token.address}`,
@@ -848,7 +846,7 @@ export class PoolGqlLoaderService {
             priceRateProvider: poolToken.priceRateProvider,
             weight: poolToken.weight,
             hasNestedPool: hasNestedPool,
-            nestedPool: nestedPool ? this.mapNestedPool(nestedPool, poolToken.balance || '0') : undefined,
+            nestedPool: hasNestedPool ? this.mapNestedPool(nestedPool, poolToken.balance || '0') : undefined,
             isAllowed: poolToken.token.types.some(
                 (type) => type.type === 'WHITE_LISTED' || type.type === 'PHANTOM_BPT' || type.type === 'BPT',
             ),
@@ -880,7 +878,6 @@ export class PoolGqlLoaderService {
                         ...token,
                         nestedPool: null,
                     },
-                    token.nestedPool !== null,
                     percentOfSupplyNested,
                 ),
             ),
