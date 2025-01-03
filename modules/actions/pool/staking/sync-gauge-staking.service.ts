@@ -16,6 +16,7 @@ import { GaugeSubgraphService, LiquidityGaugeStatus } from '../../../subgraphs/g
 import gaugeControllerAbi from '../../../vebal/abi/gaugeController.json';
 import childChainGaugeV2Abi from './abi/ChildChainGaugeV2.json';
 import childChainGaugeV1Abi from './abi/ChildChainGaugeV1.json';
+import mainnetLiquidityGaugeAbi from './abi/MainnetLiquidityGauge.json';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import type { JsonFragment } from '@ethersproject/abi';
@@ -40,6 +41,7 @@ interface GaugeBalDistributionData {
         weight?: BigNumber;
         workingSupply?: BigNumber;
         totalSupply?: BigNumber;
+        relativeWeightCap?: BigNumber;
     };
 }
 
@@ -53,6 +55,7 @@ export const syncGaugeStakingForPools = async (
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'totalSupply'),
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'working_supply'),
         ...childChainGaugeV2Abi.filter((abi) => abi.name === 'inflation_rate'),
+        ...mainnetLiquidityGaugeAbi.filter((abi) => abi.name === 'getRelativeWeightCap'),
         gaugeControllerAbi.find((abi) => abi.name === 'gauge_relative_weight'),
     ] as JsonFragment[]);
 
@@ -263,6 +266,7 @@ const getOnchainRewardTokensData = async (
                 true,
             );
             balMulticaller.call(`${gauge.id}.workingSupply`, gauge.id, 'working_supply', [], true);
+            balMulticaller.call(`${gauge.id}.relativeWeightCap`, gauge.id, 'getRelativeWeightCap', [], true);
         }
     }
     const balData = (await balMulticaller.execute()) as GaugeBalDistributionData;
@@ -303,11 +307,16 @@ const getOnchainRewardTokensData = async (
     const onchainRates = [
         ...Object.keys(balData).map((gaugeAddress) => {
             const id = `${gaugeAddress}-${balAddress}-balgauge`.toLowerCase();
-            const { rate, weight, workingSupply, totalSupply } = balData[gaugeAddress];
+            const { rate, weight, workingSupply, totalSupply, relativeWeightCap } = balData[gaugeAddress];
+
+            let weightAfterCap;
+            if (relativeWeightCap && weight) {
+                weightAfterCap = Math.min(parseFloat(formatUnits(relativeWeightCap)), parseFloat(formatUnits(weight)));
+            }
             const rewardPerSecond = rate
                 ? formatUnits(rate) // L2 V2 case for BAL rewards
-                : weight
-                ? (parseFloat(formatUnits(weight!)) * totalBalRate).toFixed(18) // mainnet case for BAL rewards
+                : weightAfterCap
+                ? (weightAfterCap! * totalBalRate).toFixed(18) // mainnet case for BAL rewards
                 : '0'; // mainnet case without any votes for this gauge for BAL rewards
 
             return {

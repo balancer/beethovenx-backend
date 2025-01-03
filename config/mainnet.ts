@@ -9,6 +9,7 @@ const underlyingTokens = {
     wETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     crvUSD: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
     LUSD: '0x5f98805a4e8be255a32880fdec7f6728c6568ba0',
+    USDe: '0x4c9edd5852cd905f086c759e8383e09bff1e68b3',
 };
 
 export default <NetworkData>{
@@ -202,6 +203,13 @@ export default <NetworkData>{
                             stataEthLUSD: '0xdbf5e36569798d1e39ee9d7b1c61a7409a74f23a',
                         },
                     },
+                    USDe: {
+                        underlyingAssetAddress: underlyingTokens.USDe,
+                        aTokenAddress: '0x4f5923fc5fd4a93352581b38b7cd26943012decf',
+                        wrappedTokens: {
+                            stataEthUSDe: '0x5f9d59db355b4a60501544637b00e94082ca575b',
+                        },
+                    },
                 },
             },
             lido: {
@@ -219,6 +227,13 @@ export default <NetworkData>{
                         aTokenAddress: '0xc035a7cf15375ce2706766804551791ad035e0c2',
                         wrappedTokens: {
                             waEthLidowstETH: '0x775f661b0bd1739349b9a2a3ef60be277c5d2d29',
+                        },
+                    },
+                    LidoGHO: {
+                        underlyingAssetAddress: '0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f',
+                        aTokenAddress: '0x18efe565a5373f430e2f809b97de30335b3ad96a',
+                        wrappedTokens: {
+                            waEthLidoGHO: '0xc71ea051a5f82c67adcf634c36ffe6334793d24c',
                         },
                     },
                 },
@@ -317,6 +332,30 @@ export default <NetworkData>{
             },
             stETH: {
                 tokenAddress: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            amphrETH: {
+                tokenAddress: '0x5fd13359ba15a84b76f7f87568309040176167cd',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            rstETH: {
+                tokenAddress: '0x7a4effd87c2f3c55ca251080b1343b605f327e3a',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            Re7LRT: {
+                tokenAddress: '0x84631c0d0081fde56deb72f6de77abbbf6a9f93a',
+                sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
+                path: 'data.smaApr',
+                isIbYield: true,
+            },
+            steakLRT: {
+                tokenAddress: '0xbeef69ac7870777598a04b2bd4771c71212e6abc',
                 sourceUrl: 'https://eth-api.lido.fi/v1/protocol/steth/apr/sma',
                 path: 'data.smaApr',
                 isIbYield: true,
