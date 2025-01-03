@@ -127,5 +127,9 @@ export const polygonNetworkConfig: NetworkConfig = {
             name: 'sync-swaps-v2',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(1, 'minutes'),
         },
+        {
+            name: 'sync-erc4626-unwrap-rate',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
+        },
     ],
 };

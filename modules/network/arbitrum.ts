@@ -144,5 +144,9 @@ export const arbitrumNetworkConfig: NetworkConfig = {
             name: 'update-cow-amm-volume-and-fees',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
         },
+        {
+            name: 'sync-erc4626-unwrap-rate',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
+        },
     ],
 };

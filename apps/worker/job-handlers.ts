@@ -29,6 +29,7 @@ import {
     StakedSonicController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
+import { TokenController } from '../../modules/controllers/token-controller';
 
 const runningJobs: Set<string> = new Set();
 
@@ -410,6 +411,15 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             break;
         case 'sync-erc4626-data':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Data(), res, next);
+            break;
+        case 'sync-erc4626-unwrap-rate':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => TokenController().syncErc4626UnwrapRates(chain),
+                res,
+                next,
+            );
             break;
         default:
             res.sendStatus(400);
