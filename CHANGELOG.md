@@ -1,5 +1,16 @@
 # backend
 
+## 1.27.0
+
+### Minor Changes
+
+-   2b15183: Update SOR buffers to use unwrapRate from erc4626 tokens
+
+### Patch Changes
+
+-   82b7e0d: swap needs to be at least $1 to be used as pricing
+-   2e9f4cd: Revert PrismaPoolSnapshot index changes
+
 ## 1.26.29
 
 ### Patch Changes
