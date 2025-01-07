@@ -14,6 +14,9 @@ export const fetchUnwrapRates = async (
 ): Promise<{
     [id: string]: string;
 }> => {
+    if (erc4626Tokens.length === 0) {
+        return {};
+    }
     const chain = erc4626Tokens[0].chain;
     const caller = new Multicaller3Viem(chain, MinimalErc4626Abi);
     erc4626Tokens.forEach((token) =>
