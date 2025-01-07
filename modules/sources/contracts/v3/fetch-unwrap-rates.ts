@@ -32,6 +32,10 @@ export const fetchUnwrapRates = async (
                 // this should never happen, but I was able to replicate locally, so I'm adding this check
                 return [key, '1'];
             }
+            if (!underlyingTokenMap[address]) {
+                console.error(`Missing underlying token for ${address}`);
+                return [key, '1'];
+            }
             return [key, formatUnits(value, underlyingTokenMap[address].decimals)];
         }),
     );
