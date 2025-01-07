@@ -12,10 +12,12 @@ export default <NetworkData>{
     },
     subgraphs: {
         startDate: '2024-05-22',
-        balancer: [`https://api.studio.thegraph.com/query/75376/balancer-mode-v2/version/latest`],
+        balancer: [
+            `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmSV7RXmuSxNm7NyAVYPqbkB9rfPPRiL4ANgr7iTxuW8Vu`,
+        ],
         beetsBar: '',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/8W1osXrVFmWcRuZhvE7PwEcwmgSRXUVRDnwnpuottha1`,
-        gauge: `https://api.studio.thegraph.com/query/75376/balancer-gauges-mode/version/latest`,
+        gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmRmDxf7L6L1aYY9uv58PGRooB9cLLNkUTPME3n8fTCkWc`,
     },
     eth: {
         address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
