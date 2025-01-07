@@ -37,7 +37,7 @@ export default <NetworkData>{
         excludedTokenAddresses: ['0x97513e975a7fa9072c72c92d8000b0db90b163c5'], //multibeets
     },
     rpcUrl: env.DRPC_API_KEY
-        ? `https://lb.drpc.org/ogrpc?network=optimism&dkey=${env.DRPC_API_KEY}`
+        ? `https://lb.drpc.org/ogrpc?network=optimism&dkey=${env.DRPC_BEETS_API_KEY}`
         : 'https://mainnet.optimism.io',
     rpcMaxBlockRange: 2000,
     protocolToken: 'beets',

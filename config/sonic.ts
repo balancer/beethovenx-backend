@@ -36,7 +36,7 @@ export default <NetworkData>{
         platformId: 'sonic-mainnet',
         excludedTokenAddresses: [],
     },
-    rpcUrl: `https://lb.drpc.org/ogrpc?network=sonic&dkey=${env.DRPC_API_KEY}`,
+    rpcUrl: `https://lb.drpc.org/ogrpc?network=sonic&dkey=${env.DRPC_BEETS_API_KEY}`,
     rpcMaxBlockRange: 2000,
     protocolToken: 'beets',
     beets: {
