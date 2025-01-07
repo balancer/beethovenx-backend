@@ -57,3 +57,5 @@ export class CloudwatchMetricsPublisher {
 }
 
 export const cronsMetricPublisher = new CloudwatchMetricsPublisher('backendCrons');
+
+export const subgraphMetricPublisher = new CloudwatchMetricsPublisher('backendSubgraphs');

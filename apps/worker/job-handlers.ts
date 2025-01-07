@@ -30,6 +30,7 @@ import {
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 import { TokenController } from '../../modules/controllers/token-controller';
+import { SubgraphMonitorController } from '../../modules/controllers/subgraph-monitor-controller';
 
 const runningJobs: Set<string> = new Set();
 
@@ -417,6 +418,15 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 name,
                 chainId,
                 () => TokenController().syncErc4626UnwrapRates(chain),
+                res,
+                next,
+            );
+            break;
+        case 'post-subgraph-lag-metrics':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => SubgraphMonitorController().postSubgraphLagMetrics(),
                 res,
                 next,
             );

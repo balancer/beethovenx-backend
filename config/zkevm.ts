@@ -15,7 +15,6 @@ export default <NetworkData>{
         balancer: [
             `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmVNcphdNjTCaJ4ammPtFzRyD4gmyNBomKcVFZ98RADpS1`,
         ],
-        beetsBar: 'https://',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/EPWJiod7hQ7yy4QhXihL9ssw82NosmRnu8txcf5D9Duo`,
         gauge: `https://api.studio.thegraph.com/query/24660/balancer-gauges-polygon-zk/version/latest`,
         aura: 'https://data.aura.finance/graphql',
