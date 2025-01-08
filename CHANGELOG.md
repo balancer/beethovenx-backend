@@ -1,5 +1,13 @@
 # backend
 
+## 1.27.2
+
+### Patch Changes
+
+-   5c1567e: new morpho aprs
+-   e73df95: revert subgraph fallbacks
+-   ec1174b: add alerts for subgraph lags
+
 ## 1.27.1
 
 ### Patch Changes
