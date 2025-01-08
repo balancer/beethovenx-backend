@@ -13,9 +13,7 @@ export default <NetworkData>{
     },
     subgraphs: {
         startDate: '2021-10-08',
-        balancer: [
-            `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/Qme9r1RTFZ6hEZ4ebPSmo3J81FNHhjeNZs5nBaSGTzb2hb`,
-        ],
+        balancer: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/Qme9r1RTFZ6hEZ4ebPSmo3J81FNHhjeNZs5nBaSGTzb2hb`,
         beetsBar: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmXcxzZioHXV5ts2UcG6gNNEayoaZ9ip7D9JvPS88K2HXe`,
         blocks: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/subgraphs/id/3drjZDpA9hAuYGA19ttEkhW432mVe2XHy5YarBDVYHbz`,
         masterchef: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmZQJu1rxMEDwzZb5TSqDXjcFiS1DN8BRKCLKRv6ifEBhA`,

@@ -16,31 +16,18 @@ export function SubgraphMonitorController(tracer?: any) {
                 const viemClient = getViemClient(config.data.chain.prismaId);
 
                 for (const [subgraphName, subgraphUrl] of Object.entries(config.data.subgraphs)) {
-                    if (
-                        typeof subgraphUrl === 'string' &&
-                        !subgraphUrl.includes('thegraph') &&
-                        !subgraphUrl.includes('goldsky')
-                    ) {
+                    if (!subgraphUrl.includes('thegraph') && !subgraphUrl.includes('goldsky')) {
                         continue;
                     }
 
                     const latestBlock = await viemClient.getBlockNumber();
                     let lag = 0;
 
-                    if (subgraphName === 'balancer') {
-                        const subgraphArray = subgraphUrl as string[];
+                    const subgraph = new GaugeSubgraphService(subgraphUrl as string);
 
-                        // we are reusing an arbitrary subgraph service that has the getMeta method
-                        const subgraph = new GaugeSubgraphService(subgraphArray[0]);
+                    const meta = await subgraph.getMetadata();
+                    lag = Math.max(Number(latestBlock) - meta.block.number, 0);
 
-                        const meta = await subgraph.getMetadata();
-                        lag = Math.max(Number(latestBlock) - meta.block.number, 0);
-                    } else {
-                        const subgraph = new GaugeSubgraphService(subgraphUrl as string);
-
-                        const meta = await subgraph.getMetadata();
-                        lag = Math.max(Number(latestBlock) - meta.block.number, 0);
-                    }
                     subgraphMetricPublisher.publish(
                         `${config.data.chain.slug}-${subgraphName}-${subgraphUrl}-lag`,
                         lag,

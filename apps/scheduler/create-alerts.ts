@@ -17,20 +17,13 @@ export async function createAlerts(chainId: string): Promise<void> {
     await createCronAlertsIfNotExist(chainId, config.workerJobs);
 
     const subgraphs = Object.entries(config.data.subgraphs).filter(
-        ([subgraphName, subgraphUrl]) =>
-            !(typeof subgraphUrl === 'string' && !subgraphUrl.includes('thegraph') && !subgraphUrl.includes('goldsky')),
+        ([subgraphName, subgraphUrl]) => subgraphUrl.includes('thegraph') || subgraphUrl.includes('goldsky'),
     );
 
     const subgraphsToAlert: { subgraphName: string; subgraphUrl: string }[] = [];
 
     for (const [subgraphName, subgraphUrl] of subgraphs) {
-        let url = subgraphUrl;
-        if (subgraphName === 'balancer') {
-            const subgraphArray = subgraphUrl as string[];
-            url = subgraphArray[0];
-        }
-
-        subgraphsToAlert.push({ subgraphName, subgraphUrl: url as string });
+        subgraphsToAlert.push({ subgraphName, subgraphUrl });
     }
 
     await createSubgraphLagAlertsIfNotExist(chainId, config.data.chain.slug, subgraphsToAlert);
