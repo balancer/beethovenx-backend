@@ -1,5 +1,15 @@
 # backend
 
+## 1.27.1
+
+### Patch Changes
+
+-   931c829: collect subgraph lag metrics
+-   7d0f05c: publish mode subgraphs to network
+-   7f20e8e: handle missing tokens in erc4626 rates
+-   e2453c8: use beets drpc key
+-   b0f0279: fix: handle empty erc4626Tokens array
+
 ## 1.27.0
 
 ### Minor Changes
