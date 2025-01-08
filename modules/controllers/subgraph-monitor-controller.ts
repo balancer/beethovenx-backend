@@ -32,7 +32,7 @@ export function SubgraphMonitorController(tracer?: any) {
                     }
 
                     subgraphMetricPublisher.publish(
-                        `${config.data.chain.slug}-${subgraphName}-lag-${subgraphUrl}`,
+                        `${config.data.chain.slug}-${subgraphName}-lag-${subgraphUrlClean}`,
                         lag,
                     );
                 }
