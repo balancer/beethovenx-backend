@@ -180,7 +180,7 @@ async function createSubgraphLagAlertsIfNotExist(
             AlarmActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
             OKActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
             MetricName: metricName,
-            Statistic: 'Max',
+            Statistic: 'Maximum',
             Dimensions: [{ Name: 'Environment', Value: env.DEPLOYMENT_ENV }],
             // This configures that it will alarm if the cron did not run once over the last three (or configred) intervals
             Period: EVALUATION_PERIOD,
