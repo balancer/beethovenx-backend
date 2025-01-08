@@ -35,14 +35,16 @@ export function SubgraphMonitorController(tracer?: any) {
 
                         const meta = await subgraph.getMetadata();
                         lag = Math.max(Number(latestBlock) - meta.block.number, 0);
-                        console.log(`Lag for ${subgraphName} is ${lag}`);
                     } else {
                         const subgraph = new GaugeSubgraphService(subgraphUrl as string);
 
                         const meta = await subgraph.getMetadata();
                         lag = Math.max(Number(latestBlock) - meta.block.number, 0);
                     }
-                    subgraphMetricPublisher.publish(`${config.data.chain.slug}-${subgraphName}-lag`, lag);
+                    subgraphMetricPublisher.publish(
+                        `${config.data.chain.slug}-${subgraphName}-${subgraphUrl}-lag`,
+                        lag,
+                    );
                 }
             }
         },
