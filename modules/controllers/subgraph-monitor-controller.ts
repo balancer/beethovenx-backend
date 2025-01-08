@@ -1,7 +1,3 @@
-import { Chain } from '@prisma/client';
-import { syncMerklRewards } from '../actions/aprs/merkl';
-import { SwapFeeFromSnapshotsAprService } from '../pool/lib/apr-data-sources/swap-fee-apr-from-snapshots.service';
-import { prisma } from '../../prisma/prisma-client';
 import { subgraphMetricPublisher } from '../metrics/metrics.client';
 import { AllNetworkConfigs } from '../network/network-config';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
@@ -28,8 +24,15 @@ export function SubgraphMonitorController(tracer?: any) {
                     const meta = await subgraph.getMetadata();
                     lag = Math.max(Number(latestBlock) - meta.block.number, 0);
 
+                    let subgraphUrlClean = subgraphUrl;
+                    if (subgraphUrl.includes('gateway')) {
+                        const parts = subgraphUrl.split('/');
+                        parts.splice(4, 1);
+                        subgraphUrlClean = parts.join('/');
+                    }
+
                     subgraphMetricPublisher.publish(
-                        `${config.data.chain.slug}-${subgraphName}-${subgraphUrl}-lag`,
+                        `${config.data.chain.slug}-${subgraphName}-lag-${subgraphUrl}`,
                         lag,
                     );
                 }

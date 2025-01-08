@@ -23,7 +23,14 @@ export async function createAlerts(chainId: string): Promise<void> {
     const subgraphsToAlert: { subgraphName: string; subgraphUrl: string }[] = [];
 
     for (const [subgraphName, subgraphUrl] of subgraphs) {
-        subgraphsToAlert.push({ subgraphName, subgraphUrl });
+        let subgraphUrlClean = subgraphUrl;
+        if (subgraphUrl.includes('gateway')) {
+            const parts = subgraphUrl.split('/');
+            parts.splice(4, 1);
+            subgraphUrlClean = parts.join('/');
+        }
+
+        subgraphsToAlert.push({ subgraphName, subgraphUrl: subgraphUrlClean });
     }
 
     await createSubgraphLagAlertsIfNotExist(chainId, config.data.chain.slug, subgraphsToAlert);
@@ -159,7 +166,7 @@ async function createSubgraphLagAlertsIfNotExist(
     // upsert all other alarms
     for (const subgraph of subgraphs) {
         const alarmName = `${ALARM_PREFIX}:${subgraph.subgraphName}`;
-        const metricName = `${chainSlug}-${subgraph.subgraphName}-${subgraph.subgraphUrl}-lag`;
+        const metricName = `${chainSlug}-${subgraph.subgraphName}-lag-${subgraph.subgraphUrl}`;
 
         //make sure metric is available for alarm
         await subgraphMetricPublisher.publish(metricName, 0);
