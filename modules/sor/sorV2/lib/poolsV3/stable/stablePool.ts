@@ -258,6 +258,7 @@ export class StablePool implements BasePoolV3 {
                     kind: RemoveKind.SINGLE_TOKEN_EXACT_OUT,
                 },
                 this.poolState,
+                this.hookState
             );
             calculatedAmount = bptAmountInRaw;
         } else if (tOut.token.isSameAddress(this.id)) {
@@ -278,6 +279,7 @@ export class StablePool implements BasePoolV3 {
                     kind: AddKind.SINGLE_TOKEN_EXACT_OUT,
                 },
                 this.poolState,
+                this.hookState
             );
             calculatedAmount = amountsInRaw[tIn.index];
         } else {
@@ -290,6 +292,7 @@ export class StablePool implements BasePoolV3 {
                     swapKind: SwapKind.GivenOut,
                 },
                 this.poolState,
+                this.hookState
             );
         }
         return TokenAmount.fromRawAmount(tIn.token, calculatedAmount);
