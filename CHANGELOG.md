@@ -1,5 +1,13 @@
 # backend
 
+## 1.27.3
+
+### Patch Changes
+
+-   f6610d0: manage sentry config via env
+-   b27003d: handle additional morpho token reward apr
+-   f416bf9: adjust sentry sample rates
+
 ## 1.27.2
 
 ### Patch Changes
