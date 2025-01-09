@@ -4,7 +4,7 @@ import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path } from '@balan
 
 import { PathWithAmount } from './sorV2/lib/path';
 import { sorGetPathsWithPools } from './sorV2/lib/static';
-import { getOutputAmount } from './sorV2/lib/utils/helpers';
+import { getOutputAmount, getInputAmount } from './sorV2/lib/utils/helpers';
 import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 
 import { ANVIL_NETWORKS, startFork, stopAnvilForks } from '../../test/anvil/anvil-global-setup';
@@ -579,7 +579,7 @@ describe('Balancer SOR Integration Tests', () => {
             // The sor sets the output amount to 0 in this case.
             expect(paths[0].outputAmount.amount).toEqual(0n);
         });
-        test('SOR quote should match swap query with directional fee hook used', async () => {
+        test('SOR quote should match swap query with directional fee hook used - GIVEN IN', async () => {
             // GIVEN IN
             const dai = new Token(
                 parseFloat(chainToIdMap[BAL.token.chain]),
@@ -623,6 +623,52 @@ describe('Balancer SOR Integration Tests', () => {
             const returnAmountSOR = getOutputAmount(paths);
             const queryOutput = await sdkSwap.query(rpcUrl);
             const returnAmountQuery = (queryOutput as ExactInQueryOutput).expectedAmountOut;
+            expect(returnAmountQuery.amount).toEqual(returnAmountSOR.amount);
+        });
+        test.only('SOR quote should match swap query with directional fee hook used - GIVEN OUT', async () => {
+            // GIVEN OUT
+            const dai = new Token(
+                parseFloat(chainToIdMap[BAL.token.chain]),
+                aaveFaucetDai.address as Address,
+                aaveFaucetDai.token.decimals,
+            );
+            const usdc = new Token(
+                parseFloat(chainToIdMap[WETH.token.chain]),
+                aaveFaucetUsdc.address as Address,
+                aaveFaucetUsdc.token.decimals,
+            );
+            const amountOut = BigInt(1e6);
+
+            paths = (await sorGetPathsWithPools(
+                dai, //tokenIn
+                usdc, //tokenOut
+                SwapKind.GivenOut,
+                amountOut,
+                [prismaStablePoolWithDirectionalFee], //both pools have hooks.
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            const swapPaths: Path[] = paths.map((path) => ({
+                protocolVersion,
+                inputAmountRaw: path.inputAmount.amount,
+                outputAmountRaw: path.outputAmount.amount,
+                tokens: path.tokens.map((token) => ({
+                    address: token.address,
+                    decimals: token.decimals,
+                })),
+                pools: path.pools.map((pool) => pool.id),
+            }));
+
+            // build SDK swap from SOR paths
+            sdkSwap = new Swap({
+                chainId: parseFloat(chainToIdMap['SEPOLIA']),
+                paths: swapPaths,
+                swapKind: SwapKind.GivenOut,
+            });
+
+            const returnAmountSOR = getInputAmount(paths);
+            const queryOutput = await sdkSwap.query(rpcUrl);
+            const returnAmountQuery = (queryOutput as ExactOutQueryOutput).expectedAmountIn;
             expect(returnAmountQuery.amount).toEqual(returnAmountSOR.amount);
         });
     });
