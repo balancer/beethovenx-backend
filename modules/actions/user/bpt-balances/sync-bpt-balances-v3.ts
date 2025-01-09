@@ -28,10 +28,10 @@ export const syncBptBalancesV3 = async (chain: Chain, subgraphUrl?: string) => {
 
     let syncedRange = 0;
     try {
-        syncedRange = await syncBptBalancesFromSubgraph(poolIds, subgraphClient, chain, 'BPT_BALANCES_V3');
-    } catch (e: any) {
-        console.log(`syncBptBalancesFromSubgraph BPT_BALANCES_V3 on ${chain} failed, trying RPC`, e.message);
         syncedRange = await syncBptBalancesFromRpc(poolIds, viemClient, chain, 'BPT_BALANCES_V3');
+    } catch (e: any) {
+        console.log(`syncBptBalancesFromRpc BPT_BALANCES_V3 on ${chain} failed, trying SG`, e.message);
+        syncedRange = await syncBptBalancesFromSubgraph(poolIds, subgraphClient, chain, 'BPT_BALANCES_V3');
     }
 
     return syncedRange;
