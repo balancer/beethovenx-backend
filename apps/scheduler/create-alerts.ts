@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import {
     CloudWatchClient,
     DeleteAlarmsCommand,
@@ -11,13 +10,33 @@ import { DeploymentEnv, WorkerJob } from '../../modules/network/network-config-t
 import { networkContext } from '../../modules/network/network-context.service';
 import { secondsPerDay } from '../../modules/common/time';
 import { sleep } from '../../modules/common/promise';
-import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
+import { cronsMetricPublisher, subgraphMetricPublisher } from '../../modules/metrics/metrics.client';
 
 export async function createAlerts(chainId: string): Promise<void> {
-    await createAlertsIfNotExist(chainId, AllNetworkConfigs[chainId].workerJobs);
+    const config = AllNetworkConfigs[chainId];
+    await createCronAlertsIfNotExist(chainId, config.workerJobs);
+
+    const subgraphs = Object.entries(config.data.subgraphs).filter(
+        ([subgraphName, subgraphUrl]) => subgraphUrl.includes('thegraph') || subgraphUrl.includes('goldsky'),
+    );
+
+    const subgraphsToAlert: { subgraphName: string; subgraphUrl: string }[] = [];
+
+    for (const [subgraphName, subgraphUrl] of subgraphs) {
+        let subgraphUrlClean = subgraphUrl;
+        if (subgraphUrl.includes('gateway')) {
+            const parts = subgraphUrl.split('/');
+            parts.splice(4, 1);
+            subgraphUrlClean = parts.join('/');
+        }
+
+        subgraphsToAlert.push({ subgraphName, subgraphUrl: subgraphUrlClean });
+    }
+
+    await createSubgraphLagAlertsIfNotExist(chainId, config.data.chain.slug, subgraphsToAlert);
 }
 
-async function createAlertsIfNotExist(chainId: string, jobs: WorkerJob[]): Promise<void> {
+async function createCronAlertsIfNotExist(chainId: string, jobs: WorkerJob[]): Promise<void> {
     const ALARM_PREFIX = `CRON ALARM:${chainId}:${env.DEPLOYMENT_ENV}`;
 
     const cloudWatchClient = new CloudWatchClient({
@@ -97,6 +116,80 @@ async function createAlertsIfNotExist(chainId: string, jobs: WorkerJob[]): Promi
             ComparisonOperator: 'LessThanThreshold',
             TreatMissingData: 'breaching',
             Namespace: cronsMetricPublisher.namespace,
+        });
+
+        await cloudWatchClient.send(putAlarmCommand);
+        // rate limits on the AWS API: 3 requests / second
+        await sleep(1000);
+    }
+}
+
+async function createSubgraphLagAlertsIfNotExist(
+    chainId: string,
+    chainSlug: string,
+    subgraphs: { subgraphName: string; subgraphUrl: string }[],
+): Promise<void> {
+    const ALARM_PREFIX = `SUBGRAPH LAG:${chainId}:${env.DEPLOYMENT_ENV}`;
+
+    const MAX_LAG_ALERT_BLOCK = 1000;
+    const EVALUATION_PERIODS = 3;
+    const DATAPOINTS_TO_ALARM = 3;
+    const EVALUATION_PERIOD = 60 * 5; //5mins
+
+    const cloudWatchClient = new CloudWatchClient({
+        region: env.AWS_REGION,
+    });
+
+    const alarmNamesToPublish = subgraphs.map((subgraph) => `${ALARM_PREFIX}:${subgraph.subgraphName}`);
+
+    const currentActiveAlarms = await cloudWatchClient.send(
+        new DescribeAlarmsCommand({
+            AlarmNamePrefix: ALARM_PREFIX,
+            MaxRecords: 100,
+        }),
+    );
+
+    // delete alarms that are not in the current jobs array
+    if (currentActiveAlarms.MetricAlarms) {
+        const alarmsToDelete: string[] = [];
+
+        for (const alarm of currentActiveAlarms.MetricAlarms) {
+            if (alarm.AlarmName && !alarmNamesToPublish.includes(alarm.AlarmName)) {
+                alarmsToDelete.push(alarm.AlarmName);
+            }
+        }
+        if (alarmsToDelete.length > 0) {
+            await cloudWatchClient.send(new DeleteAlarmsCommand({ AlarmNames: alarmsToDelete }));
+        }
+    }
+
+    // upsert all other alarms
+    for (const subgraph of subgraphs) {
+        const alarmName = `${ALARM_PREFIX}:${subgraph.subgraphName}`;
+        const metricName = `${chainSlug}-${subgraph.subgraphName}-lag-${subgraph.subgraphUrl}`;
+
+        //make sure metric is available for alarm
+        await subgraphMetricPublisher.publish(metricName, 0);
+
+        const putAlarmCommand = new PutMetricAlarmCommand({
+            AlarmName: alarmName,
+            AlarmDescription: `Subgraph is behind more than ${MAX_LAG_ALERT_BLOCK} blocks for ${
+                (EVALUATION_PERIOD * EVALUATION_PERIODS) / 60
+            } minutes`,
+            ActionsEnabled: true,
+            AlarmActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
+            OKActions: [networkContext.data.monitoring[env.DEPLOYMENT_ENV as DeploymentEnv].alarmTopicArn],
+            MetricName: metricName,
+            Statistic: 'Maximum',
+            Dimensions: [{ Name: 'Environment', Value: env.DEPLOYMENT_ENV }],
+            // This configures that it will alarm if the cron did not run once over the last three (or configred) intervals
+            Period: EVALUATION_PERIOD,
+            Threshold: MAX_LAG_ALERT_BLOCK,
+            EvaluationPeriods: EVALUATION_PERIODS,
+            DatapointsToAlarm: DATAPOINTS_TO_ALARM,
+            ComparisonOperator: 'GreaterThanThreshold',
+            TreatMissingData: 'breaching',
+            Namespace: subgraphMetricPublisher.namespace,
         });
 
         await cloudWatchClient.send(putAlarmCommand);

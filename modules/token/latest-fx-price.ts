@@ -1,6 +1,7 @@
 import { prisma } from '../../prisma/prisma-client';
 import { Chain } from '@prisma/client';
 import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
+import { chainToChainId } from '../network/chain-id-to-chain';
 
 /**
  * 'Latest FX Price' is relevant only to FX pools. It is sourced from offchain platforms, like Chainlink.
@@ -10,8 +11,8 @@ import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
  *
  * Note: 'LatestFXPrice' is a dependency of SORv2.
  */
-export const syncLatestFXPrices = async (subgraphUrls: string[], chain: Chain) => {
-    const { pools } = await fetchFxPools(subgraphUrls, chain);
+export const syncLatestFXPrices = async (subgraphUrl: string, chain: Chain) => {
+    const { pools } = await fetchFxPools(subgraphUrl, chain);
 
     for (const pool of pools) {
         const { tokens } = pool;
@@ -43,8 +44,8 @@ export const syncLatestFXPrices = async (subgraphUrls: string[], chain: Chain) =
     return true;
 };
 
-const fetchFxPools = (subgraphUrls: string[], chain: Chain) => {
-    const sdk = getV2SubgraphClient(subgraphUrls, chain);
+const fetchFxPools = (subgraphUrl: string, chain: Chain) => {
+    const sdk = getV2SubgraphClient(subgraphUrl, chain);
 
     return sdk.BalancerPools({
         where: { poolType: 'FX' },

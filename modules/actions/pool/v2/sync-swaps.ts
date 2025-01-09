@@ -36,6 +36,18 @@ export async function syncSwaps(subgraphClient: V2SubgraphClient, chain: Chain):
         },
     });
 
+    // Get list of FX pool addresses for the fee calculation
+    const fxPools = (await prisma.prismaPool.findMany({
+        where: {
+            chain: chain,
+            type: 'FX',
+        },
+        select: {
+            id: true,
+            typeData: true, // contains the quote token address
+        },
+    })) as { id: string; typeData: { quoteToken: string } }[];
+
     // Querying by timestamp of Fantom, because it has events without a block number in the DB
     const where = latestEvent
         ? chain === Chain.FANTOM
@@ -47,14 +59,14 @@ export async function syncSwaps(subgraphClient: V2SubgraphClient, chain: Chain):
     console.time('BalancerSwaps');
     const { swaps } = await subgraphClient.BalancerSwaps({
         first: 1000,
-        where,
+        where: where,
         orderBy: chain === Chain.FANTOM ? Swap_OrderBy.Timestamp : Swap_OrderBy.Block,
         orderDirection: OrderDirection.Asc,
     });
     console.timeEnd('BalancerSwaps');
 
     console.time('swapV2Transformer');
-    const dbSwaps = swaps.map((swap) => swapV2Transformer(swap, chain));
+    const dbSwaps = swaps.map((swap) => swapV2Transformer(swap, chain, fxPools));
     console.timeEnd('swapV2Transformer');
 
     // TODO: parse batchSwaps, if needed

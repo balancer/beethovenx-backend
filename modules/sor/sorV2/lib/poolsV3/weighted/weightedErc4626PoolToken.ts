@@ -9,10 +9,11 @@ export class WeightedErc4626PoolToken extends Erc4626PoolToken {
         amount: BigintIsh,
         index: number,
         rate: bigint,
+        unwrapRate: bigint,
         underlyingTokenAddress: string,
         weight: BigintIsh,
     ) {
-        super(token, amount, index, rate, underlyingTokenAddress);
+        super(token, amount, index, rate, unwrapRate, underlyingTokenAddress);
         this.weight = BigInt(weight);
     }
 }

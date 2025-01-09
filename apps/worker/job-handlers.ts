@@ -29,6 +29,8 @@ import {
     StakedSonicController,
 } from '../../modules/controllers';
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
+import { TokenController } from '../../modules/controllers/token-controller';
+import { SubgraphMonitorController } from '../../modules/controllers/subgraph-monitor-controller';
 
 const runningJobs: Set<string> = new Set();
 
@@ -59,7 +61,6 @@ async function runIfNotAlreadyRunning(
     try {
         runningJobs.add(jobId);
 
-        console.time(jobId);
         console.log(`Start job ${jobId}-start`);
 
         await fn();
@@ -69,18 +70,18 @@ async function runIfNotAlreadyRunning(
             await cronsMetricPublisher.publish(`${jobId}-done`);
             await cronsDurationMetricPublisher.publish(`${jobId}-done`, durationSuccess);
         }
-        console.log(`Successful job ${jobId}-done`);
+        console.log(`Successful job ${jobId}-done`, durationSuccess);
     } catch (error: any) {
         const durationError = moment.duration(moment().diff(startJobTime)).asSeconds();
         if (process.env.AWS_ALERTS === 'true') {
             await cronsMetricPublisher.publish(`${jobId}-error`);
             await cronsDurationMetricPublisher.publish(`${jobId}-error`, durationError);
         }
-        console.log(`Error job ${jobId}-error`, error.message || error);
+        const duration = moment.duration(moment().diff(startJobTime)).asSeconds();
+        console.log(`Error job ${jobId}-error`, duration, error.message || error);
         next(error);
     } finally {
         runningJobs.delete(jobId);
-        console.timeEnd(jobId);
         res.sendStatus(200);
     }
 }
@@ -273,6 +274,15 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 next,
             );
             break;
+        case 'sync-sts-staking-snapshots':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => StakedSonicController().syncSonicStakingSnapshots(),
+                res,
+                next,
+            );
+            break;
         case 'sync-sftmx-staking-data':
             await runIfNotAlreadyRunning(name, chainId, () => sftmxController.syncSftmxStakingData(chainId), res, next);
             break;
@@ -402,6 +412,24 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             break;
         case 'sync-erc4626-data':
             await runIfNotAlreadyRunning(name, chainId, () => ContentController().syncErc4626Data(), res, next);
+            break;
+        case 'sync-erc4626-unwrap-rate':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => TokenController().syncErc4626UnwrapRates(chain),
+                res,
+                next,
+            );
+            break;
+        case 'post-subgraph-lag-metrics':
+            await runIfNotAlreadyRunning(
+                name,
+                chainId,
+                () => SubgraphMonitorController().postSubgraphLagMetrics(),
+                res,
+                next,
+            );
             break;
         default:
             res.sendStatus(400);

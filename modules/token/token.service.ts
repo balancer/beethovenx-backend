@@ -36,10 +36,14 @@ export class TokenService {
         this.cache = new Cache<string, any>();
     }
 
-    public async syncTokenContentData(chain: Chain) {
+    public async syncTokenContentData(chain: Chain, deploymentEnv = process.env.DEPLOYMENT_ENV) {
         //sync coingecko Ids first, then override Ids from the content service
-        await this.coingeckoDataService.syncCoingeckoIds(chain);
-        await new GithubContentService().syncTokenContentData([chain]);
+        const chains = Object.keys(config).filter(
+            (chain) => (deploymentEnv === 'production' && chain !== 'SEPOLIA') || true,
+        ) as Chain[];
+
+        await this.coingeckoDataService.syncCoingeckoIds();
+        await new GithubContentService().syncTokenContentData(chains);
     }
 
     public async getToken(address: string, chain: Chain): Promise<PrismaToken | null> {

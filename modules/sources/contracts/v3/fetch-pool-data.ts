@@ -15,7 +15,8 @@ type PoolTokenRates = [
     AbiParameterToPrimitiveType<ExtractAbiFunction<typeof VaultV3Abi, 'getPoolTokenRates'>['outputs'][0]>, // decimalScalingFactors
     AbiParameterToPrimitiveType<ExtractAbiFunction<typeof VaultV3Abi, 'getPoolTokenRates'>['outputs'][1]>, // tokenRates
 ];
-export interface OnchainDataV3 {
+
+export interface PoolDataV3 {
     totalSupply: bigint;
     swapFee: bigint;
     aggregateSwapFee?: bigint;
@@ -28,7 +29,6 @@ export interface OnchainDataV3 {
         balance: bigint;
         rateProvider: string;
         rate: bigint;
-        isErc4626: boolean;
         scalingFactor: bigint;
     }[];
 }
@@ -38,7 +38,7 @@ export async function fetchPoolData(
     pools: string[],
     client: ViemClient,
     blockNumber?: bigint,
-): Promise<{ [address: string]: OnchainDataV3 }> {
+): Promise<{ [address: string]: PoolDataV3 }> {
     const contracts = pools
         .map((pool) => [
             {
@@ -102,7 +102,6 @@ export async function fetchPoolData(
                     paysYieldFees: poolTokenInfo[1][i].paysYieldFees,
                     rateProvider: poolTokenInfo[1][i].rateProvider,
                     rate: poolTokenRates ? poolTokenRates[1][i] : 1000000000000000000n,
-                    isErc4626: false, // will be added later in the process
                     scalingFactor: poolTokenRates ? poolTokenRates[0][i] : 1000000000000000000n,
                 })),
             },

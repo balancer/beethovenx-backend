@@ -9,18 +9,16 @@ import {
     getSdk,
 } from './generated/balancer-subgraph-types';
 import { BalancerSubgraphService } from './balancer-subgraph.service';
-import { wrapSdkWithRetryAndRotation } from '../../sources/subgraphs/retry-on-failure';
 import { Chain } from '@prisma/client';
 
 export type V2SubgraphClient = ReturnType<typeof getV2SubgraphClient>;
 
-export function getV2SubgraphClient(urls: string[], chain: Chain) {
-    const sdkClients = urls.map((url) => getSdk(new GraphQLClient(url)));
-    const sdkWithRetryAndRotation = wrapSdkWithRetryAndRotation(sdkClients);
+export function getV2SubgraphClient(url: string, chain: Chain) {
+    const sdk = getSdk(new GraphQLClient(url));
 
     return {
-        ...sdkWithRetryAndRotation,
-        legacyService: new BalancerSubgraphService(urls, chain),
+        ...sdk,
+        legacyService: new BalancerSubgraphService(url, chain),
         async getSnapshotsForTimestamp(timestamp: number): Promise<BalancerPoolSnapshotFragment[]> {
             const limit = 1000;
             let hasMore = true;
@@ -28,7 +26,7 @@ export function getV2SubgraphClient(urls: string[], chain: Chain) {
             let snapshots: BalancerPoolSnapshotFragment[] = [];
 
             while (hasMore) {
-                const response = await sdkWithRetryAndRotation.BalancerPoolSnapshots({
+                const response = await sdk.BalancerPoolSnapshots({
                     where: { timestamp, id_gt: id },
                     orderBy: PoolSnapshot_OrderBy.Id,
                     orderDirection: OrderDirection.Asc,
@@ -53,7 +51,7 @@ export function getV2SubgraphClient(urls: string[], chain: Chain) {
             let data: PoolBalancesFragment[] = [];
 
             while (hasMore) {
-                const response = await sdkWithRetryAndRotation.PoolBalances({
+                const response = await sdk.PoolBalances({
                     where: { ...where, id_gt: id },
                     orderBy: Pool_OrderBy.Id,
                     orderDirection: OrderDirection.Asc,

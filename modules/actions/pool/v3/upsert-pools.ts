@@ -3,7 +3,7 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { tokensTransformer } from '../../../sources/transformers/tokens-transformer';
 import { V3JoinedSubgraphPool } from '../../../sources/subgraphs';
 import { enrichPoolUpsertsUsd } from '../../../sources/enrichers/pool-upserts-usd';
-import type { VaultClient } from '../../../sources/contracts';
+import { type VaultClient } from '../../../sources/contracts';
 import { poolUpsertTransformerV3 } from '../../../sources/transformers/pool-upsert-transformer-v3';
 import { applyOnchainDataUpdateV3 } from '../../../sources/enrichers/apply-onchain-data';
 import { fetchErc4626AndUnderlyingTokenData } from '../../../sources/contracts/fetch-erc4626-token-data';

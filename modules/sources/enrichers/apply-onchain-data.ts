@@ -1,17 +1,18 @@
 import { formatEther, formatUnits } from 'viem';
-import { OnchainDataCowAmm, OnchainDataV3 } from '../contracts';
+import { OnchainDataCowAmm, PoolDataV3 } from '../contracts';
 import { Chain } from '@prisma/client';
 import { PoolDynamicUpsertData, PoolUpsertData } from '../../../prisma/prisma-types';
 
 export const applyOnchainDataUpdateV3 = (
     data: Partial<PoolUpsertData> = {},
-    onchainPoolData: OnchainDataV3,
+    onchainPoolData: PoolDataV3,
     allTokens: { address: string; decimals: number }[],
     chain: Chain,
     poolId: string,
     blockNumber: bigint,
 ): PoolDynamicUpsertData => {
     const decimals = Object.fromEntries(allTokens.map((token) => [token.address, token.decimals]));
+
     return {
         poolDynamicData: {
             ...data.poolDynamicData,

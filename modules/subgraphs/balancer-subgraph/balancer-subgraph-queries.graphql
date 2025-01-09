@@ -481,6 +481,13 @@ fragment BalancerSwap on Swap {
     poolId {
         id
         swapFee
+        poolType
+        tokens {
+            token {
+                address
+                latestFXPrice
+            }
+        }
     }
     userAddress {
         id

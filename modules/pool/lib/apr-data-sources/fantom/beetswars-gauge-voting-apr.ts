@@ -26,7 +26,8 @@ export class BeetswarsGaugeVotingAprService implements PoolAprService {
             const votingAprs = raw.filter((apr) => apr && isFinite(apr));
 
             const minApr = 0;
-            const maxApr = votingAprs[votingAprs.length - 1] / 100;
+            // const maxApr = votingAprs[votingAprs.length - 1] / 100;
+            const maxApr = 0;
 
             const itemId = `${this.FRESH_BEETS_POOL_ID}-voting-apr`;
 

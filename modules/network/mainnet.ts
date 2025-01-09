@@ -230,5 +230,13 @@ export const mainnetNetworkConfig: NetworkConfig = {
             name: 'sync-hook-data',
             interval: every(1, 'hours'),
         },
+        {
+            name: 'sync-erc4626-unwrap-rate',
+            interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(60, 'minutes') : every(20, 'minutes'),
+        },
+        {
+            name: 'post-subgraph-lag-metrics',
+            interval: every(2, 'minutes'),
+        },
     ],
 };

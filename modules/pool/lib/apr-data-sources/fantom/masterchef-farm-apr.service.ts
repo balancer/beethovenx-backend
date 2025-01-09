@@ -102,7 +102,7 @@ export class MasterchefFarmAprService implements PoolAprService {
         const items: PrismaPoolAprItem[] = [];
         const beetsApr = beetsValuePerYear / farmTvl;
 
-        if (beetsApr > 0) {
+        if (beetsApr >= 0) {
             items.push({
                 id: `${poolId}-beets-apr`,
                 chain: networkContext.chain,

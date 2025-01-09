@@ -4,12 +4,12 @@ import { prisma } from '../../../../prisma/prisma-client';
 import { prismaBulkExecuteOperations } from '../../../../prisma/prisma-util';
 import { Chain, PrismaPoolAprItemGroup, PrismaPoolAprType } from '@prisma/client';
 import { YbAprHandlers, TokenApr } from './yb-apr-handlers';
+import { MorphoTokenAprHandler } from './yb-apr-handlers/sources';
 import { tokenService } from '../../../token/token.service';
 import { collectsYieldFee, tokenCollectsYieldFee } from '../pool-utils';
 import { YbAprConfig } from '../../../network/apr-config-types';
 
 const MORPHO_TOKEN = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
-const MORPHO_RATE = 0.07605350252138458;
 
 export class YbTokensAprService implements PoolAprService {
     private ybTokensAprHandlers: YbAprHandlers;
@@ -138,11 +138,13 @@ export class YbTokensAprService implements PoolAprService {
                     const morphoTokensShare = tokenAprs
                         .filter((t) => t.group === 'MORPHO')
                         .reduce((acc, t) => acc + t.share, 0);
+
+                    const morphoRate = await new MorphoTokenAprHandler().getAprs();
                     const morphoId = `${pool.id}-morpho`;
                     const morphoData = {
                         ...data,
                         id: morphoId,
-                        apr: MORPHO_RATE * morphoTokensShare,
+                        apr: morphoRate[MORPHO_TOKEN].apr * morphoTokensShare,
                         type: PrismaPoolAprType.IB_YIELD,
                         title: 'MORPHO APR',
                         rewardTokenAddress: MORPHO_TOKEN,

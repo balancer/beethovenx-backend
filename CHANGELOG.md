@@ -1,5 +1,112 @@
 # backend
 
+## 1.27.3
+
+### Patch Changes
+
+-   f6610d0: manage sentry config via env
+-   b27003d: handle additional morpho token reward apr
+-   f416bf9: adjust sentry sample rates
+
+## 1.27.2
+
+### Patch Changes
+
+-   5c1567e: new morpho aprs
+-   e73df95: revert subgraph fallbacks
+-   ec1174b: add alerts for subgraph lags
+
+## 1.27.1
+
+### Patch Changes
+
+-   931c829: collect subgraph lag metrics
+-   7d0f05c: publish mode subgraphs to network
+-   7f20e8e: handle missing tokens in erc4626 rates
+-   e2453c8: use beets drpc key
+-   b0f0279: fix: handle empty erc4626Tokens array
+
+## 1.27.0
+
+### Minor Changes
+
+-   2b15183: Update SOR buffers to use unwrapRate from erc4626 tokens
+
+### Patch Changes
+
+-   82b7e0d: swap needs to be at least $1 to be used as pricing
+-   2e9f4cd: Revert PrismaPoolSnapshot index changes
+
+## 1.26.29
+
+### Patch Changes
+
+-   2b41540: need to consider gauge cap for mainnet gauges
+-   a437b87: add sonic beets circulating supply endpoint
+-   4b18c78: dont display phantom BPT as nested pool in pool tokens
+
+## 1.26.28
+
+### Patch Changes
+
+-   7cc43be: add AaveUSDe LidoGHO APRs
+-   44411b3: new aprs
+
+## 1.26.27
+
+### Patch Changes
+
+-   7a0ae59: adding dynamic swap fee to fx pools
+-   a16406b: balance tables indexes
+-   5011ef2: optimise multichain events query
+-   580c5e7: db indexes
+
+## 1.26.26
+
+### Patch Changes
+
+-   4cfa9f8: debug erroring job
+-   c5f527d: fix: erroring job
+-   4006bb0: add index to snapshots
+
+## 1.26.25
+
+### Patch Changes
+
+-   615943c: fixed usdx apr
+-   8270969: refactor of sync-tokens-from-pool-tokens job
+
+## 1.26.24
+
+### Patch Changes
+
+-   380173f: fetch staking apr from api
+
+## 1.26.23
+
+### Patch Changes
+
+-   033f8f6: add sonic staking snapshots
+
+## 1.26.22
+
+### Patch Changes
+
+-   e1087c7: susdx apr
+
+## 1.26.21
+
+### Patch Changes
+
+-   a0bcaf7: add sts tvl to protocol stats
+
+## 1.26.20
+
+### Patch Changes
+
+-   f125013: removing few more unused deps
+-   61b9c66: add sonic staking data and apr
+
 ## 1.26.19
 
 ### Patch Changes

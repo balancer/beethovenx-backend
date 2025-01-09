@@ -8,6 +8,7 @@ import {
     EventsQueryController,
     SnapshotsController,
     PoolController,
+    FXPoolsController,
 } from '../../../../modules/controllers';
 import { chainIdToChain } from '../../../../modules/network/chain-id-to-chain';
 
@@ -204,6 +205,23 @@ const balancerResolvers: Resolvers = {
                 } catch (e) {
                     result.push({ type: 'cow', chain, success: false, error: `${e}` });
                     console.log(`Could not sync cow amm snapshots for chain ${chain}: ${e}`);
+                }
+            }
+
+            return result;
+        },
+        poolSyncFxQuoteTokens: async (parent, { chains }, context) => {
+            isAdminRoute(context);
+
+            const result: { type: string; chain: GqlChain; success: boolean; error: string | undefined }[] = [];
+
+            for (const chain of chains) {
+                try {
+                    await FXPoolsController().syncQuoteTokens(chain);
+                    result.push({ type: 'fx', chain, success: true, error: undefined });
+                } catch (e) {
+                    result.push({ type: 'fx', chain, success: false, error: `${e}` });
+                    console.log(`Could not sync fx quote tokens for chain ${chain}: ${e}`);
                 }
             }
 

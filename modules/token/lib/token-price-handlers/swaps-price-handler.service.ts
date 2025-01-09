@@ -91,15 +91,17 @@ export class SwapsPriceHandlerService implements TokenPriceHandler {
 
                     if (otherTokenPrice) {
                         const otherTokenValue = otherTokenPrice.price * otherTokenAmount;
-                        const price = otherTokenValue / tokenAmount;
+                        if (otherTokenValue > 1) {
+                            const price = otherTokenValue / tokenAmount;
 
-                        tokenAndPrices.push({
-                            address: token.address,
-                            chain: token.chain,
-                            price: price,
-                        });
+                            tokenAndPrices.push({
+                                address: token.address,
+                                chain: token.chain,
+                                price: price,
+                            });
 
-                        updated.push(token);
+                            updated.push(token);
+                        }
                     }
                 }
             }

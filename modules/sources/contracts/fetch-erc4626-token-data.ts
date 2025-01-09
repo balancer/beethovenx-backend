@@ -118,7 +118,7 @@ export async function fetchErc4626AndUnderlyingTokenData(
             name: token.name,
             symbol: token.symbol,
             chain: token.chain,
-            underlyingTokenAddress: underlyingTokenAddress,
+            underlyingTokenAddress,
         };
 
         if (underlyingTokenAddress && !tokenData[underlyingTokenAddress]) {

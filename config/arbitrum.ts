@@ -12,11 +12,8 @@ export default <NetworkData>{
     },
     subgraphs: {
         startDate: '2021-08-23',
-        balancer: [
-            `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmPbjY6L1NhPjpBv7wDTfG9EPx5FpCuBqeg1XxByzBTLcs`,
-        ],
+        balancer: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmPbjY6L1NhPjpBv7wDTfG9EPx5FpCuBqeg1XxByzBTLcs`,
         cowAmm: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmUDGSJXdMzG4ezDzf1LvXVb2igwY6rnaNFLC62ZJZ3Pbv`,
-        beetsBar: 'https://',
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/JBnWrv9pvBvSi2pUZzba3VweGBTde6s44QvsDABP47Gt`,
         gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmT3h6pogdPkxfWsBxKNtpq7kR9fqKaQ9jGxe7fZx7MUVE`,
         aura: 'https://data.aura.finance/graphql',
@@ -246,6 +243,13 @@ export default <NetworkData>{
                 tokenAddress: '0xd3443ee1e91af28e5fb858fbd0d72a63ba8046e0',
                 sourceUrl: 'https://backend-arbitrum.gains.trade/apr',
                 path: 'collateralRewards.{symbol == "USDC"}.vaultApr',
+                isIbYield: true,
+            },
+            sUSDX: {
+                tokenAddress: '0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92',
+                sourceUrl: 'https://app.usdx.money/v1/base/apyInfo',
+                path: 'result.susdxApy',
+                scale: 1,
                 isIbYield: true,
             },
         },

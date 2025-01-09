@@ -12,6 +12,14 @@ export const schema = {
     SANITY_API_TOKEN: String,
     SENTRY_DSN: String,
     SENTRY_AUTH_TOKEN: String,
+    SENTRY_TRACES_SAMPLE_RATE: {
+        optional: true,
+        type: Number,
+    },
+    SENTRY_PROFILES_SAMPLE_RATE: {
+        optional: true,
+        type: Number,
+    },
     AWS_REGION: String,
     PROTOCOL: {
         optional: true,
@@ -22,6 +30,10 @@ export const schema = {
         type: String,
     },
     DRPC_API_KEY: {
+        optional: true,
+        type: String,
+    },
+    DRPC_BEETS_API_KEY: {
         optional: true,
         type: String,
     },
