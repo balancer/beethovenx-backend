@@ -625,7 +625,7 @@ describe('Balancer SOR Integration Tests', () => {
             const returnAmountQuery = (queryOutput as ExactInQueryOutput).expectedAmountOut;
             expect(returnAmountQuery.amount).toEqual(returnAmountSOR.amount);
         });
-        test.only('SOR quote should match swap query with directional fee hook used - GIVEN OUT', async () => {
+        test('SOR quote should match swap query with directional fee hook used - GIVEN OUT', async () => {
             // GIVEN OUT
             const dai = new Token(
                 parseFloat(chainToIdMap[BAL.token.chain]),
