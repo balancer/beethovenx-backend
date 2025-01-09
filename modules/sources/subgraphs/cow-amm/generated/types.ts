@@ -2244,19 +2244,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                 'Metadata',
             );
         },
-        Metadata(
-            variables?: MetadataQueryVariables,
-            requestHeaders?: Dom.RequestInit['headers'],
-        ): Promise<MetadataQuery> {
-            return withWrapper(
-                (wrappedRequestHeaders) =>
-                    client.request<MetadataQuery>(MetadataDocument, variables, {
-                        ...requestHeaders,
-                        ...wrappedRequestHeaders,
-                    }),
-                'Metadata',
-            );
-        },
         PoolShares(
             variables?: PoolSharesQueryVariables,
             requestHeaders?: Dom.RequestInit['headers'],
