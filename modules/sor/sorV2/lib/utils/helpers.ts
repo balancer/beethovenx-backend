@@ -102,7 +102,7 @@ export function getHookState(pool: any): HookState | undefined {
     if (pool.hook.name === 'StableSurge') {
         return {
             amp: pool.typeData.amp,
-            surgeThresholdPercentage: parseEther(pool.dynamicData.surgeThresholdPercentage), 
+            surgeThresholdPercentage: parseEther(pool.hook.dynamicData.surgeThresholdPercentage), 
         };
     }
     
