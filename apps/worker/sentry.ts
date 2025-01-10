@@ -8,7 +8,6 @@ export const initWorkerSentry = () => {
         environment: `worker-${env.DEPLOYMENT_ENV}`,
         enabled: env.NODE_ENV === 'production',
         integrations: [
-            Sentry.prismaIntegration(),
             Sentry.captureConsoleIntegration({
                 levels: ['error', 'warn'],
             }),
