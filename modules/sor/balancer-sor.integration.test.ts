@@ -453,8 +453,15 @@ describe('Balancer SOR Integration Tests', () => {
             aaveFaucetUsdc: ReturnType<typeof prismaPoolTokenFactory.build>;
         let prismaWeightedPool,
             prismaStablePool,
+            prismaStablePoolWithExitFee,
             prismaStablePoolWithDirectionalFee: ReturnType<typeof prismaPoolFactory.build>;
+
         let exitFeeHook, directionalFeeHook: ReturnType<typeof hookFactory.build>;
+
+        let weightedBpt: Token;
+        let stableBpt: Token;
+        let wethToken: Token;
+        let aaveFaucetUsdcToken: Token;
 
         beforeAll(async () => {
             // setup mock pool data - Weighted
@@ -550,25 +557,48 @@ describe('Balancer SOR Integration Tests', () => {
                 }),
                 hook: directionalFeeHook,
             });
+
+            prismaStablePoolWithExitFee = prismaPoolFactory.stable('1000').build({
+                address: '0xc7512572bca89b90d604f88557d270716dcfea78',
+                tokens: [aaveFaucetUsdc, aaveFaucetDai],
+                dynamicData: prismaPoolDynamicDataFactory.build({
+                    totalShares: '50000',
+                    swapFee: '0.001',
+                }),
+                hook: exitFeeHook,
+                liquidityManagement: {
+                    disableUnbalancedLiquidity: true,
+                    enableAddLiquidityCustom: false,
+                    enableDonation: false,
+                    enableRemoveLiquidityCustom: false,
+                },
+            });
+
+            weightedBpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaWeightedPool.address as Address, 18);
+            wethToken = new Token(
+                parseFloat(chainToIdMap[WETH.token.chain]),
+                WETH.address as Address,
+                WETH.token.decimals,
+            );
+
+            stableBpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaStablePoolWithExitFee.address as Address, 18);
+            aaveFaucetUsdcToken = new Token(
+                parseFloat(chainToIdMap[WETH.token.chain]),
+                aaveFaucetUsdc.address as Address,
+                aaveFaucetUsdc.token.decimals,
+            );
         });
-        test('SOR quote should match swap query with exit fee hook used', async () => {
+        test('Weighted: SOR should not find path for exit swap with exit fee hook used - GIVEN IN', async () => {
             // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
             // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
             // are disallowed.
 
-            // BPT swap
-            const bpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaWeightedPool.address as Address, 18);
-            const weth = new Token(
-                parseFloat(chainToIdMap[WETH.token.chain]),
-                WETH.address as Address,
-                WETH.token.decimals,
-            );
             const amountIn = BigInt(1e18);
 
             paths = (await sorGetPathsWithPools(
-                bpt,
-                weth,
+                weightedBpt,
+                wethToken,
                 SwapKind.GivenIn,
                 amountIn,
                 [prismaWeightedPool], // This pool has an exit fee hook
@@ -578,6 +608,156 @@ describe('Balancer SOR Integration Tests', () => {
             // The pools liquidity management disallowed unbalanced joins/exits.
             // The sor sets the output amount to 0 in this case.
             expect(paths[0].outputAmount.amount).toEqual(0n);
+        });
+        test('Weighted: SOR should not find path for exit swap with exit fee hook used - GIVEN OUT', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+        
+            const amountOut = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                weightedBpt,
+                wethToken,
+                SwapKind.GivenOut,
+                amountOut,
+                [prismaWeightedPool], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].inputAmount.amount).toEqual(0n);
+        });
+        test('Weighted: SOR should not find path for join swap with exit fee hook used - GIVEN IN', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+            
+            const amountIn = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                wethToken,
+                weightedBpt,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaWeightedPool], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].outputAmount.amount).toEqual(0n);
+        });
+        test('Weighted: SOR should not find path for join swap with exit fee hook used - GIVEN OUT', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+
+            const amountOut = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                wethToken,
+                weightedBpt,
+                SwapKind.GivenOut,
+                amountOut,
+                [prismaWeightedPool], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].inputAmount.amount).toEqual(0n);
+        });
+        test('Stable: SOR should not find path for exit swap with exit fee hook used - GIVEN IN', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+            
+            const amountIn = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                stableBpt,
+                aaveFaucetUsdcToken,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaStablePoolWithExitFee], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].outputAmount.amount).toEqual(0n);
+        });
+        test('Stable: SOR should not find path for exit swap with exit fee hook used - GIVEN OUT', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+            const amountOut = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                stableBpt,
+                aaveFaucetUsdcToken,
+                SwapKind.GivenOut,
+                amountOut,
+                [prismaStablePoolWithExitFee], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].inputAmount.amount).toEqual(0n);
+        });
+        test('Stable: SOR should not find path for join swap with exit fee hook used - GIVEN IN', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+            const amountIn = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                aaveFaucetUsdcToken,
+                stableBpt,
+                SwapKind.GivenIn,
+                amountIn,
+                [prismaStablePoolWithExitFee], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].outputAmount.amount).toEqual(0n);
+        });
+        test('Stable: SOR should not find path for join swap with exit fee hook used - GIVEN OUT', async () => {
+            // The SOR considers pool joins and exits as potential swaps. However a pool's liquidity management struct
+            // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
+            // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
+            // are disallowed.
+
+            const amountOut = BigInt(1e18);
+
+            paths = (await sorGetPathsWithPools(
+                aaveFaucetUsdcToken,
+                stableBpt,
+                SwapKind.GivenOut,
+                amountOut,
+                [prismaStablePoolWithExitFee], // This pool has an exit fee hook
+                protocolVersion,
+            )) as PathWithAmount[];
+
+            // The pools liquidity management disallowed unbalanced joins/exits.
+            // The sor sets the output amount to 0 in this case.
+            expect(paths[0].inputAmount.amount).toEqual(0n);
         });
         test('SOR quote should match swap query with directional fee hook used - GIVEN IN', async () => {
             // GIVEN IN
