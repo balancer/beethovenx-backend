@@ -96,7 +96,7 @@ describe('SOR V3 Weighted Pool Tests', () => {
 
     test('Get Pool State', () => {
         const poolState = {
-            poolType: hookType,
+            poolType: 'WEIGHTED',
             poolAddress: poolAddress,
             swapFee: parseEther(swapFee),
             aggregateSwapFee: aggregateSwapFee,
