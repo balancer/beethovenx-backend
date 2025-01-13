@@ -1,5 +1,12 @@
 # backend
 
+## 1.27.5
+
+### Patch Changes
+
+-   9d902e6: updating gauge SG urls including v3 pools
+-   9d902e6: teth apr on arbitrum
+
 ## 1.27.4
 
 ### Patch Changes
