@@ -1,5 +1,19 @@
 # backend
 
+## 1.27.4
+
+### Patch Changes
+
+-   4b25f8e: possible fix for staked balance formatting on write
+-   1aac890: fix to a fix
+-   09ec5a3: patch user balances formatting
+-   a1dd2c4: prisma v6
+-   d41c603: setup prisma sentry integration
+-   4e63397: fix sor slippage formatting
+-   341abcf: updating gauge SG urls including v3 pools
+-   160c10c: removing prisma sentry integration due to lack of support
+-   4715a49: prisma telemetry setup
+
 ## 1.27.3
 
 ### Patch Changes
