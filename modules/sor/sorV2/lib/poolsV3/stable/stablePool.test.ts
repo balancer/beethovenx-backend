@@ -35,12 +35,12 @@ describe('SOR V3 Stable Pool Tests', () => {
     let poolAddress: string;
 
     beforeAll(() => {
-        swapFee = '0.01';
-        tokenBalances = ['169', '144'];
+        swapFee = '0.001';
+        tokenBalances = ['52110', '51290'];
         tokenDecimals = [6, 18];
         tokenRates = ['1', '1'];
-        totalShares = '156';
-        amp = '10';
+        totalShares = '100000';
+        amp = '1000';
         scalingFactors = [10n ** 12n, 10n ** 0n];
         aggregateSwapFee = 0n;
         poolAddress = createRandomAddress();
@@ -59,7 +59,7 @@ describe('SOR V3 Stable Pool Tests', () => {
         tokenAddresses = [poolToken1.address, poolToken2.address];
 
         const hookDynamicData = {
-            surgeThresholdPercentage: '3',
+            surgeThresholdPercentage: '30',
         };
 
         const stableSurgeHook = hookFactory.build({
@@ -118,11 +118,27 @@ describe('SOR V3 Stable Pool Tests', () => {
         };
         expect(poolState).toEqual(stablePool.getPoolState());
     });
+    test('Get Pool State with hook', () => {
+        const poolState = {
+            poolType: 'STABLE',
+            hookType: 'StableSurge',
+            poolAddress: poolAddress,
+            swapFee: parseEther(swapFee),
+            balancesLiveScaled18: tokenBalances.map((b) => parseEther(b)),
+            tokenRates: tokenRates.map((r) => parseEther(r)),
+            totalSupply: parseEther(totalShares),
+            amp: parseUnits(amp, 3),
+            tokens: tokenAddresses,
+            scalingFactors,
+            aggregateSwapFee
+        };
+        expect(poolState).toEqual(stablePoolWithHook.getPoolState('StableSurge'));
+    })
     test('results differ when poolState is passed', () => {
         const poolToken1 = new Token(
                 1,
                 stablePool.tokens[0].token.address,
-                6,
+                18,
                 'pt1',
                 'poolToken2'
         );
@@ -141,13 +157,13 @@ describe('SOR V3 Stable Pool Tests', () => {
         const tokenAmountOut = stablePool.swapGivenIn(
             poolToken1,
             poolToken2,
-            TokenAmount.fromScale18Amount(poolToken1, 169000000000000000000n)
+            TokenAmount.fromRawAmount(poolToken1, '777700000000')
         );
 
         const tokenAmountOutWithHook = stablePoolWithHook.swapGivenIn(
             poolToken1,
             poolToken2,
-            TokenAmount.fromScale18Amount(poolToken1, 169000000000000000000n)
+            TokenAmount.fromRawAmount(poolToken1, '777700000000')
         );
         expect(tokenAmountOut.amount > tokenAmountOutWithHook.amount).toBe(true);
     })
