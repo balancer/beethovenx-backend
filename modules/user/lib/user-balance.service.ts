@@ -62,12 +62,12 @@ export class UserBalanceService {
             if (stakedStr.includes('e') && Number(stakedStr) < 1) {
                 stakedStr = Number(stakedStr)
                     .toFixed(18)
-                    .replace(/([1-9])0+$/g, '$1'); // trims trailing zeros
+                    .replace(/(?:\.0+|(\.\d*?)0+)$/, '$1'); // trims trailing zeros
             }
             if (walletStr.includes('e') && Number(walletStr) < 1) {
                 walletStr = Number(walletStr)
                     .toFixed(18)
-                    .replace(/([1-9])0+$/g, '$1'); // trims trailing zeros
+                    .replace(/(?:\.0+|(\.\d*?)0+)$/, '$1'); // trims trailing zeros
             }
             const stakedNum = parseUnits(stakedStr, 18);
             const walletNum = parseUnits(walletStr, 18);
