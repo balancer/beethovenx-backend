@@ -1,5 +1,11 @@
 # backend
 
+## 1.27.6
+
+### Patch Changes
+
+-   612e23e: sor slippage handling patch
+
 ## 1.27.5
 
 ### Patch Changes
