@@ -56,13 +56,27 @@ export class UserBalanceService {
         return poolIds.map((poolId) => {
             const walletBalance = nonZeroUserWalletBalances.find((balance) => balance.poolId === poolId);
             const stakedBalance = nonZeroUserStakedBalances.find((balance) => balance.poolId === poolId);
-            const stakedNum = parseUnits(stakedBalance?.balance || '0', 18);
-            const walletNum = parseUnits(walletBalance?.balance || '0', 18);
+            let stakedStr = stakedBalance?.balance || '0';
+            let walletStr = walletBalance?.balance || '0';
+            // Handle dust amounts with scienific notation
+            if (stakedStr.includes('e') && Number(stakedStr) < 1) {
+                stakedStr = Number(stakedStr)
+                    .toFixed(18)
+                    .replace(/([1-9])0+$/g, '$1'); // trims trailing zeros
+            }
+            if (walletStr.includes('e') && Number(walletStr) < 1) {
+                walletStr = Number(walletStr)
+                    .toFixed(18)
+                    .replace(/([1-9])0+$/g, '$1'); // trims trailing zeros
+            }
+            const stakedNum = parseUnits(stakedStr, 18);
+            const walletNum = parseUnits(walletStr, 18);
+            const totalBalance = stakedNum.add(walletNum);
 
             return {
                 poolId,
                 tokenAddress: stakedBalance?.tokenAddress || walletBalance?.tokenAddress || '',
-                totalBalance: formatFixed(stakedNum.add(walletNum), 18),
+                totalBalance: formatFixed(totalBalance, 18),
                 stakedBalance: stakedBalance?.balance || '0',
                 walletBalance: walletBalance?.balance || '0',
                 // the prisma query above ensures that one of these balances exists
