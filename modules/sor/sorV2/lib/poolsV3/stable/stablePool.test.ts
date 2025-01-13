@@ -59,7 +59,7 @@ describe('SOR V3 Stable Pool Tests', () => {
         tokenAddresses = [poolToken1.address, poolToken2.address];
 
         const hookDynamicData = {
-            surgeThresholdPercentage: '30',
+            surgeThresholdPercentage: '0.3',
         };
 
         const stableSurgeHook = hookFactory.build({
