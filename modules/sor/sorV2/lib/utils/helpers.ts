@@ -103,7 +103,7 @@ export function getHookState(pool: any): HookState | undefined {
         return {
             // amp onchain precision is 1000. Api returns 200 means onchain value is 200000
             amp: parseUnits(pool.typeData.amp,3),
-            surgeThresholdPercentage: parseUnits(pool.hook.dynamicData.surgeThresholdPercentage,0), 
+            surgeThresholdPercentage: parseUnits(pool.hook.dynamicData.surgeThresholdPercentage,16), 
         };
     }
     
