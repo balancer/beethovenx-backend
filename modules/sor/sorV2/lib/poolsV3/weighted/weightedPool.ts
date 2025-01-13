@@ -99,6 +99,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
             pool.dynamicData.tokenPairsData as TokenPairData[],
             pool.liquidityManagement,
             hookState,
+            // @ts-ignore: Ignore TypeScript error for accessing name property
             pool.hook?.name,
         );
     }
