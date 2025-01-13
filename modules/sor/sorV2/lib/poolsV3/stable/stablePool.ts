@@ -103,6 +103,7 @@ export class StablePool implements BasePoolV3 {
             pool.dynamicData.tokenPairsData as TokenPairData[],
             pool.liquidityManagement,
             hookState,
+            pool.hook?.name,
         );
     }
 
@@ -117,6 +118,7 @@ export class StablePool implements BasePoolV3 {
         tokenPairs: TokenPairData[],
         liquidityManagement: LiquidityManagement,
         hookState: HookState | undefined = undefined,
+        hookName?: string
     ) {
         this.chain = chain;
         this.id = id;
@@ -137,7 +139,7 @@ export class StablePool implements BasePoolV3 {
         this.tokenMap.set(bpt.address, new StableBasePoolToken(bpt, totalShares, -1, WAD));
 
         this.vault = new Vault();
-        this.poolState = this.getPoolState();
+        this.poolState = this.getPoolState(hookName);
     }
 
     public getLimitAmountSwap(tokenIn: Token, tokenOut: Token, swapKind: SwapKind): bigint {
@@ -314,9 +316,8 @@ export class StablePool implements BasePoolV3 {
         return 0n;
     }
 
-    public getPoolState(): StableState {
-
-        return {
+    public getPoolState(hookName?: string): StableState {
+        const poolState: StableState = {
             poolType: 'STABLE',
             poolAddress: this.address,
             swapFee: this.swapFee,
@@ -328,7 +329,14 @@ export class StablePool implements BasePoolV3 {
             scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
         };
+
+        if (hookName) {
+            poolState.hookType = hookName;
+        }
+
+        return poolState;
     }
+
 
 
     public getPoolTokens(tokenIn: Token, tokenOut: Token): { tIn: StablePoolToken; tOut: StablePoolToken } {
