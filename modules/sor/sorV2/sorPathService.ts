@@ -275,7 +275,7 @@ class SorPathService implements SwapService {
                             amountIn: inputAmount,
                             to: VAULT[parseInt(chainToIdMap[chain])],
                         },
-                        slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
+                        slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
                     }) as SwapBuildOutputExactIn;
                     callData = {
