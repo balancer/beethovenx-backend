@@ -14,7 +14,7 @@ import { MathSol, abs } from './math';
 import { HookState } from '@balancer-labs/balancer-maths';
 import { LiquidityManagement } from '../../../types';
 
-import { parseEther } from 'viem';
+import { parseEther, parseUnits } from 'viem';
 
 export function checkInputs(
     tokenIn: Token,
@@ -101,8 +101,9 @@ export function getHookState(pool: any): HookState | undefined {
 
     if (pool.hook.name === 'StableSurge') {
         return {
-            amp: pool.typeData.amp,
-            surgeThresholdPercentage: parseEther(pool.hook.dynamicData.surgeThresholdPercentage), 
+            // amp onchain precision is 1000. Api returns 200 means onchain value is 200000
+            amp: parseUnits(pool.typeData.amp,3),
+            surgeThresholdPercentage: parseUnits(pool.hook.dynamicData.surgeThresholdPercentage,0), 
         };
     }
     
