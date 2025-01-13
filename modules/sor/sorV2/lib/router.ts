@@ -34,8 +34,6 @@ export class Router {
     public getBestPaths(paths: PathLocal[], swapKind: SwapKind, swapAmount: TokenAmount): PathWithAmount[] | null {
         if (paths.length === 0) {
             throw new Error('No potential swap paths provided');
-        } else {
-            console.log(`SOR_PATHS_${paths.length}`);
         }
 
         // break swapAmount into 25%, 50%, 75% and 100% ratios, so we're able to split quote into multiple paths
