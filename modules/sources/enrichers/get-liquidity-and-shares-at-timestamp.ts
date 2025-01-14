@@ -1,16 +1,18 @@
-import { BlockNumbersSubgraphClient, V3VaultSubgraphClient } from '../subgraphs';
+import { V3VaultSubgraphClient } from '../subgraphs';
 import { V2SubgraphClient } from '../../subgraphs/balancer-subgraph';
 import { prisma } from '../../../prisma/prisma-client';
 import { daysAgo, roundToHour, roundToMidnight } from '../../common/time';
 import { DAYS_OF_HOURLY_PRICES } from '../../../config';
+import { blockNumbers } from '../../block-numbers';
+import { Chain } from '@prisma/client';
 
 export const getLiquidityAndSharesAtTimestamp = async (
+    chain: Chain,
     ids: string[],
     vaultClient: V2SubgraphClient | V3VaultSubgraphClient,
-    blockNumbersClient: BlockNumbersSubgraphClient,
     timestamp = daysAgo(1), // 24 hours ago
 ) => {
-    const blockNumber = await blockNumbersClient.fetchBlockByTime(timestamp);
+    const blockNumber = await blockNumbers().getBlock(chain, timestamp);
 
     //  If ids count is >= 1000 just get all
     const where = ids.length >= 1000 ? {} : { id_in: ids };

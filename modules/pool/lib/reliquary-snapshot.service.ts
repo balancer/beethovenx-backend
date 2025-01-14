@@ -4,7 +4,6 @@ import moment from 'moment-timezone';
 import _ from 'lodash';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { ReliquarySubgraphService } from '../../subgraphs/reliquary-subgraph/reliquary.service';
-import { blocksSubgraphService } from '../../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { oneDayInMinutes } from '../../common/time';
 import {
     Chain,
@@ -13,6 +12,7 @@ import {
     PrismaReliquaryTokenBalanceSnapshot,
 } from '@prisma/client';
 import { networkContext } from '../../network/network-context.service';
+import { blockNumbers } from '../../block-numbers';
 
 export class ReliquarySnapshotService {
     constructor(private readonly reliquarySubgraphService: ReliquarySubgraphService) {}
@@ -83,14 +83,14 @@ export class ReliquarySnapshotService {
                     orderBy: { timestamp: 'desc' },
                 });
 
-                const blockAtTimestamp = await blocksSubgraphService.getBlockForTimestamp(timestampForSnapshot);
+                const blockAtTimestamp = await blockNumbers().getBlock(chain, timestampForSnapshot);
                 const relicsInFarm = await this.reliquarySubgraphService.getAllRelicsWithPaging({
                     where: { pid: farmId },
-                    block: { number: parseFloat(blockAtTimestamp.number) },
+                    block: { number: blockAtTimestamp },
                 });
                 const levelsAtBlock = await this.reliquarySubgraphService.getPoolLevels({
                     where: { pool_: { pid: farmId } },
-                    block: { number: parseFloat(blockAtTimestamp.number) },
+                    block: { number: blockAtTimestamp },
                 });
 
                 const sharePercentage = parseFloat(snapshot.totalBalance) / mostRecentPoolSnapshot.totalSharesNum;

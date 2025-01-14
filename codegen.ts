@@ -89,11 +89,6 @@ const files = {
             },
         },
     },
-    ['modules/subgraphs/blocks-subgraph/generated/blocks-subgraph-types.ts']: {
-        schema: config.MAINNET.subgraphs.blocks,
-        documents: 'modules/subgraphs/blocks-subgraph/block-subgraph-queries.graphql',
-        ...defaults.types,
-    },
     ['modules/subgraphs/beets-bar-subgraph/generated/beets-bar-subgraph-types.ts']: {
         schema: config.FANTOM.subgraphs.beetsBar,
         documents: 'modules/subgraphs/beets-bar-subgraph/beets-bar-subgraph-queries.graphql',

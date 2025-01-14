@@ -17,7 +17,6 @@ import {
     QueryPoolGetPoolsArgs,
     QueryPoolGetSwapsArgs,
 } from '../../apps/api/gql/generated-schema';
-import { blocksSubgraphService } from '../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { tokenService } from '../token/token.service';
 import { userService } from '../user/user.service';
 import { PoolAprUpdaterService } from './lib/pool-apr-updater.service';
@@ -248,7 +247,7 @@ const optionsResolverForPoolOnChainDataService: () => PoolOnChainDataServiceOpti
 
 export const poolService = new PoolService(
     new PoolOnChainDataService(optionsResolverForPoolOnChainDataService),
-    new PoolUsdDataService(tokenService, blocksSubgraphService),
+    new PoolUsdDataService(tokenService),
     new PoolGqlLoaderService(),
     new PoolAprUpdaterService(),
     new PoolSwapService(tokenService),

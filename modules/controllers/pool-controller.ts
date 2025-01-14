@@ -7,7 +7,7 @@ import {
     syncOnChainDataForPools as syncOnChainDataForPoolsV2,
 } from '../actions/pool/v2';
 import { getViemClient } from '../sources/viem-client';
-import { getBlockNumbersSubgraphClient, getV3JoinedSubgraphClient, getVaultSubgraphClient } from '../sources/subgraphs';
+import { getV3JoinedSubgraphClient, getVaultSubgraphClient } from '../sources/subgraphs';
 import { prisma } from '../../prisma/prisma-client';
 import { updateLiquidity24hAgo, updateLiquidityValuesForPools } from '../actions/pool/update-liquidity';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
@@ -101,8 +101,6 @@ export function PoolController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const blocksSubgraph = getBlockNumbersSubgraphClient(blocks);
-
             const poolIds = await prisma.prismaPoolDynamicData.findMany({
                 where: { chain },
                 select: { poolId: true },
@@ -111,7 +109,6 @@ export function PoolController(tracer?: any) {
             const updates = await updateLiquidity24hAgo(
                 poolIds.map(({ poolId }) => poolId),
                 subgraph,
-                blocksSubgraph,
                 chain,
             );
 
@@ -295,8 +292,6 @@ export function PoolController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const blocksSubgraph = getBlockNumbersSubgraphClient(blocks);
-
             const poolIds = await prisma.prismaPoolDynamicData.findMany({
                 where: { chain },
                 select: { poolId: true },
@@ -305,7 +300,6 @@ export function PoolController(tracer?: any) {
             const updates = await updateLiquidity24hAgo(
                 poolIds.map(({ poolId }) => poolId),
                 subgraph,
-                blocksSubgraph,
                 chain,
             );
 
