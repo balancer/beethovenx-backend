@@ -497,57 +497,63 @@ export enum _SubgraphErrorPolicy_ {
 
 export type GetBeetsBarQueryVariables = Exact<{
     id: Scalars['ID'];
-    block?: InputMaybe<Block_Height>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type GetBeetsBarQuery = {
     __typename?: 'Query';
-    bar?: {
-        __typename?: 'Bar';
-        id: string;
-        address: string;
-        block: string;
-        decimals: number;
-        fBeetsBurned: string;
-        fBeetsMinted: string;
-        name: string;
-        ratio: string;
-        sharedVestingTokenRevenue: string;
-        symbol: string;
-        timestamp: string;
-        totalSupply: string;
-        vestingToken: string;
-        vestingTokenStaked: string;
-    } | null;
+    bar?:
+        | {
+              __typename?: 'Bar';
+              id: string;
+              address: string;
+              block: string;
+              decimals: number;
+              fBeetsBurned: string;
+              fBeetsMinted: string;
+              name: string;
+              ratio: string;
+              sharedVestingTokenRevenue: string;
+              symbol: string;
+              timestamp: string;
+              totalSupply: string;
+              vestingToken: string;
+              vestingTokenStaked: string;
+          }
+        | null
+        | undefined;
 };
 
 export type GetBeetsBarUserQueryVariables = Exact<{
     id: Scalars['ID'];
-    block?: InputMaybe<Block_Height>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type GetBeetsBarUserQuery = {
     __typename?: 'Query';
-    user?: {
-        __typename?: 'User';
-        id: string;
-        address: string;
-        block: string;
-        fBeets: string;
-        timestamp: string;
-        vestingTokenHarvested: string;
-        vestingTokenIn: string;
-        vestingTokenOut: string;
-    } | null;
+    user?:
+        | {
+              __typename?: 'User';
+              id: string;
+              address: string;
+              block: string;
+              fBeets: string;
+              timestamp: string;
+              vestingTokenHarvested: string;
+              vestingTokenIn: string;
+              vestingTokenOut: string;
+          }
+        | null
+        | undefined;
 };
 
 export type BeetsBarUsersQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<User_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<User_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<User_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<User_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type BeetsBarUsersQuery = {
@@ -603,62 +609,74 @@ export type BeetsBarPortfolioDataQueryVariables = Exact<{
 
 export type BeetsBarPortfolioDataQuery = {
     __typename?: 'Query';
-    beetsBar?: {
-        __typename?: 'Bar';
-        id: string;
-        address: string;
-        block: string;
-        decimals: number;
-        fBeetsBurned: string;
-        fBeetsMinted: string;
-        name: string;
-        ratio: string;
-        sharedVestingTokenRevenue: string;
-        symbol: string;
-        timestamp: string;
-        totalSupply: string;
-        vestingToken: string;
-        vestingTokenStaked: string;
-    } | null;
-    previousBeetsBar?: {
-        __typename?: 'Bar';
-        id: string;
-        address: string;
-        block: string;
-        decimals: number;
-        fBeetsBurned: string;
-        fBeetsMinted: string;
-        name: string;
-        ratio: string;
-        sharedVestingTokenRevenue: string;
-        symbol: string;
-        timestamp: string;
-        totalSupply: string;
-        vestingToken: string;
-        vestingTokenStaked: string;
-    } | null;
-    beetsBarUser?: {
-        __typename?: 'User';
-        id: string;
-        address: string;
-        block: string;
-        fBeets: string;
-        timestamp: string;
-        vestingTokenHarvested: string;
-        vestingTokenIn: string;
-        vestingTokenOut: string;
-    } | null;
-    previousBeetsBarUser?: {
-        __typename?: 'User';
-        id: string;
-        address: string;
-        block: string;
-        fBeets: string;
-        timestamp: string;
-        vestingTokenHarvested: string;
-        vestingTokenIn: string;
-        vestingTokenOut: string;
-    } | null;
+    beetsBar?:
+        | {
+              __typename?: 'Bar';
+              id: string;
+              address: string;
+              block: string;
+              decimals: number;
+              fBeetsBurned: string;
+              fBeetsMinted: string;
+              name: string;
+              ratio: string;
+              sharedVestingTokenRevenue: string;
+              symbol: string;
+              timestamp: string;
+              totalSupply: string;
+              vestingToken: string;
+              vestingTokenStaked: string;
+          }
+        | null
+        | undefined;
+    previousBeetsBar?:
+        | {
+              __typename?: 'Bar';
+              id: string;
+              address: string;
+              block: string;
+              decimals: number;
+              fBeetsBurned: string;
+              fBeetsMinted: string;
+              name: string;
+              ratio: string;
+              sharedVestingTokenRevenue: string;
+              symbol: string;
+              timestamp: string;
+              totalSupply: string;
+              vestingToken: string;
+              vestingTokenStaked: string;
+          }
+        | null
+        | undefined;
+    beetsBarUser?:
+        | {
+              __typename?: 'User';
+              id: string;
+              address: string;
+              block: string;
+              fBeets: string;
+              timestamp: string;
+              vestingTokenHarvested: string;
+              vestingTokenIn: string;
+              vestingTokenOut: string;
+          }
+        | null
+        | undefined;
+    previousBeetsBarUser?:
+        | {
+              __typename?: 'User';
+              id: string;
+              address: string;
+              block: string;
+              fBeets: string;
+              timestamp: string;
+              vestingTokenHarvested: string;
+              vestingTokenIn: string;
+              vestingTokenOut: string;
+          }
+        | null
+        | undefined;
 };
 
 export type BeetsBarDataQueryVariables = Exact<{
@@ -668,52 +686,61 @@ export type BeetsBarDataQueryVariables = Exact<{
 
 export type BeetsBarDataQuery = {
     __typename?: 'Query';
-    beetsBar?: {
-        __typename?: 'Bar';
-        id: string;
-        address: string;
-        block: string;
-        decimals: number;
-        fBeetsBurned: string;
-        fBeetsMinted: string;
-        name: string;
-        ratio: string;
-        sharedVestingTokenRevenue: string;
-        symbol: string;
-        timestamp: string;
-        totalSupply: string;
-        vestingToken: string;
-        vestingTokenStaked: string;
-    } | null;
-    previousBeetsBar?: {
-        __typename?: 'Bar';
-        id: string;
-        address: string;
-        block: string;
-        decimals: number;
-        fBeetsBurned: string;
-        fBeetsMinted: string;
-        name: string;
-        ratio: string;
-        sharedVestingTokenRevenue: string;
-        symbol: string;
-        timestamp: string;
-        totalSupply: string;
-        vestingToken: string;
-        vestingTokenStaked: string;
-    } | null;
+    beetsBar?:
+        | {
+              __typename?: 'Bar';
+              id: string;
+              address: string;
+              block: string;
+              decimals: number;
+              fBeetsBurned: string;
+              fBeetsMinted: string;
+              name: string;
+              ratio: string;
+              sharedVestingTokenRevenue: string;
+              symbol: string;
+              timestamp: string;
+              totalSupply: string;
+              vestingToken: string;
+              vestingTokenStaked: string;
+          }
+        | null
+        | undefined;
+    previousBeetsBar?:
+        | {
+              __typename?: 'Bar';
+              id: string;
+              address: string;
+              block: string;
+              decimals: number;
+              fBeetsBurned: string;
+              fBeetsMinted: string;
+              name: string;
+              ratio: string;
+              sharedVestingTokenRevenue: string;
+              symbol: string;
+              timestamp: string;
+              totalSupply: string;
+              vestingToken: string;
+              vestingTokenStaked: string;
+          }
+        | null
+        | undefined;
 };
 
 export type BeetsBarGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type BeetsBarGetMetaQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
 };
 
 export const BeetsBarFragmentDoc = gql`
@@ -828,10 +855,9 @@ export const BeetsBarGetMetaDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -846,7 +872,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GetBeetsBar',
-                'query',
             );
         },
         GetBeetsBarUser(
@@ -860,7 +885,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GetBeetsBarUser',
-                'query',
             );
         },
         BeetsBarUsers(
@@ -874,7 +898,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'BeetsBarUsers',
-                'query',
             );
         },
         BeetsBarPortfolioData(
@@ -888,7 +911,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'BeetsBarPortfolioData',
-                'query',
             );
         },
         BeetsBarData(
@@ -902,7 +924,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'BeetsBarData',
-                'query',
             );
         },
         BeetsBarGetMeta(
@@ -916,7 +937,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'BeetsBarGetMeta',
-                'query',
             );
         },
     };

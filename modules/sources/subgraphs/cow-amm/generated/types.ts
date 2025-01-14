@@ -1723,12 +1723,12 @@ export type CowAmmAddRemoveFragment = {
 };
 
 export type AddRemovesQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<AddRemove_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<AddRemove_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<AddRemove_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<AddRemove_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type AddRemovesQuery = {
@@ -1765,10 +1765,10 @@ export type CowAmmSwapFragment = {
     blockTimestamp: string;
     transactionHash: string;
     logIndex: string;
-    surplusAmount?: string | null;
-    surplusToken?: string | null;
-    swapFeeAmount?: string | null;
-    swapFeeToken?: string | null;
+    surplusAmount?: string | null | undefined;
+    surplusToken?: string | null | undefined;
+    swapFeeAmount?: string | null | undefined;
+    swapFeeToken?: string | null | undefined;
     pool: {
         __typename?: 'Pool';
         id: string;
@@ -1778,12 +1778,12 @@ export type CowAmmSwapFragment = {
 };
 
 export type SwapsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Swap_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Swap_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<Swap_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<Swap_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type SwapsQuery = {
@@ -1801,10 +1801,10 @@ export type SwapsQuery = {
         blockTimestamp: string;
         transactionHash: string;
         logIndex: string;
-        surplusAmount?: string | null;
-        surplusToken?: string | null;
-        swapFeeAmount?: string | null;
-        swapFeeToken?: string | null;
+        surplusAmount?: string | null | undefined;
+        surplusToken?: string | null | undefined;
+        swapFeeAmount?: string | null | undefined;
+        swapFeeToken?: string | null | undefined;
         pool: {
             __typename?: 'Pool';
             id: string;
@@ -1818,23 +1818,26 @@ export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MetadataQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
 };
 
 export type PoolShareFragment = { __typename?: 'PoolShare'; id: string; balance: string };
 
 export type PoolSharesQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<PoolShare_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<PoolShare_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<PoolShare_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<PoolShare_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type PoolSharesQuery = {
@@ -1870,12 +1873,12 @@ export type CowAmmPoolFragment = {
 };
 
 export type PoolsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Pool_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Pool_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<Pool_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<Pool_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type PoolsQuery = {
@@ -1906,16 +1909,16 @@ export type PoolsQuery = {
             weight: string;
         }>;
     }>;
-    _meta?: { __typename?: '_Meta_'; block: { __typename?: '_Block_'; number: number } } | null;
+    _meta?: { __typename?: '_Meta_'; block: { __typename?: '_Block_'; number: number } } | null | undefined;
 };
 
 export type SnapshotsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<PoolSnapshot_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<PoolSnapshot_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<PoolSnapshot_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<PoolSnapshot_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type SnapshotsQuery = {
@@ -2199,10 +2202,9 @@ export const SnapshotsDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -2217,7 +2219,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'AddRemoves',
-                'query',
             );
         },
         Swaps(variables?: SwapsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<SwapsQuery> {
@@ -2228,7 +2229,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Swaps',
-                'query',
             );
         },
         Metadata(
@@ -2242,7 +2242,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Metadata',
-                'query',
             );
         },
         PoolShares(
@@ -2256,7 +2255,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolShares',
-                'query',
             );
         },
         Pools(variables?: PoolsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<PoolsQuery> {
@@ -2267,7 +2265,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Pools',
-                'query',
             );
         },
         Snapshots(
@@ -2281,7 +2278,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Snapshots',
-                'query',
             );
         },
     };

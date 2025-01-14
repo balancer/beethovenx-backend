@@ -10,8 +10,6 @@ extend type Mutation {
 
 type GqlProtocolMetricsAggregated {
     totalLiquidity: BigDecimal!
-    totalSwapVolume: BigDecimal!
-    totalSwapFee: BigDecimal!
     poolCount: BigInt!
     swapFee24h: BigDecimal!
     swapVolume24h: BigDecimal!
@@ -23,8 +21,6 @@ type GqlProtocolMetricsAggregated {
 type GqlProtocolMetricsChain {
     chainId: String!
     totalLiquidity: BigDecimal!
-    totalSwapVolume: BigDecimal!
-    totalSwapFee: BigDecimal!
     poolCount: BigInt!
     swapFee24h: BigDecimal!
     swapVolume24h: BigDecimal!

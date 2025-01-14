@@ -1794,8 +1794,6 @@ export interface GqlProtocolMetricsAggregated {
     swapFee24h: Scalars['BigDecimal'];
     swapVolume24h: Scalars['BigDecimal'];
     totalLiquidity: Scalars['BigDecimal'];
-    totalSwapFee: Scalars['BigDecimal'];
-    totalSwapVolume: Scalars['BigDecimal'];
     yieldCapture24h: Scalars['BigDecimal'];
 }
 
@@ -1807,8 +1805,6 @@ export interface GqlProtocolMetricsChain {
     swapFee24h: Scalars['BigDecimal'];
     swapVolume24h: Scalars['BigDecimal'];
     totalLiquidity: Scalars['BigDecimal'];
-    totalSwapFee: Scalars['BigDecimal'];
-    totalSwapVolume: Scalars['BigDecimal'];
     yieldCapture24h: Scalars['BigDecimal'];
 }
 
@@ -4777,8 +4773,6 @@ export type GqlProtocolMetricsAggregatedResolvers<
     swapFee24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     swapVolume24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     totalLiquidity?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    totalSwapFee?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    totalSwapVolume?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     yieldCapture24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -4793,8 +4787,6 @@ export type GqlProtocolMetricsChainResolvers<
     swapFee24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     swapVolume24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     totalLiquidity?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    totalSwapFee?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-    totalSwapVolume?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     yieldCapture24h?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

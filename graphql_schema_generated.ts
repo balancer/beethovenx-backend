@@ -2570,8 +2570,6 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal!
-        totalSwapVolume: BigDecimal!
         yieldCapture24h: BigDecimal!
     }
 
@@ -2582,8 +2580,6 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal!
-        totalSwapVolume: BigDecimal!
         yieldCapture24h: BigDecimal!
     }
 
