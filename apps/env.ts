@@ -14,11 +14,11 @@ export const schema = {
     SENTRY_AUTH_TOKEN: String,
     SENTRY_TRACES_SAMPLE_RATE: {
         optional: true,
-        type: Number,
+        type: String,
     },
     SENTRY_PROFILES_SAMPLE_RATE: {
         optional: true,
-        type: Number,
+        type: String,
     },
     AWS_REGION: String,
     PROTOCOL: {
