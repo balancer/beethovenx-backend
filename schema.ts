@@ -2444,7 +2444,6 @@ export interface Mutation {
     __typename?: 'Mutation';
     beetsPoolLoadReliquarySnapshotsForAllFarms: Scalars['String'];
     beetsSyncFbeetsRatio: Scalars['String'];
-    cacheAverageBlockTime: Scalars['String'];
     poolLoadOnChainDataForAllPools: Array<GqlPoolMutationResult>;
     poolLoadSnapshotsForPools: Scalars['String'];
     poolReloadAllPoolAprs: Scalars['String'];
@@ -2546,10 +2545,6 @@ export interface Query {
     __typename?: 'Query';
     beetsGetFbeetsRatio: Scalars['String'];
     beetsPoolGetReliquaryFarmSnapshots: Array<GqlReliquaryFarmSnapshot>;
-    blocksGetAverageBlockTime: Scalars['Float'];
-    blocksGetBlocksPerDay: Scalars['Float'];
-    blocksGetBlocksPerSecond: Scalars['Float'];
-    blocksGetBlocksPerYear: Scalars['Float'];
     contentGetNewsItems: Array<GqlContentNewsItem>;
     latestSyncedBlocks: GqlLatestSyncedBlocks;
     /** Getting swap, add and remove events with paging */
@@ -5304,7 +5299,6 @@ export type MutationResolvers<
 > = ResolversObject<{
     beetsPoolLoadReliquarySnapshotsForAllFarms?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     beetsSyncFbeetsRatio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-    cacheAverageBlockTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     poolLoadOnChainDataForAllPools?: Resolver<
         Array<ResolversTypes['GqlPoolMutationResult']>,
         ParentType,
@@ -5428,10 +5422,6 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryBeetsPoolGetReliquaryFarmSnapshotsArgs, 'id' | 'range'>
     >;
-    blocksGetAverageBlockTime?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    blocksGetBlocksPerDay?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    blocksGetBlocksPerSecond?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    blocksGetBlocksPerYear?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
     contentGetNewsItems?: Resolver<
         Array<ResolversTypes['GqlContentNewsItem']>,
         ParentType,

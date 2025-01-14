@@ -5,7 +5,6 @@ import moment from 'moment-timezone';
 import { JWT } from 'google-auth-library';
 import { SecretsManager, secretsManager } from './secrets-manager';
 import { googleJwtClient, GoogleJwtClient } from './google-jwt-client';
-import { blocksSubgraphService } from '../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { tokenService } from '../token/token.service';
 import { beetsService } from '../beets/beets.service';
 import { oneDayInSeconds, secondsPerDay } from '../common/time';
@@ -13,6 +12,7 @@ import { isComposableStablePool, isWeightedPoolV2 } from '../pool/lib/pool-utils
 import { networkContext } from '../network/network-context.service';
 import { DeploymentEnv } from '../network/network-config-types';
 import { Chain } from '@prisma/client';
+import { blockNumbers } from '../block-numbers';
 
 export class DatastudioService {
     constructor(private readonly secretsManager: SecretsManager, private readonly jwtClientHelper: GoogleJwtClient) {}
@@ -237,9 +237,9 @@ export class DatastudioService {
             }
 
             // add emission data
+            const blocksPerDay = await blockNumbers().getBlocksPerDay(chain);
+            const tokenPrices = await tokenService.getTokenPrices(chain);
             for (const stake of pool.staking) {
-                const blocksPerDay = await blocksSubgraphService.getBlocksPerDay();
-                const tokenPrices = await tokenService.getTokenPrices(stake.chain);
                 const beetsPrice = stake.farm || stake.reliquary ? await beetsService.getBeetsPrice() : '0';
                 if (stake.farm) {
                     const beetsPerDay = parseFloat(stake.farm.beetsPerBlock) * blocksPerDay;

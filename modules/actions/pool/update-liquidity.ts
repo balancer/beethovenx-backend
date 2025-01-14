@@ -1,5 +1,5 @@
 import { Chain } from '@prisma/client';
-import { BlockNumbersSubgraphClient, V3VaultSubgraphClient } from '../../sources/subgraphs';
+import { V3VaultSubgraphClient } from '../../sources/subgraphs';
 import { V2SubgraphClient } from '../../subgraphs/balancer-subgraph';
 import { getLiquidityAndSharesAtTimestamp } from '../../sources/enrichers/get-liquidity-and-shares-at-timestamp';
 import { daysAgo, hoursAgo } from '../../common/time';
@@ -22,12 +22,11 @@ import _ from 'lodash';
 export const updateLiquidity24hAgo = async (
     ids: string[],
     subgraphClient: V2SubgraphClient | V3VaultSubgraphClient,
-    blocksClient: BlockNumbersSubgraphClient,
     chain: Chain,
 ) => {
     // Get liquidity data
     const ts = chain === Chain.SEPOLIA ? hoursAgo(1) : daysAgo(1);
-    const data = await getLiquidityAndSharesAtTimestamp(ids, subgraphClient, blocksClient, ts);
+    const data = await getLiquidityAndSharesAtTimestamp(chain, ids, subgraphClient, ts);
     if (!data) return;
 
     // Update liquidity data
