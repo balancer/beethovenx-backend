@@ -1,5 +1,11 @@
 # backend
 
+## 1.27.7
+
+### Patch Changes
+
+-   58d3e25: SOR - Fix split paths to support larger swaps
+
 ## 1.27.6
 
 ### Patch Changes
