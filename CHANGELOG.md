@@ -1,5 +1,13 @@
 # backend
 
+## 1.27.9
+
+### Patch Changes
+
+-   304bea4: reference config some data-only files
+-   6f949b9: fix env config for sentry
+-   faa2e26: respect max block range for changed pools
+
 ## 1.27.8
 
 ### Patch Changes

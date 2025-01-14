@@ -1,6 +1,6 @@
 {
     "name": "backend",
-    "version": "1.27.8",
+    "version": "1.27.9",
     "description": "Backend service for Beethoven X and Balancer",
     "repository": "https://github.com/balancer/backend",
     "author": "Beethoven X",
