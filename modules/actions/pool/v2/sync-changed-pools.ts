@@ -4,6 +4,7 @@ import { PoolOnChainDataService } from '../../../pool/lib/pool-on-chain-data.ser
 import { getChangedPoolsV2 } from '../../../sources/logs';
 import { getViemClient } from '../../../sources/viem-client';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../last-synced-block';
+import { AllNetworkConfigsKeyedOnChain } from '../../../network/network-config';
 
 export const syncChangedPools = async (
     chain: Chain,
@@ -49,7 +50,19 @@ export const syncChangedPools = async (
             chain,
         },
     });
-    const changedPools = await getChangedPoolsV2(vaultAddress, viemClient, BigInt(startBlock), endBlock);
+    const rpcMaxBlockRange = AllNetworkConfigsKeyedOnChain[chain].data.rpcMaxBlockRange;
+    const range = Number(endBlock) - startBlock;
+    const numBatches = Math.ceil(range / rpcMaxBlockRange);
+
+    const allChangedPools = new Set<string>();
+
+    for (let i = 0; i < numBatches; i++) {
+        const from = startBlock + (i > 0 ? 1 : 0) + i * rpcMaxBlockRange;
+        const to = Math.min(startBlock + (i + 1) * rpcMaxBlockRange, Number(endBlock));
+
+        const changedPools = await getChangedPoolsV2(vaultAddress, viemClient, BigInt(from), BigInt(to));
+        changedPools.forEach((pool) => allChangedPools.add(pool));
+    }
 
     // always sync LBP pools
     const lbps = await prisma.prismaPool.findMany({
@@ -59,11 +72,11 @@ export const syncChangedPools = async (
         },
         select: { id: true },
     });
-    changedPools.push(...lbps.map((lbp) => lbp.id));
+    lbps.forEach((pool) => allChangedPools.add(pool.id));
 
-    await poolOnChainDataService.updateOnChainData(changedPools, chain, Number(endBlock), tokenPrices);
+    await poolOnChainDataService.updateOnChainData(Array.from(allChangedPools), chain, Number(endBlock), tokenPrices);
 
     await upsertLastSyncedBlock(chain, PrismaLastBlockSyncedCategory.POOLS, Number(endBlock));
 
-    return changedPools;
+    return Array.from(allChangedPools);
 };

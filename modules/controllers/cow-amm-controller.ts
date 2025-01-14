@@ -17,6 +17,8 @@ import moment from 'moment';
 import { upsertBptBalances } from '../actions/cow-amm/upsert-bpt-balances';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../actions/pool/last-synced-block';
 import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
+import { AllNetworkConfigs, AllNetworkConfigsKeyedOnChain } from '../network/network-config';
+import { chainToChainId } from '../network/chain-id-to-chain';
 
 export function CowAmmController(tracer?: any) {
     const getSubgraphClient = (chain: Chain) => {
@@ -87,19 +89,30 @@ export function CowAmmController(tracer?: any) {
             const toBlock = await viemClient.getBlockNumber();
 
             // no new blocks have been minted, needed for slow networks
-            if (fromBlock > toBlock) {
+            if (fromBlock > Number(toBlock)) {
                 return [];
             }
 
             let poolsToSync: string[] = [];
 
             if (fromBlock > 1) {
-                const changedPools = await fetchChangedPools(viemClient, chain, fromBlock, Number(toBlock));
+                const rpcMaxBlockRange = AllNetworkConfigsKeyedOnChain[chain].data.rpcMaxBlockRange;
+                const range = Number(toBlock) - fromBlock;
+                const numBatches = Math.ceil(range / rpcMaxBlockRange);
 
-                if (changedPools.length === 0) {
+                const allChangedPools = new Set<string>();
+
+                for (let i = 0; i < numBatches; i++) {
+                    const from = fromBlock + (i > 0 ? 1 : 0) + i * rpcMaxBlockRange;
+                    const to = Math.min(fromBlock + (i + 1) * rpcMaxBlockRange, Number(toBlock));
+                    const changedPools = await fetchChangedPools(viemClient, chain, from, to);
+                    changedPools.forEach((pool) => allChangedPools.add(pool));
+                }
+
+                if (allChangedPools.size === 0) {
                     return [];
                 }
-                poolsToSync = changedPools;
+                poolsToSync = Array.from(allChangedPools);
             } else {
                 poolsToSync = await prisma.prismaPool
                     .findMany({
