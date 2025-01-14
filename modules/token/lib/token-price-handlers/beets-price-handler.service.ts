@@ -11,6 +11,7 @@ import { ethers } from 'ethers';
 import { formatFixed } from '@ethersproject/bignumber';
 import { tokenAndPrice, updatePrices } from './price-handler-helper';
 import { Chain } from '@prisma/client';
+import { AllNetworkConfigs } from '../../../network/network-config';
 
 type FundManagement = {
     sender: string;
@@ -23,18 +24,20 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
     public readonly exitIfFails = false;
     public readonly id = 'BeetsPriceHandlerService';
 
-    private readonly beetsFtmAddress = '0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e';
-    private readonly wftmFtmAddress = '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83';
-    private readonly freshBeetsPoolId = '0x9e4341acef4147196e99d648c5e43b3fc9d026780002000000000000000005ec';
-    private readonly VaultFtmAddress = '0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce';
-    private readonly beetsAddressOptimism = '0xb4bc46bc6cb217b59ea8f4530bae26bf69f677f0';
-    private readonly beetsRpcProvider = 'https://rpc.ftm.tools';
+    private readonly beetsFtmAddress = '0xf24bcf4d1e507740041c9cfd2dddb29585adce1e';
+    private readonly beetsSonicAddress = '0x2d0e0814e62d80056181f5cd932274405966e4f0';
+    private readonly beetsOptimismAddress = '0xb4bc46bc6cb217b59ea8f4530bae26bf69f677f0';
+    private readonly stSAddress = '0xe5da20f15420ad15de0fa650600afc998bbe3955';
+    private readonly freshBeetsPoolId = '0x10ac2f9dae6539e77e372adb14b1bf8fbd16b3e8000200000000000000000005';
+    private readonly VaultSonicAddress = '0xba12222222228d8ba445958a75a0704d566bf2c8';
+    private readonly beetsRpcProvider = 'https://rpc.soniclabs.com/';
 
     private getAcceptedTokens(tokens: PrismaTokenWithTypes[]): PrismaTokenWithTypes[] {
         return tokens.filter(
             (token) =>
                 (token.chain === 'FANTOM' && token.address === this.beetsFtmAddress) ||
-                (token.chain === 'OPTIMISM' && token.address === this.beetsAddressOptimism),
+                (token.chain === 'OPTIMISM' && token.address === this.beetsOptimismAddress) ||
+                (token.chain === 'SONIC' && token.address === this.beetsSonicAddress),
         );
     }
 
@@ -47,7 +50,7 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
         const tokenAndPrices: tokenAndPrice[] = [];
         const timestamp = timestampRoundedUpToNearestHour();
 
-        const assets: string[] = [this.beetsFtmAddress, this.wftmFtmAddress];
+        const assets: string[] = [this.beetsSonicAddress, this.stSAddress];
         const swaps: BatchSwapStep[] = [
             {
                 poolId: this.freshBeetsPoolId,
@@ -59,7 +62,7 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
         ];
 
         const vaultContract = new Contract(
-            this.VaultFtmAddress,
+            this.VaultSonicAddress,
             VaultAbi,
             new ethers.providers.JsonRpcProvider(this.beetsRpcProvider),
         );
@@ -73,7 +76,7 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
         let tokenOutAmountScaled = '0';
         try {
             const deltas = await vaultContract.queryBatchSwap(SwapKind.GivenIn, swaps, assets, funds);
-            tokenOutAmountScaled = deltas[assets.indexOf(this.wftmFtmAddress)] ?? '0';
+            tokenOutAmountScaled = deltas[assets.indexOf(this.stSAddress)] ?? '0';
         } catch (err) {
             console.log(`queryBatchSwapTokensIn error: `, err);
         }
@@ -82,13 +85,13 @@ export class BeetsPriceHandlerService implements TokenPriceHandler {
             throw new Error('BeetsPriceHandlerService: Could not get beets price from on-chain.');
         }
 
-        const ftmPrice = await prisma.prismaTokenCurrentPrice.findUniqueOrThrow({
+        const stSPrice = await prisma.prismaTokenCurrentPrice.findUniqueOrThrow({
             where: {
-                tokenAddress_chain: { tokenAddress: this.wftmFtmAddress.toLowerCase(), chain: 'FANTOM' },
+                tokenAddress_chain: { tokenAddress: this.stSAddress.toLowerCase(), chain: 'SONIC' },
             },
         });
 
-        const beetsPrice = ftmPrice.price * Math.abs(parseFloat(formatFixed(tokenOutAmountScaled, 18)));
+        const beetsPrice = stSPrice.price * Math.abs(parseFloat(formatFixed(tokenOutAmountScaled, 18)));
 
         for (const token of acceptedTokens) {
             tokenAndPrices.push({ address: token.address, chain: token.chain, price: beetsPrice });
