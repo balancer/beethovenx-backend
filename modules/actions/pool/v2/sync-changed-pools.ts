@@ -4,7 +4,7 @@ import { PoolOnChainDataService } from '../../../pool/lib/pool-on-chain-data.ser
 import { getChangedPoolsV2 } from '../../../sources/logs';
 import { getViemClient } from '../../../sources/viem-client';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../last-synced-block';
-import { AllNetworkConfigsKeyedOnChain } from '../../../network/network-config';
+import config from '../../../../config';
 
 export const syncChangedPools = async (
     chain: Chain,
@@ -50,7 +50,9 @@ export const syncChangedPools = async (
             chain,
         },
     });
-    const rpcMaxBlockRange = AllNetworkConfigsKeyedOnChain[chain].data.rpcMaxBlockRange;
+
+    // Use getEvents for that - and refactor it to use viemClient
+    const rpcMaxBlockRange = config[chain].rpcMaxBlockRange;
     const range = Number(endBlock) - startBlock;
     const numBatches = Math.ceil(range / rpcMaxBlockRange);
 
