@@ -1,5 +1,13 @@
 # backend
 
+## 1.27.8
+
+### Patch Changes
+
+-   31efe9e: remove totalFee and totalVolume from protocol metrics
+-   946041a: use freshbeets pool on sonic to price beets
+-   231e527: set totals to 0 instead
+
 ## 1.27.7
 
 ### Patch Changes
