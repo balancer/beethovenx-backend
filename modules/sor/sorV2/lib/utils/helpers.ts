@@ -82,7 +82,6 @@ export function getHookState(pool: any): HookState | undefined {
         return undefined;
     }
 
-    
     if (pool.hook.name === 'ExitFee') {
         // api for this hook is an Object with removeLiquidityFeePercentage key & fee as string
         const dynamicData = pool.hook.dynamicData as { removeLiquidityFeePercentage: string };
@@ -91,23 +90,27 @@ export function getHookState(pool: any): HookState | undefined {
             tokens: pool.tokens.map((token: { address: string }) => token.address),
             // ExitFeeHook will always have dynamicData as part of the API response
             removeLiquidityHookFeePercentage: parseEther(dynamicData.removeLiquidityFeePercentage),
+            hookType: pool.hook.name,
         };
     }
 
     if (pool.hook.name === 'DirectionalFee') {
         // this hook does not require a hook state to be passed
-        return {} as HookState;
+        return {
+            hookType: pool.hook.name,
+        } as HookState;
     }
 
     if (pool.hook.name === 'StableSurge') {
         return {
             // amp onchain precision is 1000. Api returns 200 means onchain value is 200000
-            amp: parseUnits(pool.typeData.amp,3),
-            // 18 decimal precision. 
-            surgeThresholdPercentage: parseEther(pool.hook.dynamicData.surgeThresholdPercentage), 
+            amp: parseUnits(pool.typeData.amp, 3),
+            // 18 decimal precision.
+            surgeThresholdPercentage: parseEther(pool.hook.dynamicData.surgeThresholdPercentage),
+            hookType: pool.hook.name,
         };
     }
-    
+
     throw new Error(`${pool.hook.name} hook not implemented`);
 }
 
@@ -118,6 +121,5 @@ export function isLiquidityManagement(value: any): value is LiquidityManagement 
         typeof value.enableAddLiquidityCustom === 'boolean' &&
         typeof value.enableDonation === 'boolean' &&
         typeof value.enableRemoveLiquidityCustom === 'boolean'
-    )
+    );
 }
-
