@@ -99,7 +99,7 @@ export class StablePool implements BasePoolV3 {
             poolTokens,
             totalShares,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            pool.liquidityManagement,
+            ((pool.protocolVersion === 3 && pool.liquidityManagement) || {}) as unknown as LiquidityManagement,
             hookState,
         );
     }
