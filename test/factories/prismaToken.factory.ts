@@ -7,6 +7,7 @@ import { ZERO_ADDRESS } from '@balancer/sdk';
 export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicData>(({ sequence, params }) => {
     const tokenAddress = params?.address || createRandomAddress();
     const poolId = params?.poolId || createRandomAddress();
+    const decimals = params?.token?.decimals ?? 18;
     return {
         id: poolId + '-' + tokenAddress,
         address: tokenAddress,
@@ -16,7 +17,7 @@ export const prismaPoolTokenFactory = Factory.define<PrismaPoolTokenWithDynamicD
         nestedPoolId: null,
         priceRateProvider: ZERO_ADDRESS,
         exemptFromProtocolYieldFee: false,
-        token: prismaTokenFactory.build({ address: tokenAddress }),
+        token: prismaTokenFactory.build({ address: tokenAddress, decimals }),
         balance: '10.000000000000000000',
         balanceUSD: 10,
         weight: '0.5',

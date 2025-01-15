@@ -12,7 +12,10 @@ type NetworkSetup = {
     forkBlockNumber: bigint;
 };
 
-type NetworksWithFork = Extract<keyof typeof ChainId, 'MAINNET' | 'POLYGON' | 'FANTOM' | 'SEPOLIA' | 'OPTIMISM'>;
+type NetworksWithFork = Extract<
+    keyof typeof ChainId,
+    'MAINNET' | 'POLYGON' | 'FANTOM' | 'SEPOLIA' | 'OPTIMISM' | 'GNOSIS_CHAIN'
+>;
 
 const ANVIL_PORTS: Record<NetworksWithFork, number> = {
     //Ports separated by 100 to avoid port collision when running tests in parallel
@@ -21,6 +24,7 @@ const ANVIL_PORTS: Record<NetworksWithFork, number> = {
     FANTOM: 8845,
     SEPOLIA: 8945,
     OPTIMISM: 9045,
+    GNOSIS_CHAIN: 9145,
 };
 
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
@@ -56,6 +60,12 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
         fallBackRpc: 'https://optimism.gateway.tenderly.co',
         port: ANVIL_PORTS.OPTIMISM,
         forkBlockNumber: 117374265n,
+    },
+    GNOSIS_CHAIN: {
+        rpcEnv: 'GNOSIS_CHAIN_RPC_URL',
+        fallBackRpc: 'https://rpc.ankr.com/gnosis',
+        port: ANVIL_PORTS.GNOSIS_CHAIN,
+        forkBlockNumber: 35214423n,
     },
 };
 
