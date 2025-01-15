@@ -30,7 +30,7 @@ export const syncBptBalancesV2 = async (chain: Chain, subgraphUrl?: string) => {
     try {
         syncedRange = await syncBptBalancesFromSubgraph(poolIds, subgraphClient, chain, 'BPT_BALANCES_V2');
     } catch (e: any) {
-        console.log(`syncBptBalancesFromSubgraph BPT_BALANCES_V2 on ${chain} failed, trying RPC`, e.message);
+        console.error(`syncBptBalancesFromSubgraph BPT_BALANCES_V2 on ${chain} failed, trying RPC`, e.message);
         syncedRange = await syncBptBalancesFromRpc(poolIds, viemClient, chain, 'BPT_BALANCES_V2');
     }
 
