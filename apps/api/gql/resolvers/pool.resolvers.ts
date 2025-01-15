@@ -115,7 +115,13 @@ const balancerResolvers: Resolvers = {
         poolSyncAllPoolsFromSubgraph: async (parent, {}, context) => {
             isAdminRoute(context);
 
-            return poolService.syncAllPoolsFromSubgraph();
+            const chain = headerChain();
+
+            if (!chain) {
+                throw new Error('poolSyncAllPoolsFromSubgraph error: Provide chain header');
+            }
+
+            return PoolController().addPoolsV2(chain);
         },
         poolReloadAllPoolAprs: async (parent, { chain }, context) => {
             isAdminRoute(context);

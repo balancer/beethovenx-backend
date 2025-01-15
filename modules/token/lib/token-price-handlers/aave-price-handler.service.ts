@@ -42,13 +42,21 @@ export class AavePriceHandlerService implements TokenPriceHandler {
 
         const updatedTokens: PrismaTokenWithTypes[] = [];
         for (const chain in tokensByChain) {
+            // Use existing rates for erc4626 tokens
+            const erc4626Tokens = this.getAcceptedTokens(tokens).filter(
+                (token) => token.chain === chain && token.types.includes('ERC4626'),
+            );
+            const erc4626Addresses = erc4626Tokens.map((token) => token.address);
+
             const aaveTokensForChain = tokensByChain[chain];
             if (!aaveTokensForChain.length) {
                 continue;
             }
 
             // Fetch rates for aave tokens
-            const addresses = aaveTokensForChain.map((token) => token.wrappedToken);
+            const addresses = aaveTokensForChain
+                .map((token) => token.wrappedToken)
+                .filter((address) => !erc4626Addresses.includes(address));
             const underlying = aaveTokensForChain.map((token) => token.underlying);
             const contracts = addresses.map((address) => ({
                 address: address as `0x${string}`,
@@ -59,9 +67,11 @@ export class AavePriceHandlerService implements TokenPriceHandler {
             const rates = await getViemClient(chain as Chain)
                 .multicall({ contracts, allowFailure: true })
                 .then((res) => res.map((r) => (r.status === 'success' ? r.result : 1000000000000000000000000000n)));
+
+            // Append existing erc4626 rates
             const rateMap = _.zipObject(
-                addresses,
-                rates.map((r) => Number(r) / 1e27),
+                [...addresses, ...erc4626Addresses],
+                [...rates.map((r) => Number(r) / 1e27), ...erc4626Tokens.map((t) => Number(t.unwrapRate))],
             );
 
             const underlyingPrices = await prisma.prismaTokenCurrentPrice.findMany({

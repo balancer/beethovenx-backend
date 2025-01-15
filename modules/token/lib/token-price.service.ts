@@ -17,11 +17,13 @@ import { PrismaTokenWithTypes } from '../../../prisma/prisma-types';
 import { AavePriceHandlerService } from './token-price-handlers/aave-price-handler.service';
 import { MorphoPriceHandlerService } from './token-price-handlers/morpho-price-handler.service';
 import config from '../../../config';
+import { BeetsPriceHandlerService } from './token-price-handlers/beets-price-handler.service';
 
 export class TokenPriceService {
     cache: CacheClass<string, any> = new Cache<string, any>();
     private readonly priceHandlers: TokenPriceHandler[] = [
         new FbeetsPriceHandlerService(),
+        new BeetsPriceHandlerService(),
         new ClqdrPriceHandlerService(),
         new AavePriceHandlerService(),
         new MorphoPriceHandlerService(),

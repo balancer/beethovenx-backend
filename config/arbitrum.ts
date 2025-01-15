@@ -65,6 +65,9 @@ export default <NetworkData>{
     avgBlockSpeed: 1,
     ybAprConfig: {
         usdl: true,
+        teth: {
+            address: '0xd09acb80c1e8f2291862c4978a008791c9167003',
+        },
         aave: {
             v3: {
                 subgraphUrl: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/DLuE98kEb5pQNXAcKFQGQgfSQ57Xdou4jnVbAEqMfy3B`,

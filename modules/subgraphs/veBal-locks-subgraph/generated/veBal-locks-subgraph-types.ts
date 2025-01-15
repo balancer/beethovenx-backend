@@ -2318,12 +2318,12 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type VotingEscrowLocksQueryVariables = Exact<{
-    block?: InputMaybe<Block_Height>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<VotingEscrowLock_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    skip?: InputMaybe<Scalars['Int']>;
-    where?: InputMaybe<VotingEscrowLock_Filter>;
+    block?: Maybe<Block_Height>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<VotingEscrowLock_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    skip?: Maybe<Scalars['Int']>;
+    where?: Maybe<VotingEscrowLock_Filter>;
 }>;
 
 export type VotingEscrowLocksQuery = {
@@ -2337,12 +2337,12 @@ export type VotingEscrowLocksQuery = {
 };
 
 export type LockSnapshotsQueryVariables = Exact<{
-    block?: InputMaybe<Block_Height>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<LockSnapshot_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    skip?: InputMaybe<Scalars['Int']>;
-    where?: InputMaybe<LockSnapshot_Filter>;
+    block?: Maybe<Block_Height>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<LockSnapshot_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    skip?: Maybe<Scalars['Int']>;
+    where?: Maybe<LockSnapshot_Filter>;
 }>;
 
 export type LockSnapshotsQuery = {
@@ -2361,12 +2361,15 @@ export type VebalGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type VebalGetMetaQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
 };
 
 export const VotingEscrowLocksDocument = gql`
@@ -2436,10 +2439,9 @@ export const VebalGetMetaDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -2454,7 +2456,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'VotingEscrowLocks',
-                'query',
             );
         },
         LockSnapshots(
@@ -2468,7 +2469,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'LockSnapshots',
-                'query',
             );
         },
         VebalGetMeta(
@@ -2482,7 +2482,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'VebalGetMeta',
-                'query',
             );
         },
     };

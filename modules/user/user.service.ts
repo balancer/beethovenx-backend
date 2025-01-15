@@ -51,16 +51,8 @@ export class UserService {
         return this.userBalanceService.getUserStaking(address, chains);
     }
 
-    public async initWalletBalancesForAllPools() {
-        await this.walletSyncService.initBalancesForPools();
-    }
-
     public async initWalletBalancesForPool(poolId: string) {
         await this.walletSyncService.initBalancesForPool(poolId);
-    }
-
-    public async syncChangedWalletBalancesForAllPools() {
-        await this.walletSyncService.syncChangedBalancesForAllPools();
     }
 
     public async initStakedBalances(stakingTypes: PrismaPoolStakingType[], chain: Chain) {

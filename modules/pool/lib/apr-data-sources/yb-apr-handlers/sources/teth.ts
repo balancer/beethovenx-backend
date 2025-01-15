@@ -1,12 +1,11 @@
 import { AprHandler } from '../types';
 
-const TETH = '0xd11c452fc99cf405034ee446803b6f6c1f6d5ed8';
 const url = 'https://api.treehouse.finance/rate/mey';
 
 // The apr config needs to be custom made as the resulting value
 // is equal to Lido's wstETH APR plus the data from the below query.
 export class TreehouseAprHandler implements AprHandler {
-    constructor() {}
+    constructor(private config: { address: string }) {}
 
     async getAprs() {
         try {
@@ -23,7 +22,7 @@ export class TreehouseAprHandler implements AprHandler {
             } = (await lido.json()) as { data: { smaApr: number } };
 
             const aprs = {
-                [TETH]: {
+                [this.config.address]: {
                     apr: (parseFloat(data) + smaApr) / 100,
                     isIbYield: true,
                 },

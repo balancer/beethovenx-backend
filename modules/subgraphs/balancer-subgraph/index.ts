@@ -1,12 +1,12 @@
 import { GraphQLClient } from 'graphql-request';
 import {
+    BalancerPoolSnapshotFragment,
+    getSdk,
     OrderDirection,
+    Pool_OrderBy,
     PoolBalancesFragment,
     PoolBalancesQueryVariables,
-    BalancerPoolSnapshotFragment,
-    Pool_OrderBy,
     PoolSnapshot_OrderBy,
-    getSdk,
 } from './generated/balancer-subgraph-types';
 import { BalancerSubgraphService } from './balancer-subgraph.service';
 import { Chain } from '@prisma/client';
@@ -15,10 +15,14 @@ export type V2SubgraphClient = ReturnType<typeof getV2SubgraphClient>;
 
 export function getV2SubgraphClient(url: string, chain: Chain) {
     const sdk = getSdk(new GraphQLClient(url));
+    const legacyService = new BalancerSubgraphService(url, chain);
 
     return {
         ...sdk,
-        legacyService: new BalancerSubgraphService(url, chain),
+        legacyService,
+        getMetadata: legacyService.getMetadata.bind(legacyService),
+        getAllPoolSnapshots: legacyService.getAllPoolSnapshots.bind(legacyService),
+        getAllPoolSharesWithBalance: legacyService.getAllPoolSharesWithBalance.bind(legacyService),
         async getSnapshotsForTimestamp(timestamp: number): Promise<BalancerPoolSnapshotFragment[]> {
             const limit = 1000;
             let hasMore = true;

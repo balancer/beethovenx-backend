@@ -3,6 +3,7 @@ import { userService } from '../../../../modules/user/user.service';
 import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
 import { tokenService } from '../../../../modules/token/token.service';
 import { headerChain } from '../../../../modules/context/header-chain';
+import { UserBalancesController } from '../../../../modules/controllers';
 
 const resolvers: Resolvers = {
     Query: {
@@ -65,14 +66,23 @@ const resolvers: Resolvers = {
         userSyncChangedWalletBalancesForAllPools: async (parent, {}, context) => {
             isAdminRoute(context);
 
-            await userService.syncChangedWalletBalancesForAllPools();
+            const chain = headerChain();
+            if (!chain) {
+                throw new Error('userSyncChangedWalletBalancesForAllPools error: Provide "chainId" header');
+            }
+
+            await UserBalancesController().syncBalances(chain);
 
             return 'success';
         },
-        userInitWalletBalancesForAllPools: async (parent, {}, context) => {
+        userInitWalletBalancesForAllPools: async (parent, { chain }, context) => {
             isAdminRoute(context);
 
-            await userService.initWalletBalancesForAllPools();
+            if (!chain) {
+                throw new Error('userInitWalletBalancesForAllPools error: Provide "chain" param');
+            }
+
+            await UserBalancesController().syncBalances(chain);
 
             return 'success';
         },

@@ -21,7 +21,6 @@ import { blocksSubgraphService } from '../subgraphs/blocks-subgraph/blocks-subgr
 import { tokenService } from '../token/token.service';
 import { userService } from '../user/user.service';
 import { PoolAprUpdaterService } from './lib/pool-apr-updater.service';
-import { PoolCreatorService } from './lib/pool-creator.service';
 import { PoolGqlLoaderService } from './lib/pool-gql-loader.service';
 import { PoolOnChainDataService, PoolOnChainDataServiceOptions } from './lib/pool-on-chain-data.service';
 import { PoolSnapshotService } from './lib/pool-snapshot.service';
@@ -50,7 +49,6 @@ import { syncVebalStakingForPools } from '../actions/pool/staking/sync-vebal-sta
 
 export class PoolService {
     constructor(
-        private readonly poolCreatorService: PoolCreatorService,
         private readonly poolOnChainDataService: PoolOnChainDataService,
         private readonly poolUsdDataService: PoolUsdDataService,
         private readonly poolGqlLoaderService: PoolGqlLoaderService,
@@ -140,12 +138,6 @@ export class PoolService {
             return reliquarySnapshotService.getSnapshotsForFarm(id, range);
         }
         return [];
-    }
-
-    public async syncAllPoolsFromSubgraph(): Promise<string[]> {
-        const blockNumber = await networkContext.provider.getBlockNumber();
-
-        return this.poolCreatorService.syncAllPoolsFromSubgraph(blockNumber);
     }
 
     public async reloadStakingForAllPools(stakingTypes: PrismaPoolStakingType[], chain: Chain): Promise<void> {
@@ -255,7 +247,6 @@ const optionsResolverForPoolOnChainDataService: () => PoolOnChainDataServiceOpti
 };
 
 export const poolService = new PoolService(
-    new PoolCreatorService(userService),
     new PoolOnChainDataService(optionsResolverForPoolOnChainDataService),
     new PoolUsdDataService(tokenService, blocksSubgraphService),
     new PoolGqlLoaderService(),

@@ -207,7 +207,7 @@ export class UserSyncReliquaryFarmBalanceService implements UserStakedBalanceSer
                         return {
                             id: `reliquary-${relic.pid}-${userAddress}`,
                             chain: networkContext.chain,
-                            balance: totalBalance.toString(),
+                            balance: totalBalance.toFixed(18).replace(/(?:\.0+|(\.\d*?)0+)$/, '$1'),
                             balanceNum: totalBalance,
                             userAddress: userAddress,
                             poolId: pool?.id,

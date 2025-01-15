@@ -433,12 +433,12 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type ValidatorsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Validator_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Validator_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<Validator_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<Validator_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type ValidatorsQuery = {
@@ -447,12 +447,12 @@ export type ValidatorsQuery = {
 };
 
 export type SonicStakingSnapshotsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<SonicStakingSnapshot_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<SonicStakingSnapshot_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<SonicStakingSnapshot_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<SonicStakingSnapshot_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type SonicStakingSnapshotsQuery = {
@@ -544,10 +544,9 @@ export const SonicStakingSnapshotsDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -562,7 +561,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Validators',
-                'query',
             );
         },
         SonicStakingSnapshots(
@@ -576,7 +574,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'SonicStakingSnapshots',
-                'query',
             );
         },
     };

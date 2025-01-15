@@ -28,7 +28,7 @@ export default <NetworkData>{
         balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmZpnxr5Qz2tc6EKgGuvBG3xSbXN3LbCLhqpawLWvndPH6`,
         balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmVGssjwfVAP8b2buqVVKz5sdb69ryyvxED5qQPGeW8Yk2`,
         blocks: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/subgraphs/id/9A6bkprqEG2XsZUYJ5B2XXp6ymz9fNcn4tVPxMWDztYC`,
-        gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmdmQBHbBtwD6wNypHbuGKB1uKHpHNVuSHbo9FsvrMhXSn`,
+        gauge: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_BALANCER}/deployments/id/QmNrMRgSeUUkQsvhE6ExBEPETZ6P2jiJL3SzXftNQcAEcW`,
         aura: 'https://data.aura.finance/graphql',
     },
     eth: {
@@ -318,7 +318,9 @@ export default <NetworkData>{
             url: 'https://gateway.yieldnest.finance/api/v1/graphql',
             token: '0x09db87a538bd693e9d08544577d5ccfaa6373a48',
         },
-        teth: true,
+        teth: {
+            address: '0xd11c452fc99cf405034ee446803b6f6c1f6d5ed8',
+        },
         defaultHandlers: {
             uniETH: {
                 tokenAddress: '0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4',

@@ -1,5 +1,54 @@
 # backend
 
+## 1.27.9
+
+### Patch Changes
+
+-   304bea4: reference config some data-only files
+-   6f949b9: fix env config for sentry
+-   faa2e26: respect max block range for changed pools
+
+## 1.27.8
+
+### Patch Changes
+
+-   31efe9e: remove totalFee and totalVolume from protocol metrics
+-   946041a: use freshbeets pool on sonic to price beets
+-   231e527: set totals to 0 instead
+
+## 1.27.7
+
+### Patch Changes
+
+-   58d3e25: SOR - Fix split paths to support larger swaps
+
+## 1.27.6
+
+### Patch Changes
+
+-   612e23e: sor slippage handling patch
+
+## 1.27.5
+
+### Patch Changes
+
+-   9d902e6: updating gauge SG urls including v3 pools
+-   9d902e6: teth apr on arbitrum
+
+## 1.27.4
+
+### Patch Changes
+
+-   4b25f8e: possible fix for staked balance formatting on write
+-   1aac890: fix to a fix
+-   09ec5a3: patch user balances formatting
+-   a1dd2c4: prisma v6
+-   d41c603: setup prisma sentry integration
+-   4e63397: fix sor slippage formatting
+-   341abcf: updating gauge SG urls including v3 pools
+-   160c10c: removing prisma sentry integration due to lack of support
+-   4715a49: prisma telemetry setup
+
 ## 1.27.3
 
 ### Patch Changes

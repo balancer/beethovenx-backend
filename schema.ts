@@ -1794,7 +1794,9 @@ export interface GqlProtocolMetricsAggregated {
     swapFee24h: Scalars['BigDecimal'];
     swapVolume24h: Scalars['BigDecimal'];
     totalLiquidity: Scalars['BigDecimal'];
+    /** @deprecated No replacement */
     totalSwapFee: Scalars['BigDecimal'];
+    /** @deprecated No replacement */
     totalSwapVolume: Scalars['BigDecimal'];
     yieldCapture24h: Scalars['BigDecimal'];
 }
@@ -1807,7 +1809,9 @@ export interface GqlProtocolMetricsChain {
     swapFee24h: Scalars['BigDecimal'];
     swapVolume24h: Scalars['BigDecimal'];
     totalLiquidity: Scalars['BigDecimal'];
+    /** @deprecated No replacement */
     totalSwapFee: Scalars['BigDecimal'];
+    /** @deprecated No replacement */
     totalSwapVolume: Scalars['BigDecimal'];
     yieldCapture24h: Scalars['BigDecimal'];
 }
@@ -2519,6 +2523,10 @@ export interface MutationTokenSyncLatestFxPricesArgs {
 
 export interface MutationUserInitStakedBalancesArgs {
     stakingTypes: Array<GqlPoolStakingType>;
+}
+
+export interface MutationUserInitWalletBalancesForAllPoolsArgs {
+    chain?: InputMaybe<GqlChain>;
 }
 
 export interface MutationUserInitWalletBalancesForPoolArgs {
@@ -5381,7 +5389,12 @@ export type MutationResolvers<
         ContextType,
         RequireFields<MutationUserInitStakedBalancesArgs, 'stakingTypes'>
     >;
-    userInitWalletBalancesForAllPools?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    userInitWalletBalancesForAllPools?: Resolver<
+        ResolversTypes['String'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationUserInitWalletBalancesForAllPoolsArgs, never>
+    >;
     userInitWalletBalancesForPool?: Resolver<
         ResolversTypes['String'],
         ParentType,

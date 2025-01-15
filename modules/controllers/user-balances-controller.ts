@@ -1,16 +1,29 @@
 import { Chain } from '@prisma/client';
 import config from '../../config';
-import { prisma } from '../../prisma/prisma-client';
-import { upsertBptBalancesV2 } from '../actions/user/upsert-bpt-balances-v2';
-import { upsertBptBalancesV3 } from '../actions/user/upsert-bpt-balances-v3';
-import { chainIdToChain } from '../network/chain-id-to-chain';
-import { getVaultSubgraphClient } from '../sources/subgraphs';
-import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
+import {
+    syncBptBalancesV2,
+    syncBptBalancesV3,
+    syncBptBalancesCowAmm,
+    syncBptBalancesFbeets,
+} from '../actions/user/bpt-balances';
 
 export function UserBalancesController(tracer?: any) {
-    // Setup tracing
-    // ...
     return {
+        async syncBalances(chain: Chain) {
+            const {
+                subgraphs: { balancer, balancerV3, cowAmm, beetsBar },
+            } = config[chain];
+
+            // Run all syncs in parallel
+            await Promise.all([
+                syncBptBalancesV2(chain, balancer),
+                syncBptBalancesV3(chain, balancerV3),
+                syncBptBalancesCowAmm(chain, cowAmm),
+                syncBptBalancesFbeets(chain, beetsBar),
+            ]);
+
+            return true;
+        },
         async syncUserBalancesFromV2Subgraph(chain: Chain) {
             const {
                 subgraphs: { balancer },
@@ -21,13 +34,8 @@ export function UserBalancesController(tracer?: any) {
                 throw new Error(`Chain not configured: ${chain}`);
             }
 
-            const poolIds = await prisma.prismaPool
-                .findMany({ where: { chain }, select: { id: true } })
-                .then((pools) => pools.map((pool) => pool.id));
-
-            const subgraphClient = getV2SubgraphClient(balancer, chain);
-            const entries = await upsertBptBalancesV2(poolIds, subgraphClient, chain);
-            return entries;
+            const syncedBlocks = await syncBptBalancesV2(chain, balancer);
+            return syncedBlocks;
         },
         async syncUserBalancesFromV3Subgraph(chain: Chain) {
             const {
@@ -39,9 +47,8 @@ export function UserBalancesController(tracer?: any) {
                 return [];
             }
 
-            const vaultSubgraphClient = getVaultSubgraphClient(balancerV3, chain);
-            const entries = await upsertBptBalancesV3(vaultSubgraphClient, chain);
-            return entries;
+            const syncedBlocks = await syncBptBalancesV3(chain, balancerV3);
+            return syncedBlocks;
         },
     };
 }

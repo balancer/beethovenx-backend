@@ -1,4 +1,5 @@
 import { initRequestScopedContext, setRequestScopedContextValue } from '../context/request-scoped-context';
+import { AllNetworkConfigs } from '../network/network-config';
 import { tokenService } from './token.service';
 
 describe('Token service', () => {
@@ -11,10 +12,12 @@ describe('Token service', () => {
 
     test('update prices', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '11155111');
+        setRequestScopedContextValue('chainId', '146');
 
-        await tokenService.syncTokenContentData();
-        await tokenService.updateTokenPrices(['SEPOLIA']);
+        await tokenService.updateTokenPrices(['SONIC']);
+        const prices = await tokenService.getCurrentTokenPrices(['SONIC']);
+
+        console.log(prices.find((price) => price.tokenAddress === '0x2d0e0814e62d80056181f5cd932274405966e4f0'));
     }, 500000);
 
     test('sync tokens from pool tokens', async () => {

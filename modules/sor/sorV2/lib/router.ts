@@ -36,85 +36,73 @@ export class Router {
             throw new Error('No potential swap paths provided');
         }
 
-        const quotePaths: PathWithAmount[] = [];
+        // break swapAmount into 25%, 50%, 75% and 100% ratios, so we're able to split quote into multiple paths
+        let validPaths = [...paths];
+        let selectedPaths: PathLocal[] = [];
+        const swapAmounts = [
+            swapAmount.mulDownFixed(parseEther(String(0.25))),
+            swapAmount.mulDownFixed(parseEther(String(0.5))),
+            swapAmount.mulDownFixed(parseEther(String(0.75))),
+            swapAmount,
+        ];
 
-        // Check if PathWithAmount is valid (each hop pool swap limit)
-        paths.forEach((path) => {
-            try {
-                quotePaths.push(new PathWithAmount(path.tokens, path.pools, path.isBuffer, swapAmount));
-            } catch {
-                // console.log('Invalid path:');
-                // console.log(path.tokens.map((token) => token.symbol).join(' -> '));
-                // console.log(path.pools.map((pool) => pool.id).join(' -> '));
-                return;
-            }
+        // initialize quotePaths arrays for each swapAmount ratio
+        const quotePathsByRatio: PathWithAmount[][] = swapAmounts.map(() => []);
+
+        // Quote paths for each swapAmount ratio
+        swapAmounts.forEach((amount, i) => {
+            validPaths.forEach((path) => {
+                try {
+                    quotePathsByRatio[i].push(new PathWithAmount(path.tokens, path.pools, path.isBuffer, amount));
+                    selectedPaths.push(path);
+                } catch {
+                    // console.log('Invalid path:');
+                    // console.log(path.tokens.map((token) => token.symbol).join(' -> '));
+                    // console.log(path.pools.map((pool) => pool.id).join(' -> '));
+                    return;
+                }
+            });
+
+            validPaths = selectedPaths;
+            selectedPaths = [];
         });
 
-        if (quotePaths.length === 0) {
+        // sort each quotePaths array by outputAmount or inputAmount
+        quotePathsByRatio.forEach((quotePaths) => {
+            quotePaths.sort((a, b) => {
+                if (swapKind === SwapKind.GivenIn) {
+                    return Number(b.outputAmount.amount) - Number(a.outputAmount.amount);
+                } else {
+                    return Number(a.inputAmount.amount) - Number(b.inputAmount.amount);
+                }
+            });
+        });
+
+        // select best split path candidates based on their ratio combination
+        const quotePaths25 = quotePathsByRatio[0];
+        const quotePaths50 = quotePathsByRatio[1];
+        const quotePaths75 = quotePathsByRatio[2];
+        const quotePaths100 = quotePathsByRatio[3];
+
+        const splitPaths: PathWithAmount[][] = [];
+
+        if (quotePaths100.length > 0) {
+            splitPaths.push([quotePaths100[0]]);
+        }
+
+        if (quotePaths75.length > 0 && quotePaths25.length > 1) {
+            // prevent bestPath25 from being the same as bestPath75
+            const bestPath25 = quotePaths25.find((path) => path.pools !== quotePaths75[0].pools) as PathWithAmount;
+            splitPaths.push(this.splitPaths(swapAmount, bestPath25, quotePaths75[0])); // 25/75
+        }
+
+        if (quotePaths50.length > 1) {
+            splitPaths.push(this.splitPaths(swapAmount, quotePaths50[0], quotePaths50[1])); // 50/50
+        }
+
+        if (splitPaths.length === 0) {
             // console.log('No valid paths found');
             return null;
-        }
-
-        let valueArr: { item: PathWithAmount; value: number }[];
-
-        if (swapKind === SwapKind.GivenIn) {
-            valueArr = quotePaths.map((item) => {
-                return {
-                    item,
-                    value: Number(item.outputAmount.amount),
-                };
-            });
-            valueArr.sort((a, b) => b.value - a.value);
-        } else {
-            valueArr = quotePaths.map((item) => {
-                return {
-                    item,
-                    value: Number(item.inputAmount.amount),
-                };
-            });
-            valueArr.sort((a, b) => a.value - b.value);
-        }
-
-        const orderedQuotePaths = valueArr.map((item) => item.item);
-
-        // If there is only one path, return it
-        if (orderedQuotePaths.length === 1) {
-            return orderedQuotePaths;
-        }
-
-        const bestPath = orderedQuotePaths[0];
-        const secondBestPath = orderedQuotePaths[1];
-
-        const splitPaths = [
-            [bestPath], // single path (no split)
-        ];
-
-        const ratios = [
-            0.25, // 25/75 split
-            0.5, // 50/50 split
-            0.75, // 75/25 split
-        ];
-        for (const ratio of ratios) {
-            try {
-                const paths = this.splitPaths(swapAmount, bestPath, secondBestPath, ratio);
-                splitPaths.push(paths);
-            } catch (error) {
-                console.log(`Error splitting paths: ${error}`);
-            }
-        }
-
-        // prevent splitPaths from failing due to normalizedLiquidity not being properly filled out
-        try {
-            const normalizedLiquiditySplitPaths = this.splitPathsNormalizedLiquidity(
-                swapAmount,
-                bestPath,
-                secondBestPath,
-            );
-            if (normalizedLiquiditySplitPaths !== undefined) {
-                splitPaths.push(normalizedLiquiditySplitPaths);
-            }
-        } catch (error) {
-            console.log(`Error splitting paths by normalized liquidity: ${error}`);
         }
 
         // Find the split path that yields the best result (i.e. maxAmountOut on GivenIn, minAmountIn on GivenOut)
@@ -138,68 +126,14 @@ export class Router {
         return bestSplitPaths;
     }
 
-    private splitPaths(
-        swapAmount: TokenAmount,
-        bestPath: PathWithAmount,
-        secondBestPath: PathWithAmount,
-        bestPathRatio: number,
-    ) {
-        const ratio = parseEther(String(bestPathRatio));
-        const swapAmountUp = swapAmount.mulDownFixed(ratio);
+    // split paths making sure there is no dust left behind from rounding swapAmount ratios
+    private splitPaths(swapAmount: TokenAmount, pathA: PathWithAmount, pathB: PathWithAmount) {
+        const swapAmountUp = pathA.swapAmount;
         const swapAmountDown = swapAmount.sub(swapAmountUp);
 
-        const pathUp = new PathWithAmount(bestPath.tokens, bestPath.pools, bestPath.isBuffer, swapAmountUp);
-        const pathDown = new PathWithAmount(
-            secondBestPath.tokens,
-            secondBestPath.pools,
-            secondBestPath.isBuffer,
-            swapAmountDown,
-        );
+        const pathUp = new PathWithAmount(pathA.tokens, pathA.pools, pathA.isBuffer, swapAmountUp);
+        const pathDown = new PathWithAmount(pathB.tokens, pathB.pools, pathB.isBuffer, swapAmountDown);
 
         return [pathUp, pathDown];
-    }
-
-    /**
-     * Normalized Liquidity (NL) = 1/Price Impact (PI)
-     *
-     * NL_path = 1/PI_path
-     * NL_path = 1/(PI_1 + PI_2 + PI_3...) = 1/(1/NL_1 + 1/NL_2 + ...)
-     */
-    private splitPathsNormalizedLiquidity(
-        swapAmount: TokenAmount,
-        bestPath: PathWithAmount,
-        secondBestPath: PathWithAmount,
-    ) {
-        const bestPathNLs = bestPath.pools.map((p, i) =>
-            p.getNormalizedLiquidity(bestPath.tokens[i], bestPath.tokens[i + 1]),
-        );
-        const secondBestPathNLs = secondBestPath.pools.map((p, i) =>
-            p.getNormalizedLiquidity(secondBestPath.tokens[i], secondBestPath.tokens[i + 1]),
-        );
-        if (bestPathNLs.some((nl) => nl === 0n) || secondBestPathNLs.some((nl) => nl === 0n)) {
-            return undefined; // TODO: check what could be causing NL to be 0 for some token pairs
-        }
-
-        const bestPathNL = MathSol.divDownFixed(
-            WAD,
-            bestPathNLs.reduce((acc, normLiq) => acc + MathSol.divDownFixed(WAD, normLiq), 0n),
-        );
-        const secondBestPathNL = MathSol.divDownFixed(
-            WAD,
-            secondBestPathNLs.reduce((acc, normLiq) => acc + MathSol.divDownFixed(WAD, normLiq), 0n),
-        );
-
-        const swapAmountNormUp = swapAmount.mulDownFixed(bestPathNL).divDownFixed(bestPathNL + secondBestPathNL);
-        const swapAmountNormDown = swapAmount.sub(swapAmountNormUp);
-
-        const pathNormUp = new PathWithAmount(bestPath.tokens, bestPath.pools, bestPath.isBuffer, swapAmountNormUp);
-        const pathNormDown = new PathWithAmount(
-            secondBestPath.tokens,
-            secondBestPath.pools,
-            secondBestPath.isBuffer,
-            swapAmountNormDown,
-        );
-
-        return [pathNormUp, pathNormDown];
     }
 }

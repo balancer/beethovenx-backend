@@ -2,6 +2,7 @@ export async function subgraphLoadAll<T>(
     request: (variables: any) => Promise<any>,
     resultKey: string,
     args: any,
+    maxPages = 5,
 ): Promise<T[]> {
     let all: any[] = [];
     const limit = 1000;
@@ -20,7 +21,7 @@ export async function subgraphLoadAll<T>(
         hasMore = response[resultKey].length === limit;
 
         //TODO: rip this out asap
-        if (skip > 5000) {
+        if (maxPages > 0 && skip > maxPages * 1000) {
             console.log('BAILING EARLY FROM A subgraphLoadAll', resultKey, args);
             break;
         }

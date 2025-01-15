@@ -74,6 +74,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return sftmxController.syncSftmxWithdrawalrequests(chain);
     } else if (job === 'sync-sftmx-staking-snapshots') {
         return sftmxController.syncSftmxStakingSnapshots(chain);
+    } else if (job === 'sync-bpt-balances') {
+        return UserBalancesController().syncBalances(chain);
     } else if (job === 'sync-user-balances-v2') {
         return UserBalancesController().syncUserBalancesFromV2Subgraph(chain);
     } else if (job === 'sync-user-balances-v3') {

@@ -2570,8 +2570,8 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal!
-        totalSwapVolume: BigDecimal!
+        totalSwapFee: BigDecimal! @deprecated(reason: "No replacement")
+        totalSwapVolume: BigDecimal! @deprecated(reason: "No replacement")
         yieldCapture24h: BigDecimal!
     }
 
@@ -2582,8 +2582,8 @@ export const schema = gql`
         swapFee24h: BigDecimal!
         swapVolume24h: BigDecimal!
         totalLiquidity: BigDecimal!
-        totalSwapFee: BigDecimal!
-        totalSwapVolume: BigDecimal!
+        totalSwapFee: BigDecimal! @deprecated(reason: "No replacement")
+        totalSwapVolume: BigDecimal! @deprecated(reason: "No replacement")
         yieldCapture24h: BigDecimal!
     }
 
@@ -3697,7 +3697,7 @@ export const schema = gql`
         tokenSyncLatestFxPrices(chain: GqlChain!): String!
         tokenSyncTokenDefinitions: String!
         userInitStakedBalances(stakingTypes: [GqlPoolStakingType!]!): String!
-        userInitWalletBalancesForAllPools: String!
+        userInitWalletBalancesForAllPools(chain: GqlChain): String!
         userInitWalletBalancesForPool(poolId: String!): String!
         userSyncBalance(poolId: String!): String!
         userSyncBalanceAllPools: String!

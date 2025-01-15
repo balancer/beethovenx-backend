@@ -4,7 +4,7 @@ import { nestedPoolWithSingleLayerNesting } from '../../../../prisma/prisma-type
 import { V2SubgraphClient } from '../../../subgraphs/balancer-subgraph';
 import { BalancerPoolFragment } from '../../../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
 import { subgraphToPrismaCreate } from '../../../pool/subgraph-mapper';
-import { upsertBptBalancesV2 } from '../../user/upsert-bpt-balances-v2';
+import { syncBptBalancesFromSubgraph } from '../../user/bpt-balances/helpers/sync-bpt-balances-from-subgraph';
 import _ from 'lodash';
 import { syncPoolTypeOnchainData } from './sync-pool-type-onchain-data';
 
@@ -38,7 +38,7 @@ export const addPools = async (subgraphService: V2SubgraphClient, chain: Chain):
 
     // Add user balances for new pools
     if (newPools.length > 0) {
-        await upsertBptBalancesV2(
+        await syncBptBalancesFromSubgraph(
             newPools.map((pool) => pool.id),
             subgraphService,
             chain,

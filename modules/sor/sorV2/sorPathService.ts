@@ -264,6 +264,10 @@ class SorPathService implements SwapService {
             }
 
             if (callDataInput) {
+                // Slippage.fromPercentage cannot handle more than 6 decimal places because it converts numbers to strings via interpolation, resulting in a scientific notation string.
+                if (callDataInput.slippagePercentage.length > 6) {
+                    callDataInput.slippagePercentage = callDataInput.slippagePercentage.slice(0, 6);
+                }
                 if (swapKind === SwapKind.GivenIn) {
                     const callDataExactIn = sdkSwap.buildCall({
                         sender: callDataInput.sender as `0x${string}`,
@@ -275,7 +279,7 @@ class SorPathService implements SwapService {
                             amountIn: inputAmount,
                             to: VAULT[parseInt(chainToIdMap[chain])],
                         } as ExactInQueryOutput,
-                        slippage: Slippage.fromPercentage(`${parseFloat(callDataInput.slippagePercentage)}`),
+                        slippage: Slippage.fromPercentage(callDataInput.slippagePercentage as `${number}`),
                         deadline: callDataInput.deadline ? BigInt(callDataInput.deadline) : 999999999999999999n,
                     }) as SwapBuildOutputExactIn;
                     callData = {

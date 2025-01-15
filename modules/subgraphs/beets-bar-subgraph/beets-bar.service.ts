@@ -109,7 +109,7 @@ export class BeetsBarSubgraphService {
     }
 
     public async getAllUsers(args: BeetsBarUsersQueryVariables): Promise<BeetsBarUserFragment[]> {
-        return subgraphLoadAll<BeetsBarUserFragment>(this.sdk.BeetsBarUsers, 'users', args);
+        return subgraphLoadAll<BeetsBarUserFragment>(this.sdk.BeetsBarUsers, 'users', args, 0);
     }
 
     public async getUserAtBlock(address: string, block: number): Promise<BeetsBarUserFragment | null> {

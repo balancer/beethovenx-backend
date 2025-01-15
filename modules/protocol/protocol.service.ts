@@ -6,11 +6,7 @@ import _ from 'lodash';
 import { networkContext } from '../network/network-context.service';
 import { AllNetworkConfigs, AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 import { GqlProtocolMetricsAggregated, GqlProtocolMetricsChain } from '../../schema';
-import { GraphQLClient } from 'graphql-request';
-import { getSdk } from '../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
 import axios from 'axios';
-import { tokenService } from '../token/token.service';
-import { getV2SubgraphClient } from '../subgraphs/balancer-subgraph';
 
 interface LatestSyncedBlocks {
     userWalletSyncBlock: string;
@@ -70,11 +66,6 @@ export class ProtocolService {
     public async cacheProtocolMetrics(chain: Chain): Promise<GqlProtocolMetricsChain> {
         const oneDayAgo = moment().subtract(24, 'hours').unix();
 
-        const client = getV2SubgraphClient(AllNetworkConfigsKeyedOnChain[chain].data.subgraphs.balancer, chain);
-
-        const { balancers } = await client.BalancerProtocolData({});
-        const { totalSwapFee, totalSwapVolume } = balancers[0];
-
         const pools = await prisma.prismaPool.findMany({
             where: {
                 type: {
@@ -132,8 +123,8 @@ export class ProtocolService {
         const protocolData = {
             chainId: `${AllNetworkConfigsKeyedOnChain[chain].data.chain.id}`,
             totalLiquidity: `${totalLiquidity + balancerV1Tvl + sftmxTvl + stsTVL}`,
-            totalSwapFee,
-            totalSwapVolume,
+            totalSwapFee: '0',
+            totalSwapVolume: '0',
             poolCount: `${poolCount}`,
             swapVolume24h: `${swapVolume24h}`,
             swapFee24h: `${swapFee24h}`,
