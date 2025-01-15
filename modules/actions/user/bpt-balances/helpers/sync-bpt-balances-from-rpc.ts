@@ -47,8 +47,10 @@ export const syncBptBalancesFromRpc = async (
     const poolsMap = Object.fromEntries(poolIds.map((id) => [id.slice(0, 42), id]));
     const poolAddresses = Object.keys(poolsMap);
 
+    const range = rpcMaxBlockRange(chain);
+
     // Split the range into smaller chunks to avoid RPC limits, setting up to 5 times max block range
-    const toBlock = Math.min(fromBlock + 5 * rpcMaxBlockRange(chain), endBlock);
+    const toBlock = Math.min(fromBlock + 5 * range, endBlock);
     console.log(`syncBptBalancesFromRpc ${syncCategory} on ${chain} syncing from ${fromBlock} to ${toBlock}`);
     console.log(`syncBptBalancesFromRpc ${syncCategory} on ${chain} getLogs for ${poolAddresses.length} pools`);
 
@@ -58,7 +60,7 @@ export const syncBptBalancesFromRpc = async (
         poolAddresses,
         ['Transfer'],
         config[chain].rpcUrl,
-        rpcMaxBlockRange(chain),
+        range,
         ERC20Abi,
     );
 
