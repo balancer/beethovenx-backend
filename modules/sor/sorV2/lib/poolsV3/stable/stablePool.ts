@@ -86,7 +86,7 @@ export class StablePool implements BasePoolV3 {
         const hookState = getHookState(pool);
 
         // typeguard
-        if (!isLiquidityManagement(pool.liquidityManagement)) {
+        if (pool.protocolVersion === 3 && !isLiquidityManagement(pool.liquidityManagement)) {
             throw new Error('LiquidityManagement must be of type LiquidityManagement and cannot be null');
         }
 
