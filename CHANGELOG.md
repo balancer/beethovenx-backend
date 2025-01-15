@@ -1,5 +1,11 @@
 # backend
 
+## 1.28.1
+
+### Patch Changes
+
+-   a4f25c3: fix isLiquidityManagement in SOR
+
 ## 1.28.0
 
 ### Minor Changes
