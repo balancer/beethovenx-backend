@@ -130,13 +130,13 @@ describe('Balancer SOR Integration Tests', () => {
         beforeAll(async () => {
             // setup mock pool data for a stable pool
             const poolAddress = '0x1d7699323e1b927c15afe5781fd21a8552a8ea38';
-            const stataUSDC = prismaPoolTokenFactory.build({
+            const USDT = prismaPoolTokenFactory.build({
                 address: '0x6bf294b80c7d8dc72dee762af5d01260b756a051',
                 token: { decimals: 6 },
                 balance: '1',
                 priceRate: '1.0',
             });
-            const stataDAI = prismaPoolTokenFactory.build({
+            const USDC = prismaPoolTokenFactory.build({
                 address: '0x80d6d3946ed8a1da4e226aa21ccddc32bd127d1a',
                 token: { decimals: 6 },
                 balance: '1',
@@ -144,7 +144,7 @@ describe('Balancer SOR Integration Tests', () => {
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,
-                tokens: [stataUSDC, stataDAI],
+                tokens: [USDT, USDC],
                 dynamicData: prismaPoolDynamicDataFactory.build({
                     totalShares: '2',
                     swapFee: '0.001',
@@ -153,14 +153,14 @@ describe('Balancer SOR Integration Tests', () => {
 
             // get SOR paths
             const tIn = new Token(
-                parseFloat(chainToIdMap[stataUSDC.token.chain]),
-                stataUSDC.address as Address,
-                stataUSDC.token.decimals,
+                parseFloat(chainToIdMap[USDC.token.chain]),
+                USDT.address as Address,
+                USDT.token.decimals,
             );
             const tOut = new Token(
-                parseFloat(chainToIdMap[stataDAI.token.chain]),
-                stataDAI.address as Address,
-                stataDAI.token.decimals,
+                parseFloat(chainToIdMap[USDT.token.chain]),
+                USDC.address as Address,
+                USDC.token.decimals,
             );
             const amountIn = BigInt(1000e6);
             paths = (await sorGetPathsWithPools(
@@ -367,7 +367,7 @@ describe('Balancer SOR Integration Tests', () => {
                 balance: '17046.594346',
                 priceRate: '1.208650468656424855',
             });
-            const stataDAI = prismaPoolTokenFactory.build({
+            const stataUSDT = prismaPoolTokenFactory.build({
                 address: '0x978206fae13faf5a8d293fb614326b237684b750',
                 token: { decimals: 6, underlyingTokenAddress: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0' },
                 balance: '58206.030088',
@@ -375,7 +375,7 @@ describe('Balancer SOR Integration Tests', () => {
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,
-                tokens: [stataUSDC, stataDAI],
+                tokens: [stataUSDC, stataUSDT],
                 dynamicData: prismaPoolDynamicDataFactory.build({
                     totalShares: '98722.363453387463962451',
                     swapFee: '0.001',
@@ -389,9 +389,9 @@ describe('Balancer SOR Integration Tests', () => {
                 stataUSDC.token.decimals,
             );
             const tOut = new Token(
-                parseFloat(chainToIdMap[stataDAI.token.chain]),
-                stataDAI.token.underlyingTokenAddress as Address, // DAI
-                stataDAI.token.decimals,
+                parseFloat(chainToIdMap[stataUSDT.token.chain]),
+                stataUSDT.token.underlyingTokenAddress as Address, // DAI
+                stataUSDT.token.decimals,
             );
             const amountIn = BigInt(10e6);
             paths = (await sorGetPathsWithPools(
@@ -442,7 +442,7 @@ describe('Balancer SOR Integration Tests', () => {
 
         let WETH,
             BAL,
-            stataDAI,
+            stataUSDT,
             stataUSDC,
             aaveFaucetDai,
             aaveFaucetUsdc: ReturnType<typeof prismaPoolTokenFactory.build>;
