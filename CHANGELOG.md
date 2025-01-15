@@ -1,5 +1,11 @@
 # backend
 
+## 1.28.2
+
+### Patch Changes
+
+-   3b3ba2c: fix liquidity 24hrs ago, fix price for data studio for beets
+
 ## 1.28.1
 
 ### Patch Changes
