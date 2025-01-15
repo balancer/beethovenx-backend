@@ -11,7 +11,6 @@ import { ANVIL_NETWORKS, startFork, stopAnvilForks } from '../../test/anvil/anvi
 import {
     prismaPoolDynamicDataFactory,
     prismaPoolFactory,
-    prismaPoolTokenDynamicDataFactory,
     prismaPoolTokenFactory,
     hookFactory,
 } from '../../test/factories';
