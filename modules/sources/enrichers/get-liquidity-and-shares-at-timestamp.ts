@@ -46,6 +46,7 @@ export const getLiquidityAndSharesAtTimestamp = async (
                 in: tokenAddresses,
             },
             timestamp: roundedTimestamp,
+            chain: vaultClient.chain,
         },
     });
 

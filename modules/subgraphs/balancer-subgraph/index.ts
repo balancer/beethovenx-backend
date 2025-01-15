@@ -19,6 +19,7 @@ export function getV2SubgraphClient(url: string, chain: Chain) {
 
     return {
         ...sdk,
+        chain: chain,
         legacyService,
         getMetadata: legacyService.getMetadata.bind(legacyService),
         getAllPoolSnapshots: legacyService.getAllPoolSnapshots.bind(legacyService),

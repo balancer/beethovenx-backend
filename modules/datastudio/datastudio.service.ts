@@ -13,6 +13,7 @@ import { isComposableStablePool, isWeightedPoolV2 } from '../pool/lib/pool-utils
 import { networkContext } from '../network/network-context.service';
 import { DeploymentEnv } from '../network/network-config-types';
 import { Chain } from '@prisma/client';
+import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 
 export class DatastudioService {
     constructor(private readonly secretsManager: SecretsManager, private readonly jwtClientHelper: GoogleJwtClient) {}
@@ -240,10 +241,14 @@ export class DatastudioService {
             for (const stake of pool.staking) {
                 const blocksPerDay = await blocksSubgraphService.getBlocksPerDay();
                 const tokenPrices = await tokenService.getTokenPrices(stake.chain);
-                const beetsPrice = stake.farm || stake.reliquary ? await beetsService.getBeetsPrice() : '0';
+                const beetsPrice = tokenService.getPriceForToken(
+                    tokenPrices,
+                    AllNetworkConfigsKeyedOnChain[chain].data.beets!.address,
+                    chain,
+                );
                 if (stake.farm) {
                     const beetsPerDay = parseFloat(stake.farm.beetsPerBlock) * blocksPerDay;
-                    const beetsValuePerDay = parseFloat(beetsPrice) * beetsPerDay;
+                    const beetsValuePerDay = beetsPrice * beetsPerDay;
                     if (beetsPerDay > 0) {
                         allEmissionDataRows.push([
                             endOfYesterday.format('DD MMM YYYY'),
@@ -287,7 +292,7 @@ export class DatastudioService {
                 }
                 if (stake.reliquary) {
                     const beetsPerDay = parseFloat(stake.reliquary.beetsPerSecond) * secondsPerDay;
-                    const beetsValuePerDay = parseFloat(beetsPrice) * beetsPerDay;
+                    const beetsValuePerDay = beetsPrice * beetsPerDay;
                     if (beetsPerDay > 0) {
                         allEmissionDataRows.push([
                             endOfYesterday.format('DD MMM YYYY'),

@@ -23,6 +23,7 @@ export function getVaultSubgraphClient(url: string, chain: Chain) {
 
     return {
         ...sdk,
+        chain: chain,
         async getMetadata() {
             return sdk.Metadata().then((response) => {
                 if (response && response.meta) {
