@@ -1,12 +1,21 @@
 import { Router } from './router';
 import { PrismaPoolAndHookWithDynamic } from '../../../../prisma/prisma-types';
 import { checkInputs } from './utils/helpers';
-import { ComposableStablePool, FxPool, Gyro2Pool, Gyro3Pool, GyroEPool, MetaStablePool, WeightedPool } from './poolsV2';
+import {
+    ComposableStablePool,
+    FxPool,
+    Gyro2Pool,
+    Gyro3Pool,
+    GyroEPool,
+    MetaStablePool,
+    StablePool,
+    WeightedPool,
+} from './poolsV2';
 import { SwapKind, Token } from '@balancer/sdk';
 import { BasePool } from './poolsV2/basePool';
 import { SorSwapOptions } from './types';
 import { PathWithAmount } from './path';
-import { StablePool, WeightedPoolV3 } from './poolsV3';
+import { StablePoolV3, WeightedPoolV3 } from './poolsV3';
 
 export async function sorGetPathsWithPools(
     tokenIn: Token,
@@ -41,15 +50,18 @@ export async function sorGetPathsWithPools(
             case 'STABLE':
                 // Since we allowed all the pools, we started getting BAL#322 errors
                 // Enabling pools one by one until we find the issue
-                if (
-                    [
-                        '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249', // auraBal/8020
-                        '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBal/8020
-                        '0xff4ce5aaab5a627bf82f4a571ab1ce94aa365ea6000200000000000000000426', // dola/usdc
-                    ].includes(prismaPool.id) ||
-                    protocolVersion === 3
-                ) {
-                    basePools.push(StablePool.fromPrismaPool(prismaPool));
+                if (protocolVersion === 3) {
+                    basePools.push(StablePoolV3.fromPrismaPool(prismaPool));
+                } else {
+                    if (
+                        [
+                            '0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249', // auraBal/8020
+                            '0x2d011adf89f0576c9b722c28269fcb5d50c2d17900020000000000000000024d', // sdBal/8020
+                            '0xff4ce5aaab5a627bf82f4a571ab1ce94aa365ea6000200000000000000000426', // dola/usdc
+                        ].includes(prismaPool.id)
+                    ) {
+                        basePools.push(StablePool.fromPrismaPool(prismaPool));
+                    }
                 }
                 break;
             case 'META_STABLE':

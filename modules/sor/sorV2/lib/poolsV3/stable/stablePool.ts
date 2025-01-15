@@ -20,7 +20,7 @@ import { LiquidityManagement } from '../../../../../sor/types';
 
 type StablePoolToken = StableBasePoolToken | Erc4626PoolToken;
 
-export class StablePool implements BasePoolV3 {
+export class StablePoolV3 implements BasePoolV3 {
     public readonly chain: Chain;
     public readonly id: Hex;
     public readonly address: string;
@@ -39,7 +39,7 @@ export class StablePool implements BasePoolV3 {
     private vault: Vault;
     private poolState: StableState;
 
-    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): StablePool {
+    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): StablePoolV3 {
         const poolTokens: StablePoolToken[] = [];
 
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');
@@ -86,11 +86,11 @@ export class StablePool implements BasePoolV3 {
         const hookState = getHookState(pool);
 
         // typeguard
-        if (pool.protocolVersion === 3 && !isLiquidityManagement(pool.liquidityManagement)) {
+        if (!isLiquidityManagement(pool.liquidityManagement)) {
             throw new Error('LiquidityManagement must be of type LiquidityManagement and cannot be null');
         }
 
-        return new StablePool(
+        return new StablePoolV3(
             pool.id as Hex,
             pool.address,
             pool.chain,
@@ -99,7 +99,7 @@ export class StablePool implements BasePoolV3 {
             poolTokens,
             totalShares,
             pool.dynamicData.tokenPairsData as TokenPairData[],
-            ((pool.protocolVersion === 3 && pool.liquidityManagement) || {}) as unknown as LiquidityManagement,
+            pool.liquidityManagement,
             hookState,
         );
     }
