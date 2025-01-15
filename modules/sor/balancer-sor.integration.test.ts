@@ -37,7 +37,6 @@ import { sepolia } from 'viem/chains';
  * TODO: improve test data setup by creating a script that fetches all necessary data automatically for a given blockNumber.
  */
 
-
 const protocolVersion = 3;
 
 describe('Balancer SOR Integration Tests', () => {
@@ -77,7 +76,6 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75',
                 balance: '4478.688211421803',
                 weight: '0.5',
-
             });
             const prismaWeightedPool = prismaPoolFactory.build({
                 address: '0xb790fa0ba5d563b814b0ca1716c414f6b99937b2',
@@ -137,14 +135,12 @@ describe('Balancer SOR Integration Tests', () => {
                 token: { decimals: 6 },
                 balance: '1',
                 priceRate: '1.0',
-
             });
             const stataDAI = prismaPoolTokenFactory.build({
                 address: '0x80d6d3946ed8a1da4e226aa21ccddc32bd127d1a',
                 token: { decimals: 6 },
                 balance: '1',
                 priceRate: '1.0',
-
             });
             const prismaStablePool = prismaPoolFactory.stable('1000').build({
                 address: poolAddress,
@@ -247,7 +243,6 @@ describe('Balancer SOR Integration Tests', () => {
                 address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
                 token: { decimals: 18 },
                 balance: '0.641025581212023582',
-
             });
             weightedPool = prismaPoolFactory.build({
                 address: weightedPoolAddress,
@@ -574,14 +569,22 @@ describe('Balancer SOR Integration Tests', () => {
                 },
             });
 
-            weightedBpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaWeightedPool.address as Address, 18);
+            weightedBpt = new Token(
+                parseFloat(chainToIdMap[BAL.token.chain]),
+                prismaWeightedPool.address as Address,
+                18,
+            );
             wethToken = new Token(
                 parseFloat(chainToIdMap[WETH.token.chain]),
                 WETH.address as Address,
                 WETH.token.decimals,
             );
 
-            stableBpt = new Token(parseFloat(chainToIdMap[BAL.token.chain]), prismaStablePoolWithExitFee.address as Address, 18);
+            stableBpt = new Token(
+                parseFloat(chainToIdMap[BAL.token.chain]),
+                prismaStablePoolWithExitFee.address as Address,
+                18,
+            );
             aaveFaucetUsdcToken = new Token(
                 parseFloat(chainToIdMap[WETH.token.chain]),
                 aaveFaucetUsdc.address as Address,
@@ -615,7 +618,6 @@ describe('Balancer SOR Integration Tests', () => {
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
             // are disallowed.
 
-        
             const amountOut = BigInt(1e18);
 
             paths = (await sorGetPathsWithPools(
@@ -637,7 +639,6 @@ describe('Balancer SOR Integration Tests', () => {
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
             // are disallowed.
 
-            
             const amountIn = BigInt(1e18);
 
             paths = (await sorGetPathsWithPools(
@@ -659,7 +660,6 @@ describe('Balancer SOR Integration Tests', () => {
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
             // are disallowed.
 
-
             const amountOut = BigInt(1e18);
 
             paths = (await sorGetPathsWithPools(
@@ -680,7 +680,7 @@ describe('Balancer SOR Integration Tests', () => {
             // defines if unbalanced join operations are allowed. Since the exit fee hook does not allow
             // unbalanced pool operations the SOR must not find a path through a pool where unbalanced operations
             // are disallowed.
-            
+
             const amountIn = BigInt(1e18);
 
             paths = (await sorGetPathsWithPools(
