@@ -1,6 +1,7 @@
 import { Resolvers } from '../../../../schema';
 import { sorService } from '../../../../modules/sor/sor.service';
 import { headerChain } from '../../../../modules/context/header-chain';
+import { GraphQLError } from 'graphql';
 
 const balancerSdkResolvers: Resolvers = {
     Query: {
@@ -9,7 +10,9 @@ const balancerSdkResolvers: Resolvers = {
             if (!args.chain && currentChain) {
                 args.chain = currentChain;
             } else if (!args.chain) {
-                throw new Error('sorGetSwaps error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
 
             return sorService.getSorSwaps(args);

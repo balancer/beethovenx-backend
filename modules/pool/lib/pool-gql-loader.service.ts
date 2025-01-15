@@ -53,6 +53,7 @@ import { ElementData, FxData, GyroData, StableData } from '../subgraph-mapper';
 import { ZERO_ADDRESS } from '@balancer/sdk';
 import { tokenService } from '../../token/token.service';
 import { HookData } from '../../sources/transformers';
+import { GraphQLError } from 'graphql';
 
 const isToken = (text: string) => text.match(/^0x[0-9a-fA-F]{40}$/);
 const isPoolId = (text: string) => isToken(text) || text.match(/^0x[0-9a-fA-F]{64}$/);
@@ -68,11 +69,11 @@ export class PoolGqlLoaderService {
         });
 
         if (!pool) {
-            throw new Error('Pool with id does not exist');
+            throw new GraphQLError('Pool with id does not exist', { extensions: { code: 'NOT_FOUND' } });
         }
 
         if (pool.type === 'UNKNOWN') {
-            throw new Error('Pool exists, but has an unknown type');
+            throw new GraphQLError('Pool exists, but has an unknown type', { extensions: { code: 'NOT_FOUND' } });
         }
 
         const mappedPool = this.mapPoolToGqlPool(

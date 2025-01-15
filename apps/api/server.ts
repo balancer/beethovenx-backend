@@ -1,21 +1,19 @@
-import './sentry';
-import * as Sentry from '@sentry/node';
+import { setupExpressErrorHandler } from '@sentry/node';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
 import helmet from 'helmet';
 import * as http from 'http';
 import { env } from '../env';
 import { loadRestRoutes } from './rest-routes';
 import { corsMiddleware, lowerCaseMiddleware, sessionMiddleware } from './middleware';
-import {
-    ApolloServerPluginDrainHttpServer,
-    ApolloServerPluginLandingPageGraphQLPlayground,
-    ApolloServerPluginUsageReporting,
-} from 'apollo-server-core';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { schema } from '../../graphql_schema_generated';
 import { resolvers } from './gql/resolvers';
-import { resolverContext } from './gql/resolver-context';
-import { apolloSentryPlugin } from './sentry';
+import { ResolverContext, resolverContext } from './gql/resolver-context';
+import { apolloSentryPlugin } from './apollo/sentry-plugin';
 
 const configureHelmet = (app: express.Express) => {
     app.use(helmet.dnsPrefetchControl());
@@ -37,12 +35,10 @@ const configureMiddlewares = (app: express.Express) => {
     app.use(lowerCaseMiddleware);
 };
 
-const configureApolloServer = async (httpServer: http.Server) => {
+const configureApolloServer = async (httpServer: http.Server, app: express.Express) => {
     const plugins = [
         ApolloServerPluginDrainHttpServer({ httpServer }),
-        ApolloServerPluginLandingPageGraphQLPlayground({
-            settings: { 'schema.polling.interval': 20000 },
-        }),
+        ApolloServerPluginLandingPageLocalDefault(),
         apolloSentryPlugin,
     ];
 
@@ -55,15 +51,24 @@ const configureApolloServer = async (httpServer: http.Server) => {
         );
     }
 
-    const server = new ApolloServer({
+    const server = new ApolloServer<ResolverContext>({
         resolvers,
         typeDefs: schema,
         introspection: true,
+        cache: 'bounded',
         plugins,
-        context: ({ req }) => resolverContext(req),
     });
 
     await server.start();
+
+    app.use(
+        '/graphql',
+        express.json(),
+        expressMiddleware(server, {
+            context: async ({ req }) => resolverContext(req),
+        }),
+    );
+
     return server;
 };
 
@@ -71,15 +76,14 @@ export const startApiServer = async () => {
     const app = express();
 
     loadRestRoutes(app);
-    Sentry.setupExpressErrorHandler(app);
+    setupExpressErrorHandler(app);
     configureHelmet(app);
     configureMiddlewares(app);
 
     const httpServer = http.createServer(app);
-    const apolloServer = await configureApolloServer(httpServer);
 
-    apolloServer.applyMiddleware({ app });
+    await configureApolloServer(httpServer, app);
 
     await new Promise<void>((resolve) => httpServer.listen({ port: env.PORT }, resolve));
-    console.log(`🚀 Server ready at http://localhost:${env.PORT}${apolloServer.graphqlPath}`);
+    console.log(`🚀 Server ready at http://localhost:${env.PORT}/graphql`);
 };

@@ -2,6 +2,7 @@ import { GqlLatestSyncedBlocks, Resolvers } from '../../../../schema';
 import { protocolService } from '../../../../modules/protocol/protocol.service';
 import { networkContext } from '../../../../modules/network/network-context.service';
 import { headerChain } from '../../../../modules/context/header-chain';
+import { GraphQLError } from 'graphql';
 
 const protocolResolvers: Resolvers = {
     Query: {
@@ -10,7 +11,9 @@ const protocolResolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('poolGetPool error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return protocolService.getMetrics(chain);
         },
@@ -19,7 +22,9 @@ const protocolResolvers: Resolvers = {
             if (!chains && currentChain) {
                 chains = [currentChain];
             } else if (!chains) {
-                throw new Error('tokenGetTokens error: Provide "chains" param');
+                throw new GraphQLError('Provide "chains" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return protocolService.getAggregatedMetrics(chains);
         },

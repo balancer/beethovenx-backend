@@ -1,9 +1,14 @@
 import { env } from '../../apps/env';
 import { ResolverContext } from '../../apps/api/gql/resolver-context';
+import { GraphQLError } from 'graphql';
 
 export function getRequiredAccountAddress(context: ResolverContext) {
     if (!context?.accountAddress) {
-        throw new Error('Account address is required');
+        throw new GraphQLError('Account address is required', {
+            extensions: {
+                code: 'ACCOUNT_ADDRESS_REQUIRED',
+            },
+        });
     }
 
     return context.accountAddress;
@@ -11,6 +16,10 @@ export function getRequiredAccountAddress(context: ResolverContext) {
 
 export function isAdminRoute(context: ResolverContext) {
     if (!context?.adminApiKey || context.adminApiKey !== env.ADMIN_API_KEY) {
-        throw new Error('Missing or invalid admin api key');
+        throw new GraphQLError('Missing or invalid admin api key', {
+            extensions: {
+                code: 'ACCESS_DENIED',
+            },
+        });
     }
 }

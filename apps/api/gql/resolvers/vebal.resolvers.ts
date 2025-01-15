@@ -3,6 +3,7 @@ import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/aut
 import { veBalService } from '../../../../modules/vebal/vebal.service';
 import { veBalVotingListService } from '../../../../modules/vebal/vebal-voting-list.service';
 import { headerChain } from '../../../../modules/context/header-chain';
+import { GraphQLError } from 'graphql';
 
 const resolvers: Resolvers = {
     Query: {
@@ -11,7 +12,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('veBalGetUserBalance error: Provide "chains" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
 
             const accountAddress = address || getRequiredAccountAddress(context);
@@ -33,7 +36,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('veBalGetUser error: Provide "chains" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
 
             const accountAddress = address || getRequiredAccountAddress(context);
@@ -44,7 +49,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('veBalGetTotalSupply error: Provide "chains" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return veBalService.getVeBalTotalSupply(chain);
         },

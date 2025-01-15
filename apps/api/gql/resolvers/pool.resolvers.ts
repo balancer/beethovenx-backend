@@ -11,6 +11,7 @@ import {
     FXPoolsController,
 } from '../../../../modules/controllers';
 import { chainIdToChain } from '../../../../modules/network/chain-id-to-chain';
+import { GraphQLError } from 'graphql';
 
 const balancerResolvers: Resolvers = {
     Query: {
@@ -19,7 +20,9 @@ const balancerResolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('poolGetPool error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return poolService.getGqlPool(id, chain, userAddress ? userAddress : undefined);
         },
@@ -38,7 +41,9 @@ const balancerResolvers: Resolvers = {
             if (!args.where?.chainIn && currentChain) {
                 args.where = { ...args.where, chainIn: [currentChain] };
             } else if (!args.where?.chainIn) {
-                throw new Error('poolGetSwaps error: Provide "where.chainIn" param');
+                throw new GraphQLError('Provide "chainIn" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return poolService.getPoolSwaps(args);
         },
@@ -48,7 +53,9 @@ const balancerResolvers: Resolvers = {
             if (!args.where?.chainIn && currentChain) {
                 args.where = { ...args.where, chainIn: [currentChain] };
             } else if (!args.where?.chainIn) {
-                throw new Error('poolGetBatchSwaps error: Provide "where.chainIn" param');
+                throw new GraphQLError('Provide "chainIn" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return poolService.getPoolBatchSwaps(args);
         },
@@ -58,7 +65,9 @@ const balancerResolvers: Resolvers = {
             if (!args.where?.chainIn && currentChain) {
                 args.where = { ...args.where, chainIn: [currentChain] };
             } else if (!args.where?.chainIn) {
-                throw new Error('poolGetJoinExits error: Provide "where.chainIn" param');
+                throw new GraphQLError('Provide "chainIn" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return poolService.getPoolJoinExits(args);
         },
@@ -80,7 +89,9 @@ const balancerResolvers: Resolvers = {
             if (!chains && currentChain) {
                 chains = [currentChain];
             } else if (!chains) {
-                throw new Error('poolGetFeaturedPoolGroups error: Provide "chains" param');
+                throw new GraphQLError('Provide "chains" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return poolService.getFeaturedPoolGroups(chains);
         },
@@ -92,7 +103,9 @@ const balancerResolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('poolGetSnapshots error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const snapshots = await poolService.getSnapshotsForPool(id, chain, range);
 
@@ -118,7 +131,9 @@ const balancerResolvers: Resolvers = {
             const chain = headerChain();
 
             if (!chain) {
-                throw new Error('poolSyncAllPoolsFromSubgraph error: Provide chain header');
+                throw new GraphQLError('Provide "chainId" header', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
 
             return PoolController().addPoolsV2(chain);
@@ -135,7 +150,9 @@ const balancerResolvers: Resolvers = {
 
             const currentChain = headerChain();
             if (!currentChain) {
-                throw new Error('poolReloadStakingForAllPools error: Provide chain header');
+                throw new GraphQLError('Provide "chainId" header', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
 
             await poolService.reloadStakingForAllPools(args.stakingTypes, currentChain);

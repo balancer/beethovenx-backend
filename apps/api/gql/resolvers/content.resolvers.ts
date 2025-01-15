@@ -1,6 +1,7 @@
 import { Resolvers } from '../../../../schema';
 import { headerChain } from '../../../../modules/context/header-chain';
 import { SanityContentService } from '../../../../modules/content/sanity-content.service';
+import { GraphQLError } from 'graphql';
 
 const contentResolvers: Resolvers = {
     Query: {
@@ -9,7 +10,9 @@ const contentResolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('contentGetNewsItems error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const sanityContent = new SanityContentService();
             return sanityContent.getNewsItems(chain);

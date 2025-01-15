@@ -7,6 +7,7 @@ import { syncLatestFXPrices } from '../../../../modules/token/latest-fx-price';
 import moment from 'moment';
 import { TokenController } from '../../../../modules/controllers/token-controller';
 import config from '../../../../config';
+import { GraphQLError } from 'graphql';
 
 const resolvers: Resolvers = {
     Query: {
@@ -15,7 +16,9 @@ const resolvers: Resolvers = {
             if (!args.chains && currentChain) {
                 args.chains = [currentChain];
             } else if (!args.chains) {
-                throw new Error('tokenGetTokens error: Provide "chains" param');
+                throw new GraphQLError('Provide "chains" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return tokenService.getTokenDefinitions(args);
         },
@@ -24,7 +27,9 @@ const resolvers: Resolvers = {
             if (!chains && currentChain) {
                 chains = [currentChain];
             } else if (!chains) {
-                throw new Error('tokenGetCurrentPrices error: Provide "chains" param');
+                throw new GraphQLError('Provide "chains" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const prices = await tokenService.getCurrentTokenPrices(chains);
 
@@ -61,7 +66,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetTokenDynamicData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const data = await tokenService.getTokenDynamicData(address, chain);
 
@@ -80,7 +87,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetTokensDynamicData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const items = await tokenService.getTokensDynamicData(addresses, chain);
 
@@ -97,7 +106,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetPriceChartData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const data = await tokenService.getTokenPriceForRange(address, range, chain);
 
@@ -112,7 +123,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetRelativePriceChartData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const data = await tokenService.getRelativeDataForRange(tokenIn, tokenOut, range, chain);
 
@@ -127,7 +140,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetCandlestickChartData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const data = await tokenService.getTokenPriceForRange(address, range, chain);
 
@@ -145,7 +160,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetTokenData error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             const token = await tokenService.getToken(address, chain);
             if (token) {
@@ -167,7 +184,9 @@ const resolvers: Resolvers = {
             if (!chain && currentChain) {
                 chain = currentChain;
             } else if (!chain) {
-                throw new Error('tokenGetProtocolTokenPrice error: Provide "chain" param');
+                throw new GraphQLError('Provide "chain" param', {
+                    extensions: { code: 'GRAPHQL_VALIDATION_FAILED' },
+                });
             }
             return tokenService.getProtocolTokenPrice(chain);
         },
