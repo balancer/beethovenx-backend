@@ -176,9 +176,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 next,
             );
             break;
-        case 'cache-average-block-time':
-            await runIfNotAlreadyRunning(name, chainId, () => {}, res, next);
-            break;
         case 'sync-staking-for-pools':
             await runIfNotAlreadyRunning(name, chainId, () => StakingController().syncStaking(chain), res, next);
             break;
