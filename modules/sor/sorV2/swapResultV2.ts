@@ -5,7 +5,7 @@ import {
     GqlPoolMinimal,
     GqlSorSwapRoute,
     GqlSorSwapRouteHop,
-} from '../../../schema';
+} from '../../../apps/api/gql/generated-schema';
 import { Chain } from '@prisma/client';
 import { SwapResult } from '../types';
 import { poolService } from '../../pool/pool.service';

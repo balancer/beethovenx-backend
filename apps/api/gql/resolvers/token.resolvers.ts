@@ -1,4 +1,4 @@
-import { GqlChain, GqlHistoricalTokenPrice, Resolvers } from '../../../../schema';
+import { GqlChain, GqlHistoricalTokenPrice, Resolvers } from '../generated-schema';
 import _ from 'lodash';
 import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { tokenService } from '../../../../modules/token/token.service';

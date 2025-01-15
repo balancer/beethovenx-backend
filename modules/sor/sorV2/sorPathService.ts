@@ -8,7 +8,7 @@ import {
     GqlSorSwapRouteHop,
     GqlSorSwapType,
     GqlSwapCallDataInput,
-} from '../../../schema';
+} from '../../../apps/api/gql/generated-schema';
 import { Chain, Prisma, PrismaPoolType } from '@prisma/client';
 import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../../../prisma/prisma-types';
 import { prisma } from '../../../prisma/prisma-client';

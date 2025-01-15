@@ -4,7 +4,7 @@ import {
     GqlSorGetSwapsResponse,
     QuerySorGetSwapPathsArgs,
     QuerySorGetSwapsArgs,
-} from '../../schema';
+} from '../../apps/api/gql/generated-schema';
 import { sorV2Service } from './sorV2/sorPathService';
 import { GetSwapsV2Input as GetSwapPathsInput } from './types';
 import { getToken, getTokenAmountHuman, swapPathsZeroResponse, zeroResponse } from './utils';

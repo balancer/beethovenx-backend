@@ -4,7 +4,7 @@ import {
     GqlPoolSwapEventV3,
     QueryPoolEventsArgs,
     GqlPoolSwapEventCowAmm,
-} from '../../schema';
+} from '../../apps/api/gql/generated-schema';
 import { prisma } from '../../prisma/prisma-client';
 import { Chain, PoolEventType, Prisma } from '@prisma/client';
 import { JoinExitEvent, SwapEvent } from '../../prisma/prisma-types';

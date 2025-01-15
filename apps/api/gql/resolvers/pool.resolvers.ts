@@ -1,5 +1,5 @@
 import { poolService } from '../../../../modules/pool/pool.service';
-import { GqlChain, Resolvers } from '../../../../schema';
+import { GqlChain, Resolvers } from '../generated-schema';
 import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { networkContext } from '../../../../modules/network/network-context.service';
 import { headerChain } from '../../../../modules/context/header-chain';

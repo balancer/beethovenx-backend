@@ -1,5 +1,5 @@
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
-import { GqlPoolType } from '../../../../../../schema';
+import { GqlPoolType } from '../../../../../../apps/api/gql/generated-schema';
 import { Chain } from '@prisma/client';
 import { MathSol, WAD } from '../../utils/math';
 import { Address, Hex, parseEther } from 'viem';

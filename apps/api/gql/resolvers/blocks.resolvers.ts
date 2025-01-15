@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { blocksSubgraphService } from '../../../../modules/subgraphs/blocks-subgraph/blocks-subgraph.service';
 

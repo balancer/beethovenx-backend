@@ -9,7 +9,7 @@ import { Multicaller } from '../web3/multicaller';
 import VeDelegationAbi from './abi/VotingEscrowDelegationProxy.json';
 import { getContractAt } from '../web3/contract';
 import { AmountHumanReadable } from '../common/global-types';
-import { GqlVeBalBalance, GqlVeBalUserData } from '../../schema';
+import { GqlVeBalBalance, GqlVeBalUserData } from '../../apps/api/gql/generated-schema';
 import mainnet from '../../config/mainnet';
 import VeBalABI from './abi/vebal.json';
 import { Chain } from '@prisma/client';

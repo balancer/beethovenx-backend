@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
 import { veBalService } from '../../../../modules/vebal/vebal.service';
 import { veBalVotingListService } from '../../../../modules/vebal/vebal-voting-list.service';

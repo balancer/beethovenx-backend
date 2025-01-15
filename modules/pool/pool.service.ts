@@ -16,7 +16,7 @@ import {
     QueryPoolGetJoinExitsArgs,
     QueryPoolGetPoolsArgs,
     QueryPoolGetSwapsArgs,
-} from '../../schema';
+} from '../../apps/api/gql/generated-schema';
 import { blocksSubgraphService } from '../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { tokenService } from '../token/token.service';
 import { userService } from '../user/user.service';

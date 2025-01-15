@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { timestampRoundedUpToNearestHour } from '../../common/time';
 import { Chain, PrismaTokenCurrentPrice, PrismaTokenPrice } from '@prisma/client';
 import moment from 'moment-timezone';
-import { GqlTokenChartDataRange } from '../../../schema';
+import { GqlTokenChartDataRange } from '../../../apps/api/gql/generated-schema';
 import { Cache, CacheClass } from 'memory-cache';
 import * as Sentry from '@sentry/node';
 import { FbeetsPriceHandlerService } from './token-price-handlers/fbeets-price-handler.service';

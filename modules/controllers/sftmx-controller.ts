@@ -13,7 +13,7 @@ import {
     GqlSftmxWithdrawalRequests,
     GqlSftmxStakingData,
     GqlSftmxStakingSnapshot,
-} from '../../schema';
+} from '../../apps/api/gql/generated-schema';
 
 const SFTMX_STACKINGCONTRACT = config['FANTOM'].sftmx!.stakingContractAddress;
 

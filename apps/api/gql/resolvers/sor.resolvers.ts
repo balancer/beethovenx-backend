@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { sorService } from '../../../../modules/sor/sor.service';
 import { headerChain } from '../../../../modules/context/header-chain';
 import { GraphQLError } from 'graphql';

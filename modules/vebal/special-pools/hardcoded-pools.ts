@@ -1,5 +1,5 @@
 import { Chain } from '@prisma/client';
-import { GqlVotingPool } from '../../../schema';
+import { GqlVotingPool } from '../../../apps/api/gql/generated-schema';
 
 /* Balancer wstETH/rETH/L and USDC/WETH/L from Cron Finance
    are special pools because Cron Contract is not compliant with BasePool interface so we won't find it the pools from the Subgraph

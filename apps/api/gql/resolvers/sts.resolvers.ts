@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { StakedSonicController } from '../../../../modules/controllers';
 
 const resolvers: Resolvers = {

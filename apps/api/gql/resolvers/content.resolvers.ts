@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { headerChain } from '../../../../modules/context/header-chain';
 import { SanityContentService } from '../../../../modules/content/sanity-content.service';
 import { GraphQLError } from 'graphql';

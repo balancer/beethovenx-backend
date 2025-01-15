@@ -4,7 +4,7 @@ import { Cache } from 'memory-cache';
 import { Chain, PrismaLastBlockSyncedCategory, PrismaUserBalanceType } from '@prisma/client';
 import _ from 'lodash';
 import { networkContext } from '../network/network-context.service';
-import { GqlProtocolMetricsAggregated, GqlProtocolMetricsChain } from '../../schema';
+import { GqlProtocolMetricsAggregated, GqlProtocolMetricsChain } from '../../apps/api/gql/generated-schema';
 import axios from 'axios';
 import config from '../../config';
 

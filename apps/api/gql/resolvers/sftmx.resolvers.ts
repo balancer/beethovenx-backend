@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { SftmxController } from '../../../../modules/controllers';
 
 const resolvers: Resolvers = {

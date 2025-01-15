@@ -37,7 +37,7 @@ import {
     GqlPoolAggregator,
     LiquidityManagement,
     GqlHook,
-} from '../../../schema';
+} from '../../../apps/api/gql/generated-schema';
 import { addressesMatch } from '../../web3/addresses';
 import _ from 'lodash';
 import { prisma } from '../../../prisma/prisma-client';

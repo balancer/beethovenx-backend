@@ -10,7 +10,7 @@ import { corsMiddleware, lowerCaseMiddleware, sessionMiddleware } from './middle
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { schema } from '../../graphql_schema_generated';
+import { schema } from './gql/generated-schema-ast';
 import { resolvers } from './gql/resolvers';
 import { ResolverContext, resolverContext } from './gql/resolver-context';
 import { apolloSentryPlugin } from './apollo/sentry-plugin';

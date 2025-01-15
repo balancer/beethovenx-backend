@@ -1,5 +1,5 @@
 import { prisma } from '../../../prisma/prisma-client';
-import { GqlPoolSnapshotDataRange } from '../../../schema';
+import { GqlPoolSnapshotDataRange } from '../../../apps/api/gql/generated-schema';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';

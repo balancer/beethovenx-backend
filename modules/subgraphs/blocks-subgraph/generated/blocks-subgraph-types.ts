@@ -360,12 +360,12 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type BlocksQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Block_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Block_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Block_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Block_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type BlocksQuery = {
@@ -408,9 +408,10 @@ export const BlocksDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -422,6 +423,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Blocks',
+                'query',
             );
         },
     };

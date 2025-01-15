@@ -5,7 +5,7 @@ import { VotingGauge, VotingGaugesRepository } from './voting-gauges.repository'
 import { oldVeBalAddress, specialVotingGaugeAddresses } from './special-pools/special-voting-gauge-addresses';
 import { getVeVotingGauges, veGauges, vePools } from './special-pools/ve-pools';
 import { hardCodedPools } from './special-pools/hardcoded-pools';
-import { GqlVotingPool } from '../../schema';
+import { GqlVotingPool } from '../../apps/api/gql/generated-schema';
 import { Chain } from '@prisma/client';
 
 export class VeBalVotingListService {

@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { userService } from '../../../../modules/user/user.service';
 import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
 import { tokenService } from '../../../../modules/token/token.service';

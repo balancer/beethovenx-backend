@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../../schema';
+import { Resolvers } from '../generated-schema';
 import { beetsService } from '../../../../modules/beets/beets.service';
 import { getRequiredAccountAddress, isAdminRoute } from '../../../../modules/auth/auth-context';
 import { userService } from '../../../../modules/user/user.service';

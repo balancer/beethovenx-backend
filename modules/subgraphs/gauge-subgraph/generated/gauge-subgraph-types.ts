@@ -2318,11 +2318,11 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type GaugeLiquidityGaugesQueryVariables = Exact<{
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<LiquidityGauge_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    skip?: Maybe<Scalars['Int']>;
-    where?: Maybe<LiquidityGauge_Filter>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<LiquidityGauge_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    where?: InputMaybe<LiquidityGauge_Filter>;
 }>;
 
 export type GaugeLiquidityGaugesQuery = {
@@ -2330,56 +2330,48 @@ export type GaugeLiquidityGaugesQuery = {
     liquidityGauges: Array<{
         __typename?: 'LiquidityGauge';
         id: string;
-        poolId?: string | null | undefined;
+        poolId?: string | null;
         poolAddress: string;
         totalSupply: string;
-        streamer?: string | null | undefined;
+        streamer?: string | null;
         isPreferentialGauge: boolean;
         isKilled: boolean;
-        tokens?:
-            | Array<{
-                  __typename?: 'RewardToken';
-                  id: string;
-                  decimals: number;
-                  symbol: string;
-                  rate?: string | null | undefined;
-                  periodFinish?: string | null | undefined;
-              }>
-            | null
-            | undefined;
-        shares?:
-            | Array<{ __typename?: 'GaugeShare'; balance: string; user: { __typename?: 'User'; id: string } }>
-            | null
-            | undefined;
-        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null | undefined;
+        tokens?: Array<{
+            __typename?: 'RewardToken';
+            id: string;
+            decimals: number;
+            symbol: string;
+            rate?: string | null;
+            periodFinish?: string | null;
+        }> | null;
+        shares?: Array<{
+            __typename?: 'GaugeShare';
+            balance: string;
+            user: { __typename?: 'User'; id: string };
+        }> | null;
+        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
     }>;
 };
 
 export type GaugeFragment = {
     __typename?: 'LiquidityGauge';
     id: string;
-    poolId?: string | null | undefined;
+    poolId?: string | null;
     poolAddress: string;
     totalSupply: string;
-    streamer?: string | null | undefined;
+    streamer?: string | null;
     isPreferentialGauge: boolean;
     isKilled: boolean;
-    tokens?:
-        | Array<{
-              __typename?: 'RewardToken';
-              id: string;
-              decimals: number;
-              symbol: string;
-              rate?: string | null | undefined;
-              periodFinish?: string | null | undefined;
-          }>
-        | null
-        | undefined;
-    shares?:
-        | Array<{ __typename?: 'GaugeShare'; balance: string; user: { __typename?: 'User'; id: string } }>
-        | null
-        | undefined;
-    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null | undefined;
+    tokens?: Array<{
+        __typename?: 'RewardToken';
+        id: string;
+        decimals: number;
+        symbol: string;
+        rate?: string | null;
+        periodFinish?: string | null;
+    }> | null;
+    shares?: Array<{ __typename?: 'GaugeShare'; balance: string; user: { __typename?: 'User'; id: string } }> | null;
+    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
 };
 
 export type GaugeLiquidityGaugeAddressesQueryVariables = Exact<{ [key: string]: never }>;
@@ -2395,47 +2387,38 @@ export type GaugeUserGaugesQueryVariables = Exact<{
 
 export type GaugeUserGaugesQuery = {
     __typename?: 'Query';
-    user?:
-        | {
-              __typename?: 'User';
-              id: string;
-              gaugeShares?:
-                  | Array<{
-                        __typename?: 'GaugeShare';
-                        balance: string;
-                        gauge: {
-                            __typename?: 'LiquidityGauge';
-                            id: string;
-                            poolId?: string | null | undefined;
-                            isPreferentialGauge: boolean;
-                            isKilled: boolean;
-                            tokens?:
-                                | Array<{
-                                      __typename?: 'RewardToken';
-                                      id: string;
-                                      decimals: number;
-                                      symbol: string;
-                                      rate?: string | null | undefined;
-                                      periodFinish?: string | null | undefined;
-                                  }>
-                                | null
-                                | undefined;
-                        };
-                    }>
-                  | null
-                  | undefined;
-          }
-        | null
-        | undefined;
+    user?: {
+        __typename?: 'User';
+        id: string;
+        gaugeShares?: Array<{
+            __typename?: 'GaugeShare';
+            balance: string;
+            gauge: {
+                __typename?: 'LiquidityGauge';
+                id: string;
+                poolId?: string | null;
+                isPreferentialGauge: boolean;
+                isKilled: boolean;
+                tokens?: Array<{
+                    __typename?: 'RewardToken';
+                    id: string;
+                    decimals: number;
+                    symbol: string;
+                    rate?: string | null;
+                    periodFinish?: string | null;
+                }> | null;
+            };
+        }> | null;
+    } | null;
 };
 
 export type GaugeSharesQueryVariables = Exact<{
-    block?: Maybe<Block_Height>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<GaugeShare_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    skip?: Maybe<Scalars['Int']>;
-    where?: Maybe<GaugeShare_Filter>;
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<GaugeShare_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    where?: InputMaybe<GaugeShare_Filter>;
 }>;
 
 export type GaugeSharesQuery = {
@@ -2447,7 +2430,7 @@ export type GaugeSharesQuery = {
         gauge: {
             __typename?: 'LiquidityGauge';
             id: string;
-            poolId?: string | null | undefined;
+            poolId?: string | null;
             poolAddress: string;
             isPreferentialGauge: boolean;
             isKilled: boolean;
@@ -2463,7 +2446,7 @@ export type GaugeShareFragment = {
     gauge: {
         __typename?: 'LiquidityGauge';
         id: string;
-        poolId?: string | null | undefined;
+        poolId?: string | null;
         poolAddress: string;
         isPreferentialGauge: boolean;
         isKilled: boolean;
@@ -2475,24 +2458,21 @@ export type GaugeGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GaugeGetMetaQuery = {
     __typename?: 'Query';
-    meta?:
-        | {
-              __typename?: '_Meta_';
-              deployment: string;
-              hasIndexingErrors: boolean;
-              block: { __typename?: '_Block_'; number: number };
-          }
-        | null
-        | undefined;
+    meta?: {
+        __typename?: '_Meta_';
+        deployment: string;
+        hasIndexingErrors: boolean;
+        block: { __typename?: '_Block_'; number: number };
+    } | null;
 };
 
 export type VotingEscrowLocksQueryVariables = Exact<{
-    block?: Maybe<Block_Height>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<VotingEscrowLock_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    skip?: Maybe<Scalars['Int']>;
-    where?: Maybe<VotingEscrowLock_Filter>;
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<VotingEscrowLock_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    where?: InputMaybe<VotingEscrowLock_Filter>;
 }>;
 
 export type VotingEscrowLocksQuery = {
@@ -2506,12 +2486,12 @@ export type VotingEscrowLocksQuery = {
 };
 
 export type RootGaugesQueryVariables = Exact<{
-    block?: Maybe<Block_Height>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<RootGauge_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    skip?: Maybe<Scalars['Int']>;
-    where?: Maybe<RootGauge_Filter>;
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<RootGauge_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    where?: InputMaybe<RootGauge_Filter>;
 }>;
 
 export type RootGaugesQuery = {
@@ -2521,7 +2501,7 @@ export type RootGaugesQuery = {
         id: string;
         chain: Chain;
         recipient: string;
-        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null | undefined;
+        gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
     }>;
 };
 
@@ -2530,11 +2510,11 @@ export type RootGaugeFragment = {
     id: string;
     chain: Chain;
     recipient: string;
-    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null | undefined;
+    gauge?: { __typename?: 'Gauge'; addedTimestamp: number } | null;
 };
 
 export type LiquidityGaugesQueryVariables = Exact<{
-    ids?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+    ids?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;
 }>;
 
 export type LiquidityGaugesQuery = {
@@ -2730,9 +2710,10 @@ export const LiquidityGaugesDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -2747,6 +2728,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeLiquidityGauges',
+                'query',
             );
         },
         GaugeLiquidityGaugeAddresses(
@@ -2760,6 +2742,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeLiquidityGaugeAddresses',
+                'query',
             );
         },
         GaugeUserGauges(
@@ -2773,6 +2756,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeUserGauges',
+                'query',
             );
         },
         GaugeShares(
@@ -2786,6 +2770,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeShares',
+                'query',
             );
         },
         GaugeGetMeta(
@@ -2799,6 +2784,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'GaugeGetMeta',
+                'query',
             );
         },
         VotingEscrowLocks(
@@ -2812,6 +2798,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'VotingEscrowLocks',
+                'query',
             );
         },
         RootGauges(
@@ -2825,6 +2812,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'RootGauges',
+                'query',
             );
         },
         LiquidityGauges(
@@ -2838,6 +2826,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'LiquidityGauges',
+                'query',
             );
         },
     };

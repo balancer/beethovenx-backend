@@ -1,5 +1,5 @@
 import { Chain } from '@prisma/client';
-import { GqlChain } from '../../schema';
+import { GqlChain } from '../../apps/api/gql/generated-schema';
 
 export interface ConfigHomeScreen {
     featuredPoolGroups: HomeScreenFeaturedPoolGroup[];

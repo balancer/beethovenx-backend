@@ -2,7 +2,11 @@ import config from '../../config';
 import { getViemClient } from '../sources/viem-client';
 import { Address } from 'viem';
 import { prisma } from '../../prisma/prisma-client';
-import { GqlStakedSonicData, GqlStakedSonicSnapshot, GqlStakedSonicSnapshotDataRange } from '../../schema';
+import {
+    GqlStakedSonicData,
+    GqlStakedSonicSnapshot,
+    GqlStakedSonicSnapshotDataRange,
+} from '../../apps/api/gql/generated-schema';
 import { syncStakingData } from '../actions/sts/sync-staking-data';
 import { StsSubgraphService } from '../sources/subgraphs/sts-subgraph/sts.service';
 import { syncSonicStakingSnapshots } from '../actions/sts/sync-staking-snapshots';

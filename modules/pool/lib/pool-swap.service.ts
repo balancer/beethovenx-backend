@@ -12,7 +12,7 @@ import {
     QueryPoolGetBatchSwapsArgs,
     QueryPoolGetJoinExitsArgs,
     QueryPoolGetSwapsArgs,
-} from '../../../schema';
+} from '../../../apps/api/gql/generated-schema';
 import { Chain, PrismaPoolSwap } from '@prisma/client';
 import _ from 'lodash';
 import { PrismaPoolBatchSwapWithSwaps } from '../../../prisma/prisma-types';

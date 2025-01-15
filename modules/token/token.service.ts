@@ -18,7 +18,7 @@ import {
     GqlTokenChartDataRange,
     MutationTokenDeleteTokenTypeArgs,
     QueryTokenGetTokensArgs,
-} from '../../schema';
+} from '../../apps/api/gql/generated-schema';
 import { Dictionary } from 'lodash';
 import { GithubContentService } from '../content/github-content.service';
 import config from '../../config';

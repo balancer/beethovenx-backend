@@ -4,7 +4,7 @@ import {
     OrderDirection,
     PoolSnapshot_OrderBy,
 } from '../../subgraphs/balancer-subgraph/generated/balancer-subgraph-types';
-import { GqlPoolSnapshotDataRange } from '../../../schema';
+import { GqlPoolSnapshotDataRange } from '../../../apps/api/gql/generated-schema';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 import { Chain, PrismaPoolSnapshot } from '@prisma/client';

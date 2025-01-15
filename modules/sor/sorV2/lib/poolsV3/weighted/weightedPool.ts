@@ -4,7 +4,7 @@ import { AddKind, RemoveKind, Vault, Weighted, WeightedState, HookState } from '
 import { Chain } from '@prisma/client';
 
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
-import { GqlPoolType } from '../../../../../../schema';
+import { GqlPoolType } from '../../../../../../apps/api/gql/generated-schema';
 import { TokenPairData } from '../../../../../sources/contracts/v3/fetch-tokenpair-data';
 import { chainToChainId as chainToIdMap } from '../../../../../network/chain-id-to-chain';
 
