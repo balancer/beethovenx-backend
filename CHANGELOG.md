@@ -1,5 +1,16 @@
 # backend
 
+## 1.28.0
+
+### Minor Changes
+
+-   331cf71: This pr adds hooks to the SOR (DirectionalFee, StableSurge, ExitFee)
+
+### Patch Changes
+
+-   7126cf3: bpt balances syncing refactor
+-   7481c31: can add points to tokens
+
 ## 1.27.9
 
 ### Patch Changes
