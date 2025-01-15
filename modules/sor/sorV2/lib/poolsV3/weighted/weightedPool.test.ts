@@ -13,7 +13,7 @@ import {
     prismaPoolDynamicDataFactory,
     prismaPoolFactory,
     prismaPoolTokenFactory,
-    hookFactory
+    hookFactory,
 } from '../../../../../../test/factories';
 
 describe('SOR V3 Weighted Pool Tests', () => {
@@ -62,6 +62,12 @@ describe('SOR V3 Weighted Pool Tests', () => {
             protocolVersion: 3,
             tokens: [poolToken1, poolToken2],
             dynamicData: prismaPoolDynamicDataFactory.build({ swapFee, totalShares }),
+            liquidityManagement: {
+                disableUnbalancedLiquidity: true,
+                enableAddLiquidityCustom: false,
+                enableDonation: false,
+                enableRemoveLiquidityCustom: false,
+            },
         });
         weightedPool = WeightedPoolV3.fromPrismaPool(weightedPrismaPool);
 
@@ -89,9 +95,14 @@ describe('SOR V3 Weighted Pool Tests', () => {
             tokens: [poolToken1, poolToken2],
             dynamicData: prismaPoolDynamicDataFactory.build({ swapFee, totalShares }),
             hook: directionalFeeHook,
+            liquidityManagement: {
+                disableUnbalancedLiquidity: true,
+                enableAddLiquidityCustom: false,
+                enableDonation: false,
+                enableRemoveLiquidityCustom: false,
+            },
         });
         weightedPoolWithHook = WeightedPoolV3.fromPrismaPool(weightedPrismaPoolWithHook);
-
     });
 
     test('Get Pool State', () => {
@@ -106,6 +117,7 @@ describe('SOR V3 Weighted Pool Tests', () => {
             weights: tokenWeights.map((w) => parseEther(w)),
             tokens: tokenAddresses,
             scalingFactors,
+            supportsUnbalancedLiquidity: false,
         };
         expect(poolState).toEqual(weightedPool.getPoolState());
     });
@@ -122,8 +134,8 @@ describe('SOR V3 Weighted Pool Tests', () => {
             tokens: tokenAddresses,
             scalingFactors,
             hookType: 'DirectionalFee',
+            supportsUnbalancedLiquidity: false,
         };
         expect(poolState).toEqual(weightedPoolWithHook.getPoolState('DirectionalFee'));
-    })
-
+    });
 });
