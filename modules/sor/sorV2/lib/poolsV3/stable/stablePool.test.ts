@@ -4,7 +4,7 @@ import { parseEther, parseUnits } from 'viem';
 
 import { PrismaPoolAndHookWithDynamic } from '../../../../../../prisma/prisma-types';
 import { WAD } from '../../utils/math';
-import { StablePool } from './stablePool';
+import { StablePoolV3 } from './stablePool';
 
 import { Token, TokenAmount } from '@balancer/sdk';
 
@@ -22,8 +22,8 @@ describe('SOR V3 Stable Pool Tests', () => {
     let amp: string;
     let scalingFactors: bigint[];
     let aggregateSwapFee: bigint;
-    let stablePool: StablePool;
-    let stablePoolWithHook: StablePool;
+    let stablePool: StablePoolV3;
+    let stablePoolWithHook: StablePoolV3;
     let stablePrismaPool: PrismaPoolAndHookWithDynamic;
     let stablePrismaPoolWithHook: PrismaPoolAndHookWithDynamic;
     let swapFee: string;
@@ -93,7 +93,7 @@ describe('SOR V3 Stable Pool Tests', () => {
                 enableRemoveLiquidityCustom: false,
             },
         });
-        stablePool = StablePool.fromPrismaPool(stablePrismaPool);
+        stablePool = StablePoolV3.fromPrismaPool(stablePrismaPool);
 
         stablePrismaPoolWithHook = prismaPoolFactory.build({
             address: poolAddress,
@@ -112,7 +112,7 @@ describe('SOR V3 Stable Pool Tests', () => {
                 enableRemoveLiquidityCustom: false,
             },
         });
-        stablePoolWithHook = StablePool.fromPrismaPool(stablePrismaPoolWithHook);
+        stablePoolWithHook = StablePoolV3.fromPrismaPool(stablePrismaPoolWithHook);
     });
 
     test('Get Pool State', () => {
