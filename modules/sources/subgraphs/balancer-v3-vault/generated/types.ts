@@ -2989,12 +2989,12 @@ export type AddRemoveFragment = {
 };
 
 export type AddRemoveQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<AddRemove_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<AddRemove_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<AddRemove_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<AddRemove_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type AddRemoveQuery = {
@@ -3027,12 +3027,12 @@ export type PoolBalancesFragment = {
 };
 
 export type PoolBalancesQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Pool_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Pool_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Pool_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Pool_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type PoolBalancesQuery = {
@@ -3056,26 +3056,23 @@ export type MetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MetadataQuery = {
     __typename?: 'Query';
-    meta?:
-        | {
-              __typename?: '_Meta_';
-              deployment: string;
-              hasIndexingErrors: boolean;
-              block: { __typename?: '_Block_'; number: number };
-          }
-        | null
-        | undefined;
+    meta?: {
+        __typename?: '_Meta_';
+        deployment: string;
+        hasIndexingErrors: boolean;
+        block: { __typename?: '_Block_'; number: number };
+    } | null;
 };
 
 export type PoolShareFragment = { __typename?: 'PoolShare'; id: string; balance: string };
 
 export type PoolSharesQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<PoolShare_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<PoolShare_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<PoolShare_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<PoolShare_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type PoolSharesQuery = {
@@ -3104,12 +3101,12 @@ export type PoolSnapshotFragment = {
 };
 
 export type PoolSnapshotsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<PoolSnapshot_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<PoolSnapshot_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<PoolSnapshot_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<PoolSnapshot_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type PoolSnapshotsQuery = {
@@ -3163,18 +3160,15 @@ export type VaultPoolFragment = {
         totalProtocolYieldFee: string;
         paysYieldFees: boolean;
         scalingFactor: string;
-        nestedPool?:
-            | {
-                  __typename?: 'Pool';
-                  id: string;
-                  tokens: Array<{
-                      __typename?: 'PoolToken';
-                      address: string;
-                      nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
-                  }>;
-              }
-            | null
-            | undefined;
+        nestedPool?: {
+            __typename?: 'Pool';
+            id: string;
+            tokens: Array<{
+                __typename?: 'PoolToken';
+                address: string;
+                nestedPool?: { __typename?: 'Pool'; id: string } | null;
+            }>;
+        } | null;
     }>;
     rateProviders: Array<{
         __typename?: 'RateProvider';
@@ -3205,12 +3199,12 @@ export type VaultPoolFragment = {
 };
 
 export type PoolsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Pool_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Pool_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Pool_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Pool_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type PoolsQuery = {
@@ -3243,18 +3237,15 @@ export type PoolsQuery = {
             totalProtocolYieldFee: string;
             paysYieldFees: boolean;
             scalingFactor: string;
-            nestedPool?:
-                | {
-                      __typename?: 'Pool';
-                      id: string;
-                      tokens: Array<{
-                          __typename?: 'PoolToken';
-                          address: string;
-                          nestedPool?: { __typename?: 'Pool'; id: string } | null | undefined;
-                      }>;
-                  }
-                | null
-                | undefined;
+            nestedPool?: {
+                __typename?: 'Pool';
+                id: string;
+                tokens: Array<{
+                    __typename?: 'PoolToken';
+                    address: string;
+                    nestedPool?: { __typename?: 'Pool'; id: string } | null;
+                }>;
+            } | null;
         }>;
         rateProviders: Array<{
             __typename?: 'RateProvider';
@@ -3305,12 +3296,12 @@ export type SwapFragment = {
 };
 
 export type SwapsQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<Swap_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<Swap_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Swap_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<Swap_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type SwapsQuery = {
@@ -3338,35 +3329,34 @@ export type SwapsQuery = {
 export type UserFragment = {
     __typename?: 'User';
     id: string;
-    swaps?:
-        | Array<{
-              __typename?: 'Swap';
-              id: string;
-              pool: string;
-              tokenIn: string;
-              tokenOut: string;
-              tokenAmountIn: string;
-              tokenAmountOut: string;
-              swapFeeAmount: string;
-              blockNumber: string;
-              blockTimestamp: string;
-              transactionHash: string;
-          }>
-        | null
-        | undefined;
-    shares?:
-        | Array<{ __typename?: 'PoolShare'; id: string; balance: string; pool: { __typename?: 'Pool'; id: string } }>
-        | null
-        | undefined;
+    swaps?: Array<{
+        __typename?: 'Swap';
+        id: string;
+        pool: string;
+        tokenIn: string;
+        tokenOut: string;
+        tokenAmountIn: string;
+        tokenAmountOut: string;
+        swapFeeAmount: string;
+        blockNumber: string;
+        blockTimestamp: string;
+        transactionHash: string;
+    }> | null;
+    shares?: Array<{
+        __typename?: 'PoolShare';
+        id: string;
+        balance: string;
+        pool: { __typename?: 'Pool'; id: string };
+    }> | null;
 };
 
 export type UsersQueryVariables = Exact<{
-    skip?: Maybe<Scalars['Int']>;
-    first?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<User_OrderBy>;
-    orderDirection?: Maybe<OrderDirection>;
-    where?: Maybe<User_Filter>;
-    block?: Maybe<Block_Height>;
+    skip?: InputMaybe<Scalars['Int']>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<User_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    where?: InputMaybe<User_Filter>;
+    block?: InputMaybe<Block_Height>;
 }>;
 
 export type UsersQuery = {
@@ -3374,31 +3364,25 @@ export type UsersQuery = {
     users: Array<{
         __typename?: 'User';
         id: string;
-        swaps?:
-            | Array<{
-                  __typename?: 'Swap';
-                  id: string;
-                  pool: string;
-                  tokenIn: string;
-                  tokenOut: string;
-                  tokenAmountIn: string;
-                  tokenAmountOut: string;
-                  swapFeeAmount: string;
-                  blockNumber: string;
-                  blockTimestamp: string;
-                  transactionHash: string;
-              }>
-            | null
-            | undefined;
-        shares?:
-            | Array<{
-                  __typename?: 'PoolShare';
-                  id: string;
-                  balance: string;
-                  pool: { __typename?: 'Pool'; id: string };
-              }>
-            | null
-            | undefined;
+        swaps?: Array<{
+            __typename?: 'Swap';
+            id: string;
+            pool: string;
+            tokenIn: string;
+            tokenOut: string;
+            tokenAmountIn: string;
+            tokenAmountOut: string;
+            swapFeeAmount: string;
+            blockNumber: string;
+            blockTimestamp: string;
+            transactionHash: string;
+        }> | null;
+        shares?: Array<{
+            __typename?: 'PoolShare';
+            id: string;
+            balance: string;
+            pool: { __typename?: 'Pool'; id: string };
+        }> | null;
     }>;
 };
 
@@ -3745,9 +3729,10 @@ export const UsersDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
+    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -3762,6 +3747,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'AddRemove',
+                'query',
             );
         },
         PoolBalances(
@@ -3775,6 +3761,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolBalances',
+                'query',
             );
         },
         Metadata(
@@ -3788,6 +3775,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Metadata',
+                'query',
             );
         },
         PoolShares(
@@ -3801,6 +3789,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolShares',
+                'query',
             );
         },
         PoolSnapshots(
@@ -3814,6 +3803,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'PoolSnapshots',
+                'query',
             );
         },
         Pools(variables?: PoolsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<PoolsQuery> {
@@ -3824,6 +3814,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Pools',
+                'query',
             );
         },
         Swaps(variables?: SwapsQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<SwapsQuery> {
@@ -3834,6 +3825,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Swaps',
+                'query',
             );
         },
         Users(variables?: UsersQueryVariables, requestHeaders?: Dom.RequestInit['headers']): Promise<UsersQuery> {
@@ -3844,6 +3836,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Users',
+                'query',
             );
         },
     };
