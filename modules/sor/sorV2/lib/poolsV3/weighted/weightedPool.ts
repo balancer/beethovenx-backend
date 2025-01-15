@@ -16,7 +16,6 @@ import { getHookState, isLiquidityManagement } from '../../utils/helpers';
 
 import { LiquidityManagement } from '../../../../../sor/types';
 
-
 type WeightedPoolToken = WeightedBasePoolToken | WeightedErc4626PoolToken;
 
 export class WeightedPoolV3 implements BasePoolV3 {
@@ -99,8 +98,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
             pool.dynamicData.tokenPairsData as TokenPairData[],
             pool.liquidityManagement,
             hookState,
-            // @ts-ignore: Ignore TypeScript error for accessing name property
-            pool.hook?.name,
         );
     }
 
@@ -115,7 +112,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
         tokenPairs: TokenPairData[],
         liquidityManagement: LiquidityManagement,
         hookState: HookState | undefined = undefined,
-        hookName?: string
     ) {
         this.chain = chain;
         this.id = id;
@@ -127,15 +123,14 @@ export class WeightedPoolV3 implements BasePoolV3 {
         this.tokenMap = new Map(tokens.map((token) => [token.token.address, token]));
         this.tokenPairs = tokenPairs;
         this.liquidityManagement = liquidityManagement;
-        this.hookState = hookState
-
+        this.hookState = hookState;
 
         // add BPT to tokenMap, so we can handle add/remove liquidity operations
         const bpt = new Token(tokens[0].token.chainId, this.id, 18, 'BPT', 'BPT');
         this.tokenMap.set(bpt.address, new WeightedBasePoolToken(bpt, totalShares, -1, 0n));
 
         this.vault = new Vault();
-        this.poolState = this.getPoolState(hookName);
+        this.poolState = this.getPoolState(hookState?.hookType);
     }
 
     public getNormalizedLiquidity(tokenIn: Token, tokenOut: Token): bigint {
@@ -193,7 +188,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
-
             // if liquidityManagement.disableUnbalancedLiquidity is true return 0
             // as the pool does not allow unbalanced operations. 0 return marks the
             // route as truly unfeasible route.
@@ -214,7 +208,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
             );
             calculatedAmount = amountsOutRaw[tOut.index];
         } else if (tOut.token.isSameAddress(this.id)) {
-
             // if liquidityManagement.disableUnbalancedLiquidity is true return 0
             // as the pool does not allow unbalanced operations. 0 return marks the
             // route as truly unfeasible route.
@@ -231,7 +224,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
                     kind: AddKind.UNBALANCED,
                 },
                 this.poolState,
-                this.hookState
+                this.hookState,
             );
             calculatedAmount = bptAmountOutRaw;
         } else {
@@ -256,7 +249,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
         let calculatedAmount: bigint;
 
         if (tIn.token.isSameAddress(this.id)) {
-
             // if liquidityManagement.disableUnbalancedLiquidity is true return 0
             // as the pool does not allow unbalanced operations. 0 return marks the
             // route as truly unfeasible route.
@@ -276,7 +268,6 @@ export class WeightedPoolV3 implements BasePoolV3 {
             );
             calculatedAmount = bptAmountInRaw;
         } else if (tOut.token.isSameAddress(this.id)) {
-
             // if liquidityManagement.disableUnbalancedLiquidity is true return 0
             // as the pool does not allow unbalanced operations. 0 return marks the
             // route as truly unfeasible route.
@@ -322,15 +313,13 @@ export class WeightedPoolV3 implements BasePoolV3 {
             tokens: this.tokens.map((t) => t.token.address),
             scalingFactors: this.tokens.map((t) => t.scalar),
             aggregateSwapFee: 0n,
+            supportsUnbalancedLiquidity: !this.liquidityManagement.disableUnbalancedLiquidity,
         };
 
-        if (hookName) {
-            poolState.hookType = hookName;
-        }
+        poolState.hookType = hookName;
 
-        return poolState  
+        return poolState;
     }
-
 
     // Helper methods
 
