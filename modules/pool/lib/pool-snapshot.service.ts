@@ -116,7 +116,7 @@ export class PoolSnapshotService {
         const dailyBlocks = await blockNumbers().getDailyBlocks(this.chain, numDays);
 
         for (const block of dailyBlocks) {
-            const startTimestamp = block.timestamp;
+            const startTimestamp = moment(block.timestamp).utc().startOf('day').unix();
             const endTimestamp = startTimestamp + 86400;
             const swapsForDay = swaps.filter(
                 (swap) =>
