@@ -71,10 +71,6 @@ export const avalancheNetworkConfig: NetworkConfig = {
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(5, 'minutes'),
         },
         {
-            name: 'cache-average-block-time',
-            interval: every(1, 'hours'),
-        },
-        {
             name: 'sync-staking-for-pools',
             interval: (env.DEPLOYMENT_ENV as DeploymentEnv) === 'canary' ? every(10, 'minutes') : every(5, 'minutes'),
         },

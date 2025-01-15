@@ -69,10 +69,6 @@ export const sepoliaNetworkConfig: NetworkConfig = {
             interval: every(5, 'minutes'),
         },
         {
-            name: 'cache-average-block-time',
-            interval: every(1, 'hours'),
-        },
-        {
             name: 'sync-staking-for-pools',
             interval: every(5, 'minutes'),
         },
