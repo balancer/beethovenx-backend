@@ -10,7 +10,8 @@
         "resolveJsonModule": true,
         "outDir": "./dist",
         "skipLibCheck": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "types": ["vitest/globals"],
     },
     "exclude": ["node_modules", "debug", "**/*.spec.ts", "**/*.test.ts"]
 }
