@@ -3,16 +3,12 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 import { isSupportedInt, prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { TokenService } from '../../token/token.service';
-import { BlocksSubgraphService } from '../../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { networkContext } from '../../network/network-context.service';
 import { capturesYield } from './pool-utils';
 import * as Sentry from '@sentry/node';
 
 export class PoolUsdDataService {
-    constructor(
-        private readonly tokenService: TokenService,
-        private readonly blockSubgraphService: BlocksSubgraphService,
-    ) {}
+    constructor(private readonly tokenService: TokenService) {}
 
     private get balancerSubgraphService() {
         return networkContext.services.balancerSubgraphService;

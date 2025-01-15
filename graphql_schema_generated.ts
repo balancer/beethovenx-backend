@@ -3676,7 +3676,6 @@ export const schema = gql`
     type Mutation {
         beetsPoolLoadReliquarySnapshotsForAllFarms: String!
         beetsSyncFbeetsRatio: String!
-        cacheAverageBlockTime: String!
         poolLoadOnChainDataForAllPools(chains: [GqlChain!]!): [GqlPoolMutationResult!]!
         poolLoadSnapshotsForPools(poolIds: [String!]!, reload: Boolean): String!
         poolReloadAllPoolAprs(chain: GqlChain!): String!
@@ -3718,10 +3717,6 @@ export const schema = gql`
     type Query {
         beetsGetFbeetsRatio: String!
         beetsPoolGetReliquaryFarmSnapshots(id: String!, range: GqlPoolSnapshotDataRange!): [GqlReliquaryFarmSnapshot!]!
-        blocksGetAverageBlockTime: Float!
-        blocksGetBlocksPerDay: Float!
-        blocksGetBlocksPerSecond: Float!
-        blocksGetBlocksPerYear: Float!
         contentGetNewsItems(chain: GqlChain): [GqlContentNewsItem!]!
         latestSyncedBlocks: GqlLatestSyncedBlocks!
 

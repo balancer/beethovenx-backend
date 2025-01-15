@@ -10,9 +10,9 @@ import _ from 'lodash';
 import { Chain, PrismaPoolSnapshot } from '@prisma/client';
 import { prismaBulkExecuteOperations } from '../../../prisma/prisma-util';
 import { prismaPoolWithExpandedNesting } from '../../../prisma/prisma-types';
-import { blocksSubgraphService } from '../../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { networkContext } from '../../network/network-context.service';
 import { CoingeckoDataService, TokenHistoricalPrices } from '../../token/lib/coingecko-data.service';
+import { blockNumbers } from '../../block-numbers';
 
 export class PoolSnapshotService {
     constructor(private readonly coingeckoService: CoingeckoDataService) {}
@@ -113,10 +113,10 @@ export class PoolSnapshotService {
             }
         }
 
-        const dailyBlocks = await blocksSubgraphService.getDailyBlocks(numDays);
+        const dailyBlocks = await blockNumbers().getDailyBlocks(this.chain, numDays);
 
         for (const block of dailyBlocks) {
-            const startTimestamp = parseInt(block.timestamp);
+            const startTimestamp = moment(block.timestamp).utc().startOf('day').unix();
             const endTimestamp = startTimestamp + 86400;
             const swapsForDay = swaps.filter(
                 (swap) =>
@@ -141,7 +141,7 @@ export class PoolSnapshotService {
 
             const { pool: poolAtBlock } = await this.balancerSubgraphService.getPool({
                 id: poolId,
-                block: { number: parseInt(block.number) },
+                block: { number: block.number },
             });
 
             if (!poolAtBlock) {

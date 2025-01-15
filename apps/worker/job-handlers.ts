@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/node';
 import { Express, NextFunction } from 'express';
 import { tokenService } from '../../modules/token/token.service';
 import { poolService } from '../../modules/pool/pool.service';
-import { blocksSubgraphService } from '../../modules/subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { userService } from '../../modules/user/user.service';
 import { protocolService } from '../../modules/protocol/protocol.service';
 import { datastudioService } from '../../modules/datastudio/datastudio.service';
@@ -176,9 +175,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 res,
                 next,
             );
-            break;
-        case 'cache-average-block-time':
-            await runIfNotAlreadyRunning(name, chainId, () => blocksSubgraphService.cacheAverageBlockTime(), res, next);
             break;
         case 'sync-staking-for-pools':
             await runIfNotAlreadyRunning(name, chainId, () => StakingController().syncStaking(chain), res, next);

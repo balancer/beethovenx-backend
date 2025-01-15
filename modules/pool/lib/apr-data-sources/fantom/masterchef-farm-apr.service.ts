@@ -3,12 +3,12 @@ import { prisma } from '../../../../../prisma/prisma-client';
 import { PrismaPoolWithExpandedNesting, PrismaPoolWithTokens } from '../../../../../prisma/prisma-types';
 import { prismaBulkExecuteOperations } from '../../../../../prisma/prisma-util';
 import { secondsPerYear } from '../../../../common/time';
-import { blocksSubgraphService } from '../../../../subgraphs/blocks-subgraph/blocks-subgraph.service';
 import { FarmFragment } from '../../../../subgraphs/masterchef-subgraph/generated/masterchef-subgraph-types';
 import { tokenService } from '../../../../token/token.service';
 import { PoolAprService } from '../../../pool-types';
 import { networkContext } from '../../../../network/network-context.service';
 import { MasterchefSubgraphService } from '../../../../subgraphs/masterchef-subgraph/masterchef.service';
+import { blockNumbers } from '../../../../block-numbers';
 
 const FARM_EMISSIONS_PERCENT = 0.872;
 
@@ -24,7 +24,7 @@ export class MasterchefFarmAprService implements PoolAprService {
         const masterchefService = new MasterchefSubgraphService(networkContext.data.subgraphs.masterchef!);
         const farms = await masterchefService.getAllFarms({});
 
-        const blocksPerDay = await blocksSubgraphService.getBlocksPerDay();
+        const blocksPerDay = await blockNumbers().getBlocksPerDay(chain);
         const blocksPerYear = blocksPerDay * 365;
         const tokenPrices = await tokenService.getTokenPrices(chain);
         const operations: any[] = [];
