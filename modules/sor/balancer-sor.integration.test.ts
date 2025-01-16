@@ -1,6 +1,6 @@
 // yarn vitest balancer-sor.integration.test.ts
 
-import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path } from '@balancer/sdk';
+import { ExactInQueryOutput, Swap, SwapKind, Token, Address, Path, ExactOutQueryOutput } from '@balancer/sdk';
 
 import { PathWithAmount } from './sorV2/lib/path';
 import { sorGetPathsWithPools } from './sorV2/lib/static';
