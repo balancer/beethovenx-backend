@@ -988,12 +988,12 @@ export enum _SubgraphErrorPolicy_ {
 }
 
 export type MasterchefUsersQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<User_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<User_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<User_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<User_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type MasterchefUsersQuery = {
@@ -1006,7 +1006,7 @@ export type MasterchefUsersQuery = {
         rewardDebt: string;
         beetsHarvested: string;
         timestamp: string;
-        pool?: { __typename?: 'Pool'; id: string; pair: string } | null;
+        pool?: { __typename?: 'Pool'; id: string; pair: string } | null | undefined;
     }>;
 };
 
@@ -1018,16 +1018,16 @@ export type FarmUserFragment = {
     rewardDebt: string;
     beetsHarvested: string;
     timestamp: string;
-    pool?: { __typename?: 'Pool'; id: string; pair: string } | null;
+    pool?: { __typename?: 'Pool'; id: string; pair: string } | null | undefined;
 };
 
 export type MasterchefsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<MasterChef_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<MasterChef_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<MasterChef_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<MasterChef_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type MasterchefsQuery = {
@@ -1045,12 +1045,12 @@ export type MasterchefsQuery = {
 };
 
 export type MasterchefFarmsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Pool_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Pool_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<Pool_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<Pool_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type MasterchefFarmsQuery = {
@@ -1067,17 +1067,20 @@ export type MasterchefFarmsQuery = {
         timestamp: string;
         block: string;
         masterChef: { __typename?: 'MasterChef'; id: string; totalAllocPoint: string; beetsPerBlock: string };
-        rewarder?: {
-            __typename?: 'Rewarder';
-            id: string;
-            rewardTokens: Array<{
-                __typename?: 'RewardToken';
-                token: string;
-                decimals: number;
-                symbol: string;
-                rewardPerSecond: string;
-            }>;
-        } | null;
+        rewarder?:
+            | {
+                  __typename?: 'Rewarder';
+                  id: string;
+                  rewardTokens: Array<{
+                      __typename?: 'RewardToken';
+                      token: string;
+                      decimals: number;
+                      symbol: string;
+                      rewardPerSecond: string;
+                  }>;
+              }
+            | null
+            | undefined;
     }>;
 };
 
@@ -1093,17 +1096,20 @@ export type FarmFragment = {
     timestamp: string;
     block: string;
     masterChef: { __typename?: 'MasterChef'; id: string; totalAllocPoint: string; beetsPerBlock: string };
-    rewarder?: {
-        __typename?: 'Rewarder';
-        id: string;
-        rewardTokens: Array<{
-            __typename?: 'RewardToken';
-            token: string;
-            decimals: number;
-            symbol: string;
-            rewardPerSecond: string;
-        }>;
-    } | null;
+    rewarder?:
+        | {
+              __typename?: 'Rewarder';
+              id: string;
+              rewardTokens: Array<{
+                  __typename?: 'RewardToken';
+                  token: string;
+                  decimals: number;
+                  symbol: string;
+                  rewardPerSecond: string;
+              }>;
+          }
+        | null
+        | undefined;
 };
 
 export type MasterchefPortfolioDataQueryVariables = Exact<{
@@ -1121,7 +1127,7 @@ export type MasterchefPortfolioDataQuery = {
         rewardDebt: string;
         beetsHarvested: string;
         timestamp: string;
-        pool?: { __typename?: 'Pool'; id: string; pair: string } | null;
+        pool?: { __typename?: 'Pool'; id: string; pair: string } | null | undefined;
     }>;
     previousFarmUsers: Array<{
         __typename?: 'User';
@@ -1131,7 +1137,7 @@ export type MasterchefPortfolioDataQuery = {
         rewardDebt: string;
         beetsHarvested: string;
         timestamp: string;
-        pool?: { __typename?: 'Pool'; id: string; pair: string } | null;
+        pool?: { __typename?: 'Pool'; id: string; pair: string } | null | undefined;
     }>;
 };
 
@@ -1139,12 +1145,15 @@ export type MasterchefGetMetaQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MasterchefGetMetaQuery = {
     __typename?: 'Query';
-    meta?: {
-        __typename?: '_Meta_';
-        deployment: string;
-        hasIndexingErrors: boolean;
-        block: { __typename?: '_Block_'; number: number };
-    } | null;
+    meta?:
+        | {
+              __typename?: '_Meta_';
+              deployment: string;
+              hasIndexingErrors: boolean;
+              block: { __typename?: '_Block_'; number: number };
+          }
+        | null
+        | undefined;
 };
 
 export const FarmUserFragmentDoc = gql`
@@ -1285,10 +1294,9 @@ export const MasterchefGetMetaDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -1303,7 +1311,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'MasterchefUsers',
-                'query',
             );
         },
         Masterchefs(
@@ -1317,7 +1324,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Masterchefs',
-                'query',
             );
         },
         MasterchefFarms(
@@ -1331,7 +1337,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'MasterchefFarms',
-                'query',
             );
         },
         MasterchefPortfolioData(
@@ -1345,7 +1350,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'MasterchefPortfolioData',
-                'query',
             );
         },
         MasterchefGetMeta(
@@ -1359,7 +1363,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'MasterchefGetMeta',
-                'query',
             );
         },
     };

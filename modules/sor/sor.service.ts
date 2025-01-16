@@ -1,3 +1,4 @@
+import config from '../../config';
 import {
     GqlSorGetSwapPaths,
     GqlSorGetSwapsResponse,
@@ -7,7 +8,6 @@ import {
 import { sorV2Service } from './sorV2/sorPathService';
 import { GetSwapsV2Input as GetSwapPathsInput } from './types';
 import { getToken, getTokenAmountHuman, swapPathsZeroResponse, zeroResponse } from './utils';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 
 export class SorService {
     async getSorSwapPaths(args: QuerySorGetSwapPathsArgs): Promise<GqlSorGetSwapPaths> {
@@ -21,9 +21,7 @@ export class SorService {
             return emptyResponse;
         }
 
-        const wethIsEth =
-            tokenIn === AllNetworkConfigsKeyedOnChain[args.chain].data.eth.address ||
-            tokenOut === AllNetworkConfigsKeyedOnChain[args.chain].data.eth.address;
+        const wethIsEth = tokenIn === config[args.chain].eth.address || tokenOut === config[args.chain].eth.address;
 
         // check if tokens addresses exist
         try {
@@ -39,9 +37,7 @@ export class SorService {
         // also if tokenIn and tokenOut is weth/eth
         if (
             tokenIn === tokenOut ||
-            (wethIsEth &&
-                (tokenIn === AllNetworkConfigsKeyedOnChain[args.chain].data.weth.address ||
-                    tokenOut === AllNetworkConfigsKeyedOnChain[args.chain].data.weth.address))
+            (wethIsEth && (tokenIn === config[args.chain].weth.address || tokenOut === config[args.chain].weth.address))
         ) {
             return emptyResponse;
         }

@@ -15,8 +15,8 @@ import { PathWithAmount } from './path';
 import { cloneDeep } from 'lodash';
 import { Address, Hex, createPublicClient, encodeFunctionData, getContract, http } from 'viem';
 import { MathSol, abs } from './utils/math';
-import { AllNetworkConfigsKeyedOnChain } from '../../../network/network-config';
 import { chainIdToChain } from '../../../network/chain-id-to-chain';
+import config from '../../../../config';
 
 // A Swap can be a single or multiple paths
 export class SwapLocal {
@@ -70,8 +70,7 @@ export class SwapLocal {
         });
 
         const queriesContract = getContract({
-            address: AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.balancer.v2
-                .balancerQueriesAddress as Address,
+            address: config[chainIdToChain[this.chainId]].balancer.v2.balancerQueriesAddress as Address,
             abi: balancerQueriesAbi,
             client,
         });
@@ -119,9 +118,7 @@ export class SwapLocal {
     }
 
     private convertNativeAddressToZero(address: Address): Address {
-        return address === AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.eth.address
-            ? ZERO_ADDRESS
-            : address;
+        return address === config[chainIdToChain[this.chainId]].eth.address ? ZERO_ADDRESS : address;
     }
 
     public queryCallData(): string {
@@ -191,8 +188,7 @@ export class SwapLocal {
             if (
                 this.assets[i] === this.inputAmount.token.address ||
                 (this.assets[i] === ZERO_ADDRESS &&
-                    this.inputAmount.token.address ===
-                        AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.eth.address)
+                    this.inputAmount.token.address === config[chainIdToChain[this.chainId]].eth.address)
             ) {
                 if (this.swapKind === SwapKind.GivenIn) {
                     limits[i] = this.inputAmount.amount;
@@ -203,8 +199,7 @@ export class SwapLocal {
             if (
                 this.assets[i] === this.outputAmount.token.address ||
                 (this.assets[i] === ZERO_ADDRESS &&
-                    this.outputAmount.token.address ===
-                        AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.eth.address)
+                    this.outputAmount.token.address === config[chainIdToChain[this.chainId]].eth.address)
             ) {
                 if (this.swapKind === SwapKind.GivenIn) {
                     limits[i] = -1n * limitAmount;
@@ -242,10 +237,7 @@ export class SwapLocal {
      */
     private value(limits: bigint[]): bigint {
         let value = 0n;
-        if (
-            this.inputAmount.token.address ===
-            AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.eth.address
-        ) {
+        if (this.inputAmount.token.address === config[chainIdToChain[this.chainId]].eth.address) {
             const idx = this.assets.indexOf(ZERO_ADDRESS);
             value = limits[idx];
         }
@@ -253,7 +245,7 @@ export class SwapLocal {
     }
 
     private to(): Address {
-        return AllNetworkConfigsKeyedOnChain[chainIdToChain[this.chainId]].data.balancer.v2.vaultAddress as Address;
+        return config[chainIdToChain[this.chainId]].balancer.v2.vaultAddress as Address;
     }
 
     /**

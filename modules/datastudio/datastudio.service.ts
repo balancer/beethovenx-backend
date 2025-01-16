@@ -13,7 +13,7 @@ import { isComposableStablePool, isWeightedPoolV2 } from '../pool/lib/pool-utils
 import { networkContext } from '../network/network-context.service';
 import { DeploymentEnv } from '../network/network-config-types';
 import { Chain } from '@prisma/client';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
+import config from '../../config';
 
 export class DatastudioService {
     constructor(private readonly secretsManager: SecretsManager, private readonly jwtClientHelper: GoogleJwtClient) {}
@@ -243,7 +243,7 @@ export class DatastudioService {
                 const tokenPrices = await tokenService.getTokenPrices(stake.chain);
                 const beetsPrice = tokenService.getPriceForToken(
                     tokenPrices,
-                    AllNetworkConfigsKeyedOnChain[chain].data.beets!.address,
+                    config[chain].beets?.address || '',
                     chain,
                 );
                 if (stake.farm) {

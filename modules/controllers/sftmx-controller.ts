@@ -14,9 +14,8 @@ import {
     GqlSftmxStakingData,
     GqlSftmxStakingSnapshot,
 } from '../../schema';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 
-const SFTMX_STACKINGCONTRACT = AllNetworkConfigsKeyedOnChain['FANTOM'].data.sftmx!.stakingContractAddress;
+const SFTMX_STACKINGCONTRACT = config['FANTOM'].sftmx!.stakingContractAddress;
 
 const getTimestampForRange = (range: GqlSftmxStakingSnapshotDataRange): number => {
     switch (range) {

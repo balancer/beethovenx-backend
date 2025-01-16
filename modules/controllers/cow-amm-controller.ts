@@ -13,12 +13,9 @@ import {
 import { syncSnapshots } from '../actions/snapshots/sync-snapshots';
 import { Chain, PrismaLastBlockSyncedCategory } from '@prisma/client';
 import { updateVolumeAndFees } from '../actions/pool/update-volume-and-fees';
-import moment from 'moment';
 import { syncBptBalancesFromSubgraph } from '../actions/user/bpt-balances/helpers/sync-bpt-balances-from-subgraph';
 import { getLastSyncedBlock, upsertLastSyncedBlock } from '../actions/pool/last-synced-block';
 import { updateLifetimeValues } from '../actions/pool/update-liftetime-values';
-import { AllNetworkConfigs, AllNetworkConfigsKeyedOnChain } from '../network/network-config';
-import { chainToChainId } from '../network/chain-id-to-chain';
 
 export function CowAmmController(tracer?: any) {
     const getSubgraphClient = (chain: Chain) => {
@@ -96,7 +93,7 @@ export function CowAmmController(tracer?: any) {
             let poolsToSync: string[] = [];
 
             if (fromBlock > 1) {
-                const rpcMaxBlockRange = AllNetworkConfigsKeyedOnChain[chain].data.rpcMaxBlockRange;
+                const rpcMaxBlockRange = config[chain].rpcMaxBlockRange;
                 const range = Number(toBlock) - fromBlock;
                 const numBatches = Math.ceil(range / rpcMaxBlockRange);
 

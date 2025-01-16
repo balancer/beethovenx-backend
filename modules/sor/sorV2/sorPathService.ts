@@ -14,7 +14,6 @@ import { PrismaPoolAndHookWithDynamic, prismaPoolAndHookWithDynamic } from '../.
 import { prisma } from '../../../prisma/prisma-client';
 import { GetSwapsInput, GetSwapsV2Input as GetSwapPathsInput, SwapResult, SwapService } from '../types';
 import { poolsToIgnore } from '../constants';
-import { AllNetworkConfigsKeyedOnChain } from '../../network/network-config';
 import { chainToChainId as chainToIdMap } from '../../network/chain-id-to-chain';
 import * as Sentry from '@sentry/node';
 import { Address, formatUnits } from 'viem';
@@ -41,6 +40,7 @@ import { PathWithAmount } from './lib/path';
 import { calculatePriceImpact, getInputAmount, getOutputAmount } from './lib/utils/helpers';
 import { SwapLocal } from './lib/swapLocal';
 import { Cache } from 'memory-cache';
+import config from '../../../config';
 
 class SorPathService implements SwapService {
     private cache = new Cache<string, PrismaPoolAndHookWithDynamic[]>();
@@ -247,7 +247,7 @@ class SorPathService implements SwapService {
             let updatedAmount: TokenAmount | undefined = undefined;
             if (queryFirst) {
                 try {
-                    queryOutput = await sdkSwap.query(AllNetworkConfigsKeyedOnChain[chain].data.rpcUrl);
+                    queryOutput = await sdkSwap.query(config[chain].rpcUrl);
                 } catch (error) {
                     throw new Error('SOR queryBatchSwap failed');
                 }
@@ -513,7 +513,7 @@ class SorPathService implements SwapService {
             return cached;
         }
 
-        const poolIdsToExclude = AllNetworkConfigsKeyedOnChain[chain].data.sor?.poolIdsToExclude ?? [];
+        const poolIdsToExclude = config[chain].sor?.poolIdsToExclude ?? [];
 
         const pools = await prisma.prismaPool.findMany({
             where: {

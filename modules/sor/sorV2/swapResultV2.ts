@@ -11,13 +11,13 @@ import { SwapResult } from '../types';
 import { poolService } from '../../pool/pool.service';
 import { BigNumber } from 'ethers';
 import { oldBnum } from '../../big-number/old-big-number';
-import { AllNetworkConfigsKeyedOnChain } from '../../network/network-config';
 import { formatFixed } from '@ethersproject/bignumber';
 import { replaceZeroAddressWithEth } from '../../web3/addresses';
 import { BatchSwapStep, SingleSwap, SwapKind, TokenAmount, ZERO_ADDRESS } from '@balancer/sdk';
 import { SwapLocal } from './lib/swapLocal';
 import { calculatePriceImpact } from './lib/utils/helpers';
 import { chainIdToChain } from '../../network/chain-id-to-chain';
+import config from '../../../config';
 
 export class SwapResultV2 implements SwapResult {
     private swap: SwapLocal | null;
@@ -45,7 +45,7 @@ export class SwapResultV2 implements SwapResult {
 
         if (!queryFirst) return this.mapResultToBeetsSwap(this.swap, this.swap.inputAmount, this.swap.outputAmount);
         else {
-            const rpcUrl = AllNetworkConfigsKeyedOnChain[this.chain].data.rpcUrl;
+            const rpcUrl = config[this.chain].rpcUrl;
             const updatedResult = await this.swap.query(rpcUrl);
 
             const inputAmount = this.swap.swapKind === SwapKind.GivenIn ? this.swap.inputAmount : updatedResult;
@@ -254,14 +254,10 @@ export class SwapResultV2 implements SwapResult {
             swapsCopy.reverse();
         }
         const assetInIndex = BigInt(
-            assets.indexOf(
-                assetIn === AllNetworkConfigsKeyedOnChain[this.chain].data.eth.address ? ZERO_ADDRESS : assetIn,
-            ),
+            assets.indexOf(assetIn === config[this.chain].eth.address ? ZERO_ADDRESS : assetIn),
         );
         const assetOutIndex = BigInt(
-            assets.indexOf(
-                assetOut === AllNetworkConfigsKeyedOnChain[this.chain].data.eth.address ? ZERO_ADDRESS : assetOut,
-            ),
+            assets.indexOf(assetOut === config[this.chain].eth.address ? ZERO_ADDRESS : assetOut),
         );
         let path: BatchSwapStep[];
         let paths: BatchSwapStep[][] = [];

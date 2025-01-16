@@ -14,7 +14,6 @@ import { cronsMetricPublisher } from '../../modules/metrics/metrics.client';
 import moment from 'moment';
 import { cronsDurationMetricPublisher } from '../../modules/metrics/cron-duration-metrics.client';
 import { syncLatestFXPrices } from '../../modules/token/latest-fx-price';
-import { AllNetworkConfigs, AllNetworkConfigsKeyedOnChain } from '../../modules/network/network-config';
 import { chainIdToChain } from '../../modules/network/chain-id-to-chain';
 import { Chain } from '@prisma/client';
 import {
@@ -32,6 +31,7 @@ import {
 import { updateVolumeAndFees } from '../../modules/actions/pool/update-volume-and-fees';
 import { TokenController } from '../../modules/controllers/token-controller';
 import { SubgraphMonitorController } from '../../modules/controllers/subgraph-monitor-controller';
+import config from '../../config';
 
 const runningJobs: Set<string> = new Set();
 
@@ -127,7 +127,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
             await runIfNotAlreadyRunning(
                 name,
                 chainId,
-                () => tokenService.updateTokenPrices(Object.keys(AllNetworkConfigsKeyedOnChain) as Chain[]),
+                () => tokenService.updateTokenPrices(Object.keys(config) as Chain[]),
                 res,
                 next,
             );
@@ -206,7 +206,6 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 name,
                 chainId,
                 () => {
-                    const chain = chainIdToChain[chainId];
                     return datastudioService.feedPoolData(chain);
                 },
                 res,
@@ -251,9 +250,7 @@ const setupJobHandlers = async (name: string, chainId: string, res: any, next: N
                 name,
                 chainId,
                 () => {
-                    const config = AllNetworkConfigs[chainId].data;
-                    const subgraphUrl = config.subgraphs.balancer;
-                    const chain = config.chain.prismaId;
+                    const subgraphUrl = config[chain].subgraphs.balancer;
                     return syncLatestFXPrices(subgraphUrl, chain);
                 },
                 res,

@@ -1,11 +1,11 @@
 import { tokenService } from '../token/token.service';
 import { Chain } from '@prisma/client';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 import { chainToChainId as chainToIdMap } from '../network/chain-id-to-chain';
 import { GqlSorGetSwapPaths, GqlSorGetSwapsResponse, GqlSorSwapType } from '../../schema';
 import { replaceZeroAddressWithEth } from '../web3/addresses';
 import { Address } from 'viem';
 import { Token, TokenAmount } from '@balancer/sdk';
+import config from '../../config';
 
 export async function getTokenAmountHuman(tokenAddr: string, humanAmount: string, chain: Chain): Promise<TokenAmount> {
     const token = await getToken(tokenAddr, chain);
@@ -24,12 +24,8 @@ export async function getTokenAmountRaw(tokenAddr: string, rawAmount: string, ch
  * @returns
  */
 export const getToken = async (tokenAddr: string, chain: Chain): Promise<Token> => {
-    if (tokenAddr === AllNetworkConfigsKeyedOnChain[chain].data.eth.address) {
-        return new Token(
-            parseFloat(chainToIdMap[chain]),
-            AllNetworkConfigsKeyedOnChain[chain].data.weth.address as Address,
-            18,
-        );
+    if (tokenAddr === config[chain].eth.address) {
+        return new Token(parseFloat(chainToIdMap[chain]), config[chain].weth.address as Address, 18);
     } else {
         const prismaToken = await tokenService.getToken(tokenAddr, chain);
         if (!prismaToken) throw Error(`Missing token from tokenService ${tokenAddr}`);

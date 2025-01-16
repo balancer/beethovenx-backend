@@ -4,9 +4,9 @@ import { isAdminRoute } from '../../../../modules/auth/auth-context';
 import { tokenService } from '../../../../modules/token/token.service';
 import { headerChain } from '../../../../modules/context/header-chain';
 import { syncLatestFXPrices } from '../../../../modules/token/latest-fx-price';
-import { AllNetworkConfigsKeyedOnChain } from '../../../../modules/network/network-config';
 import moment from 'moment';
 import { TokenController } from '../../../../modules/controllers/token-controller';
+import config from '../../../../config';
 
 const resolvers: Resolvers = {
     Query: {
@@ -190,7 +190,7 @@ const resolvers: Resolvers = {
         },
         tokenSyncLatestFxPrices: async (parent, { chain }, context) => {
             isAdminRoute(context);
-            const subgraphUrl = AllNetworkConfigsKeyedOnChain[chain].data.subgraphs.balancer;
+            const subgraphUrl = config[chain].subgraphs.balancer;
 
             await syncLatestFXPrices(subgraphUrl, chain);
 

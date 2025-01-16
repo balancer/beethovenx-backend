@@ -41,11 +41,11 @@ import {
     syncReliquaryStakingForPools,
 } from '../actions/pool/staking';
 import { MasterchefSubgraphService } from '../subgraphs/masterchef-subgraph/masterchef.service';
-import { AllNetworkConfigsKeyedOnChain } from '../network/network-config';
 import { GaugeSubgraphService } from '../subgraphs/gauge-subgraph/gauge-subgraph.service';
 import { deleteAuraStakingForAllPools, syncAuraStakingForPools } from '../actions/pool/staking/sync-aura-staking';
 import { AuraSubgraphService } from '../sources/subgraphs/aura/aura.service';
 import { syncVebalStakingForPools } from '../actions/pool/staking/sync-vebal-staking';
+import config from '../../config';
 
 export class PoolService {
     constructor(
@@ -168,33 +168,33 @@ export class PoolService {
      */
     public async syncStakingForPools(chains: Chain[]) {
         for (const chain of chains) {
-            const networkconfig = AllNetworkConfigsKeyedOnChain[chain];
-            if (networkconfig.data.subgraphs.masterchef) {
+            const networkconfig = config[chain];
+            if (networkconfig.subgraphs.masterchef) {
                 await syncMasterchefStakingForPools(
                     chain,
-                    new MasterchefSubgraphService(networkconfig.data.subgraphs.masterchef),
-                    networkconfig.data.masterchef?.excludedFarmIds || [],
-                    networkconfig.data.fbeets?.address || '',
-                    networkconfig.data.fbeets?.farmId || '',
-                    networkconfig.data.fbeets?.poolId || '',
+                    new MasterchefSubgraphService(networkconfig.subgraphs.masterchef),
+                    networkconfig.masterchef?.excludedFarmIds || [],
+                    networkconfig.fbeets?.address || '',
+                    networkconfig.fbeets?.farmId || '',
+                    networkconfig.fbeets?.poolId || '',
                 );
             }
-            if (networkconfig.data.subgraphs.reliquary) {
+            if (networkconfig.subgraphs.reliquary) {
                 await syncReliquaryStakingForPools(
                     chain,
-                    new ReliquarySubgraphService(networkconfig.data.subgraphs.reliquary),
-                    networkconfig.data.reliquary?.address || '',
-                    networkconfig.data.reliquary?.excludedFarmIds || [],
+                    new ReliquarySubgraphService(networkconfig.subgraphs.reliquary),
+                    networkconfig.reliquary?.address || '',
+                    networkconfig.reliquary?.excludedFarmIds || [],
                 );
             }
-            if (networkconfig.data.subgraphs.gauge && networkContext.data.bal?.address) {
+            if (networkconfig.subgraphs.gauge && networkContext.data.bal?.address) {
                 await syncGaugeStakingForPools(
-                    new GaugeSubgraphService(networkconfig.data.subgraphs.gauge),
+                    new GaugeSubgraphService(networkconfig.subgraphs.gauge),
                     networkContext.data.bal.address,
                 );
             }
-            if (networkconfig.data.subgraphs.aura) {
-                await syncAuraStakingForPools(chain, new AuraSubgraphService(networkconfig.data.subgraphs.aura));
+            if (networkconfig.subgraphs.aura) {
+                await syncAuraStakingForPools(chain, new AuraSubgraphService(networkconfig.subgraphs.aura));
             }
 
             if (chain === 'MAINNET') {

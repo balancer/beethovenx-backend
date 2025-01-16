@@ -514,7 +514,7 @@ export type FactoryFragment = {
     id: string;
     type: PoolType;
     version: number;
-    pools?: Array<{ __typename?: 'Pool'; id: string; address: string }> | null;
+    pools?: Array<{ __typename?: 'Pool'; id: string; address: string }> | null | undefined;
 };
 
 export type TypePoolFragment = {
@@ -522,17 +522,17 @@ export type TypePoolFragment = {
     id: string;
     address: string;
     factory: { __typename?: 'Factory'; id: string; type: PoolType; version: number };
-    stableParams?: { __typename?: 'StableParams'; amp: string } | null;
-    weightedParams?: { __typename?: 'WeightedParams'; weights: Array<string> } | null;
+    stableParams?: { __typename?: 'StableParams'; amp: string } | null | undefined;
+    weightedParams?: { __typename?: 'WeightedParams'; weights: Array<string> } | null | undefined;
 };
 
 export type PoolsQueryVariables = Exact<{
-    skip?: InputMaybe<Scalars['Int']>;
-    first?: InputMaybe<Scalars['Int']>;
-    orderBy?: InputMaybe<Pool_OrderBy>;
-    orderDirection?: InputMaybe<OrderDirection>;
-    where?: InputMaybe<Pool_Filter>;
-    block?: InputMaybe<Block_Height>;
+    skip?: Maybe<Scalars['Int']>;
+    first?: Maybe<Scalars['Int']>;
+    orderBy?: Maybe<Pool_OrderBy>;
+    orderDirection?: Maybe<OrderDirection>;
+    where?: Maybe<Pool_Filter>;
+    block?: Maybe<Block_Height>;
 }>;
 
 export type PoolsQuery = {
@@ -542,8 +542,8 @@ export type PoolsQuery = {
         id: string;
         address: string;
         factory: { __typename?: 'Factory'; id: string; type: PoolType; version: number };
-        stableParams?: { __typename?: 'StableParams'; amp: string } | null;
-        weightedParams?: { __typename?: 'WeightedParams'; weights: Array<string> } | null;
+        stableParams?: { __typename?: 'StableParams'; amp: string } | null | undefined;
+        weightedParams?: { __typename?: 'WeightedParams'; weights: Array<string> } | null | undefined;
     }>;
 };
 
@@ -601,10 +601,9 @@ export const PoolsDocument = gql`
 export type SdkFunctionWrapper = <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>,
     operationName: string,
-    operationType?: string,
 ) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
     return {
@@ -616,7 +615,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
                         ...wrappedRequestHeaders,
                     }),
                 'Pools',
-                'query',
             );
         },
     };
