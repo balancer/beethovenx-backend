@@ -21,7 +21,7 @@ export const getV3JoinedSubgraphClient = (vaultSubgraphUrl: string, poolsSubgrap
             const vaultPoolsMap = vaultPools.reduce((acc, pool) => {
                 acc[pool.id] = pool;
                 return acc;
-            }, {} as Record<string, typeof vaultPools[0]>);
+            }, {} as Record<string, (typeof vaultPools)[0]>);
             const vaultPoolIds = Object.keys(vaultPoolsMap);
             const pools = await poolsSubgraphClient.getAllPools({ id_in: vaultPoolIds });
             return pools.map((pool) => ({

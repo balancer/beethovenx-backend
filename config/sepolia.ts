@@ -62,11 +62,14 @@ export default <NetworkData>{
         },
     },
     hooks: {
-        lotteryHook: ['0x2d8d157fd6cf773624d97808d77081ee45caa7d4'],
+        lotteryHook: ['0x2d8d157fd6cf773624d97808d77081ee45caa7d4', '0x3c194f14527b4e02b0d09274eca72ccb67613fac'],
         feeTakinghook: ['0xbb1761af481364a6bd7fdbdb8cfa23abd85f0263'],
         exitFeeHook: ['0xea672a54f0aa38fc5f0a1a481467bebfe3c71046'],
         stableSurgeHook: ['0x1adc55adb4caae71abb4c33f606493f4114d2091'],
-        veBALFeeDiscountHook: ['0xedb47231a12bdf64b8d951ded3351128f95b7e80'],
+        veBALFeeDiscountHook: [
+            '0xedb47231a12bdf64b8d951ded3351128f95b7e80',
+            '0x4b8540ae9f341656dcb7959c2abd8830f3d95738',
+        ],
         directionalFeeHook: ['0xd68372e85d8a14afa5fdb3d506bf765939aaf382'],
         nftLiquidityPositionHook: ['0xd06dd26c7209cfe0752725f068299be69a7c9549'],
     },
