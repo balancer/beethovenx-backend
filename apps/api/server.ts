@@ -36,11 +36,9 @@ const configureMiddlewares = (app: express.Express) => {
 };
 
 const configureApolloServer = async (httpServer: http.Server, app: express.Express) => {
-    const plugins = [
-        ApolloServerPluginDrainHttpServer({ httpServer }),
-        ApolloServerPluginLandingPageLocalDefault(),
-        apolloSentryPlugin,
-    ];
+    const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), apolloSentryPlugin];
+
+    if (env.NODE_ENV !== 'production') plugins.push(ApolloServerPluginLandingPageLocalDefault());
 
     if (process.env.APOLLO_SCHEMA_REPORTING === 'true') {
         plugins.push(
