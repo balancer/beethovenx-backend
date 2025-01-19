@@ -117,12 +117,12 @@ export default <NetworkData>{
             },
         },
         defaultHandlers: {
-            sAVAX: {
-                tokenAddress: '0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be',
-                sourceUrl: 'https://api.benqi.fi/liquidstaking/apr',
-                path: 'apr',
-                scale: 1,
-            },
+            // sAVAX: {
+            //     tokenAddress: '0x2b2c81e08f1af8835a78bb2a90ae924ace0ea4be',
+            //     sourceUrl: 'https://api.benqi.fi/liquidstaking/apr',
+            //     path: 'apr',
+            //     scale: 1,
+            // },
             yyAVAX: {
                 tokenAddress: '0xf7d9281e8e363584973f946201b82ba72c965d27',
                 sourceUrl: 'https://staging-api.yieldyak.com/yyavax',
