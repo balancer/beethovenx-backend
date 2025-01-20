@@ -1,5 +1,24 @@
 # backend
 
+## 1.29.0
+
+### Minor Changes
+
+-   628235a: apollo v4
+
+### Patch Changes
+
+-   0052e91: add graphql-tag
+-   45f5127: temp disable savax
+-   36939bb: disable apollo default explorer on prod
+-   a5223df: add v3 jobs to sonic
+-   5bd786e: more hook addresses
+-   9e90ebe: remove beetswars apr from fantom
+-   b3b0f10: SOR - Assert behavior for tokens with 0 decimals
+-   18abe26: sepolia hooks config
+-   1455479: remove dependency to AllNetworkConfigsKeyedOnChain
+-   896cca6: SOR - Add StablePool for Balancer v2
+
 ## 1.28.2
 
 ### Patch Changes
