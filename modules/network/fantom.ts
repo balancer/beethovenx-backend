@@ -26,7 +26,6 @@ export const fantomNetworkConfig: NetworkConfig = {
         new SwapFeeAprService(),
         new MasterchefFarmAprService(fantomNetworkData.beets!.address),
         new ReliquaryFarmAprService(fantomNetworkData.beets!.address),
-        new BeetswarsGaugeVotingAprService(),
     ],
     userStakedBalanceServices: [
         new UserSyncMasterchefFarmBalanceService(
