@@ -1,4 +1,4 @@
-import { Address, Hex, parseEther } from 'viem';
+import { Address, Hex, parseEther, parseUnits } from 'viem';
 import { MAX_UINT256, SwapKind, Token, TokenAmount, WAD } from '@balancer/sdk';
 import { AddKind, RemoveKind, Vault, Weighted, WeightedState, HookState } from '@balancer-labs/balancer-maths';
 import { Chain } from '@prisma/client';
@@ -38,7 +38,10 @@ export class WeightedPoolV3 implements BasePoolV3 {
     private vault: Vault;
     private poolState: WeightedState;
 
-    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): WeightedPoolV3 {
+    static fromPrismaPool(
+        pool: PrismaPoolAndHookWithDynamic,
+        underlyingTokens: { address: string; decimals: number }[],
+    ): WeightedPoolV3 {
         const poolTokens: WeightedPoolToken[] = [];
 
         if (!pool.dynamicData) {
@@ -60,6 +63,13 @@ export class WeightedPoolV3 implements BasePoolV3 {
             const scale18 = parseEther(poolToken.balance);
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
             if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
+                const underlyingToken = underlyingTokens.find(
+                    (token) => token.address === poolToken.token.underlyingTokenAddress,
+                );
+                if (!underlyingToken) {
+                    throw new Error('Underlying token not found');
+                }
+                const unwrapRateDecimals = 18 - poolToken.token.decimals + underlyingToken.decimals;
                 // erc4626 token
                 poolTokens.push(
                     new WeightedErc4626PoolToken(
@@ -67,7 +77,7 @@ export class WeightedPoolV3 implements BasePoolV3 {
                         tokenAmount.amount,
                         poolToken.index,
                         parseEther(poolToken.priceRate),
-                        parseEther(poolToken.token.unwrapRate),
+                        parseUnits(poolToken.token.unwrapRate, unwrapRateDecimals),
                         poolToken.token.underlyingTokenAddress,
                         parseEther(poolToken.weight),
                     ),

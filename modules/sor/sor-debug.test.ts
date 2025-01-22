@@ -46,9 +46,9 @@ describe('sor debugging', () => {
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', chainId);
         // only do once before starting to debug
-        await PoolController().reloadPoolsV3(chain);
-        await TokenController().syncErc4626Tokens(chain);
-        await TokenController().syncErc4626UnwrapRates(chain);
+        // await PoolController().reloadPoolsV3(chain);
+        // await TokenController().syncErc4626Tokens(chain);
+        // await TokenController().syncErc4626UnwrapRates(chain);
 
         // to update liquidity values, first update the token prices through a mutation
         // yarn dev; yarn mutation 'tokenReloadTokenPrices(chains: [MAINNET])' 1
@@ -57,9 +57,9 @@ describe('sor debugging', () => {
         const swaps = await sorService.getSorSwapPaths({
             chain,
             tokenIn: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
-            tokenOut: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+            tokenOut: '0x7204b7dbf9412567835633b6f00c3edc3a8d6330', // csUSDC
             swapType: 'EXACT_IN',
-            swapAmount: '100',
+            swapAmount: '1000',
             useProtocolVersion,
             // poolIds: ['0x10a04efba5b880e169920fd4348527c64fb29d4d'], // boosted
         });

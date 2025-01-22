@@ -23,6 +23,7 @@ export async function sorGetPathsWithPools(
     swapKind: SwapKind,
     swapAmountEvm: bigint,
     prismaPools: PrismaPoolAndHookWithDynamic[],
+    underlyingTokens: { address: string; decimals: number }[],
     protocolVersion: number,
     swapOptions?: Omit<SorSwapOptions, 'graphTraversalConfig.poolIdsToInclude'>,
 ): Promise<PathWithAmount[] | null> {
@@ -39,7 +40,7 @@ export async function sorGetPathsWithPools(
                     if (prismaPool.protocolVersion === 2) {
                         basePools.push(WeightedPool.fromPrismaPool(prismaPool));
                     } else {
-                        basePools.push(WeightedPoolV3.fromPrismaPool(prismaPool));
+                        basePools.push(WeightedPoolV3.fromPrismaPool(prismaPool, underlyingTokens));
                     }
                 }
                 break;
@@ -51,7 +52,7 @@ export async function sorGetPathsWithPools(
                 // Since we allowed all the pools, we started getting BAL#322 errors
                 // Enabling pools one by one until we find the issue
                 if (protocolVersion === 3) {
-                    basePools.push(StablePoolV3.fromPrismaPool(prismaPool));
+                    basePools.push(StablePoolV3.fromPrismaPool(prismaPool, underlyingTokens));
                 } else {
                     if (
                         [

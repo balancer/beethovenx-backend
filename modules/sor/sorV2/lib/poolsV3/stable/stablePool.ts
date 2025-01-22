@@ -39,7 +39,10 @@ export class StablePoolV3 implements BasePoolV3 {
     private vault: Vault;
     private poolState: StableState;
 
-    static fromPrismaPool(pool: PrismaPoolAndHookWithDynamic): StablePoolV3 {
+    static fromPrismaPool(
+        pool: PrismaPoolAndHookWithDynamic,
+        underlyingTokens: { address: string; decimals: number }[],
+    ): StablePoolV3 {
         const poolTokens: StablePoolToken[] = [];
 
         if (!pool.dynamicData) throw new Error('Stable pool has no dynamic data');
@@ -57,13 +60,20 @@ export class StablePoolV3 implements BasePoolV3 {
             const tokenAmount = TokenAmount.fromScale18Amount(token, scale18);
 
             if (poolToken.token.underlyingTokenAddress && poolToken.token.isBufferAllowed) {
+                const underlyingToken = underlyingTokens.find(
+                    (token) => token.address === poolToken.token.underlyingTokenAddress,
+                );
+                if (!underlyingToken) {
+                    throw new Error('Underlying token not found');
+                }
+                const unwrapRateDecimals = 18 - poolToken.token.decimals + underlyingToken.decimals;
                 poolTokens.push(
                     new Erc4626PoolToken(
                         token,
                         tokenAmount.amount,
                         poolToken.index,
                         parseEther(poolToken.priceRate),
-                        parseEther(poolToken.token.unwrapRate),
+                        parseUnits(poolToken.token.unwrapRate, unwrapRateDecimals),
                         poolToken.token.underlyingTokenAddress,
                     ),
                 );

@@ -55,6 +55,7 @@ class SorPathService implements SwapService {
 
         try {
             const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, false);
+            const underlyingTokens = await this.getUnderlyingTokensFromDBPools(poolsFromDb, chain);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -76,6 +77,7 @@ class SorPathService implements SwapService {
                 swapKind,
                 swapAmount.amount,
                 poolsFromDb,
+                underlyingTokens,
                 protocolVersion,
                 config,
             );
@@ -161,6 +163,7 @@ class SorPathService implements SwapService {
     ): Promise<PathWithAmount[] | null> {
         try {
             const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks, poolIds);
+            const underlyingTokens = await this.getUnderlyingTokensFromDBPools(poolsFromDb, chain);
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -182,6 +185,7 @@ class SorPathService implements SwapService {
                 swapKind,
                 swapAmount.amount,
                 poolsFromDb,
+                underlyingTokens,
                 protocolVersion,
                 config,
             );
@@ -566,6 +570,31 @@ class SorPathService implements SwapService {
             10 * 1000,
         );
         return allPools;
+    }
+
+    private async getUnderlyingTokensFromDBPools(
+        pools: PrismaPoolAndHookWithDynamic[],
+        chain: Chain,
+    ): Promise<{ address: string; decimals: number }[]> {
+        const underlyingTokenAddresses = pools
+            .flatMap((pool) => pool.tokens.map((token) => token.token.underlyingTokenAddress))
+            .filter((address) => address !== null);
+        const underlyingTokens = await prisma.prismaToken.findMany({
+            where: {
+                chain,
+                address: {
+                    in: underlyingTokenAddresses,
+                },
+            },
+        });
+        if (underlyingTokens.length !== underlyingTokenAddresses.length) {
+            underlyingTokenAddresses.forEach((address) => {
+                if (!underlyingTokens.find((token) => token.address === address)) {
+                    console.warn('Underlying token not found for pool', address);
+                }
+            });
+        }
+        return underlyingTokens;
     }
 
     private mapRoutes(paths: PathWithAmount[], pools: GqlPoolMinimal[]): GqlSorSwapRoute[] {
