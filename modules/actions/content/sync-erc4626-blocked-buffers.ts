@@ -6,7 +6,7 @@ export const syncBlockedBuffers = async (): Promise<void> => {
     const blockedBuffers = await getBlockedBuffers();
 
     for (const chainId in blockedBuffers) {
-        const blockedBuffersForErc4626Addresses = blockedBuffers[chainId];
+        const blockedBuffersForErc4626Addresses = blockedBuffers[chainId].map((address) => address.toLowerCase());
         const chain = chainIdToChain[chainId];
         await prisma.$transaction([
             prisma.prismaToken.updateMany({
