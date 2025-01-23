@@ -43,7 +43,10 @@ import { Cache } from 'memory-cache';
 import config from '../../../config';
 
 class SorPathService implements SwapService {
-    private cache = new Cache<string, PrismaPoolAndHookWithDynamic[]>();
+    private cache = new Cache<
+        string,
+        { pools: PrismaPoolAndHookWithDynamic[]; underlyingTokens: { address: string; decimals: number }[] }
+    >();
     private readonly SOR_POOLS_CACHE_KEY = `sor:pools`;
 
     // This is only used for the old SOR service
@@ -54,8 +57,11 @@ class SorPathService implements SwapService {
         const protocolVersion = 2;
 
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, false);
-            const underlyingTokens = await this.getUnderlyingTokensFromDBPools(poolsFromDb, chain);
+            const { pools: poolsFromDb, underlyingTokens } = await this.getBasePoolsFromDb(
+                chain,
+                protocolVersion,
+                false,
+            );
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -162,8 +168,12 @@ class SorPathService implements SwapService {
         maxNonBoostedPathDepth = 4,
     ): Promise<PathWithAmount[] | null> {
         try {
-            const poolsFromDb = await this.getBasePoolsFromDb(chain, protocolVersion, considerPoolsWithHooks, poolIds);
-            const underlyingTokens = await this.getUnderlyingTokensFromDBPools(poolsFromDb, chain);
+            const { pools: poolsFromDb, underlyingTokens } = await this.getBasePoolsFromDb(
+                chain,
+                protocolVersion,
+                considerPoolsWithHooks,
+                poolIds,
+            );
             const tIn = await getToken(tokenIn as Address, chain);
             const tOut = await getToken(tokenOut as Address, chain);
             const swapKind = this.mapSwapTypeToSwapKind(swapType);
@@ -482,7 +492,7 @@ class SorPathService implements SwapService {
         protocolVersion: number,
         considerPoolsWithHooks: boolean,
         poolIds?: string[],
-    ): Promise<PrismaPoolAndHookWithDynamic[]> {
+    ): Promise<{ pools: PrismaPoolAndHookWithDynamic[]; underlyingTokens: { address: string; decimals: number }[] }> {
         const type = {
             in: [
                 'WEIGHTED',
@@ -498,7 +508,7 @@ class SorPathService implements SwapService {
         };
 
         if (poolIds && poolIds.length > 0) {
-            return await prisma.prismaPool.findMany({
+            const pools = await prisma.prismaPool.findMany({
                 where: {
                     id: { in: poolIds },
                     chain,
@@ -507,6 +517,8 @@ class SorPathService implements SwapService {
                 },
                 include: prismaPoolAndHookWithDynamic.include,
             });
+            const underlyingTokens = await this.getUnderlyingTokensFromDBPools(pools, chain);
+            return { pools, underlyingTokens };
         }
 
         const cached = this.cache.get(
@@ -563,13 +575,16 @@ class SorPathService implements SwapService {
 
         const allPools = [...pools, ...lbps];
 
+        const underlyingTokens = await this.getUnderlyingTokensFromDBPools(allPools, chain);
+        const result = { pools, underlyingTokens };
+
         // cache for 10s
         this.cache.put(
             `${this.SOR_POOLS_CACHE_KEY}:${chain}:${protocolVersion}:${considerPoolsWithHooks}`,
-            allPools,
+            result,
             10 * 1000,
         );
-        return allPools;
+        return result;
     }
 
     private async getUnderlyingTokensFromDBPools(
