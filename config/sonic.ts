@@ -76,7 +76,7 @@ export default <NetworkData>{
             token: '0xe5da20f15420ad15de0fa650600afc998bbe3955',
         },
         beefy: {
-            sourceUrl: 'https://api.beefy.finance/apy/breakdown?_=',
+            sourceUrl: 'https://api.beefy.finance/apy/',
             tokens: {
                 'silov2-usdc': {
                     address: '0x7870ddfd5aca4e977b2287e9a212bcbe8fc4135a',

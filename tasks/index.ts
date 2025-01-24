@@ -17,6 +17,7 @@ import { chainIdToChain } from '../modules/network/chain-id-to-chain';
 
 import { backsyncSwaps } from './subgraph-syncing/backsync-swaps';
 import { poolService } from '../modules/pool/pool.service';
+import { initRequestScopedContext, setRequestScopedContextValue } from '../modules/context/request-scoped-context';
 
 // TODO needed?
 const sftmxController = SftmxController();
@@ -136,6 +137,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
     } else if (job === 'sync-sts-data') {
         return StakedSonicController().syncSonicStakingData();
     } else if (job === 'sync-pool-aprs') {
+        initRequestScopedContext();
+        setRequestScopedContextValue('chainId', chainId);
         return poolService.updatePoolAprs(chain);
     }
     // Maintenance

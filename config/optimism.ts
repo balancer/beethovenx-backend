@@ -103,7 +103,7 @@ export default <NetworkData>{
             },
         },
         beefy: {
-            sourceUrl: 'https://api.beefy.finance/apy/breakdown?_=',
+            sourceUrl: 'https://api.beefy.finance/apy/',
             tokens: {
                 wmooExactlySupplyUSDC: {
                     address: '0xe5e9168b45a90c1e5730da6184cc5901c6e4353f',
