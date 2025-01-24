@@ -15,7 +15,7 @@ export class BeefyAprHandler implements AprHandler {
 
     constructor(config: BeefyAprConfig) {
         this.tokens = config.tokens;
-        this.sourceUrl = config.sourceUrl;
+        this.sourceUrl = 'https://api.beefy.finance/apy';
     }
 
     async getAprs() {
