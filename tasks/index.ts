@@ -134,6 +134,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         return PoolController().syncHookData(chain);
     } else if (job === 'sync-sts-data') {
         return StakedSonicController().syncSonicStakingData();
+    } else if (job === 'sync-pool-aprs') {
+        return poolService.updatePoolAprs(chain);
     }
     // Maintenance
     else if (job === 'sync-fx-quote-tokens') {

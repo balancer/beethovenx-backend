@@ -105,4 +105,8 @@ describe('pool controller debugging', () => {
 
         console.log(pool.staking?.gauge?.rewards);
     }, 5000000);
+
+    it('sync apr', async () => {
+        await poolService.updatePoolAprs('SONIC');
+    }, 5000000);
 });
