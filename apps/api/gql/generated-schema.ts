@@ -1579,6 +1579,8 @@ export interface GqlPoolTokenDetail {
     isBufferAllowed: Scalars['Boolean'];
     /** Whether the token is considered an ERC4626 token. */
     isErc4626: Scalars['Boolean'];
+    /** Whether the token is exempted from taking a protocol yield fee. */
+    isExemptFromProtocolYieldFee: Scalars['Boolean'];
     /** Token logo */
     logoURI?: Maybe<Scalars['String']>;
     /** Name of the pool token. */
@@ -4587,6 +4589,7 @@ export type GqlPoolTokenDetailResolvers<
     isAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     isBufferAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     isErc4626?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+    isExemptFromProtocolYieldFee?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
     logoURI?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     nestedPool?: Resolver<Maybe<ResolversTypes['GqlNestedPool']>, ParentType, ContextType>;

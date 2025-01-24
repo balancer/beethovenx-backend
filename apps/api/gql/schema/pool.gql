@@ -1299,6 +1299,10 @@ type GqlPoolTokenDetail {
     """
     isErc4626: Boolean!
     """
+    Whether the token is exempted from taking a protocol yield fee.
+    """
+    isExemptFromProtocolYieldFee: Boolean!
+    """
     If it is an ERC4626, this will be the underlying token if present in the API.
     """
     underlyingToken: GqlToken

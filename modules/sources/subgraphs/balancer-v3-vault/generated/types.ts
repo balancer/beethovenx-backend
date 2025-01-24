@@ -1104,6 +1104,8 @@ export type PoolToken = {
     balance: Scalars['BigDecimal'];
     /** Buffer associated with this token, if any */
     buffer?: Maybe<Buffer>;
+    /** Protocol fees available for withdrawal from the Controlller */
+    controllerProtocolFeeBalance: Scalars['BigDecimal'];
     /** Number of decimal places for the token */
     decimals: Scalars['Int'];
     /** Unique identifier for the PoolToken */
@@ -1130,6 +1132,10 @@ export type PoolToken = {
     totalProtocolYieldFee: Scalars['BigDecimal'];
     /** Total swap fees collected for this token */
     totalSwapFee: Scalars['BigDecimal'];
+    /** Protocol swap fees pending collection in the Vault */
+    vaultProtocolSwapFeeBalance: Scalars['BigDecimal'];
+    /** Protocol yield fees pending collection in the Vault */
+    vaultProtocolYieldFeeBalance: Scalars['BigDecimal'];
     /** Total volume of this token traded in the Pool */
     volume: Scalars['BigDecimal'];
 };
@@ -1177,6 +1183,14 @@ export type PoolToken_Filter = {
     buffer_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
     buffer_starts_with?: InputMaybe<Scalars['String']>;
     buffer_starts_with_nocase?: InputMaybe<Scalars['String']>;
+    controllerProtocolFeeBalance?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_gt?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_gte?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    controllerProtocolFeeBalance_lt?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_lte?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_not?: InputMaybe<Scalars['BigDecimal']>;
+    controllerProtocolFeeBalance_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     decimals?: InputMaybe<Scalars['Int']>;
     decimals_gt?: InputMaybe<Scalars['Int']>;
     decimals_gte?: InputMaybe<Scalars['Int']>;
@@ -1330,6 +1344,22 @@ export type PoolToken_Filter = {
     totalSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
     totalSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
     totalSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    vaultProtocolSwapFeeBalance?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_gt?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_gte?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    vaultProtocolSwapFeeBalance_lt?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_lte?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_not?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolSwapFeeBalance_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    vaultProtocolYieldFeeBalance?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_gt?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_gte?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    vaultProtocolYieldFeeBalance_lt?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_lte?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_not?: InputMaybe<Scalars['BigDecimal']>;
+    vaultProtocolYieldFeeBalance_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
     volume?: InputMaybe<Scalars['BigDecimal']>;
     volume_gt?: InputMaybe<Scalars['BigDecimal']>;
     volume_gte?: InputMaybe<Scalars['BigDecimal']>;
@@ -1348,6 +1378,7 @@ export enum PoolToken_OrderBy {
     BufferTotalShares = 'buffer__totalShares',
     BufferUnderlyingBalance = 'buffer__underlyingBalance',
     BufferWrappedBalance = 'buffer__wrappedBalance',
+    ControllerProtocolFeeBalance = 'controllerProtocolFeeBalance',
     Decimals = 'decimals',
     Id = 'id',
     Index = 'index',
@@ -1403,6 +1434,8 @@ export enum PoolToken_OrderBy {
     TotalProtocolSwapFee = 'totalProtocolSwapFee',
     TotalProtocolYieldFee = 'totalProtocolYieldFee',
     TotalSwapFee = 'totalSwapFee',
+    VaultProtocolSwapFeeBalance = 'vaultProtocolSwapFeeBalance',
+    VaultProtocolYieldFeeBalance = 'vaultProtocolYieldFeeBalance',
     Volume = 'volume',
 }
 
@@ -2146,6 +2179,7 @@ export enum RateProvider_OrderBy {
     Token = 'token',
     TokenAddress = 'token__address',
     TokenBalance = 'token__balance',
+    TokenControllerProtocolFeeBalance = 'token__controllerProtocolFeeBalance',
     TokenDecimals = 'token__decimals',
     TokenId = 'token__id',
     TokenIndex = 'token__index',
@@ -2157,6 +2191,8 @@ export enum RateProvider_OrderBy {
     TokenTotalProtocolSwapFee = 'token__totalProtocolSwapFee',
     TokenTotalProtocolYieldFee = 'token__totalProtocolYieldFee',
     TokenTotalSwapFee = 'token__totalSwapFee',
+    TokenVaultProtocolSwapFeeBalance = 'token__vaultProtocolSwapFeeBalance',
+    TokenVaultProtocolYieldFeeBalance = 'token__vaultProtocolYieldFeeBalance',
     TokenVolume = 'token__volume',
 }
 

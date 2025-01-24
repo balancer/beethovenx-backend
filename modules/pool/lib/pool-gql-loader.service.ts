@@ -852,6 +852,7 @@ export class PoolGqlLoaderService {
                 (type) => type.type === 'WHITE_LISTED' || type.type === 'PHANTOM_BPT' || type.type === 'BPT',
             ),
             isErc4626: poolToken.token.types.some((type) => type.type === 'ERC4626'),
+            isExemptFromProtocolYieldFee: poolToken.exemptFromProtocolYieldFee,
             scalingFactor: poolToken.scalingFactor,
             tradable: !poolToken.token.types.find((type) => type.type === 'PHANTOM_BPT' || type.type === 'BPT'),
             chain: poolToken.chain,

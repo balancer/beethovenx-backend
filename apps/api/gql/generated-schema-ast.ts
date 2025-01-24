@@ -2271,6 +2271,11 @@ export const schema = gql`
         isErc4626: Boolean!
 
         """
+        Whether the token is exempted from taking a protocol yield fee.
+        """
+        isExemptFromProtocolYieldFee: Boolean!
+
+        """
         Token logo
         """
         logoURI: String
