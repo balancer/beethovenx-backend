@@ -16,6 +16,7 @@ import {
 import { chainIdToChain } from '../modules/network/chain-id-to-chain';
 
 import { backsyncSwaps } from './subgraph-syncing/backsync-swaps';
+import { poolService } from '../modules/pool/pool.service';
 
 // TODO needed?
 const sftmxController = SftmxController();
