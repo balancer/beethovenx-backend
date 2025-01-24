@@ -60,7 +60,6 @@ export interface AaveAprConfig {
 }
 
 export interface BeefyAprConfig {
-    sourceUrl: string;
     tokens: {
         [tokenName: string]: {
             address: string;
