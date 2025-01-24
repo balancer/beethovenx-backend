@@ -12,7 +12,7 @@ export default <NetworkData>{
     },
     subgraphs: {
         startDate: '2024-12-12',
-        balancer: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmZtPVQPhdi9jAF1JHZYji6cQUHmWE1XYQJagB6ngioJdu`,
+        balancer: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmW3NWk8gTu3d1uyfmb3FBK3WjXCbkukWk4bmx8Ad1ccEy`,
         balancerV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmR1ZDqDUyXih88ytCdaK3hV4ynrJJWst8UjeTg82PGwAf`,
         balancerPoolsV3: `https://gateway.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmYWPJm4DKCu9qg3uFoTMGzQGfhKZHE55kKjYCwHJv9TYL`,
         blocks: `https://gateway-arbitrum.network.thegraph.com/api/${env.THEGRAPH_API_KEY_FANTOM}/deployments/id/QmZYZcSMaGY2rrq8YFP9avicWf2GM8R2vpB2Xuap1WhipT`,
