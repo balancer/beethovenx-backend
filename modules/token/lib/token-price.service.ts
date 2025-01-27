@@ -16,12 +16,14 @@ import { SwapsPriceHandlerService } from './token-price-handlers/swaps-price-han
 import { PrismaTokenWithTypes } from '../../../prisma/prisma-types';
 import { AavePriceHandlerService } from './token-price-handlers/aave-price-handler.service';
 import { MorphoPriceHandlerService } from './token-price-handlers/morpho-price-handler.service';
+import { RektTokensHandlerService } from './token-price-handlers/rekt-tokens-handler.service';
 import config from '../../../config';
 import { BeetsPriceHandlerService } from './token-price-handlers/beets-price-handler.service';
 
 export class TokenPriceService {
     cache: CacheClass<string, any> = new Cache<string, any>();
     private readonly priceHandlers: TokenPriceHandler[] = [
+        new RektTokensHandlerService(),
         new FbeetsPriceHandlerService(),
         new BeetsPriceHandlerService(),
         new ClqdrPriceHandlerService(),
