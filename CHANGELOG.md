@@ -1,5 +1,14 @@
 # backend
 
+## 1.29.1
+
+### Patch Changes
+
+-   1848cec: add beefy apr handler
+-   0c7924b: rekt token pricing to 0
+-   e1c0170: expose exempt from yield fee
+-   43b8dea: SOR - Fix buffer unwrapRate scaling
+
 ## 1.29.0
 
 ### Minor Changes
