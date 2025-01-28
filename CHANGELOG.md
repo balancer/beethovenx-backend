@@ -1,5 +1,12 @@
 # backend
 
+## 1.29.3
+
+### Patch Changes
+
+-   3f534d2: add silo apr handler
+-   338311f: SOR - Fix LBPs not being picked up
+
 ## 1.29.2
 
 ### Patch Changes
