@@ -1,5 +1,12 @@
 # backend
 
+## 1.29.2
+
+### Patch Changes
+
+-   ed867e5: add generalized erc4626 price handler
+-   9d1a4b3: v3 on base and arbitrum
+
 ## 1.29.1
 
 ### Patch Changes
