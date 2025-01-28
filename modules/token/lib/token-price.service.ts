@@ -19,11 +19,13 @@ import { MorphoPriceHandlerService } from './token-price-handlers/morpho-price-h
 import { RektTokensHandlerService } from './token-price-handlers/rekt-tokens-handler.service';
 import config from '../../../config';
 import { BeetsPriceHandlerService } from './token-price-handlers/beets-price-handler.service';
+import { ERC4626PriceHandlerService } from './token-price-handlers/erc4626-price-handler.service';
 
 export class TokenPriceService {
     cache: CacheClass<string, any> = new Cache<string, any>();
     private readonly priceHandlers: TokenPriceHandler[] = [
         new RektTokensHandlerService(),
+        new ERC4626PriceHandlerService(),
         new FbeetsPriceHandlerService(),
         new BeetsPriceHandlerService(),
         new ClqdrPriceHandlerService(),

@@ -18,6 +18,7 @@ import { chainIdToChain } from '../modules/network/chain-id-to-chain';
 import { backsyncSwaps } from './subgraph-syncing/backsync-swaps';
 import { poolService } from '../modules/pool/pool.service';
 import { initRequestScopedContext, setRequestScopedContextValue } from '../modules/context/request-scoped-context';
+import { tokenService } from '../modules/token/token.service';
 
 // TODO needed?
 const sftmxController = SftmxController();
@@ -140,6 +141,8 @@ async function run(job: string = process.argv[2], chainId: string = process.argv
         initRequestScopedContext();
         setRequestScopedContextValue('chainId', chainId);
         return poolService.updatePoolAprs(chain);
+    } else if (job === 'update-prices') {
+        return tokenService.updateTokenPrices([chain]);
     }
     // Maintenance
     else if (job === 'sync-fx-quote-tokens') {

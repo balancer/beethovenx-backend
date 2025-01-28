@@ -17,14 +17,14 @@ describe('Token service', () => {
         await tokenService.updateTokenPrices(['SONIC']);
         const prices = await tokenService.getCurrentTokenPrices(['SONIC']);
 
-        console.log(prices.find((price) => price.tokenAddress === '0x2d0e0814e62d80056181f5cd932274405966e4f0'));
+        console.log(prices.find((price) => price.tokenAddress === '0x541fd749419ca806a8bc7da8ac23d346f2df8b77'));
     }, 500000);
 
     test('sync tokens from pool tokens', async () => {
         initRequestScopedContext();
-        setRequestScopedContextValue('chainId', '34443');
-        await tokenService.syncTokenContentData();
-    });
+        setRequestScopedContextValue('chainId', '146');
+        await tokenService.syncTokenContentData('SONIC');
+    }, 1000000);
 
     test('get tokens', async () => {
         initRequestScopedContext();

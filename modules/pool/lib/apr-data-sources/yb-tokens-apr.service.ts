@@ -72,6 +72,9 @@ export class YbTokensAprService implements PoolAprService {
         });
 
         for (const pool of poolsWithYbTokensExpanded) {
+            if (pool.address === '0x43026d483f42fb35efe03c20b251142d022783f2') {
+                console.log('found');
+            }
             if (!pool.dynamicData) {
                 continue;
             }
