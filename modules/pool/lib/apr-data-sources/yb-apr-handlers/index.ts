@@ -30,6 +30,7 @@ const sourceToHandler = {
     bloom: sources.BloomAprHandler,
     sftmx: sources.SftmxAprHandler,
     sts: sources.StsAprHandler,
+    silo: sources.SiloAprHandler,
 };
 
 export class YbAprHandlers {

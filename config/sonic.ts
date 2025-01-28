@@ -85,6 +85,12 @@ export default <NetworkData>{
                 },
             },
         },
+        silo: {
+            markets: [
+                '0x87178fe8698C7eDa8aA207083C3d66aEa569aB98', //solvbtc market 13
+                '0x52Fc9E0a68b6a4C9b57b9D1d99fB71449A99DCd8', // solvbtc.bbn market 13
+            ],
+        },
     },
     datastudio: {
         main: {

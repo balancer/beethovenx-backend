@@ -9,6 +9,7 @@ export interface YbAprConfig {
     sts?: {
         token: string;
     };
+    silo?: SiloAprConfig;
     euler?: EulerAprConfig;
     gearbox?: GearBoxAprConfig;
     idle?: IdleAprConfig;
@@ -206,4 +207,8 @@ export interface FixedAprConfig {
         group?: string;
         isIbYield?: boolean;
     };
+}
+
+export interface SiloAprConfig {
+    markets: string[];
 }
