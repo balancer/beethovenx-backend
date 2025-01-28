@@ -130,7 +130,7 @@ export const schema = gql`
 
     type GqlHistoricalTokenPriceEntry {
         price: Float!
-        timestamp: Int!
+        timestamp: String!
         updatedAt: Int!
         updatedBy: String
     }

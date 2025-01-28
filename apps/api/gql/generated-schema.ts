@@ -129,7 +129,7 @@ export interface GqlHistoricalTokenPrice {
 export interface GqlHistoricalTokenPriceEntry {
     __typename?: 'GqlHistoricalTokenPriceEntry';
     price: Scalars['Float'];
-    timestamp: Scalars['Int'];
+    timestamp: Scalars['String'];
     updatedAt: Scalars['Int'];
     updatedBy?: Maybe<Scalars['String']>;
 }
@@ -3467,7 +3467,7 @@ export type GqlHistoricalTokenPriceEntryResolvers<
     ParentType extends ResolversParentTypes['GqlHistoricalTokenPriceEntry'] = ResolversParentTypes['GqlHistoricalTokenPriceEntry'],
 > = ResolversObject<{
     price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    timestamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+    timestamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
     updatedAt?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     updatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
