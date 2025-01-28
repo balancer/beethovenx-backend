@@ -164,19 +164,11 @@ export class TokenPriceService {
                     chain: Chain;
                     daily_timestamp: number;
                     price: number;
-                    low: number;
-                    high: number;
-                    open: number;
-                    close: number;
                 }[]
             >`SELECT
                 "tokenAddress",
                 chain,
                 FLOOR("timestamp" / 86400) * 86400 AS daily_timestamp,
-                MIN(low) AS low,
-                MAX(high) AS high,
-                (ARRAY_AGG(open ORDER BY "timestamp" ASC))[1] AS open,
-                (ARRAY_AGG(close ORDER BY "timestamp" DESC))[1] AS close,
                 ROUND(AVG(price)::NUMERIC, 2) AS price
             FROM "PrismaTokenPrice"
             WHERE "tokenAddress" = ANY(${tokenAddresses})
@@ -193,6 +185,10 @@ export class TokenPriceService {
                 timestamp: record.daily_timestamp,
                 updatedAt: new Date(record.daily_timestamp * 1000),
                 updatedBy: '',
+                low: record.price, // not returned by the graphql query
+                high: record.price, // not returned by the graphql query
+                open: record.price, // not returned by the graphql query
+                close: record.price, // not returned by the graphql query
             }));
 
             return records;
