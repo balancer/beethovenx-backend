@@ -105,6 +105,220 @@ export enum Factory_OrderBy {
     Version = 'version',
 }
 
+export type Gyro2Params = {
+    __typename?: 'Gyro2Params';
+    /** Unique identifier for the Gyro2Params */
+    id: Scalars['Bytes'];
+    sqrtAlpha: Scalars['BigDecimal'];
+    sqrtBeta: Scalars['BigDecimal'];
+};
+
+export type Gyro2Params_Filter = {
+    /** Filter for the block changed event. */
+    _change_block?: InputMaybe<BlockChangedFilter>;
+    and?: InputMaybe<Array<InputMaybe<Gyro2Params_Filter>>>;
+    id?: InputMaybe<Scalars['Bytes']>;
+    id_contains?: InputMaybe<Scalars['Bytes']>;
+    id_gt?: InputMaybe<Scalars['Bytes']>;
+    id_gte?: InputMaybe<Scalars['Bytes']>;
+    id_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    id_lt?: InputMaybe<Scalars['Bytes']>;
+    id_lte?: InputMaybe<Scalars['Bytes']>;
+    id_not?: InputMaybe<Scalars['Bytes']>;
+    id_not_contains?: InputMaybe<Scalars['Bytes']>;
+    id_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    or?: InputMaybe<Array<InputMaybe<Gyro2Params_Filter>>>;
+    sqrtAlpha?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_gt?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_gte?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    sqrtAlpha_lt?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_lte?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_not?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtAlpha_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    sqrtBeta?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_gt?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_gte?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    sqrtBeta_lt?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_lte?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_not?: InputMaybe<Scalars['BigDecimal']>;
+    sqrtBeta_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+};
+
+export enum Gyro2Params_OrderBy {
+    Id = 'id',
+    SqrtAlpha = 'sqrtAlpha',
+    SqrtBeta = 'sqrtBeta',
+}
+
+export type GyroEParams = {
+    __typename?: 'GyroEParams';
+    alpha: Scalars['BigDecimal'];
+    beta: Scalars['BigDecimal'];
+    c: Scalars['BigDecimal'];
+    dSq: Scalars['BigDecimal'];
+    /** Unique identifier for the GyroEParams */
+    id: Scalars['Bytes'];
+    lambda: Scalars['BigDecimal'];
+    s: Scalars['BigDecimal'];
+    tauAlphaX: Scalars['BigDecimal'];
+    tauAlphaY: Scalars['BigDecimal'];
+    tauBetaX: Scalars['BigDecimal'];
+    tauBetaY: Scalars['BigDecimal'];
+    u: Scalars['BigDecimal'];
+    v: Scalars['BigDecimal'];
+    w: Scalars['BigDecimal'];
+    z: Scalars['BigDecimal'];
+};
+
+export type GyroEParams_Filter = {
+    /** Filter for the block changed event. */
+    _change_block?: InputMaybe<BlockChangedFilter>;
+    alpha?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_gt?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_gte?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    alpha_lt?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_lte?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_not?: InputMaybe<Scalars['BigDecimal']>;
+    alpha_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    and?: InputMaybe<Array<InputMaybe<GyroEParams_Filter>>>;
+    beta?: InputMaybe<Scalars['BigDecimal']>;
+    beta_gt?: InputMaybe<Scalars['BigDecimal']>;
+    beta_gte?: InputMaybe<Scalars['BigDecimal']>;
+    beta_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    beta_lt?: InputMaybe<Scalars['BigDecimal']>;
+    beta_lte?: InputMaybe<Scalars['BigDecimal']>;
+    beta_not?: InputMaybe<Scalars['BigDecimal']>;
+    beta_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    c?: InputMaybe<Scalars['BigDecimal']>;
+    c_gt?: InputMaybe<Scalars['BigDecimal']>;
+    c_gte?: InputMaybe<Scalars['BigDecimal']>;
+    c_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    c_lt?: InputMaybe<Scalars['BigDecimal']>;
+    c_lte?: InputMaybe<Scalars['BigDecimal']>;
+    c_not?: InputMaybe<Scalars['BigDecimal']>;
+    c_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    dSq?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_gt?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_gte?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    dSq_lt?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_lte?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_not?: InputMaybe<Scalars['BigDecimal']>;
+    dSq_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    id?: InputMaybe<Scalars['Bytes']>;
+    id_contains?: InputMaybe<Scalars['Bytes']>;
+    id_gt?: InputMaybe<Scalars['Bytes']>;
+    id_gte?: InputMaybe<Scalars['Bytes']>;
+    id_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    id_lt?: InputMaybe<Scalars['Bytes']>;
+    id_lte?: InputMaybe<Scalars['Bytes']>;
+    id_not?: InputMaybe<Scalars['Bytes']>;
+    id_not_contains?: InputMaybe<Scalars['Bytes']>;
+    id_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+    lambda?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_gt?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_gte?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    lambda_lt?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_lte?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_not?: InputMaybe<Scalars['BigDecimal']>;
+    lambda_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    or?: InputMaybe<Array<InputMaybe<GyroEParams_Filter>>>;
+    s?: InputMaybe<Scalars['BigDecimal']>;
+    s_gt?: InputMaybe<Scalars['BigDecimal']>;
+    s_gte?: InputMaybe<Scalars['BigDecimal']>;
+    s_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    s_lt?: InputMaybe<Scalars['BigDecimal']>;
+    s_lte?: InputMaybe<Scalars['BigDecimal']>;
+    s_not?: InputMaybe<Scalars['BigDecimal']>;
+    s_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauAlphaX?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_gt?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_gte?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauAlphaX_lt?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_lte?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_not?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaX_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauAlphaY?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_gt?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_gte?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauAlphaY_lt?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_lte?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_not?: InputMaybe<Scalars['BigDecimal']>;
+    tauAlphaY_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauBetaX?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_gt?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_gte?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauBetaX_lt?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_lte?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_not?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaX_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauBetaY?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_gt?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_gte?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    tauBetaY_lt?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_lte?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_not?: InputMaybe<Scalars['BigDecimal']>;
+    tauBetaY_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    u?: InputMaybe<Scalars['BigDecimal']>;
+    u_gt?: InputMaybe<Scalars['BigDecimal']>;
+    u_gte?: InputMaybe<Scalars['BigDecimal']>;
+    u_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    u_lt?: InputMaybe<Scalars['BigDecimal']>;
+    u_lte?: InputMaybe<Scalars['BigDecimal']>;
+    u_not?: InputMaybe<Scalars['BigDecimal']>;
+    u_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    v?: InputMaybe<Scalars['BigDecimal']>;
+    v_gt?: InputMaybe<Scalars['BigDecimal']>;
+    v_gte?: InputMaybe<Scalars['BigDecimal']>;
+    v_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    v_lt?: InputMaybe<Scalars['BigDecimal']>;
+    v_lte?: InputMaybe<Scalars['BigDecimal']>;
+    v_not?: InputMaybe<Scalars['BigDecimal']>;
+    v_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    w?: InputMaybe<Scalars['BigDecimal']>;
+    w_gt?: InputMaybe<Scalars['BigDecimal']>;
+    w_gte?: InputMaybe<Scalars['BigDecimal']>;
+    w_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    w_lt?: InputMaybe<Scalars['BigDecimal']>;
+    w_lte?: InputMaybe<Scalars['BigDecimal']>;
+    w_not?: InputMaybe<Scalars['BigDecimal']>;
+    w_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    z?: InputMaybe<Scalars['BigDecimal']>;
+    z_gt?: InputMaybe<Scalars['BigDecimal']>;
+    z_gte?: InputMaybe<Scalars['BigDecimal']>;
+    z_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+    z_lt?: InputMaybe<Scalars['BigDecimal']>;
+    z_lte?: InputMaybe<Scalars['BigDecimal']>;
+    z_not?: InputMaybe<Scalars['BigDecimal']>;
+    z_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+};
+
+export enum GyroEParams_OrderBy {
+    Alpha = 'alpha',
+    Beta = 'beta',
+    C = 'c',
+    DSq = 'dSq',
+    Id = 'id',
+    Lambda = 'lambda',
+    S = 's',
+    TauAlphaX = 'tauAlphaX',
+    TauAlphaY = 'tauAlphaY',
+    TauBetaX = 'tauBetaX',
+    TauBetaY = 'tauBetaY',
+    U = 'u',
+    V = 'v',
+    W = 'w',
+    Z = 'z',
+}
+
 /** Defines the order direction, either ascending or descending */
 export enum OrderDirection {
     Asc = 'asc',
@@ -117,6 +331,10 @@ export type Pool = {
     address: Scalars['Bytes'];
     /** Factory that created this Pool */
     factory: Factory;
+    /** Parameters for Gyro2 pools (null for other pool types) */
+    gyro2Params?: Maybe<Gyro2Params>;
+    /** Parameters for GyroE pools (null for other pool types) */
+    gyroEParams?: Maybe<GyroEParams>;
     /** Unique identifier for the Pool */
     id: Scalars['Bytes'];
     /** Parameters for Stable pools (null for other pool types) */
@@ -126,6 +344,8 @@ export type Pool = {
 };
 
 export enum PoolType {
+    Gyro2 = 'Gyro2',
+    GyroE = 'GyroE',
     Stable = 'Stable',
     Weighted = 'Weighted',
 }
@@ -165,6 +385,48 @@ export type Pool_Filter = {
     factory_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
     factory_starts_with?: InputMaybe<Scalars['String']>;
     factory_starts_with_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params?: InputMaybe<Scalars['String']>;
+    gyro2Params_?: InputMaybe<Gyro2Params_Filter>;
+    gyro2Params_contains?: InputMaybe<Scalars['String']>;
+    gyro2Params_contains_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params_ends_with?: InputMaybe<Scalars['String']>;
+    gyro2Params_ends_with_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params_gt?: InputMaybe<Scalars['String']>;
+    gyro2Params_gte?: InputMaybe<Scalars['String']>;
+    gyro2Params_in?: InputMaybe<Array<Scalars['String']>>;
+    gyro2Params_lt?: InputMaybe<Scalars['String']>;
+    gyro2Params_lte?: InputMaybe<Scalars['String']>;
+    gyro2Params_not?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_contains?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_contains_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_ends_with?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_in?: InputMaybe<Array<Scalars['String']>>;
+    gyro2Params_not_starts_with?: InputMaybe<Scalars['String']>;
+    gyro2Params_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+    gyro2Params_starts_with?: InputMaybe<Scalars['String']>;
+    gyro2Params_starts_with_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams?: InputMaybe<Scalars['String']>;
+    gyroEParams_?: InputMaybe<GyroEParams_Filter>;
+    gyroEParams_contains?: InputMaybe<Scalars['String']>;
+    gyroEParams_contains_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams_ends_with?: InputMaybe<Scalars['String']>;
+    gyroEParams_ends_with_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams_gt?: InputMaybe<Scalars['String']>;
+    gyroEParams_gte?: InputMaybe<Scalars['String']>;
+    gyroEParams_in?: InputMaybe<Array<Scalars['String']>>;
+    gyroEParams_lt?: InputMaybe<Scalars['String']>;
+    gyroEParams_lte?: InputMaybe<Scalars['String']>;
+    gyroEParams_not?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_contains?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_contains_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_ends_with?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_in?: InputMaybe<Array<Scalars['String']>>;
+    gyroEParams_not_starts_with?: InputMaybe<Scalars['String']>;
+    gyroEParams_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+    gyroEParams_starts_with?: InputMaybe<Scalars['String']>;
+    gyroEParams_starts_with_nocase?: InputMaybe<Scalars['String']>;
     id?: InputMaybe<Scalars['Bytes']>;
     id_contains?: InputMaybe<Scalars['Bytes']>;
     id_gt?: InputMaybe<Scalars['Bytes']>;
@@ -227,6 +489,26 @@ export enum Pool_OrderBy {
     FactoryId = 'factory__id',
     FactoryType = 'factory__type',
     FactoryVersion = 'factory__version',
+    Gyro2Params = 'gyro2Params',
+    Gyro2ParamsId = 'gyro2Params__id',
+    Gyro2ParamsSqrtAlpha = 'gyro2Params__sqrtAlpha',
+    Gyro2ParamsSqrtBeta = 'gyro2Params__sqrtBeta',
+    GyroEParams = 'gyroEParams',
+    GyroEParamsAlpha = 'gyroEParams__alpha',
+    GyroEParamsBeta = 'gyroEParams__beta',
+    GyroEParamsC = 'gyroEParams__c',
+    GyroEParamsDSq = 'gyroEParams__dSq',
+    GyroEParamsId = 'gyroEParams__id',
+    GyroEParamsLambda = 'gyroEParams__lambda',
+    GyroEParamsS = 'gyroEParams__s',
+    GyroEParamsTauAlphaX = 'gyroEParams__tauAlphaX',
+    GyroEParamsTauAlphaY = 'gyroEParams__tauAlphaY',
+    GyroEParamsTauBetaX = 'gyroEParams__tauBetaX',
+    GyroEParamsTauBetaY = 'gyroEParams__tauBetaY',
+    GyroEParamsU = 'gyroEParams__u',
+    GyroEParamsV = 'gyroEParams__v',
+    GyroEParamsW = 'gyroEParams__w',
+    GyroEParamsZ = 'gyroEParams__z',
     Id = 'id',
     StableParams = 'stableParams',
     StableParamsAmp = 'stableParams__amp',
@@ -241,6 +523,10 @@ export type Query = {
     _meta?: Maybe<_Meta_>;
     factories: Array<Factory>;
     factory?: Maybe<Factory>;
+    gyro2Params?: Maybe<Gyro2Params>;
+    gyro2Params_collection: Array<Gyro2Params>;
+    gyroEParams?: Maybe<GyroEParams>;
+    gyroEParams_collection: Array<GyroEParams>;
     pool?: Maybe<Pool>;
     pools: Array<Pool>;
     stableParams?: Maybe<StableParams>;
@@ -267,6 +553,38 @@ export type QueryFactoryArgs = {
     block?: InputMaybe<Block_Height>;
     id: Scalars['ID'];
     subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryGyro2ParamsArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryGyro2Params_CollectionArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Gyro2Params_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<Gyro2Params_Filter>;
+};
+
+export type QueryGyroEParamsArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryGyroEParams_CollectionArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<GyroEParams_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<GyroEParams_Filter>;
 };
 
 export type QueryPoolArgs = {
@@ -361,6 +679,10 @@ export type Subscription = {
     _meta?: Maybe<_Meta_>;
     factories: Array<Factory>;
     factory?: Maybe<Factory>;
+    gyro2Params?: Maybe<Gyro2Params>;
+    gyro2Params_collection: Array<Gyro2Params>;
+    gyroEParams?: Maybe<GyroEParams>;
+    gyroEParams_collection: Array<GyroEParams>;
     pool?: Maybe<Pool>;
     pools: Array<Pool>;
     stableParams?: Maybe<StableParams>;
@@ -387,6 +709,38 @@ export type SubscriptionFactoryArgs = {
     block?: InputMaybe<Block_Height>;
     id: Scalars['ID'];
     subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionGyro2ParamsArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionGyro2Params_CollectionArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<Gyro2Params_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<Gyro2Params_Filter>;
+};
+
+export type SubscriptionGyroEParamsArgs = {
+    block?: InputMaybe<Block_Height>;
+    id: Scalars['ID'];
+    subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionGyroEParams_CollectionArgs = {
+    block?: InputMaybe<Block_Height>;
+    first?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<GyroEParams_OrderBy>;
+    orderDirection?: InputMaybe<OrderDirection>;
+    skip?: InputMaybe<Scalars['Int']>;
+    subgraphError?: _SubgraphErrorPolicy_;
+    where?: InputMaybe<GyroEParams_Filter>;
 };
 
 export type SubscriptionPoolArgs = {
