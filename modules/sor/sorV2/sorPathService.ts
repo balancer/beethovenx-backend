@@ -576,7 +576,7 @@ class SorPathService implements SwapService {
         const allPools = [...pools, ...lbps];
 
         const underlyingTokens = await this.getUnderlyingTokensFromDBPools(allPools, chain);
-        const result = { pools, underlyingTokens };
+        const result = { pools: allPools, underlyingTokens };
 
         // cache for 10s
         this.cache.put(
