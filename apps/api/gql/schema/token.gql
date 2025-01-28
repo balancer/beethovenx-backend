@@ -105,7 +105,7 @@ type GqlHistoricalTokenPrice {
 }
 
 type GqlHistoricalTokenPriceEntry {
-    timestamp: String!
+    timestamp: Int!
     price: Float!
     updatedAt: Int!
     updatedBy: String
@@ -344,6 +344,7 @@ enum GqlTokenChartDataRange {
     NINETY_DAY
     ONE_HUNDRED_EIGHTY_DAY
     ONE_YEAR
+    ALL
 }
 
 type GqlTokenCandlestickChartDataItem {

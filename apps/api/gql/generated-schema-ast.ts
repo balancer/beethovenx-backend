@@ -130,7 +130,7 @@ export const schema = gql`
 
     type GqlHistoricalTokenPriceEntry {
         price: Float!
-        timestamp: String!
+        timestamp: Int!
         updatedAt: Int!
         updatedBy: String
     }
@@ -3327,6 +3327,7 @@ export const schema = gql`
     }
 
     enum GqlTokenChartDataRange {
+        ALL
         NINETY_DAY
         ONE_HUNDRED_EIGHTY_DAY
         ONE_YEAR

@@ -129,7 +129,7 @@ export interface GqlHistoricalTokenPrice {
 export interface GqlHistoricalTokenPriceEntry {
     __typename?: 'GqlHistoricalTokenPriceEntry';
     price: Scalars['Float'];
-    timestamp: Scalars['String'];
+    timestamp: Scalars['Int'];
     updatedAt: Scalars['Int'];
     updatedBy?: Maybe<Scalars['String']>;
 }
@@ -2232,7 +2232,13 @@ export interface GqlTokenCandlestickChartDataItem {
     timestamp: Scalars['Int'];
 }
 
-export type GqlTokenChartDataRange = 'NINETY_DAY' | 'ONE_HUNDRED_EIGHTY_DAY' | 'ONE_YEAR' | 'SEVEN_DAY' | 'THIRTY_DAY';
+export type GqlTokenChartDataRange =
+    | 'ALL'
+    | 'NINETY_DAY'
+    | 'ONE_HUNDRED_EIGHTY_DAY'
+    | 'ONE_YEAR'
+    | 'SEVEN_DAY'
+    | 'THIRTY_DAY';
 
 export interface GqlTokenData {
     __typename?: 'GqlTokenData';
@@ -3461,7 +3467,7 @@ export type GqlHistoricalTokenPriceEntryResolvers<
     ParentType extends ResolversParentTypes['GqlHistoricalTokenPriceEntry'] = ResolversParentTypes['GqlHistoricalTokenPriceEntry'],
 > = ResolversObject<{
     price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-    timestamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    timestamp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     updatedAt?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
     updatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
     __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

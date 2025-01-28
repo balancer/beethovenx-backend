@@ -52,7 +52,7 @@ const resolvers: Resolvers = {
                     address: address,
                     chain: grouped[address][0].chain,
                     prices: grouped[address].map((entry) => ({
-                        timestamp: `${entry.timestamp}`,
+                        timestamp: entry.timestamp,
                         price: entry.price,
                         updatedAt: moment(entry.updatedAt).unix(),
                         updatedBy: entry.updatedBy,
