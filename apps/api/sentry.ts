@@ -1,3 +1,4 @@
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 import * as Sentry from '@sentry/node';
 import { env } from '../env';
 
@@ -11,6 +12,10 @@ export const initApiSentry = () => {
         integrations: [
             Sentry.captureConsoleIntegration({
                 levels: ['error', 'warn'],
+            }),
+            Sentry.prismaIntegration({
+                // Override the default instrumentation that Sentry uses
+                prismaInstrumentation: new PrismaInstrumentation(),
             }),
         ],
 
