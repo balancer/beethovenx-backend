@@ -28,10 +28,30 @@ export class PoolSnapshotService {
     public async getSnapshotsForPool(poolId: string, chain: Chain, range: GqlPoolSnapshotDataRange) {
         const timestamp = this.getTimestampForRange(range);
 
-        return prisma.prismaPoolSnapshot.findMany({
+        const snapshots = await prisma.prismaPoolSnapshot.findMany({
             where: { poolId, timestamp: { gte: timestamp }, chain },
             orderBy: { timestamp: 'asc' },
         });
+
+        // Filter out BPT amounts from snapshots
+        const bptToken = await prisma.prismaPoolToken.findMany({
+            where: { poolId, chain, address: poolId.substring(0, 42) },
+        });
+
+        if (bptToken.length === 1) {
+            return snapshots.map((snapshot) => ({
+                ...snapshot,
+                amounts: snapshot.amounts.filter((_, index) => {
+                    if (index === bptToken[0].index) {
+                        return false;
+                    }
+
+                    return true;
+                }),
+            }));
+        }
+
+        return snapshots;
     }
 
     public async getSnapshotForPool(poolId: string, timestamp: number, chain: Chain) {
