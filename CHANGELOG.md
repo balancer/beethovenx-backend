@@ -1,5 +1,16 @@
 # backend
 
+## 1.30.0
+
+### Minor Changes
+
+-   05bbbc0: historical price range ALL
+
+### Patch Changes
+
+-   5377366: prisma sentry setup
+-   f6de49e: complete v3 config arb/base
+
 ## 1.29.3
 
 ### Patch Changes
