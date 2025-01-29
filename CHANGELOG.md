@@ -1,5 +1,15 @@
 # backend
 
+## 1.31.0
+
+### Minor Changes
+
+-   e047a6c: replacing blocks subgraph with data from events
+
+### Patch Changes
+
+-   a29f079: hgETH APR
+
 ## 1.30.0
 
 ### Minor Changes
