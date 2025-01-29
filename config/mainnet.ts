@@ -437,6 +437,12 @@ export default <NetworkData>{
                 path: 'value',
                 isIbYield: true,
             },
+            hgETH: {
+                tokenAddress: '0xc824a08db624942c5e5f330d56530cd1598859fd',
+                sourceUrl: 'https://universe.kelpdao.xyz/rseth/gainApy',
+                path: 'hgETH',
+                isIbYield: true,
+            },
             sDOLA: {
                 tokenAddress: '0xb45ad160634c528cc3d2926d9807104fa3157305',
                 sourceUrl: 'https://www.inverse.finance/api/dola-staking',
