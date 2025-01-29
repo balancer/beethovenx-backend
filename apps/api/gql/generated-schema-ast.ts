@@ -3723,6 +3723,10 @@ export const schema = gql`
     type Query {
         beetsGetFbeetsRatio: String!
         beetsPoolGetReliquaryFarmSnapshots(id: String!, range: GqlPoolSnapshotDataRange!): [GqlReliquaryFarmSnapshot!]!
+        blocksGetAverageBlockTime: Float! @deprecated
+        blocksGetBlocksPerDay: Float! @deprecated
+        blocksGetBlocksPerSecond: Float! @deprecated
+        blocksGetBlocksPerYear: Float! @deprecated
         contentGetNewsItems(chain: GqlChain): [GqlContentNewsItem!]!
         latestSyncedBlocks: GqlLatestSyncedBlocks!
 

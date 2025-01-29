@@ -1,0 +1,6 @@
+extend type Query {
+    blocksGetAverageBlockTime: Float! @deprecated
+    blocksGetBlocksPerSecond: Float! @deprecated
+    blocksGetBlocksPerDay: Float! @deprecated
+    blocksGetBlocksPerYear: Float! @deprecated
+}
