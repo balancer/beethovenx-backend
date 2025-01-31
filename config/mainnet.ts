@@ -211,6 +211,13 @@ export default <NetworkData>{
                             stataEthUSDe: '0x5f9d59db355b4a60501544637b00e94082ca575b',
                         },
                     },
+                    pyUSD: {
+                        underlyingAssetAddress: '0x6c3ea9036406852006290770bedfcaba0e23a0e8',
+                        aTokenAddress: '0x0c0d01abf3e6adfca0989ebba9d6e85dd58eab1e',
+                        wrappedTokens: {
+                            waEthPYUSD: '0xb51edddd8c47856d81c8681ea71404cec93e92c6',
+                        },
+                    },
                 },
             },
             lido: {
