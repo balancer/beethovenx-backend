@@ -1,5 +1,11 @@
 # backend
 
+## 1.31.1
+
+### Patch Changes
+
+-   0f5c061: aave pyUSD APR
+
 ## 1.31.0
 
 ### Minor Changes
